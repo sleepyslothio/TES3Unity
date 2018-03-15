@@ -47,6 +47,10 @@ namespace TESUnity.Components.VR
                 return;
             }
 
+            var renderScale = TESUnity.instance.renderScale;
+            if (renderScale > 0 && renderScale <= 2)
+                XRSettings.eyeTextureResolutionScale = TESUnity.instance.renderScale;
+
             var uiManager = FindObjectOfType<UIManager>();
 
             if (_mainCanvas == null)

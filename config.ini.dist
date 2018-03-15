@@ -32,6 +32,7 @@ FollowHeadDirection = True
 RoomScale = False
 ForceControllers = True
 XRVignette = False
+RenderScale  = 1.0
 
 [Debug]
 CreaturesEnabled = False

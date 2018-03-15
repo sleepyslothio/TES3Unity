@@ -41,7 +41,8 @@ The first step is to rename the `config.ini.dist` file to `config.ini`.
 | FollowHeadDirection | `True` or `False` |
 | RoomScale | `True` or `False` |
 | ForceControllers | `True` or `False` |
-| XRVignette = | `True` or `False` |
+| XRVignette | `True` or `False` |
+| RenderScale | A value from 0.1 to 2.0 | 
 |**Debug** | |
 | CreaturesEnabled | `True` or `False` |
 

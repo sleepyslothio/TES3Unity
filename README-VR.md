@@ -21,8 +21,9 @@ The game requires a lot of CPU and GPU to work at a good framerate. The followin
 |**Rendering** | |
 | Shader  | `Unlit` |
 | RenderPath  | `Forward` |
-| CameraFarClip | `250` |
+| CameraFarClip | `150` |
 | WaterQuality | `0` |
+| RenderScale | `0.5` |
 
 In the launcher start the game in `Fastest`.
 
@@ -43,5 +44,6 @@ In the launcher start the game in `Fastest`.
 | RenderPath  | `Deferred` |
 | CameraFarClip | `500` |
 | WaterQuality | `0` |
+| RenderScale | `1.0` |
 
 In the launcher start the game in `Good` or `Beautiful`.

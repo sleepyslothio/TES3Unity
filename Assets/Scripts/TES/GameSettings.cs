@@ -136,6 +136,7 @@ namespace TESUnity
                         case "DayNightCycle": tes.dayNightCycle = ParseBool(value, tes.dayNightCycle); break;
                         case "GenerateNormalMap": tes.generateNormalMap = ParseBool(value, tes.generateNormalMap); break;
                         case "NormalGeneratorIntensity": tes.normalGeneratorIntensity = ParseFloat(value, tes.normalGeneratorIntensity); break;
+                        case "RenderScale": tes.renderScale = ParseFloat(value, tes.renderScale); break;
 
                         default: break;
                     }
@@ -184,6 +185,7 @@ namespace TESUnity
             sb.Append("RoomScale = False\r\n");
             sb.Append("ForceControllers = True\r\n");
             sb.Append("XRVignette = False\r\n");
+            sb.Append("RenderScale = 1.0\r\n");
             sb.Append("\r\n");
 
             sb.Append("[Debug]\r\n");

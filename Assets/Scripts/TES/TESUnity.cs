@@ -63,6 +63,7 @@ namespace TESUnity
         public bool roomScale = true;
         public bool forceControllers = false;
         public bool useXRVignette = false;
+        public float renderScale = 1.0f;
 
         [Header("UI")]
         public UIManager UIManager;
