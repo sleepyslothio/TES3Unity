@@ -4,6 +4,7 @@ using System.Linq;
 using TESUnity.Components.Records;
 using TESUnity.ESM;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace TESUnity
 {
@@ -606,11 +607,19 @@ namespace TESUnity
 
             var heightSampleDistance = Convert.exteriorCellSideLengthInMeters / (LAND_SIDE_LENGTH_IN_SAMPLES - 1);
 
-            var terrain = GameObjectUtils.CreateTerrain(heights, heightRange / Convert.meterInMWUnits, heightSampleDistance, splatPrototypes, alphaMap, terrainPosition);
-            terrain.GetComponent<Terrain>().materialType = Terrain.MaterialType.BuiltInLegacyDiffuse;
+            var terrainGameObject = GameObjectUtils.CreateTerrain(heights, heightRange / Convert.meterInMWUnits, heightSampleDistance, splatPrototypes, alphaMap, terrainPosition);
 
-            terrain.transform.parent = parent.transform;
-            terrain.isStatic = true;
+            var terrain = terrainGameObject.GetComponent<Terrain>();
+            terrain.materialType = Terrain.MaterialType.BuiltInLegacyDiffuse;
+
+            if (GraphicsSettings.renderPipelineAsset != null)
+            {
+                terrain.materialType = Terrain.MaterialType.Custom;
+                terrain.materialTemplate = Resources.Load<Material>("Materials/Lightweight-DefaultTerrain");
+            }
+
+            terrainGameObject.transform.parent = parent.transform;
+            terrainGameObject.isStatic = true;
         }
 
         private void DestroyExteriorCell(Vector2i indices)

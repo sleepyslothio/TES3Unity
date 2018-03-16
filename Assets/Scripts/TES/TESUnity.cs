@@ -13,7 +13,7 @@ namespace TESUnity
 
         public enum MWMaterialType
         {
-            Default, Standard, BumpedDiffuse, Unlit
+            Default, Standard, BumpedDiffuse, Unlit, LWRP
         }
 
         public enum PostProcessingQuality
@@ -102,6 +102,9 @@ namespace TESUnity
         private void Awake()
         {
             Debug.unityLogger.logEnabled = enableLog;
+
+            if (UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset != null)
+                materialType = MWMaterialType.LWRP;
 
             instance = this;
 

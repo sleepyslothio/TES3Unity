@@ -45,6 +45,9 @@ namespace TESUnity
 
             switch(TESUnity.instance.materialType)
             {
+                case TESUnity.MWMaterialType.LWRP:
+                    _mwMaterial = new MWLightweightMaterial(textureManager);
+                    break;
                 case TESUnity.MWMaterialType.Default:
                     _mwMaterial = new MWDefaultMaterial(textureManager);
                     break;
