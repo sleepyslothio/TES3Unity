@@ -2,6 +2,8 @@
 using System.IO;
 using TESUnity.UI;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.LightweightPipeline;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing;
 using UnityStandardAssets.Water;
 
@@ -13,12 +15,17 @@ namespace TESUnity
 
         public enum MWMaterialType
         {
-            Default, Standard, BumpedDiffuse, Unlit, LWRP
+            Default, Standard, BumpedDiffuse, Unlit
         }
 
         public enum PostProcessingQuality
         {
             None = 0, Low, Middle, High
+        }
+
+        public enum RendererType
+        {
+            Forward, Deferred, LightweightSRP
         }
 
         #region Inspector-set Members
@@ -39,8 +46,9 @@ namespace TESUnity
 
         [Header("Rendering")]
         public MWMaterialType materialType = MWMaterialType.BumpedDiffuse;
-        public RenderingPath renderPath = RenderingPath.Forward;
+        public RendererType renderPath = RendererType.Forward;
         public float cameraFarClip = 500.0f;
+        public LightweightPipelineAsset lightweightAsset;
 
         [Header("Lighting")]
         public float ambientIntensity = 1.5f;
@@ -103,15 +111,12 @@ namespace TESUnity
         {
             Debug.unityLogger.logEnabled = enableLog;
 
-            if (UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset != null)
-                materialType = MWMaterialType.LWRP;
-
             instance = this;
 
             var path = dataPath;
 
 #if UNITY_EDITOR
-            if(!_bypassINIConfig)
+            if (!_bypassINIConfig)
             {
                 path = GameSettings.CheckSettings(this);
             }
@@ -119,7 +124,7 @@ namespace TESUnity
             path = GameSettings.CheckSettings(this);
 #endif
 
-            if(!GameSettings.IsValidPath(path))
+            if (!GameSettings.IsValidPath(path))
             {
                 if (GameSettings.IsValidPath(alternativeDataPath))
                 {
@@ -134,6 +139,9 @@ namespace TESUnity
             {
                 dataPath = path;
             }
+
+            if (renderPath == RendererType.LightweightSRP)
+                GraphicsSettings.renderPipelineAsset = lightweightAsset;
         }
 
         private void Start()
@@ -141,14 +149,14 @@ namespace TESUnity
             MWDataReader = new MorrowindDataReader(dataPath);
             MWEngine = new MorrowindEngine(MWDataReader, UIManager);
 
-            if(playMusic)
+            if (playMusic)
             {
                 // Start the music.
                 musicPlayer = new MusicPlayer();
 
-                foreach(var songFilePath in Directory.GetFiles(dataPath + "/Music/Explore"))
+                foreach (var songFilePath in Directory.GetFiles(dataPath + "/Music/Explore"))
                 {
-                    if(!songFilePath.Contains("Morrowind Title"))
+                    if (!songFilePath.Contains("Morrowind Title"))
                     {
                         musicPlayer.AddSong(songFilePath);
                     }
@@ -165,7 +173,7 @@ namespace TESUnity
 
         private void OnDestroy()
         {
-            if(MWDataReader != null)
+            if (MWDataReader != null)
             {
                 MWDataReader.Close();
                 MWDataReader = null;
@@ -176,17 +184,17 @@ namespace TESUnity
         {
             MWEngine.Update();
 
-            if(playMusic)
+            if (playMusic)
             {
                 musicPlayer.Update();
             }
         }
-        
+
         private void TestAllCells(string resultsFilePath)
         {
-            using(StreamWriter writer = new StreamWriter(resultsFilePath))
+            using (StreamWriter writer = new StreamWriter(resultsFilePath))
             {
-                foreach(var record in MWDataReader.MorrowindESMFile.GetRecordsOfType<ESM.CELLRecord>())
+                foreach (var record in MWDataReader.MorrowindESMFile.GetRecordsOfType<ESM.CELLRecord>())
                 {
                     var CELL = (ESM.CELLRecord)record;
 
@@ -199,12 +207,12 @@ namespace TESUnity
 
                         writer.Write("Pass: ");
                     }
-                    catch(Exception exception)
+                    catch (Exception exception)
                     {
                         writer.Write("Fail: ");
                     }
 
-                    if(!CELL.isInterior)
+                    if (!CELL.isInterior)
                     {
                         writer.WriteLine(CELL.gridCoords.ToString());
                     }

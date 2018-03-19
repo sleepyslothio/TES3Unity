@@ -67,7 +67,19 @@ namespace TESUnity
             // Setup the camera
             var tes = TESUnity.instance;
             var camera = Camera.main;
-            camera.renderingPath = tes.renderPath;
+
+            if (tes.renderPath == TESUnity.RendererType.Forward)
+            {
+                camera.renderingPath = RenderingPath.Forward;
+                camera.allowMSAA = true;
+            }
+            else if (tes.renderPath == TESUnity.RendererType.Deferred)
+            {
+                camera.renderingPath = RenderingPath.DeferredShading;
+                camera.allowMSAA = false;
+            }
+
+            camera.allowHDR = true;
             camera.farClipPlane = tes.cameraFarClip;
 
             _crosshair = FindObjectOfType<UICrosshair>();

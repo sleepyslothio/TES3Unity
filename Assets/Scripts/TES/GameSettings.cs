@@ -106,7 +106,12 @@ namespace TESUnity
                         case "RenderExteriorCellLights": tes.renderExteriorCellLights = ParseBool(value, tes.renderExteriorCellLights); break;
                         case "WaterBackSideTransparent": tes.waterBackSideTransparent = ParseBool(value, tes.waterBackSideTransparent); break;
                         case "RenderPath":
-                            tes.renderPath = value == "Forward" ? RenderingPath.Forward : RenderingPath.DeferredShading;
+                            if (value == "Forward")
+                                tes.renderPath = TESUnity.RendererType.Forward;
+                            else if (value == "Deferred")
+                                tes.renderPath = TESUnity.RendererType.Deferred;
+                            else if (value == "Lightweight")
+                                tes.renderPath = TESUnity.RendererType.LightweightSRP;
                             break;
                         case "Shader":
                             switch (value)

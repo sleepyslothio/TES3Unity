@@ -6,9 +6,9 @@ namespace TESUnity
     /// <summary>
     /// A material that uses the legacy Bumped Diffuse Shader.
     /// </summary>
-    public class MWLightweightMaterial : MWBaseMaterial
+    public class HDMaterial : MWBaseMaterial
     {
-        public MWLightweightMaterial(TextureManager textureManager) : base(textureManager) { }
+        public HDMaterial(TextureManager textureManager) : base(textureManager) { }
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
         {
@@ -29,12 +29,12 @@ namespace TESUnity
                 {
                     material.mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
 
-                    if (TESUnity.instance.generateNormalMap)
-                        material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture, TESUnity.instance.normalGeneratorIntensity));
+                    //if (TESUnity.instance.generateNormalMap)
+                        //material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture, TESUnity.instance.normalGeneratorIntensity));
                 }
 
-                if (mp.textures.bumpFilePath != null)
-                    material.SetTexture("_BumpMap", m_textureManager.LoadTexture(mp.textures.bumpFilePath));
+                //if (mp.textures.bumpFilePath != null)
+                    //material.SetTexture("_BumpMap", m_textureManager.LoadTexture(mp.textures.bumpFilePath));
 
                 m_existingMaterials[mp] = material;
             }
@@ -43,10 +43,7 @@ namespace TESUnity
 
         public override Material BuildMaterial()
         {
-            if (TESUnity.instance.materialType == TESUnity.MWMaterialType.Standard)
-                return new Material(Shader.Find("LightweightPipeline/Standard (Physically Based)"));
-            else
-                return new Material(Shader.Find("LightweightPipeline/Standard (Simple Lighting)"));
+            return new Material(Shader.Find("HDRenderPipeline/Lit"));
         }
 
         public override Material BuildMaterialBlended(ur.BlendMode sourceBlendMode, ur.BlendMode destinationBlendMode)

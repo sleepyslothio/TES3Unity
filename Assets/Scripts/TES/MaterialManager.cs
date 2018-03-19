@@ -43,11 +43,16 @@ namespace TESUnity
         {
             _textureManager = textureManager;
 
+            var tes = TESUnity.instance;
+
+            if (tes.renderPath == TESUnity.RendererType.LightweightSRP)
+            {
+                _mwMaterial = new MWLightweightMaterial(textureManager);
+                return;
+            }
+
             switch(TESUnity.instance.materialType)
             {
-                case TESUnity.MWMaterialType.LWRP:
-                    _mwMaterial = new MWLightweightMaterial(textureManager);
-                    break;
                 case TESUnity.MWMaterialType.Default:
                     _mwMaterial = new MWDefaultMaterial(textureManager);
                     break;

@@ -4,6 +4,7 @@ using System.Linq;
 using TESUnity.Components.Records;
 using TESUnity.ESM;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.LightweightPipeline;
 using UnityEngine.Rendering;
 
 namespace TESUnity
@@ -612,7 +613,7 @@ namespace TESUnity
             var terrain = terrainGameObject.GetComponent<Terrain>();
             terrain.materialType = Terrain.MaterialType.BuiltInLegacyDiffuse;
 
-            if (GraphicsSettings.renderPipelineAsset != null)
+            if (GraphicsSettings.renderPipelineAsset is LightweightPipelineAsset)
             {
                 terrain.materialType = Terrain.MaterialType.Custom;
                 terrain.materialTemplate = Resources.Load<Material>("Materials/Lightweight-DefaultTerrain");
