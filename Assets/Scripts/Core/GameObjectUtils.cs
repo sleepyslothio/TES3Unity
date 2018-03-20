@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Experimental.Rendering.LightweightPipeline;
+using UnityEngine.Rendering;
 
 public static class GameObjectUtils
 {
@@ -101,9 +103,17 @@ public static class GameObjectUtils
         terrainObject.isStatic = true;
 
 		var terrain = terrainObject.AddComponent<Terrain>();
-		terrain.terrainData = terrainData;
 
-		terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;
+        if (GraphicsSettings.renderPipelineAsset is LightweightPipelineAsset)
+        {
+            terrain.materialType = Terrain.MaterialType.Custom;
+            terrain.materialTemplate = Resources.Load<Material>("Materials/Lightweight-DefaultTerrain");
+        }
+        else
+            terrain.materialType = Terrain.MaterialType.BuiltInLegacyDiffuse;
+
+        terrain.terrainData = terrainData;
+        terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;
 
 		terrainObject.transform.position = position;
 

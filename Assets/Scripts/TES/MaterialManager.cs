@@ -45,26 +45,28 @@ namespace TESUnity
 
             var tes = TESUnity.instance;
 
-            if (tes.renderPath == TESUnity.RendererType.LightweightSRP)
+            // Order is important
+            if (tes.renderPath == TESUnity.RendererType.LightweightSRP && tes.materialType != TESUnity.MWMaterialType.Unlit)
             {
                 _mwMaterial = new MWLightweightMaterial(textureManager);
-                return;
             }
-
-            switch(TESUnity.instance.materialType)
+            else
             {
-                case TESUnity.MWMaterialType.Default:
-                    _mwMaterial = new MWDefaultMaterial(textureManager);
-                    break;
-                case TESUnity.MWMaterialType.Standard:
-                    _mwMaterial = new MWStandardMaterial(textureManager);
-                    break;
-                case TESUnity.MWMaterialType.Unlit:
-                    _mwMaterial = new MWUnliteMaterial(textureManager);
-                    break;
-                default:
-                    _mwMaterial = new MWBumpedDiffuseMaterial(textureManager);
-                    break;
+                switch (tes.materialType)
+                {
+                    case TESUnity.MWMaterialType.Default:
+                        _mwMaterial = new MWDefaultMaterial(textureManager);
+                        break;
+                    case TESUnity.MWMaterialType.PBR:
+                        _mwMaterial = new MWStandardMaterial(textureManager);
+                        break;
+                    case TESUnity.MWMaterialType.Unlit:
+                        _mwMaterial = new MWUnliteMaterial(textureManager);
+                        break;
+                    default:
+                        _mwMaterial = new MWBumpedDiffuseMaterial(textureManager);
+                        break;
+                }
             }
         }
 

@@ -15,7 +15,7 @@ namespace TESUnity
 
         public enum MWMaterialType
         {
-            Default, Standard, BumpedDiffuse, Unlit
+            Default, PBR, StandardLighting, Unlit
         }
 
         public enum PostProcessingQuality
@@ -45,10 +45,11 @@ namespace TESUnity
         public Water.WaterMode waterQuality = Water.WaterMode.Simple;
 
         [Header("Rendering")]
-        public MWMaterialType materialType = MWMaterialType.BumpedDiffuse;
+        public MWMaterialType materialType = MWMaterialType.StandardLighting;
         public RendererType renderPath = RendererType.Forward;
         public float cameraFarClip = 500.0f;
         public LightweightPipelineAsset lightweightAsset;
+        public float renderScale = 1.0f;
 
         [Header("Lighting")]
         public float ambientIntensity = 1.5f;
@@ -71,7 +72,6 @@ namespace TESUnity
         public bool roomScale = true;
         public bool forceControllers = false;
         public bool useXRVignette = false;
-        public float renderScale = 1.0f;
 
         [Header("UI")]
         public UIManager UIManager;
@@ -139,13 +139,16 @@ namespace TESUnity
             {
                 dataPath = path;
             }
-
-            if (renderPath == RendererType.LightweightSRP)
-                GraphicsSettings.renderPipelineAsset = lightweightAsset;
         }
 
         private void Start()
         {
+            if (renderPath == RendererType.LightweightSRP)
+            {
+                lightweightAsset.RenderScale = renderScale;
+                GraphicsSettings.renderPipelineAsset = lightweightAsset;
+            }
+
             MWDataReader = new MorrowindDataReader(dataPath);
             MWEngine = new MorrowindEngine(MWDataReader, UIManager);
 
@@ -178,6 +181,10 @@ namespace TESUnity
                 MWDataReader.Close();
                 MWDataReader = null;
             }
+
+#if UNITY_EDITOR
+            lightweightAsset.RenderScale = 1;
+#endif
         }
 
         private void Update()

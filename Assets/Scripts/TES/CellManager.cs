@@ -610,15 +610,6 @@ namespace TESUnity
 
             var terrainGameObject = GameObjectUtils.CreateTerrain(heights, heightRange / Convert.meterInMWUnits, heightSampleDistance, splatPrototypes, alphaMap, terrainPosition);
 
-            var terrain = terrainGameObject.GetComponent<Terrain>();
-            terrain.materialType = Terrain.MaterialType.BuiltInLegacyDiffuse;
-
-            if (GraphicsSettings.renderPipelineAsset is LightweightPipelineAsset)
-            {
-                terrain.materialType = Terrain.MaterialType.Custom;
-                terrain.materialTemplate = Resources.Load<Material>("Materials/Lightweight-DefaultTerrain");
-            }
-
             terrainGameObject.transform.parent = parent.transform;
             terrainGameObject.isStatic = true;
         }

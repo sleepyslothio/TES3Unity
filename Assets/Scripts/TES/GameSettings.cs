@@ -117,9 +117,9 @@ namespace TESUnity
                             switch (value)
                             {
                                 case "Default": tes.materialType = TESUnity.MWMaterialType.Default; break;
-                                case "Standard": tes.materialType = TESUnity.MWMaterialType.Standard; break;
+                                case "PBR": tes.materialType = TESUnity.MWMaterialType.PBR; break;
                                 case "Unlit": tes.materialType = TESUnity.MWMaterialType.Unlit; break;
-                                default: tes.materialType = TESUnity.MWMaterialType.BumpedDiffuse; break;
+                                default: tes.materialType = TESUnity.MWMaterialType.StandardLighting; break;
                             }
                             break;
                         case "RoomScale": tes.roomScale = ParseBool(value, tes.roomScale); break;
@@ -164,7 +164,7 @@ namespace TESUnity
 
             sb.Append("[Rendering]\r\n");
             sb.Append("RenderPath = Deferred\r\n");
-            sb.Append("Shader = Standard\r\n");
+            sb.Append("Shader = PBR\r\n");
             sb.Append("CameraFarClip = 500\r\n");
             sb.Append("WaterQuality = 0\r\n");
             sb.Append("\r\n");

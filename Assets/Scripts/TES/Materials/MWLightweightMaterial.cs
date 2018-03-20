@@ -43,7 +43,7 @@ namespace TESUnity
 
         public override Material BuildMaterial()
         {
-            if (TESUnity.instance.materialType == TESUnity.MWMaterialType.Standard)
+            if (TESUnity.instance.materialType == TESUnity.MWMaterialType.PBR)
                 return new Material(Shader.Find("LightweightPipeline/Standard (Physically Based)"));
             else
                 return new Material(Shader.Find("LightweightPipeline/Standard (Simple Lighting)"));

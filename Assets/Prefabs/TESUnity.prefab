@@ -47,14 +47,16 @@ MonoBehaviour:
   playMusic: 1
   enableLog: 0
   waterQuality: 0
-  materialType: 2
-  renderPath: 3
+  materialType: 1
+  renderPath: 2
   cameraFarClip: 500
+  lightweightAsset: {fileID: 11400000, guid: b130335045a0fa846b08b62be1eb1e8a, type: 2}
+  renderScale: 1
   ambientIntensity: 1.5
   renderSunShadows: 1
   renderLightShadows: 0
-  renderExteriorCellLights: 1
-  animateLights: 1
+  renderExteriorCellLights: 0
+  animateLights: 0
   dayNightCycle: 1
   generateNormalMap: 1
   normalGeneratorIntensity: 0.75
