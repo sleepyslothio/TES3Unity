@@ -861,28 +861,7 @@ Prefab:
       objectReference: {fileID: 1214623308}
     - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 2}
       propertyPath: materialType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 2}
-      propertyPath: renderExteriorCellLights
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 2}
-      propertyPath: animateLights
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 2}
-      propertyPath: renderPath
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 2}
-      propertyPath: lightweightAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: b130335045a0fa846b08b62be1eb1e8a,
-        type: 2}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 2}
-      propertyPath: renderScale
-      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 2}
