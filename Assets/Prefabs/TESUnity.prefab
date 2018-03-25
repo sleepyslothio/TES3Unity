@@ -47,7 +47,7 @@ MonoBehaviour:
   playMusic: 1
   enableLog: 0
   waterQuality: 0
-  materialType: 2
+  materialType: 1
   renderPath: 2
   cameraFarClip: 500
   srpQuality: 1
@@ -58,12 +58,12 @@ MonoBehaviour:
   renderScale: 1
   ambientIntensity: 1.5
   renderSunShadows: 1
-  renderLightShadows: 1
-  renderExteriorCellLights: 1
+  renderLightShadows: 0
+  renderExteriorCellLights: 0
   animateLights: 1
   dayNightCycle: 1
   generateNormalMap: 1
-  normalGeneratorIntensity: 10
+  normalGeneratorIntensity: 5
   postProcessingQuality: 3
   antiAliasing: 2
   waterBackSideTransparent: 0
