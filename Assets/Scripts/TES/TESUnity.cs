@@ -20,7 +20,12 @@ namespace TESUnity
 
         public enum PostProcessingQuality
         {
-            None = 0, Low, Middle, High
+            None = 0, Low, Medium, High
+        }
+
+        public enum SRPQuality
+        {
+            Low, Medium, High
         }
 
         public enum RendererType
@@ -48,7 +53,8 @@ namespace TESUnity
         public MWMaterialType materialType = MWMaterialType.StandardLighting;
         public RendererType renderPath = RendererType.Forward;
         public float cameraFarClip = 500.0f;
-        public LightweightPipelineAsset lightweightAsset;
+        public SRPQuality srpQuality = SRPQuality.Medium;
+        public LightweightPipelineAsset[] lightweightAssets;
         public float renderScale = 1.0f;
 
         [Header("Lighting")]
@@ -145,8 +151,12 @@ namespace TESUnity
         {
             if (renderPath == RendererType.LightweightSRP)
             {
-                lightweightAsset.RenderScale = renderScale;
-                GraphicsSettings.renderPipelineAsset = lightweightAsset;
+                var asset = lightweightAssets[(int)srpQuality];
+                asset.RenderScale = renderScale;
+                GraphicsSettings.renderPipelineAsset = asset;
+
+                // Only this mode is compatible with SRP.
+                waterQuality = Water.WaterMode.Simple;
             }
 
             MWDataReader = new MorrowindDataReader(dataPath);
@@ -183,7 +193,11 @@ namespace TESUnity
             }
 
 #if UNITY_EDITOR
-            lightweightAsset.RenderScale = 1;
+            if (renderPath == RendererType.LightweightSRP)
+            {
+                var asset = lightweightAssets[(int)srpQuality];
+                asset.RenderScale = 1.0f;
+            }
 #endif
         }
 

@@ -32,7 +32,7 @@ namespace TESUnity.Components
                 return;
             }
 
-            if (settings.postProcessingQuality == TESUnity.PostProcessingQuality.Middle)
+            if (settings.postProcessingQuality == TESUnity.PostProcessingQuality.Medium)
             {
                 UpdateEffect<Bloom>(profile, (bloom) =>
                 {

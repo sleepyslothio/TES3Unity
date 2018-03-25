@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using ur = UnityEngine.Rendering;
 
@@ -48,7 +49,7 @@ namespace TESUnity
             // Order is important
             if (tes.renderPath == TESUnity.RendererType.LightweightSRP && tes.materialType != TESUnity.MWMaterialType.Unlit)
             {
-                _mwMaterial = new MWLightweightMaterial(textureManager);
+                _mwMaterial = new LightweightMaterial(textureManager);
             }
             else
             {
@@ -73,21 +74,6 @@ namespace TESUnity
         public Material BuildMaterialFromProperties(MWMaterialProps mp)
         {
             return _mwMaterial.BuildMaterialFromProperties(mp);
-        }
-
-        private Material BuildMaterial()
-        {
-            return _mwMaterial.BuildMaterial();
-        }
-
-        private Material BuildMaterialBlended(ur.BlendMode sourceBlendMode, ur.BlendMode destinationBlendMode)
-        {
-            return _mwMaterial.BuildMaterialBlended(sourceBlendMode, destinationBlendMode);
-        }
-
-        private Material BuildMaterialTested(float cutoff = 0.5f)
-        {
-            return _mwMaterial.BuildMaterialTested(cutoff);
         }
     }
 }

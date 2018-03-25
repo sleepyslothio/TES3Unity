@@ -6,9 +6,9 @@ namespace TESUnity
     /// <summary>
     /// A material that uses the legacy Bumped Diffuse Shader.
     /// </summary>
-    public class MWLightweightMaterial : MWBaseMaterial
+    public class LightweightMaterial : MWBaseMaterial
     {
-        public MWLightweightMaterial(TextureManager textureManager) : base(textureManager) { }
+        public LightweightMaterial(TextureManager textureManager) : base(textureManager) { }
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
         {
@@ -51,7 +51,7 @@ namespace TESUnity
 
         public override Material BuildMaterialBlended(ur.BlendMode sourceBlendMode, ur.BlendMode destinationBlendMode)
         {
-            Material material = BuildMaterial();
+            Material material = BuildMaterialTested();
             //material.SetInt("_SrcBlend", (int)sourceBlendMode);
             //material.SetInt("_DstBlend", (int)destinationBlendMode);
             return material;
@@ -60,7 +60,7 @@ namespace TESUnity
         public override Material BuildMaterialTested(float cutoff = 0.5f)
         {
             Material material = BuildMaterial();
-            //material.SetFloat("_AlphaCutoff", cutoff);
+            material.SetFloat("_Cutout", cutoff);
             return material;
         }
     }

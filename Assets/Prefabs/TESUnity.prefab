@@ -47,21 +47,25 @@ MonoBehaviour:
   playMusic: 1
   enableLog: 0
   waterQuality: 0
-  materialType: 1
+  materialType: 2
   renderPath: 2
   cameraFarClip: 500
-  lightweightAsset: {fileID: 11400000, guid: b130335045a0fa846b08b62be1eb1e8a, type: 2}
+  srpQuality: 1
+  lightweightAssets:
+  - {fileID: 11400000, guid: ef1cd3c74ac5bed4589a18e5db92cd31, type: 2}
+  - {fileID: 11400000, guid: b130335045a0fa846b08b62be1eb1e8a, type: 2}
+  - {fileID: 11400000, guid: fe63e7f2b761ec040b9225f19032f6d9, type: 2}
   renderScale: 1
   ambientIntensity: 1.5
   renderSunShadows: 1
-  renderLightShadows: 0
-  renderExteriorCellLights: 0
-  animateLights: 0
+  renderLightShadows: 1
+  renderExteriorCellLights: 1
+  animateLights: 1
   dayNightCycle: 1
   generateNormalMap: 1
-  normalGeneratorIntensity: 0.75
+  normalGeneratorIntensity: 10
   postProcessingQuality: 3
-  antiAliasing: 3
+  antiAliasing: 2
   waterBackSideTransparent: 0
   followHeadDirection: 1
   directModePreview: 1

@@ -4,6 +4,8 @@ using UnityEngine.Rendering;
 
 public static class GameObjectUtils
 {
+    private static bool s_LoggedOnce = false;
+
 	/// <summary>
 	/// Creates a camera identical to the one added to new scenes by default.
 	/// </summary>
@@ -71,10 +73,22 @@ public static class GameObjectUtils
 		{
 			Debug.Assert(alphaMap.GetLength(0) == alphaMap.GetLength(1));
 
-			terrainData.alphamapResolution = alphaMap.GetLength(0);
+            terrainData.alphamapResolution = alphaMap.GetLength(0);
 			terrainData.splatPrototypes = splatPrototypes;
 			terrainData.SetAlphamaps(0, 0, alphaMap);
-		}
+
+            if (GraphicsSettings.renderPipelineAsset != null && splatPrototypes.Length > 4)
+            {
+                System.Array.Resize(ref splatPrototypes, 4);
+                terrainData.splatPrototypes = splatPrototypes;
+
+                if (!s_LoggedOnce)
+                {
+                    s_LoggedOnce = true;
+                    Debug.LogWarning("The SplatePrototypes was resized because the Lightweight SRP doesn't support more than 4 textures");
+                }
+            }
+        }
 
 		return terrainData;
 	}

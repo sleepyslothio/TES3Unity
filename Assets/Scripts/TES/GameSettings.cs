@@ -142,6 +142,16 @@ namespace TESUnity
                         case "GenerateNormalMap": tes.generateNormalMap = ParseBool(value, tes.generateNormalMap); break;
                         case "NormalGeneratorIntensity": tes.normalGeneratorIntensity = ParseFloat(value, tes.normalGeneratorIntensity); break;
                         case "RenderScale": tes.renderScale = ParseFloat(value, tes.renderScale); break;
+                        case "SRPQuality":
+                            {
+                                int result;
+                                if (int.TryParse(value, out result))
+                                {
+                                    if (result > -1 && result < 3)
+                                        tes.srpQuality = (TESUnity.SRPQuality)result;
+                                }
+                            }
+                            break;
 
                         default: break;
                     }
