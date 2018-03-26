@@ -8,7 +8,15 @@ namespace TESUnity
     /// </summary>
     public class LightweightMaterial : MWBaseMaterial
     {
-        public LightweightMaterial(TextureManager textureManager) : base(textureManager) { }
+        private Material m_CutoutPBRMaterial;
+        private Material m_CutoutMaterial;
+
+        public LightweightMaterial(TextureManager textureManager)
+            : base(textureManager)
+        {
+            m_CutoutPBRMaterial = Resources.Load<Material>("Materials/Lightweight-Default-PBR-Cutout");
+            m_CutoutMaterial = Resources.Load<Material>("Materials/Lightweight-Default-Cutout");
+        }
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
         {
@@ -52,14 +60,17 @@ namespace TESUnity
         public override Material BuildMaterialBlended(ur.BlendMode sourceBlendMode, ur.BlendMode destinationBlendMode)
         {
             Material material = BuildMaterialTested();
-            //material.SetInt("_SrcBlend", (int)sourceBlendMode);
-            //material.SetInt("_DstBlend", (int)destinationBlendMode);
+            material.SetInt("_SrcBlend", (int)sourceBlendMode);
+            material.SetInt("_DstBlend", (int)destinationBlendMode);
             return material;
         }
 
         public override Material BuildMaterialTested(float cutoff = 0.5f)
         {
-            Material material = BuildMaterial();
+            var material = BuildMaterial();
+            var pbr = TESUnity.instance.materialType == TESUnity.MWMaterialType.PBR;
+            material.CopyPropertiesFromMaterial(pbr ? m_CutoutPBRMaterial : m_CutoutMaterial);
+
             material.SetFloat("_Cutout", cutoff);
             return material;
         }

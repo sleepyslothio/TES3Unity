@@ -159,6 +159,14 @@ namespace TESUnity
                 waterQuality = Water.WaterMode.Simple;
             }
 
+            if (UIManager == null)
+            {
+                UIManager = FindObjectOfType<UIManager>();
+
+                if (UIManager == null)
+                    throw new UnityException("UI Manager is missing");
+            }
+
             MWDataReader = new MorrowindDataReader(dataPath);
             MWEngine = new MorrowindEngine(MWDataReader, UIManager);
 
