@@ -611,7 +611,6 @@ namespace TESUnity
             var terrainGameObject = GameObjectUtils.CreateTerrain(heights, heightRange / Convert.meterInMWUnits, heightSampleDistance, splatPrototypes, alphaMap, terrainPosition);
 
             terrainGameObject.transform.parent = parent.transform;
-            terrainGameObject.isStatic = true;
         }
 
         private void DestroyExteriorCell(Vector2i indices)

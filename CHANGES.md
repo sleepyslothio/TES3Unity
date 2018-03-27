@@ -1,8 +1,20 @@
 #TESUnity Changelog
 
+## Version 0.7 - 03/27/2018
+### Added
+- Lightweight Render Pipeline for better performances
+- New exposed variables for more performances
+- Use Vulkan as first GFX API on Linux
+
+### Changed
+- Updated to Unity 2018.1b12
+- Improved performances
+
+### Fixed
+- Specular value is set to 0.25 instead of 0.5
+
 ## Version 0.6 - 03/14/2018
 ### Added
-- Updated to Unity 2018.1b10
 - New VR integration
 - Controller support
 - Auto Normal Map generation
@@ -10,6 +22,9 @@
 - Normal Map support
 - Day/Night Cycle
 - Graphics Improvement
+
+### Changed
+- Updated to Unity 2018.1b10
 
 ### Removed
 - OSVR Support

@@ -48,6 +48,7 @@ namespace TESUnity
         public bool playMusic = false;
         public bool enableLog = false;
         public Water.WaterMode waterQuality = Water.WaterMode.Simple;
+        public bool useStaticBatching = false;
 
         [Header("Rendering")]
         public MWMaterialType materialType = MWMaterialType.StandardLighting;
@@ -158,6 +159,8 @@ namespace TESUnity
                 // Only this mode is compatible with SRP.
                 waterQuality = Water.WaterMode.Simple;
             }
+            else
+                GraphicsSettings.renderPipelineAsset = null;
 
             if (UIManager == null)
             {
