@@ -33,6 +33,8 @@ namespace TESUnity
                 else
                     material = BuildMaterial();
 
+                material.SetFloat("_Glossiness", 0.25f);
+
                 if (mp.textures.mainFilePath != null)
                 {
                     material.mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);

@@ -184,7 +184,7 @@ namespace TESUnity
         }
 
         #endregion
-
+        
         public void Update()
         {
             // The current cell can be null if the player is outside of the defined game world.
