@@ -41,6 +41,8 @@ namespace TESUnity
         [Header("Editor Only")]
         [SerializeField]
         public bool _bypassINIConfig = false;
+        [SerializeField]
+        private bool _allowChangeCellInRealtime = false;
 #endif
 
         [Header("Global")]
@@ -231,6 +233,15 @@ namespace TESUnity
             {
                 musicPlayer.Update();
             }
+
+#if UNITY_EDITOR
+            if (_allowChangeCellInRealtime)
+            {
+                CellManager.cellRadius = cellRadius;
+                CellManager.detailRadius = cellDetailRadius;
+                MorrowindEngine.cellRadiusOnLoad = cellRadiusOnLoad;
+            }
+#endif
         }
 
         private void TestAllCells(string resultsFilePath)
@@ -250,7 +261,7 @@ namespace TESUnity
 
                         writer.Write("Pass: ");
                     }
-                    catch (Exception exception)
+                    catch (Exception)
                     {
                         writer.Write("Fail: ");
                     }

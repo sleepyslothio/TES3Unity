@@ -1,40 +1,41 @@
 ﻿using UnityEngine;
 
-namespace TESUnity.Components.Utils
+namespace TESUnity.Components.Utilities
 {
     [RequireComponent(typeof(Renderer))]
     public sealed class SRPMaterialChanger : MonoBehaviour
     {
-        [SerializeField]
-        private Shader m_LightweightShaderPBR = null;
-        [SerializeField]
-        private Shader m_LightweightShaderSimple = null;
-        [SerializeField]
-        private Shader m_UnlitShader = null;
-        [SerializeField]
-        private Shader m_HDShader = null;
-
         private void Start()
         {
             var renderer = GetComponent<Renderer>();
             var material = renderer.sharedMaterial;
-
+#if UNITY_EDITOR
+            // To prevent the script to change the material in the editor.
+            material = renderer.material;
+#endif
             var tes = TESManager.instance;
+            var shaderName = "Unlit/Texture";
 
-            var shader = m_UnlitShader;
-
-            if (tes.renderPath == TESManager.RendererType.LightweightSRP)
+            if (tes.materialType != TESManager.MWMaterialType.Unlit)
             {
-                if (tes.materialType == TESManager.MWMaterialType.StandardLighting)
-                    shader = m_LightweightShaderSimple;
-                else if (tes.materialType == TESManager.MWMaterialType.PBR)
-                    shader = m_LightweightShaderPBR;
+                if (tes.renderPath == TESManager.RendererType.LightweightSRP)
+                {
+                    var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
+                    shaderName = string.Format("LightweightPipeline/Standard ({0})", (pbr ? "Physically Based" : "Simple Lighting"));
+                }
+                else if (tes.renderPath == TESManager.RendererType.HDSRP)
+                    shaderName = "HDRenderPipeline/Lit";
             }
-            else if (tes.renderPath == TESManager.RendererType.HDSRP)
-                shader = m_HDShader;
+
+            var shader = Shader.Find(shaderName);
 
             if (material.shader != shader)
                 material.shader = shader;
+        }
+
+        private void OnDestroy()
+        {
+            
         }
     }
 }

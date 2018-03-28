@@ -49,30 +49,8 @@ namespace TESUnity.Components.VR
             }
 
             var manager = TESManager.instance;
-
-            // Setup the correct shader if the SRP is enabled.
-            if (GraphicsSettings.renderPipelineAsset != null)
-            {
-                var renderer = trackedPoseDrivers[0].GetComponentInChildren<Renderer>(true);
-                if (manager.renderPath == TESManager.RendererType.LightweightSRP)
-                {
-                    var materialType = manager.materialType;
-                    string shader = null;
-
-                    if (materialType == TESManager.MWMaterialType.PBR)
-                        shader = "LightweightPipeline/Standard (Physically Based)";
-                    else if (materialType == TESManager.MWMaterialType.StandardLighting)
-                        shader = "LightweightPipeline/Standard (Simple Lighting)";
-                    else
-                        shader = "Unlit/Texture";
-
-                    renderer.sharedMaterial.shader = Shader.Find(shader);
-                }
-                else
-                    renderer.sharedMaterial.shader = Shader.Find("HDRenderPipeline/Lit");
-            }
-
             var renderScale = manager.renderScale;
+
             if (renderScale > 0 && renderScale <= 2)
                 XRSettings.eyeTextureResolutionScale = manager.renderScale;
 

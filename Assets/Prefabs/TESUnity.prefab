@@ -41,6 +41,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bypassINIConfig: 1
+  _allowChangeCellInRealtime: 1
   dataPath: D:\Jeux\SteamLibrary\steamapps\common\Morrowind\Data Files
   alternativeDataPath: D:\Jeux\Oldies\Morrowind\Data Files
   useKinematicRigidbodies: 1
@@ -48,15 +49,18 @@ MonoBehaviour:
   enableLog: 0
   waterQuality: 0
   useStaticBatching: 1
-  materialType: 2
-  renderPath: 2
+  cellRadius: 2
+  cellDetailRadius: 3
+  cellRadiusOnLoad: 2
+  materialType: 1
+  renderPath: 1
   cameraFarClip: 500
   srpQuality: 2
   lightweightAssets:
   - {fileID: 11400000, guid: ef1cd3c74ac5bed4589a18e5db92cd31, type: 2}
   - {fileID: 11400000, guid: b130335045a0fa846b08b62be1eb1e8a, type: 2}
   - {fileID: 11400000, guid: fe63e7f2b761ec040b9225f19032f6d9, type: 2}
-  renderScale: 0.9
+  renderScale: 1
   ambientIntensity: 1.5
   renderSunShadows: 1
   renderLightShadows: 0
@@ -64,8 +68,8 @@ MonoBehaviour:
   animateLights: 1
   dayNightCycle: 1
   generateNormalMap: 1
-  normalGeneratorIntensity: 15
-  postProcessingQuality: 2
+  normalGeneratorIntensity: 50
+  postProcessingQuality: 3
   antiAliasing: 1
   waterBackSideTransparent: 0
   followHeadDirection: 1

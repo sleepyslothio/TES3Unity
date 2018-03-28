@@ -158,6 +158,7 @@ GameObject:
   - component: {fileID: 4507070428571842}
   - component: {fileID: 33330196675849422}
   - component: {fileID: 23741822813622084}
+  - component: {fileID: 114672916133677108}
   m_Layer: 0
   m_Name: XRController
   m_TagString: Untagged
@@ -175,6 +176,7 @@ GameObject:
   - component: {fileID: 4506195920364346}
   - component: {fileID: 33584931841333232}
   - component: {fileID: 23994709548328250}
+  - component: {fileID: 114389821208488472}
   m_Layer: 0
   m_Name: XRController
   m_TagString: Untagged
@@ -536,7 +538,7 @@ Light:
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -552,7 +554,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -642,6 +644,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ScreenshotKey: 282
   m_ScreenshotSuperSampling: 1
+--- !u!114 &114389821208488472
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1142515457698522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea27c386869e7674e9bd6a6eb3987754, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114407176544823952
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -715,6 +728,17 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &114672916133677108
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1128820440509664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea27c386869e7674e9bd6a6eb3987754, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114820828121452560
 MonoBehaviour:
   m_ObjectHideFlags: 1
