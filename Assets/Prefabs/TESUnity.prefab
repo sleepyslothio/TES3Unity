@@ -47,10 +47,11 @@ MonoBehaviour:
   playMusic: 1
   enableLog: 0
   waterQuality: 0
+  useStaticBatching: 1
   materialType: 1
   renderPath: 2
   cameraFarClip: 500
-  srpQuality: 1
+  srpQuality: 2
   lightweightAssets:
   - {fileID: 11400000, guid: ef1cd3c74ac5bed4589a18e5db92cd31, type: 2}
   - {fileID: 11400000, guid: b130335045a0fa846b08b62be1eb1e8a, type: 2}
@@ -59,7 +60,7 @@ MonoBehaviour:
   ambientIntensity: 1.5
   renderSunShadows: 1
   renderLightShadows: 0
-  renderExteriorCellLights: 0
+  renderExteriorCellLights: 1
   animateLights: 1
   dayNightCycle: 1
   generateNormalMap: 1

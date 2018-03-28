@@ -59,7 +59,7 @@ namespace TESUnity
         /// Checks if a file named Config.ini is located left to the main executable.
         /// Open/Parse it and configure default values.
         /// </summary>
-        public static string CheckSettings(TESUnity tes)
+        public static string CheckSettings(TESManager tes)
         {
             var path = string.Empty;
             var lines = File.ReadAllLines(ConfigFile);
@@ -92,7 +92,7 @@ namespace TESUnity
                                 if (int.TryParse(value, out result))
                                 {
                                     if (result >= 0 && result < 4)
-                                        tes.postProcessingQuality = (TESUnity.PostProcessingQuality)result;
+                                        tes.postProcessingQuality = (TESManager.PostProcessingQuality)result;
                                 }
                             }
                             break;
@@ -106,19 +106,19 @@ namespace TESUnity
                         case "WaterBackSideTransparent": tes.waterBackSideTransparent = ParseBool(value, tes.waterBackSideTransparent); break;
                         case "RenderPath":
                             if (value == "Forward")
-                                tes.renderPath = TESUnity.RendererType.Forward;
+                                tes.renderPath = TESManager.RendererType.Forward;
                             else if (value == "Deferred")
-                                tes.renderPath = TESUnity.RendererType.Deferred;
+                                tes.renderPath = TESManager.RendererType.Deferred;
                             else if (value == "Lightweight")
-                                tes.renderPath = TESUnity.RendererType.LightweightSRP;
+                                tes.renderPath = TESManager.RendererType.LightweightSRP;
                             break;
                         case "Shader":
                             switch (value)
                             {
-                                case "Default": tes.materialType = TESUnity.MWMaterialType.Default; break;
-                                case "PBR": tes.materialType = TESUnity.MWMaterialType.PBR; break;
-                                case "Unlit": tes.materialType = TESUnity.MWMaterialType.Unlit; break;
-                                default: tes.materialType = TESUnity.MWMaterialType.StandardLighting; break;
+                                case "Default": tes.materialType = TESManager.MWMaterialType.Default; break;
+                                case "PBR": tes.materialType = TESManager.MWMaterialType.PBR; break;
+                                case "Unlit": tes.materialType = TESManager.MWMaterialType.Unlit; break;
+                                default: tes.materialType = TESManager.MWMaterialType.StandardLighting; break;
                             }
                             break;
                         case "RoomScale": tes.roomScale = ParseBool(value, tes.roomScale); break;
@@ -147,7 +147,7 @@ namespace TESUnity
                                 if (int.TryParse(value, out result))
                                 {
                                     if (result > -1 && result < 3)
-                                        tes.srpQuality = (TESUnity.SRPQuality)result;
+                                        tes.srpQuality = (TESManager.SRPQuality)result;
                                 }
                             }
                             break;

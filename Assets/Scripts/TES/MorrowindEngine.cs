@@ -71,7 +71,7 @@ namespace TESUnity
             temporalLoadBalancer = new TemporalLoadBalancer();
             cellManager = new CellManager(dataReader, textureManager, nifManager, temporalLoadBalancer);
 
-            var tes = TESUnity.instance;
+            var tes = TESManager.instance;
 
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientIntensity = tes.ambientIntensity;
@@ -100,7 +100,7 @@ namespace TESUnity
                 var side = waterObj.transform.GetChild(0);
                 var sideMaterial = side.GetComponent<Renderer>().sharedMaterial;
 
-                if (tes.renderPath == TESUnity.RendererType.LightweightSRP)
+                if (tes.renderPath == TESManager.RendererType.LightweightSRP)
                     sideMaterial.shader = Shader.Find("LightweightPipeline/Standard (Simple Lighting)");
 
                 sideMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);

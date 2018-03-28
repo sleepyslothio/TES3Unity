@@ -228,14 +228,14 @@ namespace TESUnity
 					meshRenderer.enabled = false;
 				}
 
-                if (TESUnity.instance.useStaticBatching)
+                if (TESManager.instance.useStaticBatching)
                     obj.isStatic = true;
 			}
 			
 			if(collidable)
 			{
 				obj.AddComponent<MeshCollider>().sharedMesh = mesh;
-				if(TESUnity.instance.useKinematicRigidbodies)
+				if(TESManager.instance.useKinematicRigidbodies)
 				{
 					obj.AddComponent<Rigidbody>().isKinematic = true;
 				}

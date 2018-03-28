@@ -43,8 +43,8 @@ namespace TESUnity
                 {
                     material.mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
 
-                    if (TESUnity.instance.generateNormalMap)
-                        material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture, TESUnity.instance.normalGeneratorIntensity));
+                    if (TESManager.instance.generateNormalMap)
+                        material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture, TESManager.instance.normalGeneratorIntensity));
                 }
 
                 if (mp.textures.bumpFilePath != null)
@@ -57,7 +57,7 @@ namespace TESUnity
 
         public override Material BuildMaterial()
         {
-            var pbr = TESUnity.instance.materialType == TESUnity.MWMaterialType.PBR;
+            var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
             var material = new Material(Shader.Find(string.Format("LightweightPipeline/Standard ({0})", (pbr ? "Physically Based" : "Simple Lighting"))));
             material.CopyPropertiesFromMaterial(pbr ? m_StandardPBR : m_StandardSimple);
             return material;
@@ -74,7 +74,7 @@ namespace TESUnity
         public override Material BuildMaterialTested(float cutoff = 0.5f)
         {
             var material = BuildMaterial();
-            var pbr = TESUnity.instance.materialType == TESUnity.MWMaterialType.PBR;
+            var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
             material.CopyPropertiesFromMaterial(pbr ? m_CutoutPBRMaterial : m_CutoutSimpleMaterial);
             material.SetFloat("_Cutout", cutoff);
             return material;

@@ -9,9 +9,9 @@ using UnityStandardAssets.Water;
 
 namespace TESUnity
 {
-    public class TESUnity : MonoBehaviour
+    public class TESManager : MonoBehaviour
     {
-        public static TESUnity instance;
+        public static TESManager instance;
 
         public enum MWMaterialType
         {
@@ -32,6 +32,8 @@ namespace TESUnity
         {
             Forward, Deferred, LightweightSRP
         }
+
+        public const string Version = "0.7.1";
 
         #region Inspector-set Members
 
