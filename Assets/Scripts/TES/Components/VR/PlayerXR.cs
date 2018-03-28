@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TESUnity.Inputs;
 using TESUnity.UI;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SpatialTracking;
 using UnityEngine.XR;
 
@@ -19,7 +20,6 @@ namespace TESUnity.Components.VR
         private Transform _transform = null;
         private RectTransform _canvas = null;
         private Transform _pivotCanvas = null;
-        private RectTransform _hud = null;
 
         [SerializeField]
         private bool _isSpectator = false;
@@ -34,9 +34,10 @@ namespace TESUnity.Components.VR
         /// </summary>
         private void Start()
         {
+            var trackedPoseDrivers = GetComponentsInChildren<TrackedPoseDriver>(true);
+
             if (!XRSettings.enabled)
             {
-                var trackedPoseDrivers = GetComponentsInChildren<TrackedPoseDriver>(true);
                 foreach (var driver in trackedPoseDrivers)
                 {
                     Destroy(driver.transform.GetChild(0).gameObject);
@@ -47,9 +48,33 @@ namespace TESUnity.Components.VR
                 return;
             }
 
-            var renderScale = TESManager.instance.renderScale;
+            var manager = TESManager.instance;
+
+            // Setup the correct shader if the SRP is enabled.
+            if (GraphicsSettings.renderPipelineAsset != null)
+            {
+                var renderer = trackedPoseDrivers[0].GetComponentInChildren<Renderer>(true);
+                if (manager.renderPath == TESManager.RendererType.LightweightSRP)
+                {
+                    var materialType = manager.materialType;
+                    string shader = null;
+
+                    if (materialType == TESManager.MWMaterialType.PBR)
+                        shader = "LightweightPipeline/Standard (Physically Based)";
+                    else if (materialType == TESManager.MWMaterialType.StandardLighting)
+                        shader = "LightweightPipeline/Standard (Simple Lighting)";
+                    else
+                        shader = "Unlit/Texture";
+
+                    renderer.sharedMaterial.shader = Shader.Find(shader);
+                }
+                else
+                    renderer.sharedMaterial.shader = Shader.Find("HDRenderPipeline/Lit");
+            }
+
+            var renderScale = manager.renderScale;
             if (renderScale > 0 && renderScale <= 2)
-                XRSettings.eyeTextureResolutionScale = TESManager.instance.renderScale;
+                XRSettings.eyeTextureResolutionScale = manager.renderScale;
 
             var uiManager = FindObjectOfType<UIManager>();
 
@@ -106,7 +131,6 @@ namespace TESUnity.Components.VR
 
             if (controllers == 2)
             {
-                var trackedPoseDrivers = GetComponentsInChildren<TrackedPoseDriver>(true);
                 foreach (var driver in trackedPoseDrivers)
                 {
                     driver.transform.parent = _camTransform.parent;
