@@ -30,7 +30,7 @@ namespace TESUnity
 
         public enum RendererType
         {
-            Forward, Deferred, LightweightSRP
+            Forward, Deferred, LightweightSRP, HDSRP
         }
 
         public const string Version = "0.7.1";
@@ -51,6 +51,11 @@ namespace TESUnity
         public bool enableLog = false;
         public Water.WaterMode waterQuality = Water.WaterMode.Simple;
         public bool useStaticBatching = false;
+
+        [Header("Optimizations")]
+        public int cellRadius = 4;
+        public int cellDetailRadius = 3;
+        public int cellRadiusOnLoad = 2;
 
         [Header("Rendering")]
         public MWMaterialType materialType = MWMaterialType.StandardLighting;
@@ -171,6 +176,10 @@ namespace TESUnity
                 if (UIManager == null)
                     throw new UnityException("UI Manager is missing");
             }
+
+            CellManager.cellRadius = cellRadius;
+            CellManager.detailRadius = cellDetailRadius;
+            MorrowindEngine.cellRadiusOnLoad = cellRadiusOnLoad;
 
             MWDataReader = new MorrowindDataReader(dataPath);
             MWEngine = new MorrowindEngine(MWDataReader, UIManager);

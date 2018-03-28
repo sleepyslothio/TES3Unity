@@ -23,7 +23,7 @@ namespace TESUnity
         private const float playerHeight = 2;
         private const float playerRadius = 0.4f;
         private const float desiredWorkTimePerFrame = 1.0f / 200;
-        private const int cellRadiusOnLoad = 2;
+        public static int cellRadiusOnLoad = 2;
         private CELLRecord _currentCell;
         private UIManager _uiManager;
         private GameObject sunObj;
