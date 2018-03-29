@@ -58,7 +58,7 @@ namespace Demonixis.UniversalXR
             {
                 var point = hit.point;
                 var target = point;
-                target.y += m_InitialPositionY;
+                //target.y += m_InitialPositionY;
 
                 m_TeleporterLineRenderer.SetPosition(0, m_Transform.position);
 
