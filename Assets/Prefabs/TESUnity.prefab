@@ -53,7 +53,7 @@ MonoBehaviour:
   cellDetailRadius: 3
   cellRadiusOnLoad: 2
   materialType: 1
-  renderPath: 1
+  renderPath: 2
   cameraFarClip: 500
   srpQuality: 2
   lightweightAssets:
@@ -68,8 +68,8 @@ MonoBehaviour:
   animateLights: 1
   dayNightCycle: 1
   generateNormalMap: 1
-  normalGeneratorIntensity: 50
-  postProcessingQuality: 3
+  normalGeneratorIntensity: 10
+  postProcessingQuality: 2
   antiAliasing: 1
   waterBackSideTransparent: 0
   followHeadDirection: 1

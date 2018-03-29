@@ -664,6 +664,25 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224000012350933038, guid: de2517ff4a7a99a48a683bc2b1defec0,
     type: 2}
   m_PrefabInternal: {fileID: 1562552968}
+--- !u!1 &1452898648 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1000014283173620, guid: bb4f50960e3bc08459bb6f708eb7d79f,
+    type: 2}
+  m_PrefabInternal: {fileID: 1025879892}
+--- !u!114 &1452898656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1452898648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 201d3915a464cbb459c7eca25d6ee92f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MoveSpeed: 1
+  m_StrafeSpeed: 0.5
+  m_RotationSpeed: 1
 --- !u!1001 &1562552968
 Prefab:
   m_ObjectHideFlags: 0

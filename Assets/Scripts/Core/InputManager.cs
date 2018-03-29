@@ -1,9 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -52,7 +48,7 @@ namespace TESUnity.Inputs
 
         public static bool GetButton(string button)
         {
-            var result = Input.GetButtonDown(button);
+            var result = Input.GetButton(button);
 
             if (XRSettings.enabled)
             {
