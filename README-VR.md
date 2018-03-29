@@ -2,7 +2,8 @@
 
 TESUnity supports the Oculus Rift and OpenVR devices (HTC Vive, Windows Mixed Reality, etc.).
 
-The game requires a lot of CPU and GPU to work at a good framerate. The following presets will help you to configure the game with your own hardware.
+The game requires a lot of CPU and GPU to work at a good framerate. 
+The following presets will help you to configure the game with your own hardware.
 
 The Lightweight Scriptable Render Pipeline is the **best** option for VR.
 
@@ -10,6 +11,9 @@ The Lightweight Scriptable Render Pipeline is the **best** option for VR.
 
 | Parameter | Values |
 |-----------|---------|
+| CellRadius | 1 |
+| CellDetailRadius | 1 |
+| CellRadiusOnLoad | 1 |
 | SunShadows  | `False` |
 | LightShadows  | `False` |
 | RenderExteriorCellLights | `False` |
@@ -32,6 +36,9 @@ In the launcher start the game in `Fastest`.
 ### Mix between performances and quality
 | Parameter | Values |
 |-----------|---------|
+| CellRadius | 1 |
+| CellDetailRadius | 1 |
+| CellRadiusOnLoad | 1 |
 | SunShadows  | `true` |
 | LightShadows  | `False` |
 | RenderExteriorCellLights | `true` |

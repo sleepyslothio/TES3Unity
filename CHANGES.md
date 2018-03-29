@@ -1,11 +1,15 @@
 #TESUnity Changelog
 
-## Version 0.7.1 - 03/28/2018
+## Version 0.8.0 - 03/29/2018
 ### Added
 - Initial Teleportation system (still WIP)
 
+### Changed
+- Improved performances a LOT by exposing three new variables
+
 ### Fixed
 - Builds start in VR directly 
+- Fixed the UI in VR
 
 ## Version 0.7 - 03/27/2018
 ### Added
