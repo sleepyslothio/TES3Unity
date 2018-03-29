@@ -49,9 +49,9 @@ MonoBehaviour:
   enableLog: 0
   waterQuality: 0
   useStaticBatching: 1
-  cellRadius: 2
+  cellRadius: 1
   cellDetailRadius: 3
-  cellRadiusOnLoad: 2
+  cellRadiusOnLoad: 1
   materialType: 1
   renderPath: 2
   cameraFarClip: 500
@@ -68,11 +68,11 @@ MonoBehaviour:
   animateLights: 1
   dayNightCycle: 1
   generateNormalMap: 1
-  normalGeneratorIntensity: 10
-  postProcessingQuality: 2
-  antiAliasing: 1
+  normalGeneratorIntensity: 1
+  postProcessingQuality: 3
+  antiAliasing: 3
   waterBackSideTransparent: 0
-  followHeadDirection: 1
+  followHeadDirection: 0
   directModePreview: 1
   roomScale: 0
   forceControllers: 1

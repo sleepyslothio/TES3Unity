@@ -113,9 +113,6 @@ public static class GUIUtils
         canvas.worldCamera = Camera.main;
         var canvasTransform = canvas.GetComponent<RectTransform>();
         canvasTransform.SetParent(parent);
-        canvasTransform.localPosition = new Vector3(0.0f, 0.0f, depth);
-        canvasTransform.localRotation = Quaternion.identity;
-        canvasTransform.localScale = new Vector3(scale, scale, scale);
 
         var canvasScaler = canvas.GetComponent<CanvasScaler>();
         if (canvasScaler != null)
@@ -123,6 +120,10 @@ public static class GUIUtils
             canvasTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, canvasScaler.referenceResolution.x);
             canvasTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, canvasScaler.referenceResolution.y);
         }
+
+        canvasTransform.localPosition = new Vector3(0.0f, 0.0f, depth);
+        canvasTransform.localRotation = Quaternion.identity;
+        canvasTransform.localScale = new Vector3(scale, scale, scale);
     }
 
     public static GameObject CreateEventSystem()

@@ -47,6 +47,8 @@ namespace TESUnity.Components.VR
             if (m_Rudder == null)
                 return;
 
+
+
             m_Axis = m_Rudder.GetAxis(m_ModeAxis);
             m_Tranform.Translate(m_Axis.GetXAxis() * m_StrafeSpeed * Time.deltaTime, 0, m_Axis.GetYAxis() * m_MoveSpeed * Time.deltaTime);
             m_Tranform.Rotate(0.0f, m_Axis.GetZRotation() * m_RotationSpeed * Time.deltaTime, 0.0f);

@@ -128,7 +128,7 @@ public sealed class BuildManagerEditor : EditorWindow
 
     private void CopyDocs(ref string path, BuildTarget target)
     {
-        var docPath = Directory.GetCurrentDirectory().Replace('\\', '/');
+        var docPath = Directory.GetCurrentDirectory().Replace('\\', '/') + "/";
         Copy("README.md", ref docPath, ref path);
         Copy("README-VR.md", ref docPath, ref path);
         Copy("config.ini", ref docPath, ref path);

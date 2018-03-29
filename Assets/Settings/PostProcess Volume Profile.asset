@@ -403,11 +403,11 @@ MonoBehaviour:
     overrideState: 0
     value: 0.5
   diffusion:
-    overrideState: 0
-    value: 7
+    overrideState: 1
+    value: 5
   anamorphicRatio:
     overrideState: 1
-    value: 1
+    value: 0
   color:
     overrideState: 0
     value: {r: 1, g: 1, b: 1, a: 1}

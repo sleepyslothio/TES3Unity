@@ -23,35 +23,12 @@ namespace TESUnity.UI
 
         #region Public Fields
 
-        public UIBook Book
-        {
-            get { return _book; }
-        }
-
-        public UIInteractiveText InteractiveText
-        {
-            get { return _interactiveText; }
-        }
-
-        public UIScroll Scroll
-        {
-            get { return _scroll; }
-        }
-
-        public UICrosshair Crosshair
-        {
-            get { return _crosshair; }
-        }
-
-        public Transform HUD
-        {
-            get { return _hudTransform; }
-        }
-
-        public Transform UI
-        {
-            get { return _uiTransform; }
-        }
+        public UIBook Book => _book;
+        public UIInteractiveText InteractiveText => _interactiveText;
+        public UIScroll Scroll => _scroll;
+        public UICrosshair Crosshair => _crosshair;
+        public Transform HUD => _hudTransform;
+        public Transform UI => _uiTransform;
 
         public bool Visible
         {

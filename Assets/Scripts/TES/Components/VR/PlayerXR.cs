@@ -20,6 +20,7 @@ namespace TESUnity.Components.VR
         private Transform _transform = null;
         private RectTransform _canvas = null;
         private Transform _pivotCanvas = null;
+        private Transform m_HUD = null;
 
         [SerializeField]
         private bool _isSpectator = false;
@@ -66,6 +67,7 @@ namespace TESUnity.Components.VR
 
             _canvas = _mainCanvas.GetComponent<RectTransform>();
             _pivotCanvas = _canvas.parent;
+            m_HUD = _canvas.Find("HUD");
 
             // Put the Canvas in WorldSpace and Attach it to the camera.
             _camTransform = Camera.main.GetComponent<Transform>();
@@ -129,7 +131,7 @@ namespace TESUnity.Components.VR
             if (InputManager.GetButtonDown("Recenter"))
                 RecenterOrientationAndPosition();
 
-            RecenterUI(true);
+            RecenterUI();
 
             var centerEye = _camTransform;
             var root = centerEye.parent;

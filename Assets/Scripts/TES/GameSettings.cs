@@ -109,7 +109,7 @@ namespace TESUnity
                                 tes.renderPath = TESManager.RendererType.Forward;
                             else if (value == "Deferred")
                                 tes.renderPath = TESManager.RendererType.Deferred;
-                            else if (value == "Lightweight")
+                            else if (value == "Lightweight") 
                                 tes.renderPath = TESManager.RendererType.LightweightSRP;
                             break;
                         case "Shader":

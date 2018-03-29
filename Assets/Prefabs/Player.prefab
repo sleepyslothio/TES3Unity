@@ -81,7 +81,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1000013604504344
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 114000012947587150}
   - component: {fileID: 114000014037808996}
   - component: {fileID: 114204427439299378}
+  - component: {fileID: 114941094485981810}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -254,6 +255,7 @@ Transform:
   m_Children:
   - {fileID: 4000013377317106}
   - {fileID: 4000011114332734}
+  - {fileID: 4000012374394250}
   m_Father: {fileID: 4000010397047646}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -268,7 +270,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4000010397047646}
-  - {fileID: 4000012374394250}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -278,12 +279,12 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013604504344}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.29999995, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4000012289534432}
-  m_RootOrder: 1
+  m_Father: {fileID: 4000012171920516}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4000013377317106
 Transform:
@@ -754,9 +755,23 @@ MonoBehaviour:
     type: 2}
   m_TeleporterLinePrefab: {fileID: 1673332131935090, guid: 2147af4bafca3d44fa6e6fb46e7426d5,
     type: 2}
-  m_MaxDistance: 5
+  m_MaxDistance: 10
   m_LeftHand: 0
   m_Button: 10
+--- !u!114 &114941094485981810
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014283173620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 201d3915a464cbb459c7eca25d6ee92f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MoveSpeed: 3
+  m_StrafeSpeed: 1.5
+  m_RotationSpeed: 75
 --- !u!114 &114968490010128300
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -788,7 +803,7 @@ MonoBehaviour:
     type: 2}
   m_TeleporterLinePrefab: {fileID: 1673332131935090, guid: 2147af4bafca3d44fa6e6fb46e7426d5,
     type: 2}
-  m_MaxDistance: 5
+  m_MaxDistance: 10
   m_LeftHand: 1
   m_Button: 10
 --- !u!124 &124000013977040076

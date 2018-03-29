@@ -33,7 +33,7 @@ namespace TESUnity
             Forward, Deferred, LightweightSRP, HDSRP
         }
 
-        public const string Version = "0.7.1";
+        public const string Version = "0.8.0";
 
         #region Inspector-set Members
 
