@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Experimental.Rendering.HDPipeline;
 using UnityEngine.Experimental.Rendering.LightweightPipeline;
 using UnityEngine.Rendering;
 
@@ -68,6 +69,8 @@ public static class GameObjectUtils
 			terrainData.size = new Vector3(terrainWidth, 1, terrainWidth);
 		}
 
+        // TODO: Check and remove
+        
 		// Texture the terrain.
 		if((splatPrototypes != null) && (alphaMap != null))
 		{
@@ -81,7 +84,7 @@ public static class GameObjectUtils
             {
                 System.Array.Resize(ref splatPrototypes, 4);
                 terrainData.splatPrototypes = splatPrototypes;
-
+                
                 if (!s_LoggedOnce)
                 {
                     s_LoggedOnce = true;
@@ -121,7 +124,12 @@ public static class GameObjectUtils
         if (GraphicsSettings.renderPipelineAsset is LightweightPipelineAsset)
         {
             terrain.materialType = Terrain.MaterialType.Custom;
-            terrain.materialTemplate = Resources.Load<Material>("Materials/Lightweight-DefaultTerrain");
+            terrain.materialTemplate = Resources.Load<Material>("Materials/Lightweight-Terrain");
+        }
+        else if (GraphicsSettings.renderPipelineAsset is HDRenderPipelineAsset)
+        {
+            terrain.materialType = Terrain.MaterialType.Custom;
+            terrain.materialTemplate = Resources.Load<Material>("Materials/HDRP-Terrain");
         }
         else
             terrain.materialType = Terrain.MaterialType.BuiltInLegacyDiffuse;

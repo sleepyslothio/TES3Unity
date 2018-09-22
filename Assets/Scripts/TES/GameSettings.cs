@@ -110,12 +110,11 @@ namespace TESUnity
                             else if (value == "Deferred")
                                 tes.renderPath = TESManager.RendererType.Deferred;
                             else if (value == "Lightweight") 
-                                tes.renderPath = TESManager.RendererType.LightweightSRP;
+                                tes.renderPath = TESManager.RendererType.LightweightRP;
                             break;
                         case "Shader":
                             switch (value)
                             {
-                                case "Default": tes.materialType = TESManager.MWMaterialType.Default; break;
                                 case "PBR": tes.materialType = TESManager.MWMaterialType.PBR; break;
                                 case "Unlit": tes.materialType = TESManager.MWMaterialType.Unlit; break;
                                 default: tes.materialType = TESManager.MWMaterialType.StandardLighting; break;

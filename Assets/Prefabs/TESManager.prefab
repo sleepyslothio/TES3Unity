@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &156636
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 477232}
+  - component: {fileID: 11464354}
+  m_Layer: 0
+  m_Name: TESManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &477232
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156636}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &11464354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f45c2eae24c43174a92eeaa8e8613dd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bypassINIConfig: 1
+  _allowChangeCellInRealtime: 1
+  dataPath: D:\Jeux\SteamLibrary\steamapps\common\Morrowind\Data Files
+  alternativeDataPath: D:\Jeux\Oldies\Morrowind\Data Files
+  useKinematicRigidbodies: 1
+  playMusic: 1
+  enableLog: 0
+  waterQuality: 0
+  useStaticBatching: 1
+  cellRadius: 1
+  cellDetailRadius: 3
+  cellRadiusOnLoad: 1
+  materialType: 0
+  renderPath: 2
+  cameraFarClip: 500
+  srpQuality: 2
+  lightweightAssets:
+  - {fileID: 11400000, guid: ef1cd3c74ac5bed4589a18e5db92cd31, type: 2}
+  - {fileID: 11400000, guid: b130335045a0fa846b08b62be1eb1e8a, type: 2}
+  - {fileID: 11400000, guid: fe63e7f2b761ec040b9225f19032f6d9, type: 2}
+  renderScale: 1
+  hdrpAssets:
+  - {fileID: 11400000, guid: 3927e36d6d8a64b4ebb7c2d46f265d28, type: 2}
+  - {fileID: 11400000, guid: 337f41d1281208244a5e913599a9ccce, type: 2}
+  - {fileID: 11400000, guid: 7ad3ef4070ba5ee44be2c7ef21daa76b, type: 2}
+  volumeSettings: {fileID: 122786709725520640, guid: 9cf69a83add725d43bf4df0346e7842b, type: 3}
+  ambientIntensity: 1.5
+  renderSunShadows: 1
+  renderLightShadows: 0
+  renderExteriorCellLights: 1
+  animateLights: 1
+  dayNightCycle: 1
+  generateNormalMap: 1
+  normalGeneratorIntensity: 1
+  postProcessingQuality: 3
+  antiAliasing: 3
+  waterBackSideTransparent: 0
+  followHeadDirection: 0
+  directModePreview: 1
+  roomScale: 0
+  forceControllers: 1
+  useXRVignette: 0
+  UIManager: {fileID: 0}
+  UIBackgroundImg: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  UICheckmarkImg: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  UIDropdownArrowImg: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  UIInputFieldBackgroundImg: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  UIKnobImg: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  UIMaskImg: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  UISpriteImg: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  playerPrefab: {fileID: 1000014283173620, guid: bb4f50960e3bc08459bb6f708eb7d79f, type: 3}
+  waterPrefab: {fileID: 1586121937244772, guid: 6de569209e643e2438dd3dbfe2d466df, type: 3}
+  creaturesEnabled: 1
+  npcsEnabled: 0

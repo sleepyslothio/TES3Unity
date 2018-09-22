@@ -1,21 +1,21 @@
-﻿using UnityEngine;
+using UnityEngine;
 using ur = UnityEngine.Rendering;
 
 namespace TESUnity
 {
     /// <summary>
-    /// A material that uses the legacy Bumped Diffuse Shader.
+    /// A material that uses the new Standard Shader.
     /// </summary>
-    public class HDMaterial : BaseMaterial
+    public class StandardMaterial : BaseMaterial
     {
-        private Material m_LitMaterial;
-        private Material m_LitCutout;
+        private Material _standardMaterial;
+        private Material _standardCutoutMaterial;
 
-        public HDMaterial(TextureManager textureManager)
+        public StandardMaterial(TextureManager textureManager)
             : base(textureManager)
         {
-            m_LitMaterial = Resources.Load<Material>("Materials/HDRP-Lit");
-            m_LitCutout = Resources.Load<Material>("Materials/HDRP-Lit-Cutout");
+            _standardMaterial = new Material(Shader.Find("Standard"));
+            _standardCutoutMaterial = Resources.Load<Material>("Materials/StandardCutout");
         }
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
@@ -35,15 +35,16 @@ namespace TESUnity
 
                 if (mp.textures.mainFilePath != null)
                 {
-                    var albedoMap = m_textureManager.LoadTexture(mp.textures.mainFilePath);
-                    material.SetTexture("_BaseColorMap", albedoMap);
+                    material.mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
 
                     if (TESManager.instance.generateNormalMap)
-                        material.SetTexture("_NormalMap", GenerateNormalMap(albedoMap, TESManager.instance.normalGeneratorIntensity));
+                        material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture, TESManager.instance.normalGeneratorIntensity));
                 }
+                else
+                    material.DisableKeyword("_NORMALMAP");
 
                 if (mp.textures.bumpFilePath != null)
-                    material.SetTexture("_NormalMap", m_textureManager.LoadTexture(mp.textures.bumpFilePath));
+                    material.SetTexture("_NORMALMAP", m_textureManager.LoadTexture(mp.textures.bumpFilePath));
 
                 m_existingMaterials[mp] = material;
             }
@@ -52,8 +53,8 @@ namespace TESUnity
 
         public override Material BuildMaterial()
         {
-            var material = new Material(Shader.Find("HDRenderPipeline/Lit"));
-            material.CopyPropertiesFromMaterial(m_LitMaterial);
+            var material = new Material(Shader.Find("Standard"));
+            material.CopyPropertiesFromMaterial(_standardMaterial);
             material.EnableKeyword("_NORMALMAP");
             return material;
         }
@@ -68,8 +69,8 @@ namespace TESUnity
 
         public override Material BuildMaterialTested(float cutoff = 0.5f)
         {
-            var material = BuildMaterial();
-            material.CopyPropertiesFromMaterial(m_LitCutout);
+            var material = new Material(Shader.Find("Standard"));
+            material.CopyPropertiesFromMaterial(_standardCutoutMaterial);
             material.SetFloat("_Cutout", cutoff);
             material.EnableKeyword("_NORMALMAP");
             return material;

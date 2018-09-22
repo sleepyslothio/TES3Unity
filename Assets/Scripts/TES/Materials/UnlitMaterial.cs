@@ -4,19 +4,11 @@ using ur = UnityEngine.Rendering;
 namespace TESUnity
 {
     /// <summary>
-    /// A material that uses the legacy Bumped Diffuse Shader.
+    /// A material that uses the Unlit Shader.
     /// </summary>
-    public class HDMaterial : BaseMaterial
+    public class UnliteMaterial : BaseMaterial
     {
-        private Material m_LitMaterial;
-        private Material m_LitCutout;
-
-        public HDMaterial(TextureManager textureManager)
-            : base(textureManager)
-        {
-            m_LitMaterial = Resources.Load<Material>("Materials/HDRP-Lit");
-            m_LitCutout = Resources.Load<Material>("Materials/HDRP-Lit-Cutout");
-        }
+        public UnliteMaterial(TextureManager textureManager) : base(textureManager) { }
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
         {
@@ -34,16 +26,7 @@ namespace TESUnity
                     material = BuildMaterial();
 
                 if (mp.textures.mainFilePath != null)
-                {
-                    var albedoMap = m_textureManager.LoadTexture(mp.textures.mainFilePath);
-                    material.SetTexture("_BaseColorMap", albedoMap);
-
-                    if (TESManager.instance.generateNormalMap)
-                        material.SetTexture("_NormalMap", GenerateNormalMap(albedoMap, TESManager.instance.normalGeneratorIntensity));
-                }
-
-                if (mp.textures.bumpFilePath != null)
-                    material.SetTexture("_NormalMap", m_textureManager.LoadTexture(mp.textures.bumpFilePath));
+                    material.mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
 
                 m_existingMaterials[mp] = material;
             }
@@ -52,10 +35,7 @@ namespace TESUnity
 
         public override Material BuildMaterial()
         {
-            var material = new Material(Shader.Find("HDRenderPipeline/Lit"));
-            material.CopyPropertiesFromMaterial(m_LitMaterial);
-            material.EnableKeyword("_NORMALMAP");
-            return material;
+            return new Material(Shader.Find("Unlit/Texture"));
         }
 
         public override Material BuildMaterialBlended(ur.BlendMode sourceBlendMode, ur.BlendMode destinationBlendMode)
@@ -68,10 +48,8 @@ namespace TESUnity
 
         public override Material BuildMaterialTested(float cutoff = 0.5f)
         {
-            var material = BuildMaterial();
-            material.CopyPropertiesFromMaterial(m_LitCutout);
-            material.SetFloat("_Cutout", cutoff);
-            material.EnableKeyword("_NORMALMAP");
+            Material material = new Material(Shader.Find("Unlit/Transparent Cutout"));
+            material.SetFloat("_AlphaCutoff", cutoff);
             return material;
         }
     }

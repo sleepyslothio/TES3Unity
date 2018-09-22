@@ -18,12 +18,12 @@ namespace TESUnity.Components.Utilities
 
             if (tes.materialType != TESManager.MWMaterialType.Unlit)
             {
-                if (tes.renderPath == TESManager.RendererType.LightweightSRP)
+                if (tes.renderPath == TESManager.RendererType.LightweightRP)
                 {
                     var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
                     shaderName = string.Format("LightweightPipeline/Standard ({0})", (pbr ? "Physically Based" : "Simple Lighting"));
                 }
-                else if (tes.renderPath == TESManager.RendererType.HDSRP)
+                else if (tes.renderPath == TESManager.RendererType.HDRP)
                     shaderName = "HDRenderPipeline/Lit";
             }
 

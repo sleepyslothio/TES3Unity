@@ -32,7 +32,7 @@ namespace TESUnity
     /// </summary>
     public class MaterialManager
     {
-        private MWBaseMaterial _mwMaterial;
+        private BaseMaterial _mwMaterial;
         private TextureManager _textureManager;
 
         public TextureManager TextureManager
@@ -47,25 +47,26 @@ namespace TESUnity
             var tes = TESManager.instance;
 
             // Order is important
-            if (tes.renderPath == TESManager.RendererType.LightweightSRP && tes.materialType != TESManager.MWMaterialType.Unlit)
+            if (tes.renderPath == TESManager.RendererType.LightweightRP && tes.materialType != TESManager.MWMaterialType.Unlit)
             {
                 _mwMaterial = new LightweightMaterial(textureManager);
+            }
+            else if (tes.renderPath == TESManager.RendererType.HDRP && tes.materialType != TESManager.MWMaterialType.Unlit)
+            {
+                _mwMaterial = new HDMaterial(textureManager);
             }
             else
             {
                 switch (tes.materialType)
                 {
-                    case TESManager.MWMaterialType.Default:
-                        _mwMaterial = new MWDefaultMaterial(textureManager);
-                        break;
                     case TESManager.MWMaterialType.PBR:
-                        _mwMaterial = new MWStandardMaterial(textureManager);
+                        _mwMaterial = new StandardMaterial(textureManager);
                         break;
                     case TESManager.MWMaterialType.Unlit:
-                        _mwMaterial = new MWUnliteMaterial(textureManager);
+                        _mwMaterial = new UnliteMaterial(textureManager);
                         break;
                     default:
-                        _mwMaterial = new MWBumpedDiffuseMaterial(textureManager);
+                        _mwMaterial = new DiffuseMaterial(textureManager);
                         break;
                 }
             }

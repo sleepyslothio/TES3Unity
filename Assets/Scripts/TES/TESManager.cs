@@ -2,6 +2,7 @@
 using System.IO;
 using TESUnity.UI;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.HDPipeline;
 using UnityEngine.Experimental.Rendering.LightweightPipeline;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing;
@@ -15,7 +16,7 @@ namespace TESUnity
 
         public enum MWMaterialType
         {
-            Default, PBR, StandardLighting, Unlit
+            PBR, StandardLighting, Unlit
         }
 
         public enum PostProcessingQuality
@@ -30,10 +31,10 @@ namespace TESUnity
 
         public enum RendererType
         {
-            Forward, Deferred, LightweightSRP, HDSRP
+            Forward, Deferred, LightweightRP, HDRP
         }
 
-        public const string Version = "0.8.0";
+        public const string Version = "0.9.0";
 
         #region Inspector-set Members
 
@@ -66,6 +67,10 @@ namespace TESUnity
         public SRPQuality srpQuality = SRPQuality.Medium;
         public LightweightPipelineAsset[] lightweightAssets;
         public float renderScale = 1.0f;
+
+        [Header("HDRP")]
+        public HDRenderPipelineAsset[] hdrpAssets;
+        public GameObject volumeSettings;
 
         [Header("Lighting")]
         public float ambientIntensity = 1.5f;
@@ -133,9 +138,7 @@ namespace TESUnity
 
 #if UNITY_EDITOR
             if (!_bypassINIConfig)
-            {
                 path = GameSettings.CheckSettings(this);
-            }
 #else
             path = GameSettings.CheckSettings(this);
 #endif
@@ -159,14 +162,24 @@ namespace TESUnity
 
         private void Start()
         {
-            if (renderPath == RendererType.LightweightSRP)
+            if (renderPath == RendererType.LightweightRP)
             {
                 var asset = lightweightAssets[(int)srpQuality];
-                asset.RenderScale = renderScale;
+                asset.renderScale = renderScale;
                 GraphicsSettings.renderPipelineAsset = asset;
 
                 // Only this mode is compatible with SRP.
                 waterQuality = Water.WaterMode.Simple;
+            }
+            else if (renderPath == RendererType.HDRP)
+            {
+                var asset = hdrpAssets[(int)srpQuality];
+                GraphicsSettings.renderPipelineAsset = asset;
+
+                // Only this mode is compatible with SRP.
+                waterQuality = Water.WaterMode.Simple;
+
+                Instantiate(volumeSettings);
             }
             else
                 GraphicsSettings.renderPipelineAsset = null;
@@ -217,10 +230,10 @@ namespace TESUnity
             }
 
 #if UNITY_EDITOR
-            if (renderPath == RendererType.LightweightSRP)
+            if (renderPath == RendererType.LightweightRP)
             {
                 var asset = lightweightAssets[(int)srpQuality];
-                asset.RenderScale = 1.0f;
+                asset.renderScale = 1.0f;
             }
 #endif
         }

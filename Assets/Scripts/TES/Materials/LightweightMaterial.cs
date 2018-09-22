@@ -6,7 +6,7 @@ namespace TESUnity
     /// <summary>
     /// A material that uses the legacy Bumped Diffuse Shader.
     /// </summary>
-    public class LightweightMaterial : MWBaseMaterial
+    public class LightweightMaterial : BaseMaterial
     {
         private Material m_StandardPBR;
         private Material m_StandardSimple;
@@ -58,12 +58,13 @@ namespace TESUnity
             var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
             var material = new Material(Shader.Find(string.Format("LightweightPipeline/Standard ({0})", (pbr ? "Physically Based" : "Simple Lighting"))));
             material.CopyPropertiesFromMaterial(pbr ? m_StandardPBR : m_StandardSimple);
+            material.EnableKeyword("_NORMALMAP");
             return material;
         }
 
         public override Material BuildMaterialBlended(ur.BlendMode sourceBlendMode, ur.BlendMode destinationBlendMode)
         {
-            Material material = BuildMaterialTested();
+            var material = BuildMaterialTested();
             material.SetInt("_SrcBlend", (int)sourceBlendMode);
             material.SetInt("_DstBlend", (int)destinationBlendMode);
             return material;
@@ -74,7 +75,8 @@ namespace TESUnity
             var material = BuildMaterial();
             var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
             material.CopyPropertiesFromMaterial(pbr ? m_CutoutPBRMaterial : m_CutoutSimpleMaterial);
-            material.SetFloat("_Cutout", cutoff);
+            material.SetFloat("_Cutoff", cutoff);
+            material.EnableKeyword("_NORMALMAP");
             return material;
         }
     }

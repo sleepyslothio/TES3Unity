@@ -1,9 +1,18 @@
+#define STEAMVR_SDK_
+#if UNITY_STANDALONE && STEAMVR_SDK
+#define STEAMVR_INPUT
+#endif
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 #if UNITY_WSA
 using UnityEngine.XR.WSA.Input;
+#endif
+
+#if STEAMVR_INPUT
+using Valve.VR;
 #endif
 
 namespace Demonixis.Toolbox.XR
@@ -15,16 +24,14 @@ namespace Demonixis.Toolbox.XR
         Button2,
         Button3,
         Button4,
-        Thumbstick,
-        ThumbstickTouch,
-        SecondaryTouchpad,
-        SecondaryTouchpadTouch,
         Trigger,
         Grip,
+        Thumbstick,
         ThumbstickUp,
         ThumbstickDown,
         ThumbstickLeft,
-        ThumbstickRight
+        ThumbstickRight,
+        Touchpad
     }
 
     public enum XRAxis
@@ -33,14 +40,14 @@ namespace Demonixis.Toolbox.XR
         Grip,
         ThumbstickX,
         ThumbstickY,
-        SecondaryTouchpadX,
-        SecondaryTouchpadY
+        TouchpadX,
+        TouchpadY
     }
 
     public enum XRAxis2D
     {
         Thumbstick,
-        SecondaryTouchpad
+        Touchpad
     }
 
     public enum XRVendor
@@ -54,12 +61,16 @@ namespace Demonixis.Toolbox.XR
         private Vector2 m_TmpVector = Vector2.zero;
         private List<XRNodeState> m_XRNodeStates = new List<XRNodeState>();
         private XRButton[] m_Buttons = null;
-        private XRVendor m_InputVendor = XRVendor.None;
         private bool m_Running = true;
         private bool[] m_AxisStates = null;
 
+#if STEAMVR_INPUT
+        private int m_SteamVRLeftIndex;
+        private int m_SteamVRRightIndex;
+#endif
+
         [SerializeField]
-        private float m_DeadZone = 0.1f;
+        private float m_DeadZone = 0.25f;
 
         public static XRInput Instance
         {
@@ -67,7 +78,7 @@ namespace Demonixis.Toolbox.XR
             {
                 if (s_Instance == null)
                 {
-                    var gameObject = new GameObject("VRInput");
+                    var gameObject = new GameObject("XRInput");
                     s_Instance = gameObject.AddComponent<XRInput>();
                 }
 
@@ -75,33 +86,11 @@ namespace Demonixis.Toolbox.XR
             }
         }
 
-        public XRVendor Vendor
-        {
-            get { return m_InputVendor; }
-        }
+        public bool UseNativeIntegration { get; set; } = false;
 
-        public bool IsConnected
-        {
-            get
-            {
-                m_XRNodeStates.Clear();
-                InputTracking.GetNodeStates(m_XRNodeStates);
+        public XRVendor InputVendor { get; private set; }
 
-                var left = false;
-                var right = false;
-
-                foreach (var state in m_XRNodeStates)
-                {
-                    if (state.nodeType == XRNode.LeftHand)
-                        left = state.tracked;
-
-                    else if (state.nodeType == XRNode.RightHand)
-                        right = state.tracked;
-                }
-
-                return left && right;
-            }
-        }
+        public bool IsConnected { get; private set; }
 
         public float DeadZone
         {
@@ -113,7 +102,7 @@ namespace Demonixis.Toolbox.XR
                 if (m_DeadZone < 0)
                     m_DeadZone = 0.0f;
                 else if (m_DeadZone >= 1.0f)
-                    m_DeadZone = 0.9f;
+                    m_DeadZone = 1.0f;
             }
         }
 
@@ -127,17 +116,37 @@ namespace Demonixis.Toolbox.XR
                 return;
             }
 
-            var vendor = XRSettings.loadedDeviceName;
-            if (vendor == "Oculus")
-                m_InputVendor = XRVendor.Oculus;
-            else if (vendor == "Openvr")
-                m_InputVendor = XRVendor.OpenVR;
-            else if (vendor == "Windowsmr")
-                m_InputVendor = XRVendor.WindowsMR;
+            var vendor = XRSettings.loadedDeviceName.ToLower();
+
+#if UNITY_WSA
+            InputVendor = XRVendor.WindowsMR;
+#else
+
+#if STEAMVR_INPUT
+            var trackingSystemName = SteamVR.instance.hmd_TrackingSystemName.ToLower();
+#endif
+
+            if (vendor == "openvr")
+            {
+                InputVendor = XRVendor.OpenVR;
+
+#if STEAMVR_INPUT
+                if (trackingSystemName == "oculus")
+                    InputVendor = XRVendor.Oculus;
+#endif
+            }
+            else if (vendor == "oculus")
+                InputVendor = XRVendor.Oculus;
+#endif
+
+#if UNITY_2018_2 && STEAMVR_INPUT
+            if (trackingSystemName == "holographic")
+                UseNativeIntegration = false;
+#endif
 
             m_Buttons = new XRButton[]
             {
-                XRButton.Grip, XRButton.Trigger,
+                XRButton.Trigger, XRButton.Grip,
                 XRButton.ThumbstickUp, XRButton.ThumbstickDown,
                 XRButton.ThumbstickLeft, XRButton.ThumbstickRight
             };
@@ -145,11 +154,55 @@ namespace Demonixis.Toolbox.XR
             m_AxisStates = new bool[m_Buttons.Length * 2];
 
             StartCoroutine(UpdateAxisToButton());
+
+            CheckConnected();
         }
+
+#if STEAMVR_INPUT
+
+        private bool CheckSteamVRIndex()
+        {
+            if (InputVendor == XRVendor.OpenVR && !UseNativeIntegration)
+            {
+                m_SteamVRLeftIndex = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost);
+                m_SteamVRRightIndex = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost);
+
+                return m_SteamVRLeftIndex > -1 && m_SteamVRRightIndex > -1;
+            }
+
+            return false;
+        }
+
+#endif
 
         private void OnDestroy()
         {
             m_Running = false;
+        }
+
+        public bool CheckConnected(bool forceCheck = false)
+        {
+            if (IsConnected && !forceCheck)
+                return IsConnected;
+
+            m_XRNodeStates.Clear();
+            InputTracking.GetNodeStates(m_XRNodeStates);
+
+            var left = false;
+            var right = false;
+
+            foreach (var state in m_XRNodeStates)
+            {
+                if (state.nodeType == XRNode.LeftHand)
+                    left = state.tracked;
+
+                else if (state.nodeType == XRNode.RightHand)
+                    right = state.tracked;
+            }
+
+            IsConnected = left || right;
+
+            return IsConnected;
         }
 
         private IEnumerator UpdateAxisToButton()
@@ -203,52 +256,71 @@ namespace Demonixis.Toolbox.XR
         /// <returns>Returns true if pressed otherwise it returns false.</returns>
         public bool GetButton(XRButton button, bool left)
         {
+#if STEAMVR_INPUT
+            if (CheckSteamVRIndex())
+            {
+                var device = SteamVR_Controller.Input(left ? m_SteamVRLeftIndex : m_SteamVRRightIndex);
+
+                if (button == XRButton.Grip)
+                    return device.GetPress(EVRButtonId.k_EButton_Grip);
+                else if (button == XRButton.Menu)
+                    return device.GetPress(EVRButtonId.k_EButton_ApplicationMenu);
+                else if (button == XRButton.Trigger)
+                    return device.GetPress(EVRButtonId.k_EButton_SteamVR_Trigger);
+                else if (button == XRButton.Thumbstick)
+                    return device.GetPress(EVRButtonId.k_EButton_SteamVR_Touchpad);
+            }
+#endif
+
+            if (InputVendor == XRVendor.Oculus)
+            {
+                if (button == XRButton.Button1)
+                    return Input.GetKey("joystick button 0");
+
+                else if (button == XRButton.Button2)
+                    return Input.GetKey("joystick button 1");
+
+                else if (button == XRButton.Button3)
+                    return Input.GetKey("joystick button 2");
+
+                else if (button == XRButton.Button4)
+                    return Input.GetKey("joystick button 3");
+            }
+
             if (button == XRButton.Menu)
             {
-                if (m_InputVendor == XRVendor.OpenVR)
-                    return Input.GetButton(left ? "Button 2" : "Button 0");
-                else if (m_InputVendor == XRVendor.WindowsMR)
-                    return Input.GetButton(left ? "Button 6" : "Button 7");
+                if (InputVendor == XRVendor.OpenVR)
+                    return Input.GetKey(left ? "joystick button 2" : "joystick button 0");
+                else if (InputVendor == XRVendor.WindowsMR)
+                    return Input.GetKey(left ? "joystick button 6" : "joystick button 7");
 
-                return Input.GetButton("Button 7");
+                return Input.GetKey("joystick button 7");
             }
 
-            else if (button == XRButton.Button1)
-                return Input.GetButton("Button 0");
-
-            else if (button == XRButton.Button2)
-                return Input.GetButton("Button 1");
-
-            else if (button == XRButton.Button3)
-                return Input.GetButton("Button 2");
-
-            else if (button == XRButton.Button4)
-                return Input.GetButton("Button 3");
-
-            else if (button == XRButton.Thumbstick)
-                return Input.GetButton(left ? "Button 8" : "Button 9");
-
-            else if (button == XRButton.ThumbstickTouch)
+            if (InputVendor == XRVendor.Oculus)
             {
-                if (m_InputVendor == XRVendor.WindowsMR)
-                    return Input.GetButton(left ? "Button 18" : "19");
-                else
-                    return Input.GetButton(left ? "Button 16" : "17");
+                if (button == XRButton.Trigger)
+                    return GetRawAxis(XRAxis.Trigger, left) > m_DeadZone;
+
+                else if (button == XRButton.Grip)
+                    return GetRawAxis(XRAxis.Grip, left) > m_DeadZone;
+            }
+            else
+            {
+                if (button == XRButton.Trigger)
+                    return Input.GetKey(left ? "joystick button 14" : "joystick button 15");
+
+                else if (button == XRButton.Grip)
+                    return Input.GetKey(left ? "joystick button 4" : "joystick button 5");
             }
 
-            else if (button == XRButton.SecondaryTouchpad)
-                return Input.GetButton(left ? "Button 16" : "17");
+            if (button == XRButton.Thumbstick)
+                return Input.GetKey(left ? "joystick button 8" : "joystick button 9");
 
-            else if (button == XRButton.SecondaryTouchpad)
-                return Input.GetButton(left ? "Button 18" : "19");
+            else if (button == XRButton.Touchpad)
+                return Input.GetKey(left ? "joystick button 16" : "joystick button 17");
 
-            else if (button == XRButton.Trigger)
-                return GetRawAxis(XRAxis.Trigger, left) > m_DeadZone;
-
-            else if (button == XRButton.Grip)
-                return GetRawAxis(XRAxis.Grip, left) > m_DeadZone;
-
-            else if (button == XRButton.ThumbstickUp)
+            if (button == XRButton.ThumbstickUp)
                 return GetRawAxis(XRAxis.ThumbstickY, left) > m_DeadZone;
 
             else if (button == XRButton.ThumbstickDown)
@@ -271,38 +343,61 @@ namespace Demonixis.Toolbox.XR
         /// <returns>Returns true if pressed otherwise it returns false.</returns>
         public bool GetButtonDown(XRButton button, bool left)
         {
+#if STEAMVR_INPUT
+            if (CheckSteamVRIndex())
+            {
+                var device = SteamVR_Controller.Input(left ? m_SteamVRLeftIndex : m_SteamVRRightIndex);
+
+                if (button == XRButton.Grip)
+                    return device.GetPressDown(EVRButtonId.k_EButton_Grip);
+                else if (button == XRButton.Menu)
+                    return device.GetPressDown(EVRButtonId.k_EButton_ApplicationMenu);
+                else if (button == XRButton.Trigger)
+                    return device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Trigger);
+                else if (button == XRButton.Thumbstick)
+                    return device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Touchpad);
+            }
+#endif
+
+            if (InputVendor == XRVendor.Oculus)
+            {
+                if (button == XRButton.Button1)
+                    return Input.GetKeyDown("joystick button 0");
+
+                else if (button == XRButton.Button2)
+                    return Input.GetKeyDown("joystick button 1");
+
+                else if (button == XRButton.Button3)
+                    return Input.GetKeyDown("joystick button 2");
+
+                else if (button == XRButton.Button4)
+                    return Input.GetKeyDown("joystick button 3");
+            }
+
             if (button == XRButton.Menu)
             {
-                if (m_InputVendor == XRVendor.OpenVR)
-                    return Input.GetButtonDown(left ? "Button 2" : "Button 0");
-                else if (m_InputVendor == XRVendor.WindowsMR)
-                    return Input.GetButtonDown(left ? "Button 6" : "Button 7");
+                if (InputVendor == XRVendor.OpenVR)
+                    return Input.GetKeyDown(left ? "joystick button 2" : "joystick button 0");
+                else if (InputVendor == XRVendor.WindowsMR)
+                    return Input.GetKeyDown(left ? "joystick button 6" : "joystick button 7");
 
-                return Input.GetButtonDown("Button 7");
+                return Input.GetKeyDown("joystick button 7");
             }
 
-            else if (button == XRButton.Button1)
-                return Input.GetButtonDown("Button 0");
-
-            else if (button == XRButton.Button2)
-                return Input.GetButtonDown("Button 1");
-
-            else if (button == XRButton.Button3)
-                return Input.GetButtonDown("Button 2");
-
-            else if (button == XRButton.Button4)
-                return Input.GetButtonDown("Button 3");
-
-            else if (button == XRButton.Thumbstick)
-                return Input.GetButtonDown(left ? "Button 8" : "Button 9");
-
-            else if (button == XRButton.ThumbstickTouch)
+            if (InputVendor != XRVendor.Oculus)
             {
-                if (m_InputVendor == XRVendor.WindowsMR)
-                    return Input.GetButtonDown(left ? "Button 18" : "19");
-                else
-                    return Input.GetButtonDown(left ? "Button 16" : "17");
+                if (button == XRButton.Trigger)
+                    return Input.GetKeyDown(left ? "joystick button 14" : "joystick button 15");
+
+                else if (button == XRButton.Grip)
+                    return Input.GetKeyDown(left ? "joystick button 4" : "joystick button 5");
             }
+
+            if (button == XRButton.Thumbstick)
+                return Input.GetKeyDown(left ? "joystick button 8" : "joystick button 9");
+
+            else if (button == XRButton.Touchpad)
+                return Input.GetKeyDown(left ? "joystick button 16" : "joystick button 17");
 
             // Simulate other buttons using previous states.
             var index = 0;
@@ -331,38 +426,61 @@ namespace Demonixis.Toolbox.XR
         /// <returns>Returns true if pressed otherwise it returns false.</returns>
         public bool GetButtonUp(XRButton button, bool left)
         {
+#if STEAMVR_INPUT
+            if (CheckSteamVRIndex())
+            {
+                var device = SteamVR_Controller.Input(left ? m_SteamVRLeftIndex : m_SteamVRRightIndex);
+
+                if (button == XRButton.Grip)
+                    return device.GetPressUp(EVRButtonId.k_EButton_Grip);
+                else if (button == XRButton.Menu)
+                    return device.GetPressUp(EVRButtonId.k_EButton_ApplicationMenu);
+                else if (button == XRButton.Trigger)
+                    return device.GetPressUp(EVRButtonId.k_EButton_SteamVR_Trigger);
+                else if (button == XRButton.Thumbstick)
+                    return device.GetPressUp(EVRButtonId.k_EButton_SteamVR_Touchpad);
+            }
+#endif
+
+            if (InputVendor == XRVendor.Oculus)
+            {
+                if (button == XRButton.Button1)
+                    return Input.GetKeyUp("joystick button 0");
+
+                else if (button == XRButton.Button2)
+                    return Input.GetKeyUp("joystick button 1");
+
+                else if (button == XRButton.Button3)
+                    return Input.GetKeyUp("joystick button 2");
+
+                else if (button == XRButton.Button4)
+                    return Input.GetKeyUp("joystick button 3");
+            }
+
             if (button == XRButton.Menu)
             {
-                if (m_InputVendor == XRVendor.OpenVR)
-                    return Input.GetButtonUp(left ? "Button 2" : "Button 0");
-                else if (m_InputVendor == XRVendor.WindowsMR)
-                    return Input.GetButtonUp(left ? "Button 6" : "Button 7");
+                if (InputVendor == XRVendor.OpenVR)
+                    return Input.GetKeyUp(left ? "joystick button 2" : "joystick button 0");
+                else if (InputVendor == XRVendor.WindowsMR)
+                    return Input.GetKeyUp(left ? "joystick button 6" : "joystick button 7");
 
-                return Input.GetButtonUp("Button 7");
+                return Input.GetKeyUp("joystick button 7");
             }
 
-            else if (button == XRButton.Button1)
-                return Input.GetButtonUp("Button 0");
+            if (InputVendor != XRVendor.Oculus)
+            {
+                if (button == XRButton.Trigger)
+                    return Input.GetKeyUp(left ? "joystick button 14" : "joystick button 15");
 
-            else if (button == XRButton.Button2)
-                return Input.GetButtonUp("Button 1");
-
-            else if (button == XRButton.Button3)
-                return Input.GetButtonUp("Button 2");
-
-            else if (button == XRButton.Button4)
-                return Input.GetButtonUp("Button 3");
+                else if (button == XRButton.Grip)
+                    return Input.GetKeyUp(left ? "joystick button 4" : "joystick button 5");
+            }
 
             else if (button == XRButton.Thumbstick)
-                return Input.GetButtonUp(left ? "Button 8" : "Button 9");
+                return Input.GetKeyUp(left ? "joystick button 8" : "joystick button 9");
 
-            else if (button == XRButton.ThumbstickTouch)
-            {
-                if (m_InputVendor == XRVendor.WindowsMR)
-                    return Input.GetButtonUp(left ? "Button 18" : "19");
-                else
-                    return Input.GetButtonUp(left ? "Button 16" : "17");
-            }
+            else if (button == XRButton.Touchpad)
+                return Input.GetKeyUp(left ? "joystick button 16" : "joystick button 17");
 
             // Simulate other buttons using previous states.
             var index = 0;
@@ -447,48 +565,6 @@ namespace Demonixis.Toolbox.XR
 
         #region Methods to get axis state
 
-        private float GetAxis(GetAxisFunction axisFunction, XRAxis axis, bool left)
-        {
-            if (axis == XRAxis.Trigger)
-                return axisFunction(left ? "Axis 9" : "Axis 10");
-
-            else if (axis == XRAxis.Grip)
-                return axisFunction(left ? "Axis 11" : "Axis 12");
-
-            else if (axis == XRAxis.ThumbstickX)
-                return axisFunction(left ? "Axis 1" : "Axis 4");
-
-            else if (axis == XRAxis.ThumbstickY)
-                return axisFunction(left ? "Axis 2" : "Axis 5");
-
-            else if (axis == XRAxis.SecondaryTouchpadX)
-                return axisFunction(left ? "Axis 17" : "Axis 20");
-
-            else if (axis == XRAxis.SecondaryTouchpadY)
-                return axisFunction(left ? "Axis 18" : "Axis 21");
-
-            return 0.0f;
-        }
-
-        private Vector2 GetAxis2D(GetAxisFunction axisFunction, XRAxis2D axis, bool left)
-        {
-            m_TmpVector.x = 0;
-            m_TmpVector.y = 0;
-
-            if (axis == XRAxis2D.Thumbstick)
-            {
-                m_TmpVector.x = axisFunction(left ? "Axis 1" : "Axis 4");
-                m_TmpVector.y = axisFunction(left ? "Axis 2" : "Axis 5");
-            }
-            else if (axis == XRAxis2D.SecondaryTouchpad)
-            {
-                m_TmpVector.x = axisFunction(left ? "Axis 17" : "Axis 20");
-                m_TmpVector.y = axisFunction(left ? "Axis 18" : "Axis 21");
-            }
-
-            return m_TmpVector;
-        }
-
         /// <summary>
         /// Gets an axis value.
         /// </summary>
@@ -532,6 +608,67 @@ namespace Demonixis.Toolbox.XR
         {
             return GetAxis2D(Input.GetAxis, axis, left);
         }
+
+        private float GetAxis(GetAxisFunction axisFunction, XRAxis axis, bool left)
+        {
+            if (axis == XRAxis.Trigger)
+                return axisFunction(left ? "Axis 9" : "Axis 10");
+
+            else if (axis == XRAxis.Grip)
+                return axisFunction(left ? "Axis 11" : "Axis 12");
+
+            else if (axis == XRAxis.ThumbstickX || InputVendor != XRVendor.WindowsMR && axis == XRAxis.TouchpadX)
+                return axisFunction(left ? "Axis 1" : "Axis 4");
+
+            else if (axis == XRAxis.ThumbstickY || InputVendor != XRVendor.WindowsMR && axis == XRAxis.TouchpadY)
+                return axisFunction(left ? "Axis 2" : "Axis 5");
+
+            return 0.0f;
+        }
+
+        private Vector2 GetAxis2D(GetAxisFunction axisFunction, XRAxis2D axis, bool left)
+        {
+            m_TmpVector.x = 0;
+            m_TmpVector.y = 0;
+
+            if (axis == XRAxis2D.Thumbstick || InputVendor != XRVendor.WindowsMR && axis == XRAxis2D.Touchpad)
+            {
+                m_TmpVector.x = axisFunction(left ? "Axis 1" : "Axis 4");
+                m_TmpVector.y = axisFunction(left ? "Axis 2" : "Axis 5");
+            }
+            else if (axis == XRAxis2D.Touchpad)
+            {
+                m_TmpVector.x = axisFunction(left ? "Axis 17" : "Axis 19");
+                m_TmpVector.y = axisFunction(left ? "Axis 18" : "Axis 20");
+            }
+
+            return m_TmpVector;
+        }
+
+        #endregion
+
+        #region Vibration
+
+        public void Vibrate(bool left, float length = 0.25f, float strength = 0.5f)
+        {
+#if STEAMVR_INPUT
+            if (CheckSteamVRIndex())
+                StartCoroutine(LongVibration(left ? m_SteamVRLeftIndex : m_SteamVRRightIndex, length, strength));
+#endif
+        }
+
+#if STEAMVR_INPUT
+
+        private IEnumerator LongVibration(int index, float length, float strength)
+        {
+            for (float i = 0; i < length; i += Time.deltaTime)
+            {
+                SteamVR_Controller.Input(index).TriggerHapticPulse((ushort)Mathf.Lerp(0, 3999, strength * i));
+                yield return null;
+            }
+        }
+
+#endif
 
         #endregion
     }
