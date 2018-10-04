@@ -56,7 +56,7 @@ namespace TESUnity
         public override Material BuildMaterial()
         {
             var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
-            var material = new Material(Shader.Find(string.Format("LightweightPipeline/Standard ({0})", (pbr ? "Physically Based" : "Simple Lighting"))));
+            var material = new Material(Shader.Find(string.Format("Lightweight Render Pipeline/{0}", (pbr ? "Lit" : "Simple Lit"))));
             material.CopyPropertiesFromMaterial(pbr ? m_StandardPBR : m_StandardSimple);
             material.EnableKeyword("_NORMALMAP");
             return material;

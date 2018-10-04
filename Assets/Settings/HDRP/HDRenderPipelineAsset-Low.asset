@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: HDRenderPipelineAsset-Low
   m_EditorClassIdentifier: 
   m_Version: 1
-  m_RenderPipelineResources: {fileID: 11400000, guid: 3ce144cff5783da45aa5d4fdc2da14b7, type: 2}
+  m_RenderPipelineResources: {fileID: 11400000, guid: 3ce144cff5783da45aa5d4fdc2da14b7,
+    type: 2}
   m_FrameSettings:
     enableShadow: 1
     enableContactShadows: 1
@@ -24,6 +25,7 @@ MonoBehaviour:
     enableTransmission: 1
     enableAtmosphericScattering: 1
     enableVolumetrics: 1
+    enableReprojectionForVolumetrics: 1
     enableLightLayers: 1
     diffuseGlobalDimmer: 1
     specularGlobalDimmer: 1
@@ -38,6 +40,11 @@ MonoBehaviour:
     enableDistortion: 1
     enablePostprocess: 1
     enableStereo: 1
+    xrGraphicsConfig:
+      renderScale: 0
+      viewportScale: 0
+      useOcclusionMesh: 1
+      occlusionMaskScale: 1
     enableAsyncCompute: 0
     enableOpaqueObjects: 1
     enableTransparentObjects: 1
@@ -56,17 +63,21 @@ MonoBehaviour:
     supportSSAO: 1
     supportSubsurfaceScattering: 1
     increaseSssSampleCount: 0
-    supportVolumetrics: 1
+    supportVolumetrics: 0
     increaseResolutionOfVolumetrics: 0
     supportLightLayers: 0
-    supportOnlyForward: 0
+    supportOnlyForward: 1
     supportDecals: 1
     supportMSAA: 0
     msaaSampleCount: 1
     supportMotionVectors: 1
-    supportStereo: 0
     supportRuntimeDebugDisplay: 1
     supportDitheringCrossFade: 1
+    xrConfig:
+      renderScale: 1
+      viewportScale: 1
+      useOcclusionMesh: 1
+      occlusionMaskScale: 1
     lightLoopSettings:
       cookieSize: 128
       cookieTexArraySize: 16
@@ -82,17 +93,19 @@ MonoBehaviour:
       skyLightingOverrideLayerMask:
         serializedVersion: 2
         m_Bits: 0
-    shadowInitParams:
+    hdShadowInitParams:
       shadowAtlasWidth: 4096
       shadowAtlasHeight: 4096
-      shadowMap16Bit: 0
-      maxPointLightShadows: 6
-      maxSpotLightShadows: 12
-      maxDirectionalLightShadows: 1
+      maxShadowRequests: 128
+      shadowMapsDepthBits: 32
+      useDynamicViewportRescale: 1
+      punctualShadowQuality: 0
+      directionalShadowQuality: 0
     decalSettings:
       drawDistance: 1000
       atlasWidth: 4096
       atlasHeight: 4096
       perChannelMask: 0
   allowShaderVariantStripping: 1
-  diffusionProfileSettings: {fileID: 11400000, guid: 26bdddf49760c61438938733f07fa2a2, type: 2}
+  diffusionProfileSettings: {fileID: 11400000, guid: 26bdddf49760c61438938733f07fa2a2,
+    type: 2}

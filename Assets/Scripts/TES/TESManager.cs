@@ -65,7 +65,7 @@ namespace TESUnity
         public RendererType renderPath = RendererType.Forward;
         public float cameraFarClip = 500.0f;
         public SRPQuality srpQuality = SRPQuality.Medium;
-        public LightweightPipelineAsset[] lightweightAssets;
+        public LightweightRenderPipelineAsset[] lightweightAssets;
         public float renderScale = 1.0f;
 
         [Header("HDRP")]

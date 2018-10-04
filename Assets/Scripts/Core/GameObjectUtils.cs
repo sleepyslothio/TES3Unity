@@ -121,7 +121,7 @@ public static class GameObjectUtils
 
 		var terrain = terrainObject.AddComponent<Terrain>();
 
-        if (GraphicsSettings.renderPipelineAsset is LightweightPipelineAsset)
+        if (GraphicsSettings.renderPipelineAsset is LightweightRenderPipelineAsset)
         {
             terrain.materialType = Terrain.MaterialType.Custom;
             terrain.materialTemplate = Resources.Load<Material>("Materials/Lightweight-Terrain");
