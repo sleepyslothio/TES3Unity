@@ -519,14 +519,14 @@ namespace TESUnity
             }
 
             // Texture the terrain.
-            SplatPrototype[] splatPrototypes = null;
+            TerrainLayer[] splatPrototypes = null;
             float[,,] alphaMap = null;
 
             const int LAND_TEXTURE_INDICES_COUNT = 256;
             var textureIndices = (LAND.VTEX != null) ? LAND.VTEX.textureIndices : new ushort[LAND_TEXTURE_INDICES_COUNT];
 
             // Create splat prototypes.
-            var splatPrototypeList = new List<SplatPrototype>();
+            var splatPrototypeList = new List<TerrainLayer>();
             var texInd2splatInd = new Dictionary<ushort, int>();
 
             for (int i = 0; i < textureIndices.Length; i++)
@@ -554,8 +554,8 @@ namespace TESUnity
                     yield return null;
 
                     // Create the splat prototype.
-                    var splat = new SplatPrototype();
-                    splat.texture = texture;
+                    var splat = new TerrainLayer();
+                    splat.diffuseTexture = texture;
                     splat.smoothness = 0;
                     splat.metallic = 0;
                     splat.tileSize = new Vector2(6, 6);
