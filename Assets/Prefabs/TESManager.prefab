@@ -46,7 +46,8 @@ MonoBehaviour:
   _bypassINIConfig: 1
   _allowChangeCellInRealtime: 1
   dataPath: D:\Jeux\SteamLibrary\steamapps\common\Morrowind\Data Files
-  alternativeDataPath: D:\Jeux\Oldies\Morrowind\Data Files
+  alternativeDataPath:
+  - /Users/yannick/Games/Morrowind
   useKinematicRigidbodies: 1
   playMusic: 1
   enableLog: 0
@@ -68,7 +69,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3927e36d6d8a64b4ebb7c2d46f265d28, type: 2}
   - {fileID: 11400000, guid: 337f41d1281208244a5e913599a9ccce, type: 2}
   - {fileID: 11400000, guid: 7ad3ef4070ba5ee44be2c7ef21daa76b, type: 2}
-  volumeSettings: {fileID: 122786709725520640, guid: 9cf69a83add725d43bf4df0346e7842b, type: 3}
+  volumeSettings: {fileID: 122786709725520640, guid: 9cf69a83add725d43bf4df0346e7842b,
+    type: 3}
   ambientIntensity: 1.5
   renderSunShadows: 1
   renderLightShadows: 0
@@ -76,7 +78,7 @@ MonoBehaviour:
   animateLights: 1
   dayNightCycle: 1
   generateNormalMap: 1
-  normalGeneratorIntensity: 1
+  normalGeneratorIntensity: 0.5
   postProcessingQuality: 3
   antiAliasing: 3
   waterBackSideTransparent: 0
@@ -89,11 +91,14 @@ MonoBehaviour:
   UIBackgroundImg: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   UICheckmarkImg: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
   UIDropdownArrowImg: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
-  UIInputFieldBackgroundImg: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  UIInputFieldBackgroundImg: {fileID: 10911, guid: 0000000000000000f000000000000000,
+    type: 0}
   UIKnobImg: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   UIMaskImg: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
   UISpriteImg: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  playerPrefab: {fileID: 1000014283173620, guid: bb4f50960e3bc08459bb6f708eb7d79f, type: 3}
-  waterPrefab: {fileID: 1586121937244772, guid: 6de569209e643e2438dd3dbfe2d466df, type: 3}
+  playerPrefab: {fileID: 1000014283173620, guid: bb4f50960e3bc08459bb6f708eb7d79f,
+    type: 3}
+  waterPrefab: {fileID: 1586121937244772, guid: 6de569209e643e2438dd3dbfe2d466df,
+    type: 3}
   creaturesEnabled: 1
   npcsEnabled: 0

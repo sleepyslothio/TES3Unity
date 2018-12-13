@@ -31,9 +31,18 @@ namespace TESUnity.Components.VR
         private void Start()
         {
             m_Tranform = transform;
-            m_Axis = new Axis();
-            m_Rudder = s3DRudderManager.Instance.GetRudder(0);
-            m_ModeAxis = ModeAxis.NormalizedValue;
+    
+            try
+            {
+                m_Axis = new Axis();
+                m_Rudder = s3DRudderManager.Instance.GetRudder(0);
+                m_ModeAxis = ModeAxis.NormalizedValue;
+            }
+            catch (System.Exception ex) 
+            {
+                Debug.Log(ex.Message);
+                enabled = false;
+            }
         }
 
         public void Update()
