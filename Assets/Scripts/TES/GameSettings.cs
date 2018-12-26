@@ -12,6 +12,9 @@ namespace TESUnity
 
         public static void SaveValue(string parameter, string value)
         {
+            if (!File.Exists(ConfigFile))
+                return;
+                
             var lines = File.ReadAllLines(ConfigFile);
 
             for (var i = 0; i < lines.Length; i++)

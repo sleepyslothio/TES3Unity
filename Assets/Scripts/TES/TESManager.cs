@@ -48,7 +48,7 @@ namespace TESUnity
 
         [Header("Global")]
         public string dataPath;
-        public string alternativeDataPath;
+        public string[] alternativeDataPath;
         public bool useKinematicRigidbodies = true;
         public bool playMusic = false;
         public bool enableLog = false;
@@ -145,11 +145,16 @@ namespace TESUnity
 
             if (!GameSettings.IsValidPath(path))
             {
-                if (GameSettings.IsValidPath(alternativeDataPath))
+#if UNITY_EDITOR
+                foreach (var alt in alternativeDataPath)
                 {
-                    dataPath = alternativeDataPath;
-                    return;
+                    if (GameSettings.IsValidPath(alt))
+                    {
+                        dataPath = alt;
+                        return;
+                    }
                 }
+#endif
 
                 GameSettings.SetDataPath(string.Empty);
                 UnityEngine.SceneManagement.SceneManager.LoadScene("AskPathScene");
