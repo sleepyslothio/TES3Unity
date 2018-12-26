@@ -1,0 +1,9 @@
+
+=== Sun Nov  4 09:18:49 2018
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.package-manager-ui from version 2.0.1 to 2.0.2
+  com.unity.xr.oculus.standalone from version 1.28.0 to 1.29.0
