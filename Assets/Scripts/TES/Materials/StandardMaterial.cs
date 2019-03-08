@@ -14,8 +14,8 @@ namespace TESUnity
         public StandardMaterial(TextureManager textureManager)
             : base(textureManager)
         {
-            _standardMaterial = new Material(Shader.Find("Standard"));
-            _standardCutoutMaterial = Resources.Load<Material>("Materials/StandardCutout");
+            _standardMaterial = Resources.Load<Material>("Materials/Standard/Standard");
+            _standardCutoutMaterial = Resources.Load<Material>("Materials/Standard/Standard-Cutout");
         }
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
@@ -33,18 +33,29 @@ namespace TESUnity
                 else
                     material = BuildMaterial();
 
+                var hasNormalMap = false;
+
                 if (mp.textures.mainFilePath != null)
                 {
                     material.mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
 
-                    if (TESManager.instance.generateNormalMap)
+                    if (TESManager.instance.generateNormalMap && mp.textures.bumpFilePath == null)
+                    {
                         material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture, TESManager.instance.normalGeneratorIntensity));
+                        hasNormalMap = true;
+                    }
                 }
-                else
-                    material.DisableKeyword("_NORMALMAP");
 
                 if (mp.textures.bumpFilePath != null)
+                {
                     material.SetTexture("_NORMALMAP", m_textureManager.LoadTexture(mp.textures.bumpFilePath));
+                    hasNormalMap = true;
+                }
+
+                if (hasNormalMap)
+                    material.EnableKeyword("_NORMALMAP");
+                else
+                    material.DisableKeyword("_NORMALMAP");
 
                 m_existingMaterials[mp] = material;
             }

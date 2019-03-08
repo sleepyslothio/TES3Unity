@@ -43,8 +43,10 @@ namespace TESUnity.Components
                 _path.gameObject.SetActive(false);
                 _button.gameObject.SetActive(false);
                 _infoMessage.text = "Loading...";
-                _infoMessage.enabled = true;yield return null;
-                
+                _infoMessage.enabled = true;
+
+                yield return new WaitForEndOfFrame();
+
                 var asyncOperation = SceneManager.LoadSceneAsync("GameScene");
                 var waitForSeconds = new WaitForSeconds(0.1f);
 
@@ -64,6 +66,6 @@ namespace TESUnity.Components
             _infoMessage.enabled = true;
             yield return new WaitForSeconds(5.0f);
             _infoMessage.enabled = false;
-        }       
+        }
     }
 }

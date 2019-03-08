@@ -45,9 +45,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bypassINIConfig: 1
   _allowChangeCellInRealtime: 1
-  dataPath: D:\Jeux\SteamLibrary\steamapps\common\Morrowind\Data Files
+  dataPath: D:\Jeux\Oldies\Morrowind\Data Files
   alternativeDataPath:
-  - /Users/yannick/Games/Morrowind
+  - D:\Jeux\Morrowind\Data Files
   useKinematicRigidbodies: 1
   playMusic: 1
   enableLog: 0
@@ -61,16 +61,10 @@ MonoBehaviour:
   cameraFarClip: 500
   srpQuality: 2
   lightweightAssets:
-  - {fileID: 11400000, guid: ef1cd3c74ac5bed4589a18e5db92cd31, type: 2}
-  - {fileID: 11400000, guid: b130335045a0fa846b08b62be1eb1e8a, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 11400000, guid: fe63e7f2b761ec040b9225f19032f6d9, type: 2}
   renderScale: 1
-  hdrpAssets:
-  - {fileID: 11400000, guid: 3927e36d6d8a64b4ebb7c2d46f265d28, type: 2}
-  - {fileID: 11400000, guid: 337f41d1281208244a5e913599a9ccce, type: 2}
-  - {fileID: 11400000, guid: 7ad3ef4070ba5ee44be2c7ef21daa76b, type: 2}
-  volumeSettings: {fileID: 122786709725520640, guid: 9cf69a83add725d43bf4df0346e7842b,
-    type: 3}
   ambientIntensity: 1.5
   renderSunShadows: 1
   renderLightShadows: 0
@@ -83,7 +77,6 @@ MonoBehaviour:
   antiAliasing: 3
   waterBackSideTransparent: 0
   followHeadDirection: 0
-  directModePreview: 1
   roomScale: 0
   forceControllers: 1
   useXRVignette: 0

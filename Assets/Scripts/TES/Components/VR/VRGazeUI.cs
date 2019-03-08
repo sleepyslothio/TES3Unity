@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Demonixis.Toolbox.XR;
+using System.Collections.Generic;
 using TESUnity.Inputs;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -26,7 +27,8 @@ namespace TESUnity.Components.VR
             if (EventSystem.current == null)
                 throw new UnityException("[VRGazeUI] EventSystem is null.");
 
-            var scaling = UnityEngine.XR.XRSettings.eyeTextureResolutionScale;
+            var device = XRManager.GetActiveDevice();
+            var scaling = device != null ? XRManager.GetActiveDevice().RenderScale : 1.0f;
             var screenCenter = new Vector2(Screen.width * 0.5f * scaling, Screen.height * 0.5f * scaling);
 
             if (UnityEngine.XR.XRSettings.enabled)

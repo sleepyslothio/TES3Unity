@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Experimental.Rendering.HDPipeline;
+﻿using TESUnity;
+using UnityEngine;
 using UnityEngine.Experimental.Rendering.LightweightPipeline;
 using UnityEngine.Rendering;
 
@@ -83,8 +83,6 @@ public static class GameObjectUtils
         else
             terrainData.size = new Vector3(terrainWidth, 1, terrainWidth);
 
-        // TODO: Check and remove
-
         // Texture the terrain.
         if ((splatPrototypes != null) && (alphaMap != null))
         {
@@ -109,15 +107,13 @@ public static class GameObjectUtils
         if (GraphicsSettings.renderPipelineAsset is LightweightRenderPipelineAsset)
         {
             terrain.materialType = Terrain.MaterialType.Custom;
-            terrain.materialTemplate = Resources.Load<Material>("Materials/Lightweight-Terrain");
-        }
-        else if (GraphicsSettings.renderPipelineAsset is HDRenderPipelineAsset)
-        {
-            terrain.materialType = Terrain.MaterialType.Custom;
-            terrain.materialTemplate = Resources.Load<Material>("Materials/HDRP-Terrain");
+            terrain.materialTemplate = Resources.Load<Material>("Materials/LWRP/Lit-Terrain");
         }
         else
-            terrain.materialType = Terrain.MaterialType.BuiltInLegacyDiffuse;
+        {
+            var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
+            terrain.materialType = pbr ? Terrain.MaterialType.BuiltInStandard : Terrain.MaterialType.BuiltInLegacyDiffuse;
+        }
 
         terrain.terrainData = terrainData;
         terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;

@@ -37,7 +37,7 @@ namespace TESUnity.Components.VR
         {
             var trackedPoseDrivers = GetComponentsInChildren<TrackedPoseDriver>(true);
 
-            if (!XRSettings.enabled)
+            if (!XRManager.Enabled)
             {
                 foreach (var driver in trackedPoseDrivers)
                 {
@@ -53,7 +53,7 @@ namespace TESUnity.Components.VR
             var renderScale = manager.renderScale;
 
             if (renderScale > 0 && renderScale <= 2)
-                XRSettings.eyeTextureResolutionScale = manager.renderScale;
+                XRManager.GetActiveDevice().RenderScale = manager.renderScale;
 
             var uiManager = FindObjectOfType<UIManager>();
 
@@ -94,33 +94,6 @@ namespace TESUnity.Components.VR
             XRDevice.SetTrackingSpaceType(trackingSpaceType);
             if (trackingSpaceType == TrackingSpaceType.RoomScale)
                 transform.GetChild(0).localPosition = Vector3.zero;
-
-            // Detect controllers
-            var controllers = TESManager.instance.forceControllers ? 2 : 0;
-
-            // Try to detect controllers
-            if (controllers == 0)
-            {
-                var list = new List<XRNodeState>();
-                InputTracking.GetNodeStates(list);
-
-                foreach (var item in list)
-                    if (item.nodeType == XRNode.LeftHand || item.nodeType == XRNode.RightHand)
-                        controllers++;
-            }
-
-            if (controllers == 2)
-            {
-                foreach (var driver in trackedPoseDrivers)
-                {
-                    driver.transform.parent = _camTransform.parent;
-                    driver.enabled = true;
-                }
-            }
-
-            // Confort
-            if (TESManager.instance.useXRVignette)
-                gameObject.AddComponent<XRVignetteOverlay>();
 
             RecenterOrientationAndPosition();
         }

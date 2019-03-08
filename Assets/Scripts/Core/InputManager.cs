@@ -27,16 +27,14 @@ namespace TESUnity.Inputs
 
             if (XRSettings.enabled)
             {
-                var input = XRInput.Instance;
-
                 if (axis == "Horizontal")
-                    result += input.GetAxis(XRAxis.ThumbstickX, true);
+                    result += XRInput.GetAxis(XRAxis.ThumbstickX, true);
                 else if (axis == "Vertical")
-                    result += input.GetAxis(XRAxis.ThumbstickY, true);
+                    result += XRInput.GetAxis(XRAxis.ThumbstickY, true);
                 else if (axis == "Mouse X")
-                    result += input.GetAxis(XRAxis.ThumbstickX, false);
+                    result += XRInput.GetAxis(XRAxis.ThumbstickX, false);
                 else if (axis == "Mouse Y")
-                    result += input.GetAxis(XRAxis.ThumbstickY, false);
+                    result += XRInput.GetAxis(XRAxis.ThumbstickY, false);
 
                 // Deadzone
                 if (Mathf.Abs(result) < 0.15f)
@@ -52,15 +50,13 @@ namespace TESUnity.Inputs
 
             if (XRSettings.enabled)
             {
-                var input = XRInput.Instance;
-
                 if (m_XRMapping == null)
                     InitializeMapping();
 
                 if (m_XRMapping.ContainsKey(button))
                 {
                     var mapping = m_XRMapping[button];
-                    result |= input.GetButton(mapping.Button, mapping.LeftHand);
+                    result |= XRInput.GetButton(mapping.Button, mapping.LeftHand);
                 }
             }
 
@@ -73,15 +69,13 @@ namespace TESUnity.Inputs
 
             if (XRSettings.enabled)
             {
-                var input = XRInput.Instance;
-
                 if (m_XRMapping == null)
                     InitializeMapping();
 
                 if (m_XRMapping.ContainsKey(button))
                 {
                     var mapping = m_XRMapping[button];
-                    result |= input.GetButtonUp(mapping.Button, mapping.LeftHand);
+                    result |= XRInput.GetButtonUp(mapping.Button, mapping.LeftHand);
                 }
             }
 
@@ -94,15 +88,13 @@ namespace TESUnity.Inputs
 
             if (XRSettings.enabled)
             {
-                var input = XRInput.Instance;
-
                 if (m_XRMapping == null)
                     InitializeMapping();
 
                 if (m_XRMapping.ContainsKey(button))
                 {
                     var mapping = m_XRMapping[button];
-                    result |= input.GetButtonDown(mapping.Button, mapping.LeftHand);
+                    result |= XRInput.GetButtonDown(mapping.Button, mapping.LeftHand);
                 }
             }
 

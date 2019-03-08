@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Demonixis.Toolbox.XR;
+using System;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.XR;
@@ -23,7 +24,7 @@ namespace TESUnity.Components
             var layer = GetComponent<PostProcessLayer>();
             var volume = FindObjectOfType<PostProcessVolume>();
             var profile = volume.profile;
-            var xrEnabled = XRSettings.enabled;
+            var xrEnabled = XRManager.Enabled;
 
             if (settings.postProcessingQuality == TESManager.PostProcessingQuality.Low)
             {

@@ -2,10 +2,10 @@
 using System.IO;
 using TESUnity.UI;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.HDPipeline;
 using UnityEngine.Experimental.Rendering.LightweightPipeline;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.SceneManagement;
 using UnityStandardAssets.Water;
 
 namespace TESUnity
@@ -16,7 +16,7 @@ namespace TESUnity
 
         public enum MWMaterialType
         {
-            PBR, StandardLighting, Unlit
+            PBR, Standard
         }
 
         public enum PostProcessingQuality
@@ -31,7 +31,7 @@ namespace TESUnity
 
         public enum RendererType
         {
-            Forward, Deferred, LightweightRP, HDRP
+            Forward, Deferred, LightweightRP
         }
 
         public const string Version = "0.9.0";
@@ -61,16 +61,12 @@ namespace TESUnity
         public int cellRadiusOnLoad = 2;
 
         [Header("Rendering")]
-        public MWMaterialType materialType = MWMaterialType.StandardLighting;
+        public MWMaterialType materialType = MWMaterialType.Standard;
         public RendererType renderPath = RendererType.Forward;
         public float cameraFarClip = 500.0f;
         public SRPQuality srpQuality = SRPQuality.Medium;
         public LightweightRenderPipelineAsset[] lightweightAssets;
         public float renderScale = 1.0f;
-
-        [Header("HDRP")]
-        public HDRenderPipelineAsset[] hdrpAssets;
-        public GameObject volumeSettings;
 
         [Header("Lighting")]
         public float ambientIntensity = 1.5f;
@@ -89,10 +85,8 @@ namespace TESUnity
 
         [Header("VR")]
         public bool followHeadDirection = false;
-        public bool directModePreview = true;
         public bool roomScale = true;
         public bool forceControllers = false;
-        public bool useXRVignette = false;
 
         [Header("UI")]
         public UIManager UIManager;
@@ -157,34 +151,37 @@ namespace TESUnity
 #endif
 
                 GameSettings.SetDataPath(string.Empty);
-                UnityEngine.SceneManagement.SceneManager.LoadScene("AskPathScene");
+                SceneManager.LoadScene("AskPathScene");
             }
             else
-            {
                 dataPath = path;
-            }
         }
 
         private void Start()
         {
+#if UNITY_ANDROID
+            renderPath = RendererType.Forward;
+            postProcessingQuality = PostProcessingQuality.None;
+            materialType = MWMaterialType.Standard;
+            renderSunShadows = false;
+            renderLightShadows = false;
+            renderExteriorCellLights = false;
+            animateLights = false;
+            dayNightCycle = false;
+            cellRadius = 1;
+            cellDetailRadius = 2;
+            cellRadiusOnLoad = 1;
+#endif
+
             if (renderPath == RendererType.LightweightRP)
             {
                 var asset = lightweightAssets[(int)srpQuality];
                 asset.renderScale = renderScale;
+                GraphicsSettings.useScriptableRenderPipelineBatching = true;
                 GraphicsSettings.renderPipelineAsset = asset;
 
                 // Only this mode is compatible with SRP.
                 waterQuality = Water.WaterMode.Simple;
-            }
-            else if (renderPath == RendererType.HDRP)
-            {
-                var asset = hdrpAssets[(int)srpQuality];
-                GraphicsSettings.renderPipelineAsset = asset;
-
-                // Only this mode is compatible with SRP.
-                waterQuality = Water.WaterMode.Simple;
-
-                Instantiate(volumeSettings);
             }
             else
                 GraphicsSettings.renderPipelineAsset = null;

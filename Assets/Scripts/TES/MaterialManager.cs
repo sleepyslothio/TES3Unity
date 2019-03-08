@@ -32,49 +32,30 @@ namespace TESUnity
     /// </summary>
     public class MaterialManager
     {
-        private BaseMaterial _mwMaterial;
-        private TextureManager _textureManager;
+        private BaseMaterial m_Material;
 
-        public TextureManager TextureManager
-        {
-            get { return _textureManager; }
-        }
+        public TextureManager TextureManager { get; private set; }
 
         public MaterialManager(TextureManager textureManager)
         {
-            _textureManager = textureManager;
+            TextureManager = textureManager;
 
             var tes = TESManager.instance;
 
             // Order is important
-            if (tes.renderPath == TESManager.RendererType.LightweightRP && tes.materialType != TESManager.MWMaterialType.Unlit)
+            if (tes.renderPath == TESManager.RendererType.LightweightRP)
             {
-                _mwMaterial = new LightweightMaterial(textureManager);
+                m_Material = new LightweightMaterial(textureManager);
             }
-            else if (tes.renderPath == TESManager.RendererType.HDRP && tes.materialType != TESManager.MWMaterialType.Unlit)
-            {
-                _mwMaterial = new HDMaterial(textureManager);
-            }
+            else if (tes.materialType == TESManager.MWMaterialType.PBR)
+                m_Material = new StandardMaterial(textureManager);
             else
-            {
-                switch (tes.materialType)
-                {
-                    case TESManager.MWMaterialType.PBR:
-                        _mwMaterial = new StandardMaterial(textureManager);
-                        break;
-                    case TESManager.MWMaterialType.Unlit:
-                        _mwMaterial = new UnliteMaterial(textureManager);
-                        break;
-                    default:
-                        _mwMaterial = new DiffuseMaterial(textureManager);
-                        break;
-                }
-            }
+                m_Material = new DiffuseMaterial(textureManager);
         }
 
         public Material BuildMaterialFromProperties(MWMaterialProps mp)
         {
-            return _mwMaterial.BuildMaterialFromProperties(mp);
+            return m_Material.BuildMaterialFromProperties(mp);
         }
     }
 }

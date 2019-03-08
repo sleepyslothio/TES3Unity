@@ -12,9 +12,10 @@ namespace TESUnity
 
         public static void SaveValue(string parameter, string value)
         {
+#if !UNITY_ANDROID
             if (!File.Exists(ConfigFile))
                 return;
-                
+
             var lines = File.ReadAllLines(ConfigFile);
 
             for (var i = 0; i < lines.Length; i++)
@@ -27,6 +28,7 @@ namespace TESUnity
             }
 
             File.WriteAllLines(ConfigFile, lines);
+#endif
         }
 
         public static bool IsValidPath(string path)
@@ -39,8 +41,31 @@ namespace TESUnity
             SaveValue(MWDataPathName, dataPath);
         }
 
+#if UNITY_ANDROID
+        private static string GetExternalFilePath()
+        {
+            if (Directory.Exists("/storage/extSdCard"))
+                return "/storage/extSdCard";
+            else if (Directory.Exists("/storage/sdcard1"))
+                return "/storage/sdcard1";
+            else if (Directory.Exists("/storage/usbcard1"))
+                return "storage/usbcard1";
+            else if (Directory.Exists("/storage/sdcard0"))
+                return "/storage/sdcard0";
+            else if (Directory.Exists("/storage/sdcard"))
+                return "/storage/sdcard";
+
+            return Application.persistentDataPath;
+        }
+#endif
+
         public static string GetDataPath()
         {
+#if UNITY_ANDROID
+            var path = GetExternalFilePath();
+            return Path.Combine(path, "TESUnity", "Data Files");
+#else
+            
             if (!File.Exists("config.ini"))
                 return string.Empty;
 
@@ -56,6 +81,7 @@ namespace TESUnity
             }
 
             return string.Empty;
+#endif
         }
 
         /// <summary>
@@ -102,7 +128,7 @@ namespace TESUnity
                         case "AnimateLights": ParseBool(value, ref tes.animateLights); break;
                         case "MorrowindDataPath": path = value; break;
                         case "FollowHeadDirection": ParseBool(value, ref tes.followHeadDirection); break;
-                        case "SunShadows":ParseBool(value, ref tes.renderSunShadows); break;
+                        case "SunShadows": ParseBool(value, ref tes.renderSunShadows); break;
                         case "LightShadows": ParseBool(value, ref tes.renderLightShadows); break;
                         case "PlayMusic": ParseBool(value, ref tes.playMusic); break;
                         case "RenderExteriorCellLights": ParseBool(value, ref tes.renderExteriorCellLights); break;
@@ -112,22 +138,20 @@ namespace TESUnity
                                 tes.renderPath = TESManager.RendererType.Forward;
                             else if (value == "Deferred")
                                 tes.renderPath = TESManager.RendererType.Deferred;
-                            else if (value == "Lightweight") 
+                            else if (value == "Lightweight")
                                 tes.renderPath = TESManager.RendererType.LightweightRP;
                             break;
                         case "Shader":
                             switch (value)
                             {
                                 case "PBR": tes.materialType = TESManager.MWMaterialType.PBR; break;
-                                case "Unlit": tes.materialType = TESManager.MWMaterialType.Unlit; break;
-                                default: tes.materialType = TESManager.MWMaterialType.StandardLighting; break;
+                                default: tes.materialType = TESManager.MWMaterialType.Standard; break;
                             }
                             break;
                         case "RoomScale": ParseBool(value, ref tes.roomScale); break;
                         case "ForceControllers": ParseBool(value, ref tes.forceControllers); break;
                         case "CreaturesEnabled": ParseBool(value, ref tes.creaturesEnabled); break;
                         case "CameraFarClip": ParseFloat(value, ref tes.cameraFarClip, 5); break;
-                        case "XRVignette": ParseBool(value, ref tes.useXRVignette); break;
                         case "WaterQuality":
                             {
                                 int result;

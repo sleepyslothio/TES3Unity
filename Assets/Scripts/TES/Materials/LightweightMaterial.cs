@@ -8,6 +8,9 @@ namespace TESUnity
     /// </summary>
     public class LightweightMaterial : BaseMaterial
     {
+        public const string LitName = "Lightweight Render Pipeline/Lit";
+        public const string SimpleLitName = "Lightweight Render Pipeline/Simple Lit";
+
         private Material m_StandardPBR;
         private Material m_StandardSimple;
         private Material m_CutoutPBRMaterial;
@@ -16,10 +19,10 @@ namespace TESUnity
         public LightweightMaterial(TextureManager textureManager)
             : base(textureManager)
         {
-            m_StandardPBR = Resources.Load<Material>("Materials/Lightweight-PBR");
-            m_StandardSimple = Resources.Load<Material>("Materials/Lightweight-Simple");
-            m_CutoutPBRMaterial = Resources.Load<Material>("Materials/Lightweight-PBR-Cutout");
-            m_CutoutSimpleMaterial = Resources.Load<Material>("Materials/Lightweight-Simple-Cutout");
+            m_StandardPBR = Resources.Load<Material>("Materials/LWRP/Lit");
+            m_StandardSimple = Resources.Load<Material>("Materials/LWRP/SimpleLit");
+            m_CutoutPBRMaterial = Resources.Load<Material>("Materials/LWRP/Lit-Cutout");
+            m_CutoutSimpleMaterial = Resources.Load<Material>("Materials/LWRP/SimpleLit-Cutout");
         }
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
@@ -37,16 +40,29 @@ namespace TESUnity
                 else
                     material = BuildMaterial();
 
+                var hasNormalMap = false;
+
                 if (mp.textures.mainFilePath != null)
                 {
                     material.mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
 
-                    if (TESManager.instance.generateNormalMap)
+                    if (TESManager.instance.generateNormalMap && mp.textures.bumpFilePath == null)
+                    {
                         material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture, TESManager.instance.normalGeneratorIntensity));
+                        hasNormalMap = true;
+                    }
                 }
 
                 if (mp.textures.bumpFilePath != null)
+                {
                     material.SetTexture("_BumpMap", m_textureManager.LoadTexture(mp.textures.bumpFilePath));
+                    hasNormalMap = true;
+                }
+
+                if (hasNormalMap)
+                    material.EnableKeyword("_NORMALMAP");
+                else
+                    material.DisableKeyword("_NORMALMAP");
 
                 m_existingMaterials[mp] = material;
             }
@@ -56,9 +72,8 @@ namespace TESUnity
         public override Material BuildMaterial()
         {
             var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
-            var material = new Material(Shader.Find(string.Format("Lightweight Render Pipeline/{0}", (pbr ? "Lit" : "Simple Lit"))));
+            var material = new Material(Shader.Find(pbr ? LitName : SimpleLitName));
             material.CopyPropertiesFromMaterial(pbr ? m_StandardPBR : m_StandardSimple);
-            material.EnableKeyword("_NORMALMAP");
             return material;
         }
 
@@ -76,7 +91,6 @@ namespace TESUnity
             var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
             material.CopyPropertiesFromMaterial(pbr ? m_CutoutPBRMaterial : m_CutoutSimpleMaterial);
             material.SetFloat("_Cutoff", cutoff);
-            material.EnableKeyword("_NORMALMAP");
             return material;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace TESUnity.Components.Utilities
 {
@@ -7,35 +8,24 @@ namespace TESUnity.Components.Utilities
     {
         private void Start()
         {
+            if (GraphicsSettings.renderPipelineAsset == null)
+            {
+                Destroy(this);
+                return;
+            }
+
             var renderer = GetComponent<Renderer>();
             var material = renderer.sharedMaterial;
 #if UNITY_EDITOR
             // To prevent the script to change the material in the editor.
             material = renderer.material;
 #endif
-            var tes = TESManager.instance;
-            var shaderName = "Unlit/Texture";
-
-            if (tes.materialType != TESManager.MWMaterialType.Unlit)
-            {
-                if (tes.renderPath == TESManager.RendererType.LightweightRP)
-                {
-                    var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
-                    shaderName = string.Format("LightweightPipeline/Standard ({0})", (pbr ? "Physically Based" : "Simple Lighting"));
-                }
-                else if (tes.renderPath == TESManager.RendererType.HDRP)
-                    shaderName = "HDRenderPipeline/Lit";
-            }
-
+            var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
+            var shaderName = pbr ? LightweightMaterial.LitName : LightweightMaterial.SimpleLitName;
             var shader = Shader.Find(shaderName);
 
             if (material.shader != shader)
                 material.shader = shader;
-        }
-
-        private void OnDestroy()
-        {
-            
         }
     }
 }

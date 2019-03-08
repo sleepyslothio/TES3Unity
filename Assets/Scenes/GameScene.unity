@@ -1104,28 +1104,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: alternativeDataPath.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: UIManager
       value: 
       objectReference: {fileID: 1214623308}
     - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: renderPath
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: normalGeneratorIntensity
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: alternativeDataPath.Array.data[0]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: dataPath
-      value: D:\Jeux\Oldies\Morrowind\Data Files
+      propertyPath: cameraFarClip
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
