@@ -124,6 +124,7 @@ namespace TESUnity
 
         private void Awake()
         {
+#if UNITY_STANDALONE || UNITY_EDITOR
             Debug.unityLogger.logEnabled = enableLog;
 
             instance = this;
@@ -155,6 +156,7 @@ namespace TESUnity
             }
             else
                 dataPath = path;
+#endif
         }
 
         private void Start()
@@ -171,6 +173,10 @@ namespace TESUnity
             cellRadius = 1;
             cellDetailRadius = 2;
             cellRadiusOnLoad = 1;
+            playMusic = false;
+#if !UNITY_EDITOR
+            dataPath = "/sdcard/tesunityxr";
+#endif
 #endif
 
             if (renderPath == RendererType.LightweightRP)
@@ -198,8 +204,17 @@ namespace TESUnity
             CellManager.detailRadius = cellDetailRadius;
             MorrowindEngine.cellRadiusOnLoad = cellRadiusOnLoad;
 
+            Debug.Log("Starting the data reader...");
+
             MWDataReader = new MorrowindDataReader(dataPath);
+
+            Debug.Log("Data Reader Ready!");
+
+            Debug.Log("Starting the Engine...");
+
             MWEngine = new MorrowindEngine(MWDataReader, UIManager);
+
+            Debug.Log("Morrowind Engine Initialized!"); 
 
             if (playMusic)
             {
@@ -217,8 +232,7 @@ namespace TESUnity
                 musicPlayer.Play();
             }
 
-            // Spawn the player.
-            //MWEngine.SpawnPlayerInside(playerPrefab, new Vector2i(4537908, 1061158912), new Vector3(0.8f, -0.45f, -1.4f));
+            Debug.Log("Spawning the player at the correct location.");
 
             MWEngine.SpawnPlayerOutside(playerPrefab, new Vector2i(-2, -9), new Vector3(-137.94f, 2.30f, -1037.6f));
         }
@@ -240,7 +254,7 @@ namespace TESUnity
 #endif
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             MWEngine.Update();
 

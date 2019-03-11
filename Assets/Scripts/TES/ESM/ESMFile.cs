@@ -102,9 +102,13 @@ namespace TESUnity
 
 			public ESMFile(string filePath)
 			{
+                Debug.Log("Reading Records...");
 				ReadRecords(filePath);
+
+                Debug.Log("Processing Records...");
 				PostProcessRecords();
 			}
+
 			void IDisposable.Dispose()
 			{
 				Close();

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+#if WAVEVR_SDK
+using wvr;
+#endif
 
 namespace TESUnity.Inputs
 {
@@ -24,6 +27,16 @@ namespace TESUnity.Inputs
         public static float GetAxis(string axis)
         {
             var result = Input.GetAxis(axis);
+
+#if WAVEVR_SDK
+            var left = WaveVR_Controller.IsLeftHanded;
+            var controller = left ? WVR_DeviceType.WVR_DeviceType_Controller_Left : WVR_DeviceType.WVR_DeviceType_Controller_Right;
+
+            if (axis == "Horizontal")
+                result += WaveVR_Controller.Input(controller).GetAxis(WVR_InputId.WVR_InputId_Alias1_Touchpad).x;
+            else if (axis == "Vertical")
+                result += WaveVR_Controller.Input(controller).GetAxis(WVR_InputId.WVR_InputId_Alias1_Touchpad).y;
+#endif
 
             if (XRSettings.enabled)
             {
@@ -48,6 +61,14 @@ namespace TESUnity.Inputs
         {
             var result = Input.GetButton(button);
 
+#if WAVEVR_SDK
+            var left = WaveVR_Controller.IsLeftHanded;
+            var controller = left ? WVR_DeviceType.WVR_DeviceType_Controller_Left : WVR_DeviceType.WVR_DeviceType_Controller_Right;
+
+            if (button == "Use")
+                result |= WaveVR_Controller.Input(controller).GetPress(WVR_InputId.WVR_InputId_Alias1_Touchpad);
+#endif
+
             if (XRSettings.enabled)
             {
                 if (m_XRMapping == null)
@@ -67,6 +88,14 @@ namespace TESUnity.Inputs
         {
             var result = Input.GetButtonUp(button);
 
+#if WAVEVR_SDK
+            var left = WaveVR_Controller.IsLeftHanded;
+            var controller = left ? WVR_DeviceType.WVR_DeviceType_Controller_Left : WVR_DeviceType.WVR_DeviceType_Controller_Right;
+
+            if (button == "Use")
+                result |= WaveVR_Controller.Input(controller).GetPressUp(WVR_InputId.WVR_InputId_Alias1_Touchpad);
+#endif
+
             if (XRSettings.enabled)
             {
                 if (m_XRMapping == null)
@@ -85,6 +114,14 @@ namespace TESUnity.Inputs
         public static bool GetButtonDown(string button)
         {
             var result = Input.GetButtonDown(button);
+
+#if WAVEVR_SDK
+            var left = WaveVR_Controller.IsLeftHanded;
+            var controller = left ? WVR_DeviceType.WVR_DeviceType_Controller_Left : WVR_DeviceType.WVR_DeviceType_Controller_Right;
+
+            if (button == "Use")
+                result |= WaveVR_Controller.Input(controller).GetPressDown(WVR_InputId.WVR_InputId_Alias1_Touchpad);
+#endif
 
             if (XRSettings.enabled)
             {

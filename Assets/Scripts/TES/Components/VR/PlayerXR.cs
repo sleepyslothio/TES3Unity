@@ -1,4 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
+using System.Collections;
 using System.Collections.Generic;
 using TESUnity.Inputs;
 using TESUnity.UI;
@@ -33,37 +34,38 @@ namespace TESUnity.Components.VR
         /// - The HUD canvas is not recommanded, it's usefull for small informations
         /// - The UI is for all other UIs: Menu, Life, etc.
         /// </summary>
-        private void Start()
+        private IEnumerator Start()
         {
-            var trackedPoseDrivers = GetComponentsInChildren<TrackedPoseDriver>(true);
-
-            if (!XRManager.Enabled)
-            {
-                foreach (var driver in trackedPoseDrivers)
-                {
-                    Destroy(driver.transform.GetChild(0).gameObject);
-                    Destroy(driver);
-                }
-
-                Destroy(this);
-                return;
-            }
+            yield return new WaitForEndOfFrame();
 
             var manager = TESManager.instance;
-            var renderScale = manager.renderScale;
 
-            if (renderScale > 0 && renderScale <= 2)
-                XRManager.GetActiveDevice().RenderScale = manager.renderScale;
+            if (manager != null)
+            {
+                var renderScale = manager.renderScale;
+
+                if (renderScale > 0 && renderScale <= 2)
+                    XRManager.GetActiveDevice().RenderScale = manager.renderScale;
+
+                // Setup RoomScale/Sitted mode.
+                var trackingSpaceType = TESManager.instance.roomScale ? TrackingSpaceType.RoomScale : TrackingSpaceType.Stationary;
+                XRDevice.SetTrackingSpaceType(trackingSpaceType);
+                if (trackingSpaceType == TrackingSpaceType.RoomScale)
+                    transform.GetChild(0).localPosition = Vector3.zero;
+            }
 
             var uiManager = FindObjectOfType<UIManager>();
 
-            if (_mainCanvas == null)
-                _mainCanvas = uiManager.GetComponent<Canvas>();
+            if (uiManager != null)
+            {
+                if (_mainCanvas == null)
+                    _mainCanvas = uiManager.GetComponent<Canvas>();
 
-            if (_mainCanvas == null)
-                throw new UnityException("The Main Canvas Is Null");
+                if (_mainCanvas == null)
+                    throw new UnityException("The Main Canvas Is Null");
 
-            uiManager.Crosshair.Enabled = false;
+                uiManager.Crosshair.Enabled = false;
+            }
 
             _canvas = _mainCanvas.GetComponent<RectTransform>();
             _pivotCanvas = _canvas.parent;
@@ -89,17 +91,14 @@ namespace TESUnity.Components.VR
             // Setup the camera
             Camera.main.nearClipPlane = 0.1f;
 
-            // Setup RoomScale/Sitted mode.
-            var trackingSpaceType = TESManager.instance.roomScale ? TrackingSpaceType.RoomScale : TrackingSpaceType.Stationary;
-            XRDevice.SetTrackingSpaceType(trackingSpaceType);
-            if (trackingSpaceType == TrackingSpaceType.RoomScale)
-                transform.GetChild(0).localPosition = Vector3.zero;
-
             RecenterOrientationAndPosition();
         }
 
         private void Update()
         {
+            if (_pivotCanvas == null)
+                return;
+
             // At any time, the user might want to reset the orientation and position.
             if (InputManager.GetButtonDown("Recenter"))
                 RecenterOrientationAndPosition();

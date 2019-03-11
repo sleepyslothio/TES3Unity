@@ -18,7 +18,12 @@ namespace TESUnity.Components
         {
             var savedPath = GameSettings.GetDataPath();
             if (savedPath != string.Empty)
+            {
+                Debug.Log("Try Loading the game.");
                 StartCoroutine(LoadWorld(savedPath));
+            }
+            else
+                Debug.Log("Bad game data path.");
         }
 
         public void LoadWorld()

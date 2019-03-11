@@ -57,12 +57,12 @@ MonoBehaviour:
   cellDetailRadius: 3
   cellRadiusOnLoad: 1
   materialType: 0
-  renderPath: 2
+  renderPath: 0
   cameraFarClip: 500
   srpQuality: 2
   lightweightAssets:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: ef1cd3c74ac5bed4589a18e5db92cd31, type: 2}
+  - {fileID: 11400000, guid: b130335045a0fa846b08b62be1eb1e8a, type: 2}
   - {fileID: 11400000, guid: fe63e7f2b761ec040b9225f19032f6d9, type: 2}
   renderScale: 1
   ambientIntensity: 1.5
@@ -79,7 +79,6 @@ MonoBehaviour:
   followHeadDirection: 0
   roomScale: 0
   forceControllers: 1
-  useXRVignette: 0
   UIManager: {fileID: 0}
   UIBackgroundImg: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   UICheckmarkImg: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}

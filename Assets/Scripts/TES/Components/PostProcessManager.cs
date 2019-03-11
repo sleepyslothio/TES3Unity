@@ -1,5 +1,6 @@
 ﻿using Demonixis.Toolbox.XR;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.XR;
@@ -9,13 +10,23 @@ namespace TESUnity.Components
     [RequireComponent(typeof(PostProcessLayer))]
     public sealed class PostProcessManager : MonoBehaviour
     {
-        private void Start()
+        private IEnumerator Start()
         {
+#if UNITY_ANDROID
+            var layer = GetComponent<PostProcessLayer>();
+            var volume = FindObjectOfType<PostProcessVolume>();
+            layer.enabled = false;
+            volume.enabled = false;
+            yield break;
+#else
+            yield return new WaitForEndOfFrame();
+
 #if UNITY_EDITOR
             if (TESManager.instance._bypassINIConfig)
-                return;
+                yield break;
 #endif
             UpdateEffects();
+#endif
         }
 
         public void UpdateEffects()

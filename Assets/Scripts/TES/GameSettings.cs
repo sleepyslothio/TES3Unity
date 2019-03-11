@@ -12,7 +12,7 @@ namespace TESUnity
 
         public static void SaveValue(string parameter, string value)
         {
-#if !UNITY_ANDROID
+#if UNITY_STANDALONE || UNITY_EDITOR
             if (!File.Exists(ConfigFile))
                 return;
 
@@ -41,31 +41,9 @@ namespace TESUnity
             SaveValue(MWDataPathName, dataPath);
         }
 
-#if UNITY_ANDROID
-        private static string GetExternalFilePath()
-        {
-            if (Directory.Exists("/storage/extSdCard"))
-                return "/storage/extSdCard";
-            else if (Directory.Exists("/storage/sdcard1"))
-                return "/storage/sdcard1";
-            else if (Directory.Exists("/storage/usbcard1"))
-                return "storage/usbcard1";
-            else if (Directory.Exists("/storage/sdcard0"))
-                return "/storage/sdcard0";
-            else if (Directory.Exists("/storage/sdcard"))
-                return "/storage/sdcard";
-
-            return Application.persistentDataPath;
-        }
-#endif
-
         public static string GetDataPath()
         {
-#if UNITY_ANDROID
-            var path = GetExternalFilePath();
-            return Path.Combine(path, "TESUnity", "Data Files");
-#else
-            
+#if UNITY_STANDALONE || UNITY_EDITOR
             if (!File.Exists("config.ini"))
                 return string.Empty;
 
@@ -81,6 +59,8 @@ namespace TESUnity
             }
 
             return string.Empty;
+#else
+            return Application.persistentDataPath;
 #endif
         }
 
@@ -90,7 +70,8 @@ namespace TESUnity
         /// </summary>
         public static string CheckSettings(TESManager tes)
         {
-            var path = string.Empty;
+#if UNITY_STANDALONE || UNITY_EDITOR
+            var path = Application.persistentDataPath;
             var lines = File.ReadAllLines(ConfigFile);
             var temp = new string[2];
             var value = string.Empty;
@@ -187,10 +168,14 @@ namespace TESUnity
             }
 
             return path;
+#else
+            return Application.persistentDataPath;
+#endif
         }
 
         public static void CreateConfigFile()
         {
+#if UNITY_STANDALONE || UNITY_EDITOR
             var sb = new StringBuilder();
             sb.Append("# TESUnity Configuration File\r\n");
             sb.Append("\r\n");
@@ -235,6 +220,7 @@ namespace TESUnity
             sb.Append("CreaturesEnabled = False\r\n");
 
             File.WriteAllText(ConfigFile, sb.ToString());
+#endif
         }
 
         private static bool ParseBool(string value, bool defaultValue)

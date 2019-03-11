@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace TESUnity
 {
@@ -43,8 +44,10 @@ namespace TESUnity
 
 		public BSAFile(string filePath)
 		{
+            Debug.Log("Reading the bsa data...");
 			reader = new UnityBinaryReader(File.Open(filePath, FileMode.Open, FileAccess.Read));
 
+            Debug.Log("Reading data...");
 			ReadMetadata();
 		}
 

@@ -1108,12 +1108,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1214623308}
     - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: renderPath
+      propertyPath: followHeadDirection
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: cameraFarClip
-      value: 100
+      propertyPath: roomScale
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
