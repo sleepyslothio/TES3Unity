@@ -36,10 +36,13 @@ namespace TESUnity.Components.VR
         /// </summary>
         private IEnumerator Start()
         {
+            if (!XRManager.Enabled)
+                yield break;
+
             yield return new WaitForEndOfFrame();
 
             var manager = TESManager.instance;
-
+            
             if (manager != null)
             {
                 var renderScale = manager.renderScale;

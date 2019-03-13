@@ -56,8 +56,8 @@ MonoBehaviour:
   cellRadius: 1
   cellDetailRadius: 3
   cellRadiusOnLoad: 1
-  materialType: 0
-  renderPath: 0
+  materialType: 1
+  renderPath: 2
   cameraFarClip: 500
   srpQuality: 2
   lightweightAssets:
@@ -67,17 +67,17 @@ MonoBehaviour:
   renderScale: 1
   ambientIntensity: 1.5
   renderSunShadows: 1
-  renderLightShadows: 0
+  renderLightShadows: 1
   renderExteriorCellLights: 1
   animateLights: 1
-  dayNightCycle: 1
+  dayNightCycle: 0
   generateNormalMap: 1
   normalGeneratorIntensity: 0.5
   postProcessingQuality: 3
   antiAliasing: 3
   waterBackSideTransparent: 0
   followHeadDirection: 0
-  roomScale: 0
+  roomScale: 1
   forceControllers: 1
   UIManager: {fileID: 0}
   UIBackgroundImg: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}

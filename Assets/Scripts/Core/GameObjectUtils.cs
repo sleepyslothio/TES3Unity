@@ -1,6 +1,6 @@
 ﻿using TESUnity;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.LightweightPipeline;
+using UnityEngine.Rendering.LWRP;
 using UnityEngine.Rendering;
 
 public static class GameObjectUtils

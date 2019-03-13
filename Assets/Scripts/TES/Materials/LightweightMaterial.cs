@@ -44,11 +44,13 @@ namespace TESUnity
 
                 if (mp.textures.mainFilePath != null)
                 {
-                    material.mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
+                    var mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
+
+                    material.SetTexture("_BaseMap", mainTexture);
 
                     if (TESManager.instance.generateNormalMap && mp.textures.bumpFilePath == null)
                     {
-                        material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture, TESManager.instance.normalGeneratorIntensity));
+                        material.SetTexture("_BumpMap", GenerateNormalMap(mainTexture, TESManager.instance.normalGeneratorIntensity));
                         hasNormalMap = true;
                     }
                 }

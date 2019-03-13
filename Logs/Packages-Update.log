@@ -19,3 +19,16 @@ The following packages were updated:
   com.unity.shadergraph from version 4.0.1-preview to 4.1.0-preview
 >>>>>>> 003c0216b3351bb8c11051bafaaab1d6aa26aa9d
   com.unity.xr.oculus.standalone from version 1.28.0 to 1.29.0
+
+=== Wed Mar 13 13:23:00 2019
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were added:
+  com.unity.timeline@1.0.0
+  com.unity.xr.legacyinputhelpers@1.0.0
+The following packages were updated:
+  com.unity.package-manager-ui from version 2.0.3 to 2.1.1
+  com.unity.render-pipelines.lightweight from version 4.10.0-preview to 5.2.3
+  com.unity.shadergraph from version 4.10.0-preview to 5.2.3

@@ -4,7 +4,7 @@ using System.Linq;
 using TESUnity.Components.Records;
 using TESUnity.ESM;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.LightweightPipeline;
+using UnityEngine.Rendering.LWRP;
 using UnityEngine.Rendering;
 
 namespace TESUnity
@@ -558,6 +558,10 @@ namespace TESUnity
                     splat.diffuseTexture = texture;
                     splat.smoothness = 0;
                     splat.metallic = 0;
+
+                    if (TESManager.instance.generateNormalMap)
+                        splat.normalMapTexture = BaseMaterial.GenerateNormalMap(texture, TESManager.instance.normalGeneratorIntensity);
+
                     splat.tileSize = new Vector2(6, 6);
 
                     // Update collections.

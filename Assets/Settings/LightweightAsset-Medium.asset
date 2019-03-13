@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: LightweightAsset-Medium
   m_EditorClassIdentifier: 
   k_AssetVersion: 4
+  m_RendererType: 1
+  m_RendererData: {fileID: 0}
   m_RequireDepthTexture: 0
   m_RequireOpaqueTexture: 0
   m_OpaqueDownsampling: 1
-  m_SupportsHDR: 1
+  m_SupportsHDR: 0
   m_MSAA: 2
   m_RenderScale: 1
   m_MainLightRenderingMode: 1
@@ -30,17 +32,15 @@ MonoBehaviour:
   m_ShadowCascades: 1
   m_Cascade2Split: 0.25
   m_Cascade4Split: {x: 0.067, y: 0.2, z: 0.467}
+  m_ShadowDepthBias: 1
+  m_ShadowNormalBias: 1
   m_SoftShadowsSupported: 0
+  m_UseSRPBatcher: 1
   m_SupportsDynamicBatching: 1
   m_MixedLightingSupported: 1
-  m_SavedXRConfig:
-    renderScale: 1
-    viewportScale: 1
-    useOcclusionMesh: 1
-    occlusionMaskScale: 1
   m_ShadowType: 2
   m_LocalShadowsSupported: 1
   m_LocalShadowsAtlasResolution: 512
   m_MaxPixelLights: 2
   m_ShadowAtlasResolution: 1024
-  m_ResourcesAsset: {fileID: 11400000, guid: aac5a08c32552a14c89394b703f1978a, type: 2}
+  m_ShaderVariantLogLevel: 0

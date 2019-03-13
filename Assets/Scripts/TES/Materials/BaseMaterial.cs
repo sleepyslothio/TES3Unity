@@ -24,7 +24,7 @@ namespace TESUnity
         public abstract Material BuildMaterialTested(float cutoff = 0.5f);
 
         // https://gamedev.stackexchange.com/questions/106703/create-a-normal-map-using-a-script-unity
-        protected static Texture2D GenerateNormalMap(Texture2D source, float strength)
+        public static Texture2D GenerateNormalMap(Texture2D source, float strength)
         {
             strength = Mathf.Clamp(strength, 0.0F, 100.0f);
 
