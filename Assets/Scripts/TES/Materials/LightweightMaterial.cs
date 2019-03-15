@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if LWRP_ENABLED
+using UnityEngine;
 using ur = UnityEngine.Rendering;
 
 namespace TESUnity
@@ -97,3 +98,4 @@ namespace TESUnity
         }
     }
 }
+#endif

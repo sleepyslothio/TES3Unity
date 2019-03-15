@@ -2,11 +2,14 @@
 using System.IO;
 using TESUnity.UI;
 using UnityEngine;
+#if LWRP_ENABLED
 using UnityEngine.Rendering.LWRP;
 using UnityEngine.Rendering;
+#endif
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.Water;
+using TESUnity.Inputs;
 
 namespace TESUnity
 {
@@ -36,7 +39,7 @@ namespace TESUnity
 
         public const string Version = "0.9.0";
 
-        #region Inspector-set Members
+#region Inspector-set Members
 
 #if UNITY_EDITOR
         [Header("Editor Only")]
@@ -65,7 +68,6 @@ namespace TESUnity
         public RendererType renderPath = RendererType.Forward;
         public float cameraFarClip = 500.0f;
         public SRPQuality srpQuality = SRPQuality.Medium;
-        public LightweightRenderPipelineAsset[] lightweightAssets;
         public float renderScale = 1.0f;
 
         [Header("Lighting")]
@@ -106,29 +108,22 @@ namespace TESUnity
         public bool creaturesEnabled = false;
         public bool npcsEnabled = false;
 
-        #endregion
+#endregion
 
         private MorrowindDataReader MWDataReader = null;
         private MorrowindEngine MWEngine = null;
         private MusicPlayer musicPlayer = null;
 
-        public MorrowindEngine Engine
-        {
-            get { return MWEngine; }
-        }
-
-        public TextureManager TextureManager
-        {
-            get { return MWEngine.textureManager; }
-        }
+        public MorrowindEngine Engine => MWEngine;
+        public TextureManager TextureManager => MWEngine.textureManager;
 
         private void Awake()
         {
-#if UNITY_STANDALONE || UNITY_EDITOR
             Debug.unityLogger.logEnabled = enableLog;
 
             instance = this;
 
+#if UNITY_STANDALONE || UNITY_EDITOR
             var path = dataPath;
 
 #if UNITY_EDITOR
@@ -161,29 +156,49 @@ namespace TESUnity
 
         private void Start()
         {
+#if !SRP_ENABLED
+            if (renderPath == RendererType.LightweightRP)
+                renderPath = RendererType.Forward;
+#endif
+
 #if UNITY_ANDROID
             renderPath = RendererType.Forward;
             postProcessingQuality = PostProcessingQuality.None;
-            materialType = MWMaterialType.Standard;
+            materialType = MWMaterialType.PBR;
+            renderSunShadows = false;
+            cameraFarClip = 100;
+            generateNormalMap = false;
             renderSunShadows = false;
             renderLightShadows = false;
-            renderExteriorCellLights = false;
-            animateLights = false;
+            ambientIntensity = 3;
+            renderLightShadows = false;
+            renderExteriorCellLights = true;
+            animateLights = true;
             dayNightCycle = false;
             cellRadius = 1;
             cellDetailRadius = 2;
             cellRadiusOnLoad = 1;
-            playMusic = false;
+            playMusic = true;
+            waterBackSideTransparent = false;
+            waterQuality = Water.WaterMode.Simple;
+
+            InputManager.TryInitializeMobileTouch();
 #if !UNITY_EDITOR
-            dataPath = "/sdcard/tesunityxr";
+            dataPath = "/sdcard/TESUnityXR";
 #endif
 #endif
 
+#if LWRP_ENABLED || HDRP_ENABLED
             if (renderPath == RendererType.LightweightRP)
             {
-                var asset = lightweightAssets[(int)srpQuality];
+                var target = srpQuality.ToString();
+
+#if UNITY_ANDROID
+                target = "Mobile";
+#endif
+
+                var asset = Resources.Load<LightweightRenderPipelineAsset>($"Rendering/LWRP/Assets/LightweightAsset-{target}");
                 asset.renderScale = renderScale;
-                GraphicsSettings.useScriptableRenderPipelineBatching = true;
                 GraphicsSettings.renderPipelineAsset = asset;
 
                 // Only this mode is compatible with SRP.
@@ -191,6 +206,7 @@ namespace TESUnity
             }
             else
                 GraphicsSettings.renderPipelineAsset = null;
+#endif
 
             if (UIManager == null)
             {
@@ -204,35 +220,29 @@ namespace TESUnity
             CellManager.detailRadius = cellDetailRadius;
             MorrowindEngine.cellRadiusOnLoad = cellRadiusOnLoad;
 
-            Debug.Log("Starting the data reader...");
-
             MWDataReader = new MorrowindDataReader(dataPath);
-
-            Debug.Log("Data Reader Ready!");
-
-            Debug.Log("Starting the Engine...");
-
             MWEngine = new MorrowindEngine(MWDataReader, UIManager);
-
-            Debug.Log("Morrowind Engine Initialized!"); 
 
             if (playMusic)
             {
                 // Start the music.
                 musicPlayer = new MusicPlayer();
 
-                foreach (var songFilePath in Directory.GetFiles(dataPath + "/Music/Explore"))
+                var songs = Directory.GetFiles(dataPath + "/Music/Explore");
+
+                if (songs.Length > 0)
                 {
-                    if (!songFilePath.Contains("Morrowind Title"))
+                    foreach (var songFilePath in songs)
                     {
-                        musicPlayer.AddSong(songFilePath);
+                        if (!songFilePath.Contains("Morrowind Title"))
+                        {
+                            musicPlayer.AddSong(songFilePath);
+                        }
                     }
+
+                    musicPlayer.Play();
                 }
-
-                musicPlayer.Play();
             }
-
-            Debug.Log("Spawning the player at the correct location.");
 
             MWEngine.SpawnPlayerOutside(playerPrefab, new Vector2i(-2, -9), new Vector3(-137.94f, 2.30f, -1037.6f));
         }
@@ -245,7 +255,7 @@ namespace TESUnity
                 MWDataReader = null;
             }
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR && (LWRP_ENABLED || HDRP_ENABLED)
             if (renderPath == RendererType.LightweightRP)
             {
                 var asset = lightweightAssets[(int)srpQuality];

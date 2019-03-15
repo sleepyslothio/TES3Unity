@@ -1,7 +1,9 @@
 ﻿using TESUnity;
 using UnityEngine;
-using UnityEngine.Rendering.LWRP;
 using UnityEngine.Rendering;
+#if LWRP_ENABLED
+using UnityEngine.Rendering.LWRP;
+#endif
 
 public static class GameObjectUtils
 {
@@ -103,11 +105,17 @@ public static class GameObjectUtils
         terrainObject.isStatic = true;
 
         var terrain = terrainObject.AddComponent<Terrain>();
+        var srp = GraphicsSettings.renderPipelineAsset;
 
-        if (GraphicsSettings.renderPipelineAsset is LightweightRenderPipelineAsset)
+        if (srp != null)
         {
-            terrain.materialType = Terrain.MaterialType.Custom;
-            terrain.materialTemplate = Resources.Load<Material>("Materials/LWRP/Lit-Terrain");
+#if LWRP_ENABLED
+            if (srp is LightweightRenderPipelineAsset)
+            {
+                terrain.materialType = Terrain.MaterialType.Custom;
+                terrain.materialTemplate = Resources.Load<Material>("Materials/LWRP/Lit-Terrain");
+            }
+#endif
         }
         else
         {

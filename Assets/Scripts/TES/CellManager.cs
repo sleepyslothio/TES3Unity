@@ -4,8 +4,6 @@ using System.Linq;
 using TESUnity.Components.Records;
 using TESUnity.ESM;
 using UnityEngine;
-using UnityEngine.Rendering.LWRP;
-using UnityEngine.Rendering;
 
 namespace TESUnity
 {
@@ -364,6 +362,7 @@ namespace TESUnity
                 Debug.Log("Unknown Object: " + refCellObjInfo.refObjDataGroup.NAME.value);
             }
         }
+
         private GameObject InstantiateLight(LIGHRecord LIGH, bool indoors)
         {
             var lightObj = new GameObject("Light");
@@ -375,6 +374,10 @@ namespace TESUnity
             lightComponent.intensity = 1.5f;
             lightComponent.bounceIntensity = 0f;
             lightComponent.shadows = TESManager.instance.renderLightShadows ? LightShadows.Soft : LightShadows.None;
+
+#if UNITY_ANDROID || UNITY_IOS
+            lightComponent.renderMode = LightRenderMode.ForceVertex;
+#endif
 
             if (!indoors && !TESManager.instance.renderExteriorCellLights) // disabling exterior cell lights because there is no day/night cycle
             {

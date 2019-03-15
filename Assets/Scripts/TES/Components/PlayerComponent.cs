@@ -79,10 +79,14 @@ namespace TESUnity
                 camera.allowMSAA = false;
             }
 
-            camera.allowHDR = true;
+            camera.allowHDR = tes.renderPath == TESManager.RendererType.Deferred;
             camera.farClipPlane = tes.cameraFarClip;
 
             _crosshair = FindObjectOfType<UICrosshair>();
+
+#if !UNITY_STANDALONE
+            Cursor.lockState = CursorLockMode.None;
+#endif
         }
 
         private void Update()
@@ -92,7 +96,7 @@ namespace TESUnity
 
             Rotate();
 
-            if (Input.GetKeyDown(KeyCode.Tab))
+            if (Input.GetKeyDown(KeyCode.Tab) || Input.touchCount == 3)
                 isFlying = !isFlying;
 
             if (_isGrounded && !isFlying && InputManager.GetButtonDown("Jump"))
@@ -119,6 +123,7 @@ namespace TESUnity
 
         private void Rotate()
         {
+#if UNITY_STANDALONE
             if (Cursor.lockState != CursorLockMode.Locked)
             {
                 if (Input.GetMouseButtonDown(0))
@@ -134,6 +139,7 @@ namespace TESUnity
                     Cursor.visible = true;
                 }
             }
+#endif
 
             var eulerAngles = new Vector3(_camTransform.localEulerAngles.x, _transform.localEulerAngles.y, 0);
 

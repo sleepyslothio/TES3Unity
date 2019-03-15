@@ -1,15 +1,22 @@
-﻿using Demonixis.Toolbox.XR;
+﻿#if UNITY_ANDROID || UNITY_IOS
+#define MOBILE_INPUT
+#endif
+
+using Demonixis.Toolbox.XR;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
-#if WAVEVR_SDK
-using wvr;
-#endif
 
 namespace TESUnity.Inputs
 {
     public static class InputManager
     {
+#if MOBILE_INPUT
+        private static LeftJoystick LeftJoystick = null;
+        private static RightJoystick RightJoystick = null;
+        private static bool UseTouch = false;
+#endif
+
         private struct XRButtonMapping
         {
             public XRButton Button { get; set; }
@@ -24,11 +31,44 @@ namespace TESUnity.Inputs
 
         private static Dictionary<string, XRButtonMapping> m_XRMapping = null;
 
+        public static void TryInitializeMobileTouch()
+        {
+#if MOBILE_INPUT
+            if (XRManager.Enabled || LeftJoystick != null)
+                return;
+
+            var prefab = Resources.Load<GameObject>("Prefabs/TouchJoysticks");
+            var go = GameObject.Instantiate(prefab);
+            LeftJoystick = go.GetComponentInChildren<LeftJoystick>();
+            RightJoystick = go.GetComponentInChildren<RightJoystick>();
+            UseTouch = true;
+#endif
+        }
+
         public static float GetAxis(string axis)
         {
             var result = Input.GetAxis(axis);
+            var xrEnabled = XRSettings.enabled;
 
-            if (XRSettings.enabled)
+#if MOBILE_INPUT
+            if (UseTouch)
+            {
+                // Reset the value from Input.GetAxis
+                if (Input.touchCount > 0)
+                    result = 0;
+
+                if (axis == "Horizontal")
+                    result += LeftJoystick.GetInputDirection().x;
+                else if (axis == "Vertical")
+                    result += LeftJoystick.GetInputDirection().y;
+                else if (axis == "Mouse X")
+                    result += RightJoystick.GetInputDirection().x;
+                else if (axis == "Mouse Y")
+                    result += RightJoystick.GetInputDirection().y;
+            }
+#endif
+
+            if (xrEnabled)
             {
                 if (axis == "Horizontal")
                     result += XRInput.GetAxis(XRAxis.ThumbstickX, true);
@@ -88,6 +128,14 @@ namespace TESUnity.Inputs
         public static bool GetButtonDown(string button)
         {
             var result = Input.GetButtonDown(button);
+
+#if UNITY_ANDROID
+            if (UseTouch)
+            {
+                if (button == "Use")
+                    return Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began;
+            }
+#endif
 
             if (XRSettings.enabled)
             {

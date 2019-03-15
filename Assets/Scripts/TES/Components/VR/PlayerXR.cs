@@ -37,7 +37,10 @@ namespace TESUnity.Components.VR
         private IEnumerator Start()
         {
             if (!XRManager.Enabled)
+            {
+                enabled = false;
                 yield break;
+            }
 
             yield return new WaitForEndOfFrame();
 

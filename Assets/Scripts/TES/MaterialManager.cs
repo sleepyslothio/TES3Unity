@@ -43,11 +43,11 @@ namespace TESUnity
             var tes = TESManager.instance;
 
             // Order is important
+#if LWRP_ENABLED
             if (tes.renderPath == TESManager.RendererType.LightweightRP)
-            {
                 m_Material = new LightweightMaterial(textureManager);
-            }
-            else if (tes.materialType == TESManager.MWMaterialType.PBR)
+#endif
+            if (tes.materialType == TESManager.MWMaterialType.PBR)
                 m_Material = new StandardMaterial(textureManager);
             else
                 m_Material = new DiffuseMaterial(textureManager);

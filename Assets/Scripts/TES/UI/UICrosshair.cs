@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Demonixis.Toolbox.XR;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace TESUnity.UI
@@ -24,6 +25,8 @@ namespace TESUnity.UI
             var textureManager = TESManager.instance.TextureManager;
             var crosshairTexture = textureManager.LoadTexture("target", true);
             _crosshair.sprite = GUIUtils.CreateSprite(crosshairTexture);
+
+            _crosshair.enabled = !XRManager.Enabled;
         }
 
         public void SetActive(bool active)

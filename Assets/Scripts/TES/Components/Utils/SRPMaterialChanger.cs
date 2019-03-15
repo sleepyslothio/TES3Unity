@@ -7,6 +7,7 @@ namespace TESUnity.Components.Utilities
     [RequireComponent(typeof(Renderer))]
     public sealed class SRPMaterialChanger : MonoBehaviour
     {
+#if LWRP_ENABLED || HDRP_ENABLED
         private IEnumerator Start()
         {
             yield return new WaitForEndOfFrame();
@@ -27,5 +28,6 @@ namespace TESUnity.Components.Utilities
                     material.shader = shader;
             }
         }
+#endif
     }
 }

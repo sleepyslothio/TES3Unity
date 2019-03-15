@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 4000010397047646}
   - component: {fileID: 683780764699907693}
   - component: {fileID: 1968203508281764117}
-  - component: {fileID: 7038431647727408480}
-  - component: {fileID: 1274984744540998514}
   m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
@@ -63,53 +61,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_priority: 0
---- !u!114 &7038431647727408480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000011355703082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0135838a38e879479ca24cbeeb25b59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_priority: 0
-  m_HeadDofNum: 0
-  m_HandDofNum: 0
-  m_RenderTextureDepth: 24
-  m_RenderTextureLevel: 0
-  m_RenderTextureAntiAliasing: 2
-  m_ReplaceTrackedPoseDrivers: 1
-  m_AllowHDROnFirstGen: 0
-  m_CameraChildren:
-  - {fileID: 387264259444147475, guid: 29a15b291afdbe740b23328b965e7c10, type: 3}
-  - {fileID: 7149808799717918370, guid: 0c902eda2d26a544883fb6e63f6adba9, type: 3}
-  m_SDKChildren:
-  - {fileID: 4180830383660207335, guid: 64edb539bdb65424ab008f7af967b843, type: 3}
-  - {fileID: 7384739720805808130, guid: f5c143d4e61d22144b7305d44cf33aa5, type: 3}
-  - {fileID: 4990481323364907421, guid: 6d781719b7d8581459cce3af37464949, type: 3}
-  - {fileID: 8236748095487469287, guid: caee1e16e85630e4b91789ebb39a2556, type: 3}
-  - {fileID: 3134906527786952441, guid: 492e85030420a594eaac7bf546274d64, type: 3}
-  - {fileID: 1629620508363545798, guid: 5909caa673dbfb847b2835b22dd9717a, type: 3}
-  m_DisableInEditor: 0
---- !u!114 &1274984744540998514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000011355703082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2d61e51e1615c54c9eb75e7ef11fb4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_priority: 0
-  m_ReplaceTrackedPoseDriver: 1
-  m_ControllerFollowsHead: 1
-  m_DisableInEditor: 0
 --- !u!1 &1000011480992356
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,9 +206,10 @@ Camera:
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_GateFitMode: 2
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -428,12 +380,13 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000013604504344}
   m_Enabled: 0
-  serializedVersion: 8
+  serializedVersion: 9
   m_Type: 2
   m_Color: {r: 0.9607843, g: 0.54901963, b: 0.15686275, a: 1}
   m_Intensity: 1.5
   m_Range: 20
   m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -443,6 +396,24 @@ Light:
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
@@ -450,12 +421,15 @@ Light:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &1000014283173620

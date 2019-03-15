@@ -73,8 +73,8 @@ namespace TESUnity
 
             var tes = TESManager.instance;
 
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientIntensity = tes.ambientIntensity;
+            //RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            //RenderSettings.ambientIntensity = tes.ambientIntensity;
 
             sunObj = GameObjectUtils.CreateDirectionalLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
             sunObj.GetComponent<Light>().shadows = tes.renderSunShadows ? LightShadows.Soft : LightShadows.None;
@@ -108,8 +108,10 @@ namespace TESUnity
                 sideMaterial.renderQueue = -1;
             }
 
-            Cursor.SetCursor(textureManager.LoadTexture("tx_cursor", true), Vector2.zero, CursorMode.Auto);
-
+#if UNITY_STANDALONE
+            if (!XRSettings.Enabled)
+                Cursor.SetCursor(textureManager.LoadTexture("tx_cursor", true), Vector2.zero, CursorMode.Auto);
+#endif
             _uiManager = uiManager;
             _uiManager.Active = true;
         }
@@ -193,7 +195,7 @@ namespace TESUnity
         }
 
         #endregion
-        
+
         public void Update()
         {
             // The current cell can be null if the player is outside of the defined game world.
@@ -261,9 +263,17 @@ namespace TESUnity
 
         #region Private
 
+        private void SetAmbientLight(Color color)
+        {
+#if UNITY_ANDROID
+            return;
+#endif
+            RenderSettings.ambientLight = color;
+        }
+
         private void OnExteriorCell(CELLRecord CELL)
         {
-            RenderSettings.ambientLight = defaultAmbientColor;
+            SetAmbientLight(defaultAmbientColor);
 
             sunObj.SetActive(true);
 
@@ -277,7 +287,7 @@ namespace TESUnity
         {
             if (CELL.AMBI != null)
             {
-                RenderSettings.ambientLight = ColorUtils.B8G8R8ToColor32(CELL.AMBI.ambientColor);
+                SetAmbientLight(ColorUtils.B8G8R8ToColor32(CELL.AMBI.ambientColor));
             }
 
             sunObj.SetActive(false);
