@@ -29,11 +29,11 @@ namespace TESUnity.Components.Records
                 Destroy(colliders[i]);
         }
 
-        void Update()
+        private void Update()
         {
             if (_isEquiped)
             {
-                if (InputManager.GetButtonDown("Attack"))
+                if (InputManager.GetButtonDown(MWButton.Attack))
                 {
                     if (_isVisible)
                         PlayAttackAnimation();

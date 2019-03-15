@@ -1,4 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
+using TESUnity.Inputs;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -23,10 +24,6 @@ namespace Demonixis.UniversalXR
         private GameObject m_TeleporterLinePrefab = null;
         [SerializeField]
         private float m_MaxDistance = 15.0f;
-        [SerializeField]
-        private bool m_LeftHand = false;
-        [SerializeField]
-        private XRButton m_Button = XRButton.Thumbstick;
 
         private void Start()
         {
@@ -104,9 +101,9 @@ namespace Demonixis.UniversalXR
 
         private void Update()
         {
-            if (XRInput.GetButton(m_Button, m_LeftHand))
+            if (InputManager.GetButton(MWButton.Teleport))
                 InputIsPressed();
-            else if (XRInput.GetButtonUp(m_Button, m_LeftHand))
+            else if (InputManager.GetButtonUp(MWButton.Teleport))
                 InputWasJustReleased();
         }
     }

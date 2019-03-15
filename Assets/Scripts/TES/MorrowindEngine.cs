@@ -230,7 +230,7 @@ namespace TESUnity
 
                         ShowInteractiveText(component);
 
-                        if (InputManager.GetButtonDown("Use"))
+                        if (InputManager.GetButtonDown(MWButton.Use))
                         {
                             if (component is DoorComponent)
                                 OpenDoor((DoorComponent)component);

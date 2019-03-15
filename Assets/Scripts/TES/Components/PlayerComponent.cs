@@ -99,7 +99,7 @@ namespace TESUnity
             if (Input.GetKeyDown(KeyCode.Tab) || Input.touchCount == 3)
                 isFlying = !isFlying;
 
-            if (_isGrounded && !isFlying && InputManager.GetButtonDown("Jump"))
+            if (_isGrounded && !isFlying && InputManager.GetButtonDown(MWButton.Jump))
             {
                 var newVelocity = _rigidbody.velocity;
                 newVelocity.y = 5;
@@ -107,7 +107,7 @@ namespace TESUnity
                 _rigidbody.velocity = newVelocity;
             }
 
-            if (InputManager.GetButtonDown("Light"))
+            if (InputManager.GetButtonDown(MWButton.Jump))
                 lantern.enabled = !lantern.enabled;
         }
 
@@ -147,7 +147,7 @@ namespace TESUnity
             if (eulerAngles.x > 180)
                 eulerAngles.x = eulerAngles.x - 360;
 
-            var deltaMouse = mouseSensitivity * (new Vector2(InputManager.GetAxis("Mouse X"), InputManager.GetAxis("Mouse Y")));
+            var deltaMouse = mouseSensitivity * (new Vector2(InputManager.GetAxis(MWAxis.MouseX), InputManager.GetAxis(MWAxis.MouseY)));
 
             eulerAngles.x = Mathf.Clamp(eulerAngles.x - deltaMouse.y, minVerticalAngle, maxVerticalAngle);
             eulerAngles.y = Mathf.Repeat(eulerAngles.y + deltaMouse.x, 360);
@@ -185,7 +185,7 @@ namespace TESUnity
         private Vector3 CalculateLocalMovementDirection()
         {
             // Calculate the local movement direction.
-            var direction = new Vector3(InputManager.GetAxis("Horizontal"), 0.0f, InputManager.GetAxis("Vertical"));
+            var direction = new Vector3(InputManager.GetAxis(MWAxis.Horizontal), 0.0f, InputManager.GetAxis(MWAxis.Vertical));
 
             // A small hack for French Keyboard...
             if (Application.systemLanguage == SystemLanguage.French)
@@ -215,10 +215,10 @@ namespace TESUnity
         {
             var speed = normalSpeed;
 
-            if (InputManager.GetButton("Run"))
+            if (InputManager.GetButton(MWButton.Run))
                 speed = fastSpeed;
 
-            else if (InputManager.GetButton("Slow"))
+            else if (InputManager.GetButton(MWButton.Slow))
                 speed = slowSpeed;
 
             if (isFlying)

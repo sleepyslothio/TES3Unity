@@ -1,205 +1,112 @@
-﻿#if UNITY_ANDROID || UNITY_IOS
-#define MOBILE_INPUT
-#endif
-
-using Demonixis.Toolbox.XR;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
 
 namespace TESUnity.Inputs
 {
+    public enum MWButton
+    {
+        None = 0, Jump, Light,
+        Run, Slow, Attack,
+        Recenter, Use, Menu,
+        Teleport
+    }
+
+    public enum MWAxis
+    {
+        None = 0, Horizontal, Vertical, MouseX, MouseY
+    }
+
     public static class InputManager
     {
-#if MOBILE_INPUT
-        private static LeftJoystick LeftJoystick = null;
-        private static RightJoystick RightJoystick = null;
-        private static bool UseTouch = false;
-#endif
+        private static IInputProvider[] InputProviders = null;
 
-        private struct XRButtonMapping
+        private static void EnsureStarted()
         {
-            public XRButton Button { get; set; }
-            public bool LeftHand { get; set; }
-
-            public XRButtonMapping(XRButton button, bool left)
-            {
-                Button = button;
-                LeftHand = left;
-            }
-        }
-
-        private static Dictionary<string, XRButtonMapping> m_XRMapping = null;
-
-        public static void TryInitializeMobileTouch()
-        {
-#if MOBILE_INPUT
-            if (XRManager.Enabled || LeftJoystick != null)
+            if (InputProviders == null)
                 return;
 
-            var prefab = Resources.Load<GameObject>("Prefabs/TouchJoysticks");
-            var go = GameObject.Instantiate(prefab);
-            LeftJoystick = go.GetComponentInChildren<LeftJoystick>();
-            RightJoystick = go.GetComponentInChildren<RightJoystick>();
-            UseTouch = true;
-#endif
-        }
-
-        public static float GetAxis(string axis)
-        {
-            var result = Input.GetAxis(axis);
-            var xrEnabled = XRSettings.enabled;
-
-#if MOBILE_INPUT
-            if (UseTouch)
+            var providers = new IInputProvider[]
             {
-                // Reset the value from Input.GetAxis
-                if (Input.touchCount > 0)
-                    result = 0;
-
-                if (axis == "Horizontal")
-                    result += LeftJoystick.GetInputDirection().x;
-                else if (axis == "Vertical")
-                    result += LeftJoystick.GetInputDirection().y;
-                else if (axis == "Mouse X")
-                    result += RightJoystick.GetInputDirection().x;
-                else if (axis == "Mouse Y")
-                    result += RightJoystick.GetInputDirection().y;
-            }
-#endif
-
-            if (xrEnabled)
-            {
-#if UNITY_ANDROID
-                var value = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
-                if (axis == "Horizontal")
-                    result = value.x;
-                else if (axis == "Vertical")
-                    result = value.y;
-#else
-                if (axis == "Horizontal")
-                    result += XRInput.GetAxis(XRAxis.ThumbstickX, true);
-                else if (axis == "Vertical")
-                    result += XRInput.GetAxis(XRAxis.ThumbstickY, true);
-                else if (axis == "Mouse X")
-                    result += XRInput.GetAxis(XRAxis.ThumbstickX, false);
-                else if (axis == "Mouse Y")
-                    result += XRInput.GetAxis(XRAxis.ThumbstickY, false);
-#endif
-
-                // Deadzone
-                if (Mathf.Abs(result) < 0.15f)
-                    result = 0.0f;
-            }
-
-            return result;
-        }
-
-        public static bool GetButton(string button)
-        {
-            var result = Input.GetButton(button);
-
-            if (XRSettings.enabled)
-            {
-                if (m_XRMapping == null)
-                    InitializeMapping();
-
-                if (m_XRMapping.ContainsKey(button))
-                {
-                    var mapping = m_XRMapping[button];
-                    result |= XRInput.GetButton(mapping.Button, mapping.LeftHand);
-                }
-
-#if UNITY_ANDROID
-                if (button == "Use")
-                    return OVRInput.Get(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.Active);
-                else if (button == "Menu")
-                    return OVRInput.Get(OVRInput.Button.Back, OVRInput.Controller.Active);
-
-                return false;
-#endif
-            }
-
-            return result;
-        }
-
-        public static bool GetButtonUp(string button)
-        {
-            var result = Input.GetButtonUp(button);
-
-            if (XRSettings.enabled)
-            {
-                if (m_XRMapping == null)
-                    InitializeMapping();
-
-                if (m_XRMapping.ContainsKey(button))
-                {
-                    var mapping = m_XRMapping[button];
-                    result |= XRInput.GetButtonUp(mapping.Button, mapping.LeftHand);
-                }
-
-#if UNITY_ANDROID
-                if (button == "Use")
-                    return OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.Active);
-                else if (button == "Menu")
-                    return OVRInput.GetUp(OVRInput.Button.Back, OVRInput.Controller.Active);
-
-                return false;
-#endif
-            }
-
-            return result;
-        }
-
-        public static bool GetButtonDown(string button)
-        {
-            var result = Input.GetButtonDown(button);
-
-#if UNITY_ANDROID
-            if (UseTouch)
-            {
-                if (button == "Use")
-                    return Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began;
-            }
-#endif
-
-            if (XRSettings.enabled)
-            {
-                if (m_XRMapping == null)
-                    InitializeMapping();
-
-                if (m_XRMapping.ContainsKey(button))
-                {
-                    var mapping = m_XRMapping[button];
-                    result |= XRInput.GetButtonDown(mapping.Button, mapping.LeftHand);
-                }
-
-#if UNITY_ANDROID
-                if (button == "Use")
-                    return OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.Active);
-                else if (button == "Menu")
-                    return OVRInput.GetDown(OVRInput.Button.Back, OVRInput.Controller.Active);
-
-                return false;
-#endif
-            }
-
-            return result;
-        }
-
-        private static void InitializeMapping()
-        {
-            m_XRMapping = new Dictionary<string, XRButtonMapping>()
-            {
-                { "Jump", new XRButtonMapping(XRButton.Thumbstick, true) },
-                { "Light", new XRButtonMapping(XRButton.Thumbstick, false) },
-                { "Run", new XRButtonMapping(XRButton.Grip, true) },
-                { "Slow", new XRButtonMapping(XRButton.Grip, false) },
-                { "Attack", new XRButtonMapping(XRButton.Trigger, false) },
-                { "Recenter", new XRButtonMapping(XRButton.Menu, false) },
-                { "Use", new XRButtonMapping(XRButton.Trigger, true) },
-                { "Menu", new XRButtonMapping(XRButton.Menu, true) }
+                new TouchInput(),
+                new OculusInput(),
+                new UnityXRInput(),
+                new DesktopInput()
             };
+
+            var list = new List<IInputProvider>();
+
+            foreach (var provider in providers)
+            {
+                if (provider.TryInitialize())
+                    list.Add(provider);
+            }
+
+            InputProviders = list.ToArray();
+        }
+
+        public static float GetAxis(MWAxis axis)
+        {
+            EnsureStarted();
+
+            var result = 0.0f;
+
+            foreach (var provider in InputProviders)
+            {
+                result = provider.GetAxis(axis);
+
+                if ((int)result != 0)
+                {
+                    Filter(ref result);
+                    return result;
+                }
+            }
+
+            return result;
+        }
+
+        private static void Filter(ref float value)
+        {
+            if (Mathf.Abs(value) < 0.15f)
+                value = 0.0f;
+        }
+
+        public static bool GetButton(MWButton button)
+        {
+            EnsureStarted();
+
+            foreach (var provider in InputProviders)
+            {
+                if (provider.GetButton(button))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool GetButtonUp(MWButton button)
+        {
+            EnsureStarted();
+
+            foreach (var provider in InputProviders)
+            {
+                if (provider.GetButtonUp(button))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool GetButtonDown(MWButton button)
+        {
+            EnsureStarted();
+
+            foreach (var provider in InputProviders)
+            {
+                if (provider.GetButtonDown(button))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

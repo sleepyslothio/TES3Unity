@@ -18,10 +18,7 @@ using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.Water;
 using UnityEngine.Rendering;
-#if MOBILE_BUILD
-using TESUnity.Inputs;
 using Demonixis.Toolbox.XR;
-#endif
 
 namespace TESUnity
 {
@@ -207,8 +204,6 @@ namespace TESUnity
             followHeadDirection = true;
             roomScale = false;
             renderScale = xr ? 0.85f : 1.0f;
-
-            InputManager.TryInitializeMobileTouch();
 
             if (xr)
                 QualitySettings.SetQualityLevel(0, false);

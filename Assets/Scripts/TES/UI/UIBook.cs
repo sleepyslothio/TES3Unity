@@ -52,9 +52,9 @@ namespace TESUnity.UI
             if (!_container.activeSelf)
                 return;
 
-            if (InputManager.GetButtonDown("Use"))
+            if (InputManager.GetButtonDown(MWButton.Use))
                 Take();
-            else if (InputManager.GetButtonDown("Menu"))
+            else if (InputManager.GetButtonDown(MWButton.Menu))
                 Close();
         }
 

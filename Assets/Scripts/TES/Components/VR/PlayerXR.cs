@@ -97,7 +97,7 @@ namespace TESUnity.Components.VR
                 return;
 
             // At any time, the user might want to reset the orientation and position.
-            if (InputManager.GetButtonDown("Recenter"))
+            if (InputManager.GetButtonDown(MWButton.Recenter))
                 RecenterOrientationAndPosition();
 
             RecenterUI();
