@@ -116,6 +116,13 @@ public static class GameObjectUtils
                 terrain.materialTemplate = Resources.Load<Material>("Materials/LWRP/Lit-Terrain");
             }
 #endif
+#if HDRP_ENABLED
+			if (srp is HDRenderPipelineAsset)
+			{
+				terrain.materialType = Terrain.MaterialType.Custom;
+				terrain.materialTemplate = Resources.Load<Material>("Materials/HDRP/Lit-Terrain");
+			}
+#endif
         }
         else
         {

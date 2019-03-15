@@ -12,13 +12,16 @@ namespace Demonixis.GunSpinningVR
     {
         public enum RenderingPath
         {
-            LegacyForward, LegacyDeferred, LWRP, HDRP
+            Legacy, LWRP, HDRP
         }
 
         private static readonly string[] AllSymbols = new string[]
         {
-            "LWRP_ENABLED", "HDRP_ENABLED"
+            "LEGACY_ENABLED", "LWRP_ENABLED", "HDRP_ENABLED"
         };
+
+        private const string LWRPPackageName = "com.unity.render-pipelines.lightweight";
+        private const string HDRPPackageName = "com.unity.render-pipelines.high-definition";
 
         private static bool[] EnabledFeatures;
         private static string[] FeatureNames;
@@ -41,6 +44,13 @@ namespace Demonixis.GunSpinningVR
                 FeatureNames[i] = Char.ToUpper(FeatureNames[i][0]) + FeatureNames[i].Substring(1);
             }
 
+            UpdateEnabled();
+        }
+
+        private static void UpdateEnabled()
+        {
+            var definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+
             for (var i = 0; i < EnabledFeatures.Length; i++)
                 EnabledFeatures[i] = definesString.Contains(AllSymbols[i]);
         }
@@ -49,19 +59,12 @@ namespace Demonixis.GunSpinningVR
         {
             Initialize();
 
-            GUILayout.Label($"Features:", EditorStyles.boldLabel);
+            GUILayout.Label($"Features", EditorStyles.boldLabel);
 
             for (var i = 0; i < FeatureNames.Length; i++)
-            {
-                var previous = EnabledFeatures[i];
-
                 EnabledFeatures[i] = GUILayout.Toggle(EnabledFeatures[i], FeatureNames[i]);
 
-                if (previous != EnabledFeatures[i])
-                    ChangeDefine(AllSymbols[i], EnabledFeatures[i]);
-            }
-
-            GUILayout.Label("Platforms:", EditorStyles.boldLabel);
+            GUILayout.Label("Actions", EditorStyles.boldLabel);
 
             if (GUILayout.Button("Legacy"))
                 SetupLegacy();
@@ -78,25 +81,34 @@ namespace Demonixis.GunSpinningVR
 
         public void SetupLegacy()
         {
-            Client.Remove("com.unity.xr.openvr.standalone");
+            Client.Remove(LWRPPackageName);
+            Client.Remove(HDRPPackageName);
+            RemoveAllSymbolsAdd("LEGACY_ENABLED");
+            UpdateEnabled();
         }
 
         public void SetupLWRP()
         {
-            Client.Add("com.unity.xr.oculus.standalone");
-            ChangeDefine("LWRP_ENABLED", true);
+            Client.Add(LWRPPackageName);
+            Client.Remove(HDRPPackageName);
+            RemoveAllSymbolsAdd("LWRP_ENABLED");
+            UpdateEnabled();
         }
 
         public void SetupHDRP()
         {
-            ChangeDefine("HDRP_ENABLED", true);
+            Client.Remove(LWRPPackageName);
+            Client.Add(HDRPPackageName);
+            RemoveAllSymbolsAdd("HDRP_ENABLED");
+            UpdateEnabled();
         }
 
         public void SetupAll()
         {
-            ChangeDefine("LWRP_ENABLED", true);
-            ChangeDefine("HDRP_ENABLED", true);
-            ChangeDefine("LEGACY_ENABLED", true);
+            Client.Add(LWRPPackageName);
+            Client.Add(HDRPPackageName);
+            AddDefines("LWRP_ENABLED", "HDRP_ENABLED", "LEGACY_ENABLED");
+            UpdateEnabled();
         }
 
         private static void RemoveAllSymbolsAdd(string symbolToAdd)
@@ -113,24 +125,19 @@ namespace Demonixis.GunSpinningVR
             PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, string.Join(";", symbols.ToArray()));
         }
 
-        public static void ChangeDefine(string symbol, bool add)
+        public static void AddDefines(params string[] symbolsToAdd)
         {
             var definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
             var symbols = definesString.Split(';').ToList();
 
-            if (add)
-            {
-                if (symbol == null || symbols.Contains(symbol))
-                    return;
 
-                symbols.Add(symbol);
-            }
-            else
-            {
-                if (symbol == null || !symbols.Contains(symbol))
-                    return;
+            if (symbolsToAdd == null)
+                return;
 
-                symbols.Remove(symbol);
+            foreach (var symbol in symbolsToAdd)
+            {
+                if (!symbols.Contains(symbol))
+                    symbols.AddRange(symbolsToAdd);
             }
 
             PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, string.Join(";", symbols.ToArray()));

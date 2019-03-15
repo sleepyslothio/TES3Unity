@@ -47,6 +47,10 @@ namespace TESUnity
             if (tes.renderPath == TESManager.RendererType.LightweightRP)
                 m_Material = new LightweightMaterial(textureManager);
 #endif
+#if HDRP_ENABLED
+			if (tes.renderPath == TESManager.RendererType.HDRP)
+                m_Material = new HDRPMaterial(textureManager);
+#endif
             if (tes.materialType == TESManager.MWMaterialType.PBR)
                 m_Material = new StandardMaterial(textureManager);
             else

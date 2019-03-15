@@ -70,6 +70,13 @@ namespace TESUnity.Inputs
 
             if (xrEnabled)
             {
+#if UNITY_ANDROID
+                var value = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
+                if (axis == "Horizontal")
+                    result = value.x;
+                else if (axis == "Vertical")
+                    result = value.y;
+#else
                 if (axis == "Horizontal")
                     result += XRInput.GetAxis(XRAxis.ThumbstickX, true);
                 else if (axis == "Vertical")
@@ -78,6 +85,7 @@ namespace TESUnity.Inputs
                     result += XRInput.GetAxis(XRAxis.ThumbstickX, false);
                 else if (axis == "Mouse Y")
                     result += XRInput.GetAxis(XRAxis.ThumbstickY, false);
+#endif
 
                 // Deadzone
                 if (Mathf.Abs(result) < 0.15f)
@@ -101,6 +109,15 @@ namespace TESUnity.Inputs
                     var mapping = m_XRMapping[button];
                     result |= XRInput.GetButton(mapping.Button, mapping.LeftHand);
                 }
+
+#if UNITY_ANDROID
+                if (button == "Use")
+                    return OVRInput.Get(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.Active);
+                else if (button == "Menu")
+                    return OVRInput.Get(OVRInput.Button.Back, OVRInput.Controller.Active);
+
+                return false;
+#endif
             }
 
             return result;
@@ -120,6 +137,15 @@ namespace TESUnity.Inputs
                     var mapping = m_XRMapping[button];
                     result |= XRInput.GetButtonUp(mapping.Button, mapping.LeftHand);
                 }
+
+#if UNITY_ANDROID
+                if (button == "Use")
+                    return OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.Active);
+                else if (button == "Menu")
+                    return OVRInput.GetUp(OVRInput.Button.Back, OVRInput.Controller.Active);
+
+                return false;
+#endif
             }
 
             return result;
@@ -147,6 +173,15 @@ namespace TESUnity.Inputs
                     var mapping = m_XRMapping[button];
                     result |= XRInput.GetButtonDown(mapping.Button, mapping.LeftHand);
                 }
+
+#if UNITY_ANDROID
+                if (button == "Use")
+                    return OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.Active);
+                else if (button == "Menu")
+                    return OVRInput.GetDown(OVRInput.Button.Back, OVRInput.Controller.Active);
+
+                return false;
+#endif
             }
 
             return result;

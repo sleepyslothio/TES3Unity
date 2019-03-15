@@ -1,11 +1,8 @@
 ﻿using Demonixis.Toolbox.XR;
 using System.Collections;
-using System.Collections.Generic;
 using TESUnity.Inputs;
 using TESUnity.UI;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.SpatialTracking;
 using UnityEngine.XR;
 
 namespace TESUnity.Components.VR
@@ -24,8 +21,6 @@ namespace TESUnity.Components.VR
         private Transform m_HUD = null;
 
         [SerializeField]
-        private bool _isSpectator = false;
-        [SerializeField]
         private Canvas _mainCanvas = null;
 
         /// <summary>
@@ -34,31 +29,25 @@ namespace TESUnity.Components.VR
         /// - The HUD canvas is not recommanded, it's usefull for small informations
         /// - The UI is for all other UIs: Menu, Life, etc.
         /// </summary>
-        private IEnumerator Start()
+        private void Start()
         {
             if (!XRManager.Enabled)
             {
                 enabled = false;
-                yield break;
+                return;
             }
-
-            yield return new WaitForEndOfFrame();
 
             var manager = TESManager.instance;
-            
-            if (manager != null)
-            {
-                var renderScale = manager.renderScale;
+            var renderScale = manager.renderScale;
 
-                if (renderScale > 0 && renderScale <= 2)
-                    XRManager.GetActiveDevice().RenderScale = manager.renderScale;
+            if (renderScale > 0 && renderScale <= 2)
+                XRManager.GetActiveDevice().RenderScale = manager.renderScale;
 
-                // Setup RoomScale/Sitted mode.
-                var trackingSpaceType = TESManager.instance.roomScale ? TrackingSpaceType.RoomScale : TrackingSpaceType.Stationary;
-                XRDevice.SetTrackingSpaceType(trackingSpaceType);
-                if (trackingSpaceType == TrackingSpaceType.RoomScale)
-                    transform.GetChild(0).localPosition = Vector3.zero;
-            }
+            // Setup RoomScale/Sitted mode.
+            var trackingSpaceType = TESManager.instance.roomScale ? TrackingSpaceType.RoomScale : TrackingSpaceType.Stationary;
+            XRDevice.SetTrackingSpaceType(trackingSpaceType);
+            if (trackingSpaceType == TrackingSpaceType.RoomScale)
+                transform.GetChild(0).localPosition = Vector3.zero;
 
             var uiManager = FindObjectOfType<UIManager>();
 
@@ -90,12 +79,12 @@ namespace TESUnity.Components.VR
             _pivotCanvas.localScale = Vector3.one;
             GUIUtils.SetCanvasToWorldSpace(_canvas.GetComponent<Canvas>(), _pivotCanvas, 1.0f, 0.002f);
 
-            // Add the HUD, its fixed to the camera.
-            if (_isSpectator)
-                ShowUICursor(true);
-
             // Setup the camera
             Camera.main.nearClipPlane = 0.1f;
+
+            var motionControllers = GetComponentsInChildren<MotionController>(true);
+            foreach (var controller in motionControllers)
+                controller.transform.parent = _camTransform.parent;
 
             RecenterOrientationAndPosition();
         }

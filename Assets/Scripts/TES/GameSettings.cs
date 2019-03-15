@@ -59,6 +59,8 @@ namespace TESUnity
             }
 
             return string.Empty;
+#elif UNITY_ANDROID
+            return "/sdcard/TESUnityXR";
 #else
             return Application.persistentDataPath;
 #endif

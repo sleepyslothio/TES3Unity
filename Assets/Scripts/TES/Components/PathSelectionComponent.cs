@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,6 +9,8 @@ namespace TESUnity.Components
     public class PathSelectionComponent : MonoBehaviour
     {
         [SerializeField]
+        private Image m_Background = null;
+        [SerializeField]
         private InputField _path = null;
         [SerializeField]
         private Button _button = null;
@@ -16,14 +19,31 @@ namespace TESUnity.Components
 
         private void Awake()
         {
+#if UNITY_ANDROID
+            SceneManager.LoadScene("GameScene");
+#else
             var savedPath = GameSettings.GetDataPath();
             if (savedPath != string.Empty)
             {
+                var path = Path.Combine(savedPath, "Splash");
+                if (Directory.Exists(path))
+                {
+                    var files = Directory.GetFiles(path);
+                    if (files.Length > 0)
+                    {
+                        var target = files[Random.Range(0, files.Length - 1)];
+                        var texture = TGALoader.LoadTGA(target);
+                        var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+                        m_Background.sprite = sprite;
+                        m_Background.color = Color.white;
+                    }
+                }
                 Debug.Log("Try Loading the game.");
                 StartCoroutine(LoadWorld(savedPath));
             }
             else
                 Debug.Log("Bad game data path.");
+#endif
         }
 
         public void LoadWorld()

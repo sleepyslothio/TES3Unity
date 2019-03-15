@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Demonixis.Toolbox.XR;
+using System.Collections;
 using System.Collections.Generic;
 using TESUnity.Components;
 using TESUnity.Components.Records;
@@ -109,7 +110,7 @@ namespace TESUnity
             }
 
 #if UNITY_STANDALONE
-            if (!XRSettings.Enabled)
+            if (!XRManager.Enabled)
                 Cursor.SetCursor(textureManager.LoadTexture("tx_cursor", true), Vector2.zero, CursorMode.Auto);
 #endif
             _uiManager = uiManager;
