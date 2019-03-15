@@ -29,13 +29,15 @@ namespace TESUnity.Components.VR
         /// - The HUD canvas is not recommanded, it's usefull for small informations
         /// - The UI is for all other UIs: Menu, Life, etc.
         /// </summary>
-        private void Start()
+        private IEnumerator Start()
         {
             if (!XRManager.Enabled)
             {
                 enabled = false;
-                return;
+                yield break;
             }
+
+            yield return new WaitForEndOfFrame();
 
             var manager = TESManager.instance;
             var renderScale = manager.renderScale;

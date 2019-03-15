@@ -30,6 +30,9 @@ namespace Demonixis.UniversalXR
 
         private void Start()
         {
+#if UNITY_ANDROID
+            enabled = false;
+#endif
             m_Transform = transform;
 
             m_GroundMarker = Instantiate(m_GroundMarkerPrefab);
@@ -101,17 +104,10 @@ namespace Demonixis.UniversalXR
 
         private void Update()
         {
-#if UNITY_ANDROID
-            if (OVRInput.Get(OVRInput.Button.PrimaryTouchpad, OVRInput.Controller.Active))
-                InputIsPressed();
-            else if (OVRInput.GetUp(OVRInput.Button.PrimaryTouchpad, OVRInput.Controller.Active))
-                    InputWasJustReleased();
-#else
             if (XRInput.GetButton(m_Button, m_LeftHand))
                 InputIsPressed();
             else if (XRInput.GetButtonUp(m_Button, m_LeftHand))
                 InputWasJustReleased();
-#endif
         }
     }
 }

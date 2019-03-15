@@ -204,6 +204,9 @@ namespace TESUnity
             playMusic = true;
             waterBackSideTransparent = false;
             waterQuality = Water.WaterMode.Simple;
+            followHeadDirection = true;
+            roomScale = false;
+            renderScale = xr ? 0.85f : 1.0f;
 
             InputManager.TryInitializeMobileTouch();
 
