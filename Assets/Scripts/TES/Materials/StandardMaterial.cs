@@ -8,14 +8,18 @@ namespace TESUnity
     /// </summary>
     public class StandardMaterial : BaseMaterial
     {
+        private const string MaterialPath = "Rendering/Legacy/Materials";
+        private const string BumpMapParameterName = "_BumpMap";
+        private const string BumpMapKeyword = "_NORMALMAP";
+
         private Material _standardMaterial;
         private Material _standardCutoutMaterial;
 
         public StandardMaterial(TextureManager textureManager)
             : base(textureManager)
         {
-            _standardMaterial = Resources.Load<Material>("Materials/Standard/Standard");
-            _standardCutoutMaterial = Resources.Load<Material>("Materials/Standard/Standard-Cutout");
+            _standardMaterial = Resources.Load<Material>($"{MaterialPath}/Standard");
+            _standardCutoutMaterial = Resources.Load<Material>($"{MaterialPath}/Standard-Cutout");
         }
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
@@ -41,21 +45,21 @@ namespace TESUnity
 
                     if (TESManager.instance.generateNormalMap && mp.textures.bumpFilePath == null)
                     {
-                        material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture, TESManager.instance.normalGeneratorIntensity));
+                        material.SetTexture(BumpMapParameterName, GenerateNormalMap((Texture2D)material.mainTexture, TESManager.instance.normalGeneratorIntensity));
                         hasNormalMap = true;
                     }
                 }
 
                 if (mp.textures.bumpFilePath != null)
                 {
-                    material.SetTexture("_NORMALMAP", m_textureManager.LoadTexture(mp.textures.bumpFilePath));
+                    material.SetTexture(BumpMapKeyword, m_textureManager.LoadTexture(mp.textures.bumpFilePath));
                     hasNormalMap = true;
                 }
 
                 if (hasNormalMap)
-                    material.EnableKeyword("_NORMALMAP");
+                    material.EnableKeyword(BumpMapKeyword);
                 else
-                    material.DisableKeyword("_NORMALMAP");
+                    material.DisableKeyword(BumpMapKeyword);
 
                 m_existingMaterials[mp] = material;
             }
@@ -66,7 +70,6 @@ namespace TESUnity
         {
             var material = new Material(Shader.Find("Standard"));
             material.CopyPropertiesFromMaterial(_standardMaterial);
-            material.EnableKeyword("_NORMALMAP");
             return material;
         }
 
@@ -83,7 +86,6 @@ namespace TESUnity
             var material = new Material(Shader.Find("Standard"));
             material.CopyPropertiesFromMaterial(_standardCutoutMaterial);
             material.SetFloat("_Cutout", cutoff);
-            material.EnableKeyword("_NORMALMAP");
             return material;
         }
     }

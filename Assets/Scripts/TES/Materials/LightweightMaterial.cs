@@ -1,5 +1,4 @@
-﻿#if LWRP_ENABLED
-using UnityEngine;
+﻿using UnityEngine;
 using ur = UnityEngine.Rendering;
 
 namespace TESUnity
@@ -11,6 +10,10 @@ namespace TESUnity
     {
         public const string LitName = "Lightweight Render Pipeline/Lit";
         public const string SimpleLitName = "Lightweight Render Pipeline/Simple Lit";
+        public const string MaterialPath = "Rendering/LWRP/Materials";
+        private const string DiffuseParameterName = "_BaseMap";
+        private const string BumpMapParameterName = "_BumpMap";
+        private const string BumpMapKeyword = "_NORMALMAP";
 
         private Material m_StandardPBR;
         private Material m_StandardSimple;
@@ -20,10 +23,10 @@ namespace TESUnity
         public LightweightMaterial(TextureManager textureManager)
             : base(textureManager)
         {
-            m_StandardPBR = Resources.Load<Material>("Materials/LWRP/Lit");
-            m_StandardSimple = Resources.Load<Material>("Materials/LWRP/SimpleLit");
-            m_CutoutPBRMaterial = Resources.Load<Material>("Materials/LWRP/Lit-Cutout");
-            m_CutoutSimpleMaterial = Resources.Load<Material>("Materials/LWRP/SimpleLit-Cutout");
+            m_StandardPBR = Resources.Load<Material>($"{MaterialPath}Lit");
+            m_StandardSimple = Resources.Load<Material>($"{MaterialPath}/SimpleLit");
+            m_CutoutPBRMaterial = Resources.Load<Material>($"{MaterialPath}/Lit-Cutout");
+            m_CutoutSimpleMaterial = Resources.Load<Material>($"{MaterialPath}/SimpleLit-Cutout");
         }
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
@@ -47,25 +50,25 @@ namespace TESUnity
                 {
                     var mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
 
-                    material.SetTexture("_BaseMap", mainTexture);
+                    material.SetTexture(DiffuseParameterName, mainTexture);
 
                     if (TESManager.instance.generateNormalMap && mp.textures.bumpFilePath == null)
                     {
-                        material.SetTexture("_BumpMap", GenerateNormalMap(mainTexture, TESManager.instance.normalGeneratorIntensity));
+                        material.SetTexture(BumpMapParameterName, GenerateNormalMap(mainTexture, TESManager.instance.normalGeneratorIntensity));
                         hasNormalMap = true;
                     }
                 }
 
                 if (mp.textures.bumpFilePath != null)
                 {
-                    material.SetTexture("_BumpMap", m_textureManager.LoadTexture(mp.textures.bumpFilePath));
+                    material.SetTexture(BumpMapParameterName, m_textureManager.LoadTexture(mp.textures.bumpFilePath));
                     hasNormalMap = true;
                 }
 
                 if (hasNormalMap)
-                    material.EnableKeyword("_NORMALMAP");
+                    material.EnableKeyword(BumpMapKeyword);
                 else
-                    material.DisableKeyword("_NORMALMAP");
+                    material.DisableKeyword(BumpMapKeyword);
 
                 m_existingMaterials[mp] = material;
             }
@@ -98,4 +101,3 @@ namespace TESUnity
         }
     }
 }
-#endif

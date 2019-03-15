@@ -1,4 +1,3 @@
-#if HDRP_ENABLED
 using UnityEngine;
 using ur = UnityEngine.Rendering;
 
@@ -9,16 +8,19 @@ namespace TESUnity
     /// </summary>
     public class HDRPMaterial : BaseMaterial
     {
-		public const string LitName = "HDRP/Lit";
-		
+        public const string LitName = "HDRenderPipeline/Lit";
+        private const string DiffuseParameterName = "_BaseColorMap";
+        private const string BumpMapParameterName = "_NormalMap";
+        private const string BumpMapKeyword = "_NORMALMAP";
+
         private Material m_LitMaterial;
         private Material m_LitCutout;
 
         public HDRPMaterial(TextureManager textureManager)
             : base(textureManager)
         {
-            m_LitMaterial = Resources.Load<Material>("Materials/HDRP/Lit");
-            m_LitCutout = Resources.Load<Material>("Materials/HDRP/Lit-Cutout");
+            m_LitMaterial = Resources.Load<Material>("Rendering/HDRP/Materials/Lit");
+            m_LitCutout = Resources.Load<Material>("Rendering/HDRP/Materials/Lit-Cutout");
         }
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
@@ -36,17 +38,30 @@ namespace TESUnity
                 else
                     material = BuildMaterial();
 
+                var hasNormalMap = false;
+
                 if (mp.textures.mainFilePath != null)
                 {
                     var albedoMap = m_textureManager.LoadTexture(mp.textures.mainFilePath);
-                    material.SetTexture("_BaseColorMap", albedoMap);
+                    material.SetTexture(DiffuseParameterName, albedoMap);
 
-                    if (TESManager.instance.generateNormalMap)
-                        material.SetTexture("_NormalMap", GenerateNormalMap(albedoMap, TESManager.instance.normalGeneratorIntensity));
+                    if (TESManager.instance.generateNormalMap && mp.textures.bumpFilePath == null)
+                    {
+                        material.SetTexture(BumpMapParameterName, GenerateNormalMap(albedoMap, TESManager.instance.normalGeneratorIntensity));
+                        hasNormalMap = true;
+                    }
                 }
 
                 if (mp.textures.bumpFilePath != null)
-                    material.SetTexture("_NormalMap", m_textureManager.LoadTexture(mp.textures.bumpFilePath));
+                {
+                    material.SetTexture(BumpMapParameterName, m_textureManager.LoadTexture(mp.textures.bumpFilePath));
+                    hasNormalMap = true;
+                }
+
+                if (hasNormalMap)
+                    material.EnableKeyword(BumpMapKeyword);
+                else
+                    material.DisableKeyword(BumpMapKeyword);
 
                 m_existingMaterials[mp] = material;
             }
@@ -55,9 +70,8 @@ namespace TESUnity
 
         public override Material BuildMaterial()
         {
-            var material = new Material(Shader.Find("HDRenderPipeline/Lit"));
+            var material = new Material(Shader.Find(LitName));
             material.CopyPropertiesFromMaterial(m_LitMaterial);
-            material.EnableKeyword("_NORMALMAP");
             return material;
         }
 
@@ -74,9 +88,7 @@ namespace TESUnity
             var material = BuildMaterial();
             material.CopyPropertiesFromMaterial(m_LitCutout);
             material.SetFloat("_Cutout", cutoff);
-            material.EnableKeyword("_NORMALMAP");
             return material;
         }
     }
 }
-#endif
