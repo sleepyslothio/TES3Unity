@@ -3,30 +3,26 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
-using UnityEngine.XR;
 
 namespace TESUnity.Components
 {
     [RequireComponent(typeof(PostProcessLayer))]
     public sealed class PostProcessManager : MonoBehaviour
     {
+#if UNITY_EDITOR
+        [SerializeField]
+        private bool m_BypassEditor = true;
+#endif
+
         private IEnumerator Start()
         {
-#if UNITY_ANDROID
-            var layer = GetComponent<PostProcessLayer>();
-            var volume = FindObjectOfType<PostProcessVolume>();
-            layer.enabled = false;
-            volume.enabled = false;
-            yield break;
-#else
             yield return new WaitForEndOfFrame();
 
 #if UNITY_EDITOR
-            if (TESManager.instance._bypassINIConfig)
+            if (TESManager.instance._bypassINIConfig && m_BypassEditor)
                 yield break;
 #endif
             UpdateEffects();
-#endif
         }
 
         public void UpdateEffects()
@@ -36,15 +32,30 @@ namespace TESUnity.Components
             var volume = FindObjectOfType<PostProcessVolume>();
             var profile = volume.profile;
             var xrEnabled = XRManager.Enabled;
+            var mobile = false;
 
-            if (settings.postProcessingQuality == TESManager.PostProcessingQuality.Low)
+#if UNITY_ANDROID || UNITY_IOS
+            mobile = true;
+#endif
+
+            if (settings.postProcessingQuality == TESManager.PostProcessingQuality.None)
             {
                 volume.enabled = false;
-                layer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+                layer.enabled = false;
                 return;
             }
-
-            if (settings.postProcessingQuality == TESManager.PostProcessingQuality.Medium)
+            else if (settings.postProcessingQuality == TESManager.PostProcessingQuality.Low)
+            {
+                // We just keep the Color Grading.
+                DisableEffect<Bloom>(profile);
+                DisableEffect<AmbientOcclusion>(profile);
+                DisableEffect<AutoExposure>(profile);
+                DisableEffect<MotionBlur>(profile);
+                DisableEffect<ScreenSpaceReflections>(profile);
+                DisableEffect<Vignette>(profile);
+                layer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+            }
+            else if (settings.postProcessingQuality == TESManager.PostProcessingQuality.Medium)
             {
                 UpdateEffect<Bloom>(profile, (bloom) =>
                 {
@@ -55,36 +66,27 @@ namespace TESUnity.Components
                 DisableEffect<AutoExposure>(profile);
                 DisableEffect<MotionBlur>(profile);
                 DisableEffect<ScreenSpaceReflections>(profile);
-                SetPostProcessEffectEnabled<Vignette>(profile, false);
+                DisableEffect<Vignette>(profile);
 
                 layer.fastApproximateAntialiasing.fastMode = true;
                 layer.antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
-            }
-            else if (settings.postProcessingQuality == TESManager.PostProcessingQuality.High)
-            {
-                UpdateEffect<Bloom>(profile, (bloom) =>
-                {
-                    bloom.fastMode.value = true;
-                });
-
-                UpdateEffect<ScreenSpaceReflections>(profile, (ssr) =>
-                {
-                    ssr.preset.value = ScreenSpaceReflectionPreset.Low;
-                });
-
-                DisableEffect<ScreenSpaceReflections>(profile);
             }
 
             // SMAA is not supported in VR.
             if (xrEnabled && settings.antiAliasing == PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing)
                 settings.antiAliasing = PostProcessLayer.Antialiasing.TemporalAntialiasing;
 
-            layer.antialiasingMode = (PostProcessLayer.Antialiasing)settings.antiAliasing;
+            if (!mobile)
+                layer.antialiasingMode = (PostProcessLayer.Antialiasing)settings.antiAliasing;
 
             if (xrEnabled)
             {
-                layer.antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
-                layer.fastApproximateAntialiasing.fastMode = true;
+                // We use MSAA on mobile.
+                if (!mobile)
+                {
+                    layer.antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
+                    layer.fastApproximateAntialiasing.fastMode = true;
+                }
 
                 UpdateEffect<Bloom>(profile, (bloom) =>
                 {
@@ -93,13 +95,8 @@ namespace TESUnity.Components
                     bloom.fastMode.value = true;
                 });
 
-                UpdateEffect<ScreenSpaceReflections>(profile, (ssr) =>
-                {
-                    if (settings.postProcessingQuality == TESManager.PostProcessingQuality.High)
-                        ssr.preset.value = ScreenSpaceReflectionPreset.Medium;
-                });
-
-                SetPostProcessEffectEnabled<Vignette>(profile, false);
+                DisableEffect<ScreenSpaceReflections>(profile);
+                DisableEffect<Vignette>(profile);
                 DisableEffect<MotionBlur>(profile);
             }
         }

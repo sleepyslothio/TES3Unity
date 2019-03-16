@@ -7,8 +7,9 @@ namespace TESUnity
 {
     public class GameSettings
     {
-        private static readonly string ConfigFile = "config.ini";
-        private static readonly string MWDataPathName = "MorrowindDataPath";
+        private const string MorrowindPathKey = "morrowind.path"; 
+        private const string ConfigFile = "config.ini";
+        private const string MWDataPathName = "MorrowindDataPath";
 
         public static void SaveValue(string parameter, string value)
         {
@@ -38,11 +39,17 @@ namespace TESUnity
 
         public static void SetDataPath(string dataPath)
         {
+            PlayerPrefs.SetString(MorrowindPathKey, dataPath);
             SaveValue(MWDataPathName, dataPath);
         }
 
         public static string GetDataPath()
         {
+            var path = PlayerPrefs.GetString(MorrowindPathKey);
+
+            if (!string.IsNullOrEmpty(path))
+                return path;
+
 #if UNITY_STANDALONE || UNITY_EDITOR
             if (!File.Exists("config.ini"))
                 return string.Empty;

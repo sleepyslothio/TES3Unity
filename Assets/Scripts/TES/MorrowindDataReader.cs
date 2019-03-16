@@ -19,10 +19,7 @@ namespace TESUnity
 
         public MorrowindDataReader(string MorrowindFilePath)
         {
-            Debug.Log("Parsing Morrowind.esm");
             MorrowindESMFile = new ESMFile(MorrowindFilePath + "/Morrowind.esm");
-
-            Debug.Log("Parsing Morrowind.bsa");
             MorrowindBSAFile = new BSAFile(MorrowindFilePath + "/Morrowind.bsa");
 
             /*BloodmoonESMFile = new ESMFile(MorrowindFilePath + "/Bloodmoon.esm");

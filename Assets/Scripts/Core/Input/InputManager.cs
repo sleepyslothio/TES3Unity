@@ -22,7 +22,7 @@ namespace TESUnity.Inputs
 
         private static void EnsureStarted()
         {
-            if (InputProviders == null)
+            if (InputProviders != null)
                 return;
 
             var providers = new IInputProvider[]
@@ -34,11 +34,19 @@ namespace TESUnity.Inputs
             };
 
             var list = new List<IInputProvider>();
-
+            var touchEnabled = false;
             foreach (var provider in providers)
             {
                 if (provider.TryInitialize())
+                {
+                    if (provider is TouchInput)
+                        touchEnabled = true;
+
+                    if (provider is DesktopInput && touchEnabled)
+                        continue;
+
                     list.Add(provider);
+                }
             }
 
             InputProviders = list.ToArray();

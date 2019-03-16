@@ -183,14 +183,14 @@ namespace TESUnity
 #if MOBILE_BUILD
             var xr = XRManager.Enabled;
             // FIXME: Use a dedicated menu
-            postProcessingQuality = PostProcessingQuality.None;
+            postProcessingQuality = xr ? PostProcessingQuality.None : PostProcessingQuality.Low;
             materialType = xr ? MWMaterialType.Standard : MWMaterialType.PBR;
             renderSunShadows = false;
-            cameraFarClip = 100;
+            cameraFarClip = xr ? 100 : 120;
             generateNormalMap = false;
             renderSunShadows = false;
             renderLightShadows = false;
-            ambientIntensity = 4;
+            ambientIntensity = xr ? 4 : 6;
             renderLightShadows = false;
             renderExteriorCellLights = xr ? false : true;
             animateLights = xr ? false : true;
@@ -206,7 +206,7 @@ namespace TESUnity
             renderScale = xr ? 0.85f : 1.0f;
 
             if (xr)
-                QualitySettings.SetQualityLevel(0, false);
+                QualitySettings.SetQualityLevel(1, false);
 
 #if !UNITY_EDITOR
 			// FIXME: find a better way to find /sdcard/
@@ -304,6 +304,11 @@ namespace TESUnity
 
             if (playMusic)
                 musicPlayer.Update();
+
+#if UNITY_ANDROID
+            if (Input.GetKeyDown(KeyCode.Escape))
+                SceneManager.LoadScene("Menu");
+#endif
 
 #if UNITY_EDITOR
             if (_allowChangeCellInRealtime)

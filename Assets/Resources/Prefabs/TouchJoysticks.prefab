@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3069215084240001194}
   - component: {fileID: 3069215084240001188}
   - component: {fileID: 3069215084240001189}
-  - component: {fileID: 3069215084240001191}
+  - component: {fileID: 6431856887272749221}
   m_Layer: 5
   m_Name: Right Joystick
   m_TagString: Untagged
@@ -76,7 +76,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &3069215084240001191
+--- !u!114 &6431856887272749221
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -85,7 +85,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3069215084240001195}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c19f73178f3cec94787c9bbd3100bcb2, type: 3}
+  m_Script: {fileID: 11500000, guid: d1153f7c325c39147a399f75147c54f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   joystickStaysInFixedPosition: 1
@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 3069215084781916686}
   - component: {fileID: 3069215084781916683}
   - component: {fileID: 3069215084781916680}
-  - component: {fileID: 3069215084781916681}
+  - component: {fileID: 3238528206308654738}
   m_Layer: 5
   m_Name: Left Joystick
   m_TagString: Untagged
@@ -340,7 +340,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &3069215084781916681
+--- !u!114 &3238528206308654738
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -349,7 +349,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3069215084781916687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84cbec91a469874478de89ece3947d79, type: 3}
+  m_Script: {fileID: 11500000, guid: ca94c25324ef2a9468f5e1a8a8e320d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   joystickStaysInFixedPosition: 1

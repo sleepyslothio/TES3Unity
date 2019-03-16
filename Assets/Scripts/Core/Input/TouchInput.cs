@@ -9,6 +9,9 @@ namespace TESUnity.Inputs
 {
     public class TouchInput : IInputProvider
     {
+#if UNITY_EDITOR
+        private const bool m_EnableInEditor = false;
+#endif
         private LeftJoystick LeftJoystick = null;
         private RightJoystick RightJoystick = null;
 
@@ -19,6 +22,14 @@ namespace TESUnity.Inputs
 #if !UNITY_MOBILE
             valid = false;
 #endif
+
+#if UNITY_EDITOR
+            if (!m_EnableInEditor)
+                valid = false;
+#endif
+
+            if (!valid)
+                return false;
 
             var prefab = Resources.Load<GameObject>("Prefabs/TouchJoysticks");
             var go = GameObject.Instantiate(prefab);
