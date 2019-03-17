@@ -33,6 +33,8 @@ namespace Demonixis.Toolbox.XR
 
         #endregion
 
+        public static bool IsOculus => XRSettings.loadedDeviceName.ToLower() == "oculus";
+
         public override void Recenter() => InputTracking.Recenter();
 
         public override void SetActive(bool active)
@@ -41,8 +43,11 @@ namespace Demonixis.Toolbox.XR
                 XRSettings.enabled = active;
 
 #if OCULUS_SDK
-            var manager = gameObject.AddComponent<OVRManager>();
-            OVRManager.tiledMultiResLevel = m_TiledMultiResLevel;
+            if (IsOculus)
+            {
+                var manager = gameObject.AddComponent<OVRManager>();
+                OVRManager.tiledMultiResLevel = m_TiledMultiResLevel;
+            }
 #endif
         }
 

@@ -77,7 +77,7 @@ namespace TESUnity
 
         public override Material BuildMaterial()
         {
-            var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
+            var pbr = TESManager.instance.materialType == MWMaterialType.PBR;
             var material = new Material(Shader.Find(pbr ? LitName : SimpleLitName));
             material.CopyPropertiesFromMaterial(pbr ? m_StandardPBR : m_StandardSimple);
             return material;
@@ -94,7 +94,7 @@ namespace TESUnity
         public override Material BuildMaterialTested(float cutoff = 0.5f)
         {
             var material = BuildMaterial();
-            var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
+            var pbr = TESManager.instance.materialType == MWMaterialType.PBR;
             material.CopyPropertiesFromMaterial(pbr ? m_CutoutPBRMaterial : m_CutoutSimpleMaterial);
             material.SetFloat("_Cutoff", cutoff);
             return material;

@@ -70,18 +70,18 @@ namespace TESUnity
             var tes = TESManager.instance;
             var camera = Camera.main;
 
-            if (tes.renderPath == TESManager.RendererType.Forward)
+            if (tes.renderPath == RendererType.Forward)
             {
                 camera.renderingPath = RenderingPath.Forward;
                 camera.allowMSAA = true;
             }
-            else if (tes.renderPath == TESManager.RendererType.Deferred)
+            else if (tes.renderPath == RendererType.Deferred)
             {
                 camera.renderingPath = RenderingPath.DeferredShading;
                 camera.allowMSAA = false;
             }
 
-            camera.allowHDR = tes.renderPath == TESManager.RendererType.Deferred;
+            camera.allowHDR = tes.renderPath == RendererType.Deferred;
             camera.farClipPlane = tes.cameraFarClip;
 
             _crosshair = FindObjectOfType<UICrosshair>();

@@ -38,67 +38,48 @@ namespace TESUnity.Components
             mobile = true;
 #endif
 
-            if (settings.postProcessingQuality == TESManager.PostProcessingQuality.None)
+            if (settings.postProcessingQuality == PostProcessingQuality.None)
             {
                 volume.enabled = false;
                 layer.enabled = false;
                 return;
             }
-            else if (settings.postProcessingQuality == TESManager.PostProcessingQuality.Low)
+            else
             {
-                // We just keep the Color Grading.
-                DisableEffect<Bloom>(profile);
-                DisableEffect<AmbientOcclusion>(profile);
-                DisableEffect<AutoExposure>(profile);
-                DisableEffect<MotionBlur>(profile);
-                DisableEffect<ScreenSpaceReflections>(profile);
-                DisableEffect<Vignette>(profile);
-                layer.antialiasingMode = PostProcessLayer.Antialiasing.None;
-            }
-            else if (settings.postProcessingQuality == TESManager.PostProcessingQuality.Medium)
-            {
-                UpdateEffect<Bloom>(profile, (bloom) =>
+                if (mobile)
                 {
-                    bloom.fastMode.value = true;
-                });
-
-                DisableEffect<AmbientOcclusion>(profile);
-                DisableEffect<AutoExposure>(profile);
-                DisableEffect<MotionBlur>(profile);
-                DisableEffect<ScreenSpaceReflections>(profile);
-                DisableEffect<Vignette>(profile);
-
-                layer.fastApproximateAntialiasing.fastMode = true;
-                layer.antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
-            }
-
-            // SMAA is not supported in VR.
-            if (xrEnabled && settings.antiAliasing == PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing)
-                settings.antiAliasing = PostProcessLayer.Antialiasing.TemporalAntialiasing;
-
-            if (!mobile)
-                layer.antialiasingMode = (PostProcessLayer.Antialiasing)settings.antiAliasing;
-
-            if (xrEnabled)
-            {
-                // We use MSAA on mobile.
-                if (!mobile)
-                {
-                    layer.antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
-                    layer.fastApproximateAntialiasing.fastMode = true;
+                    settings.postProcessingQuality = PostProcessingQuality.Low;
+                    layer.antialiasingMode = PostProcessLayer.Antialiasing.None;
                 }
 
-                UpdateEffect<Bloom>(profile, (bloom) =>
-                {
-                    bloom.dirtTexture.value = null;
-                    bloom.dirtIntensity.value = 0;
-                    bloom.fastMode.value = true;
-                });
+                var asset = Resources.Load<PostProcessProfile>($"Rendering/Effects/PostProcessVolume-{settings.postProcessingQuality}");
+                volume.profile = asset;
 
-                DisableEffect<ScreenSpaceReflections>(profile);
-                DisableEffect<Vignette>(profile);
-                DisableEffect<MotionBlur>(profile);
-            }
+                // SMAA is not supported in VR.
+                if (xrEnabled && settings.antiAliasing == PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing)
+                    settings.antiAliasing = PostProcessLayer.Antialiasing.TemporalAntialiasing;
+
+                if (xrEnabled)
+                {
+                    // We use MSAA on mobile.
+                    if (!mobile)
+                    {
+                        layer.antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
+                        layer.fastApproximateAntialiasing.fastMode = true;
+                    }
+
+                    UpdateEffect<Bloom>(profile, (bloom) =>
+                    {
+                        bloom.dirtTexture.value = null;
+                        bloom.dirtIntensity.value = 0;
+                        bloom.fastMode.value = true;
+                    });
+
+                    DisableEffect<ScreenSpaceReflections>(profile);
+                    DisableEffect<Vignette>(profile);
+                    DisableEffect<MotionBlur>(profile);
+                }
+            } 
         }
 
         private void SetEffectEnabled<T>(bool isEnabled) where T : MonoBehaviour

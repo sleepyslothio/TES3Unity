@@ -43,18 +43,23 @@ namespace TESUnity
             var tes = TESManager.instance;
 
             // Order is important
+            if (tes.materialType != MWMaterialType.Unlit)
+            {
 #if LWRP_ENABLED
-            if (tes.renderPath == TESManager.RendererType.LightweightRP)
+            if (tes.renderPath == RendererType.LightweightRP)
                 m_Material = new LightweightMaterial(textureManager);
 #endif
 #if HDRP_ENABLED
-			if (tes.renderPath == TESManager.RendererType.HDRP)
+			if (tes.renderPath == RendererType.HDRP)
                 m_Material = new HDRPMaterial(textureManager);
 #endif
-            if (tes.materialType == TESManager.MWMaterialType.PBR)
-                m_Material = new StandardMaterial(textureManager);
+                if (tes.materialType == MWMaterialType.PBR)
+                    m_Material = new StandardMaterial(textureManager);
+                else
+                    m_Material = new DiffuseMaterial(textureManager);
+            }
             else
-                m_Material = new DiffuseMaterial(textureManager);
+                m_Material = new UnliteMaterial(textureManager);
         }
 
         public Material BuildMaterialFromProperties(MWMaterialProps mp)

@@ -1,36 +1,95 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
 namespace TESUnity
 {
-    public class GameSettings
+    public enum MWMaterialType
     {
-        private const string MorrowindPathKey = "morrowind.path"; 
-        private const string ConfigFile = "config.ini";
+        PBR, Standard, Unlit
+    }
+
+    public enum PostProcessingQuality
+    {
+        None = 0, Low, Medium, High
+    }
+
+    public enum SRPQuality
+    {
+        Low, Medium, High
+    }
+
+    public enum RendererType
+    {
+        Forward, Deferred, LightweightRP, HDRP
+    }
+
+    [Serializable]
+    public sealed class GameSettings
+    {
+        private const string MorrowindPathKey = "tesunity.path";
+        private const string StorageKey = "tesunity.settings";
+        private const string ConfigFile = "config.ini"; // Deprecated
         private const string MWDataPathName = "MorrowindDataPath";
+        private static GameSettings Instance = null;
 
-        public static void SaveValue(string parameter, string value)
+        public bool Audio = true;
+        public PostProcessingQuality PostProcessing = PostProcessingQuality.High;
+        public MWMaterialType Material = MWMaterialType.PBR;
+        public bool GenerateNormalMaps = true;
+        public bool AnimateLights = true;
+        public bool SunShadows = true;
+        public bool LightShadows = false;
+        public bool ExteriorLight = false;
+        public float CameraFarClip = 1000;
+        public int CellRadius = 2;
+        public int CellDistance = 2;
+        public bool VRFollowHead = true;
+        public bool VRRoomScale = false;
+        public float RenderScale = 1.0f;
+
+        public static void Save()
         {
-#if UNITY_STANDALONE || UNITY_EDITOR
-            if (!File.Exists(ConfigFile))
-                return;
+            var instance = Get();
+            var json = JsonUtility.ToJson(instance);
+            PlayerPrefs.SetString(StorageKey, json);
+            PlayerPrefs.Save();
+        }
 
-            var lines = File.ReadAllLines(ConfigFile);
-
-            for (var i = 0; i < lines.Length; i++)
+        public static GameSettings Get()
+        {
+            if (Instance == null)
             {
-                if (lines[i].Contains(parameter))
+                Instance = new GameSettings();
+
+#if UNITY_ANDROID || UNITY_IOS
+                Instance.GenerateNormalMaps = false;
+                Instance.SunShadows = false;
+                Instance.RenderScale = 0.9f;
+                Instance.Material = MWMaterialType.Standard;
+                Instance.PostProcessing = PostProcessingQuality.None;
+                Instance.LightShadows = false;
+                Instance.ExteriorLight = false;
+                Instance.CameraFarClip = 200;
+                Instance.VRRoomScale = false;
+                Instance.CellDistance = 2;
+                Instance.CellRadius = 1;
+#endif
+
+                if (PlayerPrefs.HasKey(StorageKey))
                 {
-                    lines[i] = string.Format("{0} = {1}", parameter, value);
-                    break;
+                    var json = PlayerPrefs.GetString(StorageKey);
+                    if (!string.IsNullOrEmpty(json) && json != "{}")
+                        Instance = JsonUtility.FromJson<GameSettings>(json);
                 }
             }
 
-            File.WriteAllLines(ConfigFile, lines);
-#endif
+            return Instance;
         }
+
+        #region Static Functions
 
         public static bool IsValidPath(string path)
         {
@@ -51,25 +110,53 @@ namespace TESUnity
                 return path;
 
 #if UNITY_STANDALONE || UNITY_EDITOR
-            if (!File.Exists("config.ini"))
-                return string.Empty;
-
-            var lines = File.ReadAllLines(ConfigFile);
-            foreach (var line in lines)
+            // Deprecated
             {
-                if (line.Contains(MWDataPathName))
+                if (!File.Exists("config.ini"))
+                    return string.Empty;
+
+                var lines = File.ReadAllLines(ConfigFile);
+                foreach (var line in lines)
                 {
-                    var tmp = line.Split('=');
-                    if (tmp.Length == 2)
-                        return tmp[1].Trim();
+                    if (line.Contains(MWDataPathName))
+                    {
+                        var tmp = line.Split('=');
+                        if (tmp.Length == 2)
+                            return tmp[1].Trim();
+                    }
                 }
             }
-
             return string.Empty;
 #elif UNITY_ANDROID
             return "/sdcard/TESUnityXR";
 #else
             return Application.persistentDataPath;
+#endif
+        }
+
+        #endregion
+
+        #region Deprected soon
+
+
+        public static void SaveValue(string parameter, string value)
+        {
+#if UNITY_STANDALONE || UNITY_EDITOR
+            if (!File.Exists(ConfigFile))
+                return;
+
+            var lines = File.ReadAllLines(ConfigFile);
+
+            for (var i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Contains(parameter))
+                {
+                    lines[i] = string.Format("{0} = {1}", parameter, value);
+                    break;
+                }
+            }
+
+            File.WriteAllLines(ConfigFile, lines);
 #endif
         }
 
@@ -111,7 +198,7 @@ namespace TESUnity
                                 if (int.TryParse(value, out result))
                                 {
                                     if (result >= 0 && result < 4)
-                                        tes.postProcessingQuality = (TESManager.PostProcessingQuality)result;
+                                        tes.postProcessingQuality = (PostProcessingQuality)result;
                                 }
                             }
                             break;
@@ -125,17 +212,17 @@ namespace TESUnity
                         case "WaterBackSideTransparent": ParseBool(value, ref tes.waterBackSideTransparent); break;
                         case "RenderPath":
                             if (value == "Forward")
-                                tes.renderPath = TESManager.RendererType.Forward;
+                                tes.renderPath = RendererType.Forward;
                             else if (value == "Deferred")
-                                tes.renderPath = TESManager.RendererType.Deferred;
+                                tes.renderPath = RendererType.Deferred;
                             else if (value == "Lightweight")
-                                tes.renderPath = TESManager.RendererType.LightweightRP;
+                                tes.renderPath = RendererType.LightweightRP;
                             break;
                         case "Shader":
                             switch (value)
                             {
-                                case "PBR": tes.materialType = TESManager.MWMaterialType.PBR; break;
-                                default: tes.materialType = TESManager.MWMaterialType.Standard; break;
+                                case "PBR": tes.materialType = MWMaterialType.PBR; break;
+                                default: tes.materialType = MWMaterialType.Standard; break;
                             }
                             break;
                         case "RoomScale": ParseBool(value, ref tes.roomScale); break;
@@ -163,7 +250,7 @@ namespace TESUnity
                                 if (int.TryParse(value, out result))
                                 {
                                     if (result > -1 && result < 3)
-                                        tes.srpQuality = (TESManager.SRPQuality)result;
+                                        tes.srpQuality = (SRPQuality)result;
                                 }
                             }
                             break;
@@ -270,5 +357,7 @@ namespace TESUnity
                     value = result;
             }
         }
+
+        #endregion
     }
 }

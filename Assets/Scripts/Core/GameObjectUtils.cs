@@ -126,7 +126,7 @@ public static class GameObjectUtils
         }
         else
         {
-            var pbr = TESManager.instance.materialType == TESManager.MWMaterialType.PBR;
+            var pbr = TESManager.instance.materialType == MWMaterialType.PBR;
             terrain.materialType = pbr ? Terrain.MaterialType.BuiltInStandard : Terrain.MaterialType.BuiltInLegacyDiffuse;
         }
 

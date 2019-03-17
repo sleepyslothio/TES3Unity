@@ -1,4 +1,7 @@
-﻿#define OCULUS_SDK // FIXME
+﻿#if UNITY_ANDROID
+#define OCULUS_SDK
+#endif
+using Demonixis.Toolbox.XR;
 using UnityEngine.XR;
 
 namespace TESUnity.Inputs
@@ -11,7 +14,7 @@ namespace TESUnity.Inputs
         public bool TryInitialize()
         {
 #if OCULUS_SDK
-            if (XRSettings.loadedDeviceName.ToLower() == "oculus")
+            if (UnityXRDevice.IsOculus)
             {
                 var hand = OVRInput.GetDominantHand();
                 m_LeftHandEnabled = hand == OVRInput.Handedness.LeftHanded;

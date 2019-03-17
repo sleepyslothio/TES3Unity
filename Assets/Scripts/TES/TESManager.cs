@@ -19,33 +19,13 @@ using UnityEngine.SceneManagement;
 using UnityStandardAssets.Water;
 using UnityEngine.Rendering;
 using Demonixis.Toolbox.XR;
-using System.Threading.Tasks;
+using TESUnity.Inputs;
 
 namespace TESUnity
 {
     public class TESManager : MonoBehaviour
     {
         public static TESManager instance;
-
-        public enum MWMaterialType
-        {
-            PBR, Standard
-        }
-
-        public enum PostProcessingQuality
-        {
-            None = 0, Low, Medium, High
-        }
-
-        public enum SRPQuality
-        {
-            Low, Medium, High
-        }
-
-        public enum RendererType
-        {
-            Forward, Deferred, LightweightRP, HDRP
-        }
 
         public const string Version = "0.9.0";
 
@@ -133,6 +113,32 @@ namespace TESUnity
 
             instance = this;
 
+            var applySettings = true;
+
+#if UNITY_EDITOR
+            if (_bypassINIConfig)
+                applySettings = false;
+#endif
+            if (applySettings)
+            {
+                // Temp: Will be moved later
+                var settings = GameSettings.Get();
+                animateLights = settings.AnimateLights;
+                renderExteriorCellLights = settings.ExteriorLight;
+                cameraFarClip = settings.CameraFarClip;
+                roomScale = settings.VRRoomScale;
+                renderLightShadows = settings.LightShadows;
+                playMusic = settings.Audio;
+                cellDetailRadius = settings.CellDistance;
+                cellRadius = settings.CellRadius;
+                generateNormalMap = settings.GenerateNormalMaps;
+                materialType = settings.Material;
+                postProcessingQuality = settings.PostProcessing;
+                renderScale = settings.RenderScale;
+                renderSunShadows = settings.SunShadows;
+                followHeadDirection = settings.VRFollowHead;
+            }
+
 #if UNITY_STANDALONE || UNITY_EDITOR
             var path = dataPath;
 
@@ -157,7 +163,7 @@ namespace TESUnity
 #endif
 
                 GameSettings.SetDataPath(string.Empty);
-                SceneManager.LoadScene("AskPathScene");
+                SceneManager.LoadScene("Menu");
             }
             else
                 dataPath = path;
@@ -183,28 +189,9 @@ namespace TESUnity
 
 #if MOBILE_BUILD
             var xr = XRManager.Enabled;
-            // FIXME: Use a dedicated menu
-            postProcessingQuality = xr ? PostProcessingQuality.None : PostProcessingQuality.Low;
-            materialType = xr ? MWMaterialType.Standard : MWMaterialType.PBR;
-            renderSunShadows = false;
-            cameraFarClip = xr ? 100 : 120;
-            generateNormalMap = false;
-            renderSunShadows = false;
-            renderLightShadows = false;
-            ambientIntensity = xr ? 4 : 6;
-            renderLightShadows = false;
-            renderExteriorCellLights = xr ? false : true;
-            animateLights = xr ? false : true;
             dayNightCycle = false;
-            cellRadius = 1;
-            cellDetailRadius = 2;
-            cellRadiusOnLoad = 1;
-            playMusic = true;
             waterBackSideTransparent = false;
             waterQuality = Water.WaterMode.Simple;
-            followHeadDirection = true;
-            roomScale = false;
-            renderScale = xr ? 0.85f : 1.0f;
 
             if (xr)
                 QualitySettings.SetQualityLevel(1, false);
@@ -309,13 +296,8 @@ namespace TESUnity
                 musicPlayer.Update();
 
 #if UNITY_ANDROID
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                if (UnityEngine.XR.XRSettings.enabled)
-                    Application.Quit();
-                else
-                    SceneManager.LoadScene("Menu");
-            }
+            if (InputManager.GetButtonDown(MWButton.Menu))
+                SceneManager.LoadScene("Menu");
 #endif
 
 #if UNITY_EDITOR

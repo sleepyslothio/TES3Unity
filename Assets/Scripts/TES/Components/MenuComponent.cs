@@ -7,11 +7,12 @@ using UnityEngine.UI;
 
 namespace TESUnity.Components
 {
-    public class MenuComponent : MonoBehaviour
+    public sealed class MenuComponent : MonoBehaviour
     {
         private MusicPlayer m_MusicPlayer = null;
         private Thread m_PreloadThread = null;
         private string m_GamePath = string.Empty;
+        private bool m_MenuLoaded = false;
 
         [Header("Panels")]
         [SerializeField]
@@ -48,6 +49,8 @@ namespace TESUnity.Components
         [SerializeField]
         private bool m_DisplayDesktopPathOnAndroid = true;
 #endif
+
+        public bool CanLoadWorld => m_MenuLoaded && (m_PreloadThread == null || !m_PreloadThread.IsAlive);
 
         private void Awake()
         {
@@ -101,14 +104,18 @@ namespace TESUnity.Components
 
         private void LoadMenu()
         {
-            m_PreloadThread = new Thread(new ThreadStart(() =>
+            // Preload data if the reader is not yet initialized.
+            if (TESManager.MWDataReader == null)
             {
-                TESManager.MWDataReader = new MorrowindDataReader(m_GamePath);
-            }));
+                m_PreloadThread = new Thread(new ThreadStart(() =>
+                {
+                    TESManager.MWDataReader = new MorrowindDataReader(m_GamePath);
+                }));
 
-            m_PreloadThread.Start();
+                m_PreloadThread.Start();
 
-            StartCoroutine(CheckLoadButton());
+                StartCoroutine(CheckLoadButton());
+            }
 
             SetPanelVisible(1);
 
@@ -135,6 +142,8 @@ namespace TESUnity.Components
                 m_MusicPlayer.AddSong(path);
                 m_MusicPlayer.Play();
             }
+
+            m_MenuLoaded = true;
         }
 
         public void LoadWorld() => StartCoroutine(LoadWorld(m_GamePath));
@@ -188,7 +197,10 @@ namespace TESUnity.Components
 
         public void ShowOptions(bool visible)
         {
-            // TODO
+            if (visible)
+                SetPanelVisible(2);
+            else
+                SetPanelVisible(1);
         }
 
         #endregion

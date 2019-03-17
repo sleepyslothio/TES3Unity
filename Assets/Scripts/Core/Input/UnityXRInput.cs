@@ -1,6 +1,7 @@
 ﻿using Demonixis.Toolbox.XR;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 namespace TESUnity.Inputs
 {
@@ -22,11 +23,7 @@ namespace TESUnity.Inputs
 
         public bool TryInitialize()
         {
-#if UNITY_STANDALONE
             return XRManager.Enabled;
-#else
-            return false;
-#endif
         }
 
         public float GetAxis(MWAxis axis)
@@ -95,9 +92,8 @@ namespace TESUnity.Inputs
                 { MWButton.Light, new XRButtonMapping(XRButton.Thumbstick, false) },
                 { MWButton.Run, new XRButtonMapping(XRButton.Grip, true) },
                 { MWButton.Teleport, new XRButtonMapping(XRButton.Grip, false) },
-                { MWButton.Attack, new XRButtonMapping(XRButton.Trigger, false) },
                 { MWButton.Recenter, new XRButtonMapping(XRButton.Menu, false) },
-                { MWButton.Use, new XRButtonMapping(XRButton.Trigger, true) },
+                { MWButton.Use, new XRButtonMapping(XRButton.Trigger, false) },
                 { MWButton.Menu, new XRButtonMapping(XRButton.Menu, true) }
             };
         }
