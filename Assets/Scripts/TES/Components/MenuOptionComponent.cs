@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Demonixis.Toolbox.UI;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace TESUnity.Components
@@ -10,13 +11,13 @@ namespace TESUnity.Components
         [SerializeField]
         private Toggle m_AudioToggle = null;
         [SerializeField]
-        private Dropdown m_CellRadiusDd = null;
+        private UISelectorWidget m_CellRadiusDd = null;
         [SerializeField]
-        private Dropdown m_CellDistanceDd = null;
+        private UISelectorWidget m_CellDistanceDd = null;
         [SerializeField]
-        private Dropdown m_PostProcessDd = null;
+        private UISelectorWidget m_PostProcessDd = null;
         [SerializeField]
-        private Dropdown m_MaterialDd = null;
+        private UISelectorWidget m_MaterialDd = null;
         [SerializeField]
         private Toggle m_GenerateNormalMapsToggle = null;
         [SerializeField]
@@ -28,13 +29,13 @@ namespace TESUnity.Components
         [SerializeField]
         private Toggle m_ExteriorLightsToggle = null;
         [SerializeField]
-        private Dropdown m_CameraFarClipDropdown = null;
+        private UISelectorWidget m_CameraFarClipDropdown = null;
         [SerializeField]
         private Toggle m_FollowHeadToggle = null;
         [SerializeField]
         private Toggle m_RoomScaleToggle = null;
         [SerializeField]
-        private Dropdown m_RenderScaleDd = null;
+        private UISelectorWidget m_RenderScaleDd = null;
 
         private void Awake()
         {
@@ -43,17 +44,12 @@ namespace TESUnity.Components
             m_AudioToggle.isOn = m_Settings.Audio;
             m_AudioToggle.onValueChanged.AddListener(SetAudio);
 
-            m_CellRadiusDd.value = m_Settings.CellRadius;
-            m_CellRadiusDd.onValueChanged.AddListener(SetCellRadius);
+            var values = new[] { "1", "2", "3", "4" };
+            m_CellRadiusDd.Setup(ref values, m_Settings.CellRadius.ToString(), SetCellRadius);
+            m_CellDistanceDd.Setup(ref values, m_Settings.CellDistance.ToString(), SetCellDistance);
 
-            m_CellDistanceDd.value = m_Settings.CellDistance;
-            m_CellDistanceDd.onValueChanged.AddListener(SetCellDistance);
-
-            m_PostProcessDd.value = (int)m_Settings.PostProcessing;
-            m_PostProcessDd.onValueChanged.AddListener(SetPostProcessing);
-
-            m_MaterialDd.value = (int)m_Settings.Material;
-            m_MaterialDd.onValueChanged.AddListener(SetMaterialQuality);
+            m_PostProcessDd.Setup<PostProcessingQuality>((int)m_Settings.PostProcessing, SetPostProcessing);
+            m_MaterialDd.Setup<MWMaterialType>((int)m_Settings.Material, SetMaterialQuality);
 
             m_GenerateNormalMapsToggle.isOn = m_Settings.GenerateNormalMaps;
             m_GenerateNormalMapsToggle.onValueChanged.AddListener(SetGenerateNormalMaps);
@@ -70,17 +66,17 @@ namespace TESUnity.Components
             m_ExteriorLightsToggle.isOn = m_Settings.ExteriorLight;
             m_ExteriorLightsToggle.onValueChanged.AddListener(SetExteriorLights);
 
-            m_CameraFarClipDropdown.value = GetCameraFarClip();
-            m_CameraFarClipDropdown.onValueChanged.AddListener(SetCameraFarClip);
+            values = new[] { "1000", "500", "250", "150", "100", "50" };
+            m_CameraFarClipDropdown.Setup(ref values, m_Settings.CameraFarClip.ToString(), SetCameraFarClip);
 
             m_FollowHeadToggle.isOn = m_Settings.VRFollowHead;
             m_FollowHeadToggle.onValueChanged.AddListener(SetVRFollowHead);
 
-            m_RoomScaleToggle.isOn = m_Settings.VRFollowHead;
+            m_RoomScaleToggle.isOn = m_Settings.VRRoomScale;
             m_RoomScaleToggle.onValueChanged.AddListener(SetRoomScale);
 
-            m_RenderScaleDd.value = GetRenderScaleIndex();
-            m_RenderScaleDd.onValueChanged.AddListener(SetRenderScale);
+            values = new[] { "100", "90", "80", "70", "60", "50" };
+            m_RenderScaleDd.Setup(ref values, m_Settings.RenderScale.ToString(), SetRenderScale);
         }
 
         private int GetRenderScaleIndex()
@@ -88,17 +84,17 @@ namespace TESUnity.Components
             var value = (int)(m_Settings.RenderScale * 10.0f);
 
             if (value == 10)
-                return 5;
+                return 0;
             else if (value == 9)
-                return 4;
-            else if (value == 8)
-                return 3;
-            else if (value == 7)
-                return 2;
-            else if (value == 6)
                 return 1;
+            else if (value == 8)
+                return 2;
+            else if (value == 7)
+                return 3;
+            else if (value == 6)
+                return 4;
 
-            return 0;
+            return 5;
         }
 
         private int GetCameraFarClip()
@@ -118,27 +114,27 @@ namespace TESUnity.Components
 
             return 5;
         }
-        
+
         public void ShowMenu()
         {
             GameSettings.Save();
             var menu = GetComponent<MenuComponent>();
             menu.ShowOptions(false);
         }
-        
+
         public void SetAudio(bool isOn)
         {
             m_Settings.Audio = isOn;
         }
 
-        public void SetPostProcessing(int level)
+        public void SetPostProcessing(int index)
         {
-            m_Settings.PostProcessing = (PostProcessingQuality)level;
+            m_Settings.PostProcessing = (PostProcessingQuality)index;
         }
 
-        public void SetMaterialQuality(int level)
+        public void SetMaterialQuality(int index)
         {
-            m_Settings.Material = (MWMaterialType)level;
+            m_Settings.Material = (MWMaterialType)index;
         }
 
         public void SetGenerateNormalMaps(bool isOn)
@@ -161,20 +157,28 @@ namespace TESUnity.Components
             m_Settings.VRFollowHead = isOn;
         }
 
-        public void SetRenderScale(int level)
+        public void SetRenderScale(string value)
         {
-            // Index[0] = 50 so RenderScale = Index + 50 / 100
-            m_Settings.RenderScale = ((float)level + 50.0f) / 100.0f;
+            if (float.TryParse(value, out float result))
+                m_Settings.RenderScale = result;
+            else
+                Debug.LogWarning($"Can't parse the value {value}");
         }
 
-        public void SetCellRadius(int radius)
+        public void SetCellRadius(string value)
         {
-            m_Settings.CellRadius = radius;
+            if (int.TryParse(value, out int result))
+                m_Settings.CellRadius = result;
+            else
+                Debug.LogWarning($"Can't parse the value {value}");
         }
 
-        public void SetCellDistance(int distance)
+        public void SetCellDistance(string value)
         {
-            m_Settings.CellDistance = distance;
+            if (int.TryParse(value, out int result))
+                m_Settings.CellDistance = result;
+            else
+                Debug.LogWarning($"Can't parse the value {value}");
         }
 
         private void SetLightShadows(bool isOn)
@@ -187,22 +191,12 @@ namespace TESUnity.Components
             m_Settings.ExteriorLight = isOn;
         }
 
-        private void SetCameraFarClip(int level)
+        private void SetCameraFarClip(string value)
         {
-            var value = 1000;
-
-            if (level == 1)
-                value = 500;
-            else if (level == 2)
-                value = 250;
-            else if (level == 3)
-                value = 150;
-            else if (level == 4)
-                value = 100;
+            if (float.TryParse(value, out float result))
+                m_Settings.CameraFarClip = result;
             else
-                value = 50;
-
-            m_Settings.CameraFarClip = value;
+                Debug.LogWarning($"Can't parse the value {value}");
         }
 
         private void SetRoomScale(bool isOn)

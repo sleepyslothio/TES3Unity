@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Demonixis.Toolbox.XR;
+using System;
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -76,6 +77,12 @@ namespace TESUnity
                 Instance.VRRoomScale = false;
                 Instance.CellDistance = 2;
                 Instance.CellRadius = 1;
+
+                if (XRManager.Enabled)
+                {
+                    Instance.CameraFarClip = 50;
+                    Instance.Material = MWMaterialType.Unlit;
+                }
 #endif
 
                 if (PlayerPrefs.HasKey(StorageKey))

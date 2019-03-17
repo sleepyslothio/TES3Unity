@@ -184,6 +184,9 @@ namespace TESUnity.Components
 
         public void Quit()
         {
+            var dataReader = TESManager.MWDataReader;
+            dataReader?.Close();
+
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #endif

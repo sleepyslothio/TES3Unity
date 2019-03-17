@@ -1126,7 +1126,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: materialType
-      value: 2
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: renderSunShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: renderLightShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: renderExteriorCellLights
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: animateLights
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: generateNormalMap
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
@@ -1168,6 +1188,11 @@ PrefabInstance:
     - target: {fileID: 4034773250036686, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114519115477436294, guid: e8dd5aef3d574fb4484f3e8c72568b4b,
+        type: 3}
+      propertyPath: sharedProfile
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}

@@ -33,6 +33,8 @@ namespace TESUnity.Inputs
 
             if (axis == MWAxis.Vertical)
                 result = value.y;
+            if (axis == MWAxis.Vertical)
+                result = value.x;
 #endif
             return result;
         }
@@ -44,10 +46,8 @@ namespace TESUnity.Inputs
                 return OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, GetController(false));
             else if (button == MWButton.Menu)
                 return OVRInput.Get(OVRInput.Button.Back, GetController(false));
-            else if (button == MWButton.Teleport)
-                OVRInput.Get(OVRInput.Button.PrimaryThumbstickLeft, GetController(false));
-            else if (button == MWButton.Light)
-                OVRInput.Get(OVRInput.Button.PrimaryThumbstickRight, GetController(false));
+            else if (button == MWButton.Jump)
+                OVRInput.Get(OVRInput.Button.PrimaryTouchpad, GetController(false));
 #endif
             return false;
         }
@@ -59,10 +59,8 @@ namespace TESUnity.Inputs
                 return OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, GetController(false));
             else if (button == MWButton.Menu)
                 return OVRInput.Get(OVRInput.Button.Back, GetController(false));
-            else if (button == MWButton.Teleport)
-                OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickLeft, GetController(false));
-            else if (button == MWButton.Light)
-                OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickRight, GetController(false));
+            else if (button == MWButton.Jump)
+                OVRInput.GetDown(OVRInput.Button.PrimaryTouchpad, GetController(false));
 #endif
             return false;
         }
@@ -76,8 +74,8 @@ namespace TESUnity.Inputs
                 return OVRInput.Get(OVRInput.Button.Back, GetController(false));
             else if (button == MWButton.Teleport)
                 OVRInput.GetUp(OVRInput.Button.PrimaryThumbstickLeft, GetController(false));
-            else if (button == MWButton.Light)
-                OVRInput.GetUp(OVRInput.Button.PrimaryThumbstickRight, GetController(false));
+            else if (button == MWButton.Jump)
+                OVRInput.GetUp(OVRInput.Button.PrimaryTouchpad, GetController(false));
 #endif
             return false;
         }

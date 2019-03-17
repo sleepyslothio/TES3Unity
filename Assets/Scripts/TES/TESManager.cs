@@ -273,12 +273,6 @@ namespace TESUnity
 
         private void OnDestroy()
         {
-            if (MWDataReader != null)
-            {
-                MWDataReader.Close();
-                MWDataReader = null;
-            }
-
 #if UNITY_EDITOR && (LWRP_ENABLED || HDRP_ENABLED)
             if (renderPath == RendererType.LightweightRP)
             {
@@ -286,6 +280,11 @@ namespace TESUnity
                 asset.renderScale = 1.0f;
             }
 #endif
+        }
+
+        private void OnApplicationQuit()
+        {
+            MWDataReader?.Close();
         }
 
         private void FixedUpdate()
@@ -296,7 +295,7 @@ namespace TESUnity
                 musicPlayer.Update();
 
 #if UNITY_ANDROID
-            if (InputManager.GetButtonDown(MWButton.Menu))
+            if (InputManager.GetButtonDown(MWButton.Menu) || Input.GetKeyDown(KeyCode.Escape))
                 SceneManager.LoadScene("Menu");
 #endif
 

@@ -186,7 +186,11 @@ namespace Demonixis.Toolbox.XR
             get
             {
                 var instance = Instance;
-                if (instance == null || instance.m_ActiveDevice == null)
+
+                if (instance == null)
+                    return XRSettings.enabled;
+
+                if (instance.m_ActiveDevice == null)
                     return instance.GetVRDevice() != XRDeviceType.None;
 
                 return Instance.m_ActiveDevice != null || XRSettings.enabled;

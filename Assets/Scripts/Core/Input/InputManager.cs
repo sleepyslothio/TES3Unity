@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Demonixis.Toolbox.XR;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -37,28 +38,29 @@ namespace TESUnity.Inputs
             var list = new List<IInputProvider>();
             var touchEnabled = false;
 
-            if (XRSettings.enabled && XRSettings.loadedDeviceName.ToLower() == "oculus")
+#if UNITY_ANDROID
+            if (UnityXRDevice.IsOculus)
             {
                 InputProviders = new IInputProvider[] { new OculusInput() };
+                return;
             }
-            else
+#endif
+
+            foreach (var provider in providers)
             {
-                foreach (var provider in providers)
+                if (provider.TryInitialize())
                 {
-                    if (provider.TryInitialize())
-                    {
-                        if (provider is TouchInput)
-                            touchEnabled = true;
+                    if (provider is TouchInput)
+                        touchEnabled = true;
 
-                        if (provider is DesktopInput && touchEnabled)
-                            continue;
+                    if (provider is DesktopInput && touchEnabled)
+                        continue;
 
-                        list.Add(provider);
-                    }
+                    list.Add(provider);
                 }
-
-                InputProviders = list.ToArray();
             }
+
+            InputProviders = list.ToArray();
         }
 
         public static float GetAxis(MWAxis axis)

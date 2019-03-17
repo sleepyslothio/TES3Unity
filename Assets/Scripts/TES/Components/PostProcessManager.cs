@@ -38,13 +38,7 @@ namespace TESUnity.Components
             mobile = true;
 #endif
 
-            if (settings.postProcessingQuality == PostProcessingQuality.None)
-            {
-                volume.enabled = false;
-                layer.enabled = false;
-                return;
-            }
-            else
+            if (settings.postProcessingQuality != PostProcessingQuality.None)
             {
                 if (mobile)
                 {
@@ -80,6 +74,11 @@ namespace TESUnity.Components
                     DisableEffect<MotionBlur>(profile);
                 }
             } 
+            else
+            {
+                volume.enabled = false;
+                layer.enabled = false;
+            }
         }
 
         private void SetEffectEnabled<T>(bool isEnabled) where T : MonoBehaviour
