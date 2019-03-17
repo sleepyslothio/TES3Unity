@@ -183,12 +183,12 @@ namespace TESUnity
 						return new CELLRecord();
 					case "LAND":
 						return new LANDRecord();
-                    case "CREA":
+                    /*case "CREA":
                         return TESManager.instance.creaturesEnabled ? new CREARecord() : null;
                     case "NPC_":
-                        return TESManager.instance.npcsEnabled ? new NPC_Record() : null;
+                        return TESManager.instance.npcsEnabled ? new NPC_Record() : null;*/
 					default:
-                        Debug.LogWarning("Unsupported ESM record type: " + recordName);
+                        //Debug.LogWarning("Unsupported ESM record type: " + recordName);
 						return null;
 				}
 			}

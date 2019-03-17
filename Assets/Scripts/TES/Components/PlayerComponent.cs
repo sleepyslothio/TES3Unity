@@ -1,4 +1,5 @@
-﻿using TESUnity.Inputs;
+﻿using Demonixis.Toolbox.XR;
+using TESUnity.Inputs;
 using TESUnity.UI;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace TESUnity
         private bool _paused = false;
         private bool _isGrounded = false;
         private bool _isFlying = false;
+        private bool m_XREnabled = false;
 
         #region Editor Fields
 
@@ -87,6 +89,7 @@ namespace TESUnity
 #if !UNITY_STANDALONE
             Cursor.lockState = CursorLockMode.None;
 #endif
+            m_XREnabled = XRManager.Enabled;
         }
 
         private void Update()
@@ -152,7 +155,9 @@ namespace TESUnity
             eulerAngles.x = Mathf.Clamp(eulerAngles.x - deltaMouse.y, minVerticalAngle, maxVerticalAngle);
             eulerAngles.y = Mathf.Repeat(eulerAngles.y + deltaMouse.x, 360);
 
-            _camTransform.localEulerAngles = new Vector3(eulerAngles.x, 0, 0);
+            if (!m_XREnabled)
+                _camTransform.localEulerAngles = new Vector3(eulerAngles.x, 0, 0);
+
             _transform.localEulerAngles = new Vector3(0, eulerAngles.y, 0);
         }
 

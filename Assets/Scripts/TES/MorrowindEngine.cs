@@ -26,7 +26,6 @@ namespace TESUnity
         private const float desiredWorkTimePerFrame = 1.0f / 200;
         public static int cellRadiusOnLoad = 2;
         private CELLRecord _currentCell;
-        private UIManager _uiManager;
         private GameObject sunObj;
         private GameObject waterObj;
         private Transform playerTransform;
@@ -48,15 +47,11 @@ namespace TESUnity
         public CellManager cellManager;
         public TemporalLoadBalancer temporalLoadBalancer;
 
-        public CELLRecord currentCell
-        {
-            get { return _currentCell; }
-        }
+        public CELLRecord currentCell => _currentCell;
 
-        public static int markerLayer
-        {
-            get { return LayerMask.NameToLayer("Marker"); }
-        }
+        public static int markerLayer => LayerMask.NameToLayer("Marker");
+
+        public UIManager UIManager { get; set; }
 
         #endregion
 
@@ -74,8 +69,8 @@ namespace TESUnity
 
             var tes = TESManager.instance;
 
-            //RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            //RenderSettings.ambientIntensity = tes.ambientIntensity;
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientIntensity = tes.ambientIntensity;
 
             sunObj = GameObjectUtils.CreateDirectionalLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
             sunObj.GetComponent<Light>().shadows = tes.renderSunShadows ? LightShadows.Soft : LightShadows.None;
@@ -113,8 +108,8 @@ namespace TESUnity
             if (!XRManager.Enabled)
                 Cursor.SetCursor(textureManager.LoadTexture("tx_cursor", true), Vector2.zero, CursorMode.Auto);
 #endif
-            _uiManager = uiManager;
-            _uiManager.Active = true;
+            UIManager = uiManager;
+            UIManager.Active = true;
         }
 
         #region Player Spawn
@@ -254,21 +249,18 @@ namespace TESUnity
         public void ShowInteractiveText(GenericObjectComponent component)
         {
             var data = component.objData;
-            _uiManager.InteractiveText.Show(GUIUtils.CreateSprite(data.icon), data.interactionPrefix, data.name, data.value, data.weight);
+            UIManager.InteractiveText.Show(GUIUtils.CreateSprite(data.icon), data.interactionPrefix, data.name, data.value, data.weight);
         }
 
         public void CloseInteractiveText()
         {
-            _uiManager.InteractiveText.Close();
+            UIManager.InteractiveText.Close();
         }
 
         #region Private
 
         private void SetAmbientLight(Color color)
         {
-#if UNITY_ANDROID
-            return;
-#endif
             RenderSettings.ambientLight = color;
         }
 

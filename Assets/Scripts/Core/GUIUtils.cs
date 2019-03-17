@@ -107,7 +107,7 @@ public static class GUIUtils
         return canvasGO;
     }
 
-    public static void SetCanvasToWorldSpace(Canvas canvas, Transform parent, float depth, float scale)
+    public static void SetCanvasToWorldSpace(Canvas canvas, Transform parent, float depth, float scale, float y = 0.0f)
     {
         canvas.renderMode = RenderMode.WorldSpace;
         canvas.worldCamera = Camera.main;
@@ -121,7 +121,7 @@ public static class GUIUtils
             canvasTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, canvasScaler.referenceResolution.y);
         }
 
-        canvasTransform.localPosition = new Vector3(0.0f, 0.0f, depth);
+        canvasTransform.localPosition = new Vector3(0.0f, y, depth);
         canvasTransform.localRotation = Quaternion.identity;
         canvasTransform.localScale = new Vector3(scale, scale, scale);
     }

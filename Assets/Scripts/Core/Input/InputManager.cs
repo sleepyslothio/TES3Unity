@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 namespace TESUnity.Inputs
 {
@@ -35,21 +36,29 @@ namespace TESUnity.Inputs
 
             var list = new List<IInputProvider>();
             var touchEnabled = false;
-            foreach (var provider in providers)
+
+            if (XRSettings.enabled && XRSettings.loadedDeviceName.ToLower() == "oculus")
             {
-                if (provider.TryInitialize())
-                {
-                    if (provider is TouchInput)
-                        touchEnabled = true;
-
-                    if (provider is DesktopInput && touchEnabled)
-                        continue;
-
-                    list.Add(provider);
-                }
+                InputProviders = new IInputProvider[] { new OculusInput() };
             }
+            else
+            {
+                foreach (var provider in providers)
+                {
+                    if (provider.TryInitialize())
+                    {
+                        if (provider is TouchInput)
+                            touchEnabled = true;
 
-            InputProviders = list.ToArray();
+                        if (provider is DesktopInput && touchEnabled)
+                            continue;
+
+                        list.Add(provider);
+                    }
+                }
+
+                InputProviders = list.ToArray();
+            }
         }
 
         public static float GetAxis(MWAxis axis)

@@ -19,6 +19,7 @@ using UnityEngine.SceneManagement;
 using UnityStandardAssets.Water;
 using UnityEngine.Rendering;
 using Demonixis.Toolbox.XR;
+using System.Threading.Tasks;
 
 namespace TESUnity
 {
@@ -119,8 +120,8 @@ namespace TESUnity
 
         #endregion
 
-        private MorrowindDataReader MWDataReader = null;
-        private MorrowindEngine MWEngine = null;
+        public static MorrowindDataReader MWDataReader { get; set; }
+        public MorrowindEngine MWEngine = null;
         private MusicPlayer musicPlayer = null;
 
         public MorrowindEngine Engine => MWEngine;
@@ -256,7 +257,9 @@ namespace TESUnity
             CellManager.detailRadius = cellDetailRadius;
             MorrowindEngine.cellRadiusOnLoad = cellRadiusOnLoad;
 
-            MWDataReader = new MorrowindDataReader(dataPath);
+            if (MWDataReader == null)
+                MWDataReader = new MorrowindDataReader(dataPath);
+
             MWEngine = new MorrowindEngine(MWDataReader, UIManager);
 
             if (playMusic)
@@ -307,7 +310,12 @@ namespace TESUnity
 
 #if UNITY_ANDROID
             if (Input.GetKeyDown(KeyCode.Escape))
-                SceneManager.LoadScene("Menu");
+            {
+                if (UnityEngine.XR.XRSettings.enabled)
+                    Application.Quit();
+                else
+                    SceneManager.LoadScene("Menu");
+            }
 #endif
 
 #if UNITY_EDITOR

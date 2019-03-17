@@ -26,11 +26,9 @@ namespace TESUnity.Inputs
         {
             var result = 0.0f;
 #if OCULUS_SDK
-            var value = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
+            var value = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad, GetController(false));
 
-            if (axis == MWAxis.Horizontal)
-                result = value.x;
-            else if (axis == MWAxis.Vertical)
+            if (axis == MWAxis.Vertical)
                 result = value.y;
 #endif
             return result;
@@ -44,9 +42,9 @@ namespace TESUnity.Inputs
             else if (button == MWButton.Menu)
                 return OVRInput.Get(OVRInput.Button.Back, GetController(false));
             else if (button == MWButton.Teleport)
-                OVRInput.Get(OVRInput.Button.PrimaryThumbstickUp, GetController(false));
+                OVRInput.Get(OVRInput.Button.PrimaryThumbstickLeft, GetController(false));
             else if (button == MWButton.Light)
-                OVRInput.Get(OVRInput.Button.PrimaryThumbstickDown, GetController(false));
+                OVRInput.Get(OVRInput.Button.PrimaryThumbstickRight, GetController(false));
 #endif
             return false;
         }
@@ -59,9 +57,9 @@ namespace TESUnity.Inputs
             else if (button == MWButton.Menu)
                 return OVRInput.Get(OVRInput.Button.Back, GetController(false));
             else if (button == MWButton.Teleport)
-                OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickUp, GetController(false));
+                OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickLeft, GetController(false));
             else if (button == MWButton.Light)
-                OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickDown, GetController(false));
+                OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickRight, GetController(false));
 #endif
             return false;
         }
@@ -74,9 +72,9 @@ namespace TESUnity.Inputs
             else if (button == MWButton.Menu)
                 return OVRInput.Get(OVRInput.Button.Back, GetController(false));
             else if (button == MWButton.Teleport)
-                OVRInput.GetUp(OVRInput.Button.PrimaryThumbstickUp, GetController(false));
+                OVRInput.GetUp(OVRInput.Button.PrimaryThumbstickLeft, GetController(false));
             else if (button == MWButton.Light)
-                OVRInput.GetUp(OVRInput.Button.PrimaryThumbstickDown, GetController(false));
+                OVRInput.GetUp(OVRInput.Button.PrimaryThumbstickRight, GetController(false));
 #endif
             return false;
         }

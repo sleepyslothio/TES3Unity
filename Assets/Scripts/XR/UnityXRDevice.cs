@@ -15,28 +15,25 @@ namespace Demonixis.Toolbox.XR
     {
         #region Public Fields
 
+#if OCULUS_SDK
+        [SerializeField]
+        private OVRManager.TiledMultiResLevel m_TiledMultiResLevel = OVRManager.TiledMultiResLevel.Off;
+#endif
         public override float RenderScale
         {
-            get { return XRSettings.eyeTextureResolutionScale; }
-            set { XRSettings.eyeTextureResolutionScale = value; }
+            get => XRSettings.eyeTextureResolutionScale;
+            set => XRSettings.eyeTextureResolutionScale = value;
         }
 
-        public override int EyeTextureWidth { get { return XRSettings.eyeTextureWidth; } }
-
-        public override int EyeTextureHeight { get { return XRSettings.eyeTextureHeight; } }
-
-        public override XRDeviceType VRDeviceType { get { return XRDeviceType.UnityXR; } }
-
-        public override Vector3 HeadPosition { get { return InputTracking.GetLocalPosition(XRNode.Head); } }
-
-        public override bool IsAvailable { get { return XRDevice.isPresent && XRSettings.enabled; } }
+        public override int EyeTextureWidth => XRSettings.eyeTextureWidth;
+        public override int EyeTextureHeight => XRSettings.eyeTextureHeight;
+        public override XRDeviceType VRDeviceType => XRDeviceType.UnityXR;
+        public override Vector3 HeadPosition => InputTracking.GetLocalPosition(XRNode.Head);
+        public override bool IsAvailable => XRSettings.enabled;
 
         #endregion
 
-        public override void Recenter()
-        {
-            InputTracking.Recenter();
-        }
+        public override void Recenter() => InputTracking.Recenter();
 
         public override void SetActive(bool active)
         {
@@ -45,7 +42,7 @@ namespace Demonixis.Toolbox.XR
 
 #if OCULUS_SDK
             var manager = gameObject.AddComponent<OVRManager>();
-            OVRManager.tiledMultiResLevel = OVRManager.TiledMultiResLevel.LMSHigh;
+            OVRManager.tiledMultiResLevel = m_TiledMultiResLevel;
 #endif
         }
 

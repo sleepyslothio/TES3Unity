@@ -187,47 +187,8 @@ namespace TESUnity
 #if UNITY_STANDALONE || UNITY_EDITOR
             var sb = new StringBuilder();
             sb.Append("# TESUnity Configuration File\r\n");
-            sb.Append("\r\n");
-
-            sb.Append("[Global]\r\n");
-            sb.Append("PlayMusic = True\r\n");
             sb.Append(string.Format("{0} = \r\n", MWDataPathName));
             sb.Append("\r\n");
-
-            sb.Append("[Rendering]\r\n");
-            sb.Append("RenderPath = Deferred\r\n");
-            sb.Append("Shader = PBR\r\n");
-            sb.Append("CameraFarClip = 500\r\n");
-            sb.Append("WaterQuality = 0\r\n");
-            sb.Append("\r\n");
-
-            sb.Append("[Lighting]\r\n");
-            sb.Append("AnimateLights = True\r\n");
-            sb.Append("SunShadows = True\r\n");
-            sb.Append("LightShadows = False\r\n");
-            sb.Append("RenderExteriorCellLights = True\r\n");
-            sb.Append("DayNightCycle = True\r\n");
-            sb.Append("GenerateNormalMap = True\r\n");
-            sb.Append("NormalGeneratorIntensity = 0.75\r\n");
-            sb.Append("\r\n");
-
-            sb.Append("[Effects]\r\n");
-            sb.Append("AntiAliasing = True\r\n");
-            sb.Append("PostProcessQuality = 3\r\n");
-            sb.Append("WaterBackSideTransparent = False\r\n");
-            sb.Append("\r\n");
-
-            sb.Append("[VR]\r\n");
-            sb.Append("FollowHeadDirection = True\r\n");
-            sb.Append("RoomScale = False\r\n");
-            sb.Append("ForceControllers = True\r\n");
-            sb.Append("XRVignette = False\r\n");
-            sb.Append("RenderScale = 1.0\r\n");
-            sb.Append("\r\n");
-
-            sb.Append("[Debug]\r\n");
-            sb.Append("CreaturesEnabled = False\r\n");
-
             File.WriteAllText(ConfigFile, sb.ToString());
 #endif
         }
