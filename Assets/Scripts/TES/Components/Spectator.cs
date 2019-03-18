@@ -30,6 +30,10 @@ namespace TESUnity.Components
 
             var standaloneInputModule = EventSystem.current.GetComponent<StandaloneInputModule>();
             Destroy(standaloneInputModule);
+
+            var lightGo = new GameObject("Light");
+            var light = lightGo.AddComponent<Light>();
+            light.shadows = LightShadows.None;
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿#if UNITY_ANDROID
-#define OCULUS_SDK
-#endif
-using Demonixis.Toolbox.XR;
+﻿using Demonixis.Toolbox.XR;
 using UnityEngine.XR;
 
 namespace TESUnity.Inputs

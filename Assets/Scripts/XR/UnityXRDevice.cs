@@ -1,8 +1,5 @@
 ﻿/// UnityVRDevice
 /// Last Modified Date: 01/07/2017
-#if UNITY_ANDROID
-#define OCULUS_SDK
-#endif
 using UnityEngine;
 using UnityEngine.XR;
 

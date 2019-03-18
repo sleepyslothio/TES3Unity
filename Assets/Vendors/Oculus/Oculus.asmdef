@@ -15,6 +15,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "UNITY_ANDROID"
+        "OCULUS_SDK"
     ]
 }

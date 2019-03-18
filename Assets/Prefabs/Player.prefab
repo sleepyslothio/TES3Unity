@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 4000010397047646}
   - component: {fileID: 683780764699907693}
   - component: {fileID: 1968203508281764117}
+  - component: {fileID: 4537370621232559901}
+  - component: {fileID: 7398004323309537648}
   m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
@@ -61,7 +63,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_priority: 0
-  m_TiledMultiResLevel: 3
+--- !u!114 &4537370621232559901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000011355703082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f789080946055a44ab5c39ff6a830ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_priority: 0
+  m_Enable: 0
+--- !u!114 &7398004323309537648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000011355703082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d61e51e1615c54c9eb75e7ef11fb4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_priority: 0
+  m_ReplaceTrackedPoseDriver: 1
+  m_ControllerFollowsHead: 1
+  m_DisableInEditor: 0
 --- !u!1 &1000011480992356
 GameObject:
   m_ObjectHideFlags: 0
