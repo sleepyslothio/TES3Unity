@@ -44,7 +44,7 @@ namespace TESUnity.Inputs
             else if (button == MWButton.Menu)
                 return OVRInput.Get(OVRInput.Button.Back, GetController(false));
             else if (button == MWButton.Jump)
-                OVRInput.Get(OVRInput.Button.PrimaryTouchpad, GetController(false));
+                OVRInput.Get(OVRInput.Button.One, GetController(false));
 #endif
             return false;
         }
@@ -57,7 +57,7 @@ namespace TESUnity.Inputs
             else if (button == MWButton.Menu)
                 return OVRInput.Get(OVRInput.Button.Back, GetController(false));
             else if (button == MWButton.Jump)
-                OVRInput.GetDown(OVRInput.Button.PrimaryTouchpad, GetController(false));
+                OVRInput.GetDown(OVRInput.Button.One, GetController(false));
 #endif
             return false;
         }
@@ -72,7 +72,7 @@ namespace TESUnity.Inputs
             else if (button == MWButton.Teleport)
                 OVRInput.GetUp(OVRInput.Button.PrimaryThumbstickLeft, GetController(false));
             else if (button == MWButton.Jump)
-                OVRInput.GetUp(OVRInput.Button.PrimaryTouchpad, GetController(false));
+                OVRInput.GetUp(OVRInput.Button.One, GetController(false));
 #endif
             return false;
         }
