@@ -27,16 +27,20 @@ namespace TESUnity.Inputs
             if (InputProviders != null)
                 return;
 
+#if WAVEVR_SDK
+            InputProviders = new IInputProvider[] { new WaveVRInput() };
+#else
             var providers = new IInputProvider[]
             {
                 new TouchInput(),
-                new OculusInput(),
                 new UnityXRInput(),
                 new DesktopInput()
             };
 
             var list = new List<IInputProvider>();
             var touchEnabled = false;
+
+
 
 #if UNITY_ANDROID
             if (UnityXRDevice.IsOculus)
@@ -61,6 +65,7 @@ namespace TESUnity.Inputs
             }
 
             InputProviders = list.ToArray();
+#endif
         }
 
         public static float GetAxis(MWAxis axis)

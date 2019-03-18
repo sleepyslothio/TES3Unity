@@ -15,9 +15,15 @@ namespace TESUnity.Components
         [SerializeField]
         private UISelectorWidget m_CellDistanceDd = null;
         [SerializeField]
+        private UISelectorWidget m_CellRadiusLoad = null;
+        [SerializeField]
         private UISelectorWidget m_PostProcessDd = null;
         [SerializeField]
         private UISelectorWidget m_MaterialDd = null;
+        [SerializeField]
+        private UISelectorWidget m_RenderPath = null;
+        [SerializeField]
+        private UISelectorWidget m_SRPQuality = null;
         [SerializeField]
         private Toggle m_GenerateNormalMapsToggle = null;
         [SerializeField]
@@ -28,6 +34,8 @@ namespace TESUnity.Components
         private Toggle m_LightShadowsToggle = null;
         [SerializeField]
         private Toggle m_ExteriorLightsToggle = null;
+        [SerializeField]
+        private Toggle m_DayNightCycleToggle = null;
         [SerializeField]
         private UISelectorWidget m_CameraFarClipDropdown = null;
         [SerializeField]
@@ -46,11 +54,17 @@ namespace TESUnity.Components
 
             var values = new[] { "1", "2", "3", "4" };
             m_CellRadiusDd.Setup(ref values, m_Settings.CellRadius.ToString(), SetCellRadius);
-            m_CellDistanceDd.Setup(ref values, m_Settings.CellDistance.ToString(), SetCellDistance);
+            m_CellDistanceDd.Setup(ref values, m_Settings.CellDetailRadius.ToString(), SetCellDistance);
+            m_CellRadiusLoad.Setup(ref values, m_Settings.CellRadiusOnLoad.ToString(), SetCellRadiusLoad);
 
             m_PostProcessDd.Setup<PostProcessingQuality>((int)m_Settings.PostProcessing, SetPostProcessing);
             m_MaterialDd.Setup<MWMaterialType>((int)m_Settings.Material, SetMaterialQuality);
+            m_RenderPath.Setup<RendererType>((int)m_Settings.Renderer, SetRenderType);
+            m_SRPQuality.Setup<SRPQuality>((int)m_Settings.SRPQuality, SetSRPQuality);
 
+#if !LWRP_ENABLED && !HDRP_ENABLED
+            m_SRPQuality.SetInteractable(false);
+#endif
             m_GenerateNormalMapsToggle.isOn = m_Settings.GenerateNormalMaps;
             m_GenerateNormalMapsToggle.onValueChanged.AddListener(SetGenerateNormalMaps);
 
@@ -69,10 +83,13 @@ namespace TESUnity.Components
             values = new[] { "1000", "500", "250", "150", "100", "50" };
             m_CameraFarClipDropdown.Setup(ref values, m_Settings.CameraFarClip.ToString(), SetCameraFarClip);
 
-            m_FollowHeadToggle.isOn = m_Settings.VRFollowHead;
+            m_DayNightCycleToggle.isOn = m_Settings.DayNightCycle;
+            m_DayNightCycleToggle.onValueChanged.AddListener(SetDayNightCycle);
+
+            m_FollowHeadToggle.isOn = m_Settings.FollowHead;
             m_FollowHeadToggle.onValueChanged.AddListener(SetVRFollowHead);
 
-            m_RoomScaleToggle.isOn = m_Settings.VRRoomScale;
+            m_RoomScaleToggle.isOn = m_Settings.RoomScale;
             m_RoomScaleToggle.onValueChanged.AddListener(SetRoomScale);
 
             values = new[] { "100", "90", "80", "70", "60", "50" };
@@ -137,6 +154,16 @@ namespace TESUnity.Components
             m_Settings.Material = (MWMaterialType)index;
         }
 
+        public void SetRenderType(int index)
+        {
+            m_Settings.Renderer = (RendererType)index;
+        }
+
+        public void SetSRPQuality(int index)
+        {
+            m_Settings.SRPQuality = (SRPQuality)index;
+        }
+
         public void SetGenerateNormalMaps(bool isOn)
         {
             m_Settings.GenerateNormalMaps = isOn;
@@ -152,9 +179,14 @@ namespace TESUnity.Components
             m_Settings.SunShadows = isOn;
         }
 
+        public void SetDayNightCycle(bool isOn)
+        {
+            m_Settings.DayNightCycle = isOn;
+        }
+
         public void SetVRFollowHead(bool isOn)
         {
-            m_Settings.VRFollowHead = isOn;
+            m_Settings.FollowHead = isOn;
         }
 
         public void SetRenderScale(string value)
@@ -176,7 +208,15 @@ namespace TESUnity.Components
         public void SetCellDistance(string value)
         {
             if (int.TryParse(value, out int result))
-                m_Settings.CellDistance = result;
+                m_Settings.CellDetailRadius = result;
+            else
+                Debug.LogWarning($"Can't parse the value {value}");
+        }
+
+        public void SetCellRadiusLoad(string value)
+        {
+            if (int.TryParse(value, out int result))
+                m_Settings.CellRadiusOnLoad = result;
             else
                 Debug.LogWarning($"Can't parse the value {value}");
         }
@@ -201,7 +241,7 @@ namespace TESUnity.Components
 
         private void SetRoomScale(bool isOn)
         {
-            m_Settings.VRRoomScale = isOn;
+            m_Settings.RoomScale = isOn;
         }
     }
 }

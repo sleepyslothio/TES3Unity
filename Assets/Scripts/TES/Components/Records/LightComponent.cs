@@ -43,13 +43,16 @@ namespace TESUnity.Components.Records
             if (LIGH.LHDT != null)
             {
                 lightData.flags = LIGH.LHDT.flags;
+
                 if (Utils.ContainsBitFlags((uint)lightData.flags, (uint)LightData.LightFlags.CanCarry))
                 {
-                    gameObject.AddComponent<BoxCollider>().size *= 0.5f; //very weak-- adding a box collider to light objects so we can interact with them
-                                                                         //adding kinematic rigidbodies to static colliders prevents the physics collision tree from being rebuilt, which impacts performance
                     if (TESManager.instance.useKinematicRigidbodies)
+                    {
                         gameObject.AddComponent<Rigidbody>().isKinematic = true;
+                        gameObject.AddComponent<BoxCollider>().size *= 0.5f;
+                    }
                 }
+
                 StartCoroutine(ConfigureLightComponent());
             }
         }

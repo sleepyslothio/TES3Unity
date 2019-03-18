@@ -37,6 +37,9 @@ namespace TESUnity.Components
 #if UNITY_ANDROID || UNITY_IOS
             mobile = true;
 #endif
+#if WAVEVR_SDK
+            settings.postProcessingQuality = PostProcessingQuality.None;
+#endif
 
             if (settings.postProcessingQuality != PostProcessingQuality.None)
             {

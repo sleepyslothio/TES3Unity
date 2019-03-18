@@ -27,6 +27,11 @@ namespace TESUnity
         Forward, Deferred, LightweightRP, HDRP
     }
 
+    public enum AntiAliasingMode
+    {
+        None = 0, MSAA2X, MSAA4X, FXAA, SMAA, TAA
+    }
+
     [Serializable]
     public sealed class GameSettings
     {
@@ -39,6 +44,9 @@ namespace TESUnity
         public bool Audio = true;
         public PostProcessingQuality PostProcessing = PostProcessingQuality.High;
         public MWMaterialType Material = MWMaterialType.PBR;
+        public RendererType Renderer = RendererType.Forward;
+        public SRPQuality SRPQuality = SRPQuality.High;
+        public AntiAliasingMode AntiAliasing = AntiAliasingMode.TAA;
         public bool GenerateNormalMaps = true;
         public bool AnimateLights = true;
         public bool SunShadows = true;
@@ -46,9 +54,11 @@ namespace TESUnity
         public bool ExteriorLight = false;
         public float CameraFarClip = 1000;
         public int CellRadius = 2;
-        public int CellDistance = 2;
-        public bool VRFollowHead = true;
-        public bool VRRoomScale = false;
+        public int CellDetailRadius = 2;
+        public int CellRadiusOnLoad = 2;
+        public bool DayNightCycle = false;
+        public bool FollowHead = true;
+        public bool RoomScale = false;
         public float RenderScale = 1.0f;
 
         public static void Save()
@@ -74,8 +84,10 @@ namespace TESUnity
                 Instance.LightShadows = false;
                 Instance.ExteriorLight = false;
                 Instance.CameraFarClip = 200;
-                Instance.VRRoomScale = false;
-                Instance.CellDistance = 2;
+                Instance.DayNightCycle = false;
+                Instance.AntiAliasing = AntiAliasingMode.MSAA2X;
+                Instance.RoomScale = false;
+                Instance.CellDetailRadius = 1;
                 Instance.CellRadius = 1;
 
                 if (XRManager.Enabled)
@@ -211,7 +223,6 @@ namespace TESUnity
                             break;
                         case "AnimateLights": ParseBool(value, ref tes.animateLights); break;
                         case "MorrowindDataPath": path = value; break;
-                        case "FollowHeadDirection": ParseBool(value, ref tes.followHeadDirection); break;
                         case "SunShadows": ParseBool(value, ref tes.renderSunShadows); break;
                         case "LightShadows": ParseBool(value, ref tes.renderLightShadows); break;
                         case "PlayMusic": ParseBool(value, ref tes.playMusic); break;
@@ -232,8 +243,6 @@ namespace TESUnity
                                 default: tes.materialType = MWMaterialType.Standard; break;
                             }
                             break;
-                        case "RoomScale": ParseBool(value, ref tes.roomScale); break;
-                        case "ForceControllers": ParseBool(value, ref tes.forceControllers); break;
                         case "CreaturesEnabled": ParseBool(value, ref tes.creaturesEnabled); break;
                         case "CameraFarClip": ParseFloat(value, ref tes.cameraFarClip, 5); break;
                         case "WaterQuality":

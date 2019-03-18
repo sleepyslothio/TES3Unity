@@ -19,6 +19,8 @@ namespace TESUnity.Components.VR
         private RectTransform _canvas = null;
         private Transform _pivotCanvas = null;
         private Transform m_HUD = null;
+        private bool m_FollowHead = false;
+        private bool m_RoomScale = false;
 
         [SerializeField]
         private Canvas _mainCanvas = null;
@@ -37,16 +39,19 @@ namespace TESUnity.Components.VR
                 yield break;
             }
 
+            var settings = GameSettings.Get();
+            m_RoomScale = settings.RoomScale;
+            m_FollowHead = settings.FollowHead;
+
             yield return new WaitForEndOfFrame();
 
-            var manager = TESManager.instance;
-            var renderScale = manager.renderScale;
+            var renderScale = settings.RenderScale;
 
             if (renderScale > 0 && renderScale <= 2)
-                XRManager.GetActiveDevice().RenderScale = manager.renderScale;
+                XRManager.GetActiveDevice().RenderScale = renderScale;
 
             // Setup RoomScale/Sitted mode.
-            var trackingSpaceType = TESManager.instance.roomScale ? TrackingSpaceType.RoomScale : TrackingSpaceType.Stationary;
+            var trackingSpaceType = m_RoomScale ? TrackingSpaceType.RoomScale : TrackingSpaceType.Stationary;
             XRDevice.SetTrackingSpaceType(trackingSpaceType);
             if (trackingSpaceType == TrackingSpaceType.RoomScale)
                 transform.GetChild(0).localPosition = Vector3.zero;
@@ -89,6 +94,10 @@ namespace TESUnity.Components.VR
                 controller.transform.parent = _camTransform.parent;
 
             RecenterOrientationAndPosition();
+
+#if WAVEVR_SDK
+            m_RoomScale = false;
+#endif
         }
 
         private void Update()
@@ -107,13 +116,13 @@ namespace TESUnity.Components.VR
             var prevPos = root.position;
             var prevRot = root.rotation;
 
-            if (TESManager.instance.followHeadDirection)
+            if (m_FollowHead)
             {
                 _transform.rotation = Quaternion.Euler(0.0f, centerEye.rotation.eulerAngles.y, 0.0f);
                 root.rotation = prevRot;
             }
 
-            if (TESManager.instance.roomScale)
+            if (m_RoomScale)
             {
                 //_transform.position = new Vector3(centerEye.position.x, 0.0f, centerEye.position.z);
                 root.position = prevPos;

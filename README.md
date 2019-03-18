@@ -6,73 +6,23 @@ World viewers for Elder Scrolls games in the Unity game engine with VR support s
 
 **TESUnity requires a valid installation of Morrowind to run!**, you can get it on Steam or Gog.com.
 
-To get started, download the source code as a ZIP file, extract it, and open the TESUnity folder in Unity.
+To get started, go to the release tab and download the latest release for your device.
+Alternatively you can download the source code as a ZIP file, extract it, and open the TESUnity folder in Unity.
 
-You can copy the `Data Files` folder from your Morrowind installation to the root folder of the project / release. The game will start automatically without asking for a path.
+Take a look at the `README-Config.md` file to tweak parameters. If you want to enjoy VR, take a look at `README-VR.md`. Finally input mapping is located at `README-Input.md`.
 
-## Configuration file
-You can use the `config.ini` file located at the root folder of the project / release folder to configure and tweak your game experience.
-The first step is to rename the `config.ini.dist` file to `config.ini`.
-
-
-| Parameter | Values |
-|-----------|---------|
-| **Global** | |
-| PlayMusic  | `True` or `False` |
-| MorrowindPath | The Morrowind's `Data Files` path |
-| CellRadius | How number of cell to load |
-| CellDetailRadius | Detail Cell Radius |
-| CellRadiusOnLoad | How many cell load on load |
-| **Lighting**| |
-| AnimateLights  | `True` or `False` |
-| SunShadows  | `True` or `False` |
-| LightShadows  | `True` or `False` |
-| RenderExteriorCellLights | `True` or `False` |
-| DayNightCycle | `True` or `False` |
-| GenerateNormalMap | `True` or `False` |
-| NormalGeneratorIntensity | A value from 0.1 to 1.0 |
-| **Effects** | |
-| AntiAliasing |  A value from 0 to 3 (0 is disabled) | 
-| PostProcessQuality | A value from 0 to 3 (0 is disabled) | 
-| WaterBackSideTransparent | `True` or `False` |
-| **Rendering** | |
-| Shader  | `PBR` or `Simple` or `Unlit` or `Default` |
-| RenderPath  | `Forward` / `Deferred` / `Lightwight` |
-| CameraFarClip | a value from 10 to 10000 |
-| WaterQuality | a value from 0 to 2 |
-| SRPQuality | a value from 0 to 2 |
-| RenderScale | A value from 0.1 to 2.0 | 
-| **VR** | |
-| FollowHeadDirection | `True` or `False` |
-| RoomScale | `True` or `False` |
-| ForceControllers | `True` or `False` |
-| XRVignette | `True` or `False` |
-| **Debug** | |
-| CreaturesEnabled | `True` or `False` |
-
-## Controls
-| Action | Keys | Gamepad | VR |
-|--------|------|---------|----|
-| Move | W, A, S, D* | Left thumbstick | Left thumbstick |
-| Sprint | Left Shift | Left thumbstick button | Left Grip |
-| Walk | Left Ctrl | Right thumstick button | Right Grip |
-| Use / Open / Attack | Space | Button A | Right Trigger |
-| Cancel / Menu | Left click | Button B | Left Menu |
-| Take (book mode) | Nothing | Button X | Left Trigger |
-| Jump | E | button Y | Left thumbstick |
-| Toggle Flight Mode | Tab | Nothing | Nohtin |
-| Toggle Lantern | L | Nothing | Right thumbstick |
-| Free Cursor Lock | Backquote | Nothing | Nothing |
-| Teleport | Nothing | Nothing | Grip |
-
-\* *It uses the AZERTY mapping for French users.*
+### Desktop
+The game will ask you where is the **Data Files** folder the first time you start the game. If you move your Morrowind installation, the game will ask you again where is the **Data Files** folder.
+  
+### Mobile
+You've to copy the content of the **Data Files** folder into a folder named `TESUnityXR` on your SDCard.
+For now, the path is hardcoded, if the game can't open the game, please open an issue.
 
 ## Contribute
 
 Bugs and feature requests are listed on the [GitHub issues page](https://github.com/ColeDeanShepherd/TESUnity/issues). Feel free to fork the source code and contribute, or use it in any way that falls under the [MIT License](https://github.com/ColeDeanShepherd/TESUnity/blob/master/LICENSE.txt).
 
 Please create a branch from develop for each "feature" (see [this article](http://nvie.com/posts/a-successful-git-branching-model/)).
-
 
 Morrowind Data Format Resources
 -------------------------------

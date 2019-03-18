@@ -46,7 +46,7 @@ namespace TESUnity
         public bool playMusic = false;
         public bool enableLog = false;
         public Water.WaterMode waterQuality = Water.WaterMode.Simple;
-        public bool useStaticBatching = false;
+        public bool useStaticBatching = true;
 
         [Header("Optimizations")]
         public int cellRadius = 4;
@@ -74,11 +74,6 @@ namespace TESUnity
         public PostProcessingQuality postProcessingQuality = PostProcessingQuality.High;
         public PostProcessLayer.Antialiasing antiAliasing = PostProcessLayer.Antialiasing.TemporalAntialiasing;
         public bool waterBackSideTransparent = false;
-
-        [Header("VR")]
-        public bool followHeadDirection = false;
-        public bool roomScale = true;
-        public bool forceControllers = false;
 
         [Header("UI")]
         public UIManager UIManager;
@@ -126,17 +121,16 @@ namespace TESUnity
                 animateLights = settings.AnimateLights;
                 renderExteriorCellLights = settings.ExteriorLight;
                 cameraFarClip = settings.CameraFarClip;
-                roomScale = settings.VRRoomScale;
                 renderLightShadows = settings.LightShadows;
                 playMusic = settings.Audio;
-                cellDetailRadius = settings.CellDistance;
+                cellDetailRadius = settings.CellDetailRadius;
                 cellRadius = settings.CellRadius;
+                cellRadiusOnLoad = settings.CellRadiusOnLoad;
                 generateNormalMap = settings.GenerateNormalMaps;
                 materialType = settings.Material;
                 postProcessingQuality = settings.PostProcessing;
                 renderScale = settings.RenderScale;
                 renderSunShadows = settings.SunShadows;
-                followHeadDirection = settings.VRFollowHead;
             }
 
 #if UNITY_STANDALONE || UNITY_EDITOR

@@ -154,7 +154,7 @@ static class CustomBuildProcessor
         {
             if (target == BuildTarget.Android)
             {
-                if (Application.unityVersion.StartsWith("2017.") || Application.unityVersion.StartsWith("2018."))
+                if (Application.unityVersion.StartsWith("2017.") || Application.unityVersion.StartsWith("2018.") || Application.unityVersion.StartsWith("2019."))
                 {
                     if (!File.Exists(aar2017) && File.Exists(aar2017+".skip"))
                     {
