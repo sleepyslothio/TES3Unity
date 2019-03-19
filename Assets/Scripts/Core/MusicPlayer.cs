@@ -24,6 +24,9 @@ public class MusicPlayer
 
     public void Update()
     {
+        if (songFilePaths.Count == 0)
+            return;
+
         if (currentAudioSourceObj == null)
         {
             currentSongIndex = GetNextSongIndex();

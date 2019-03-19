@@ -68,22 +68,23 @@ namespace TESUnity
             cellManager = new CellManager(dataReader, textureManager, nifManager, temporalLoadBalancer);
 
             var tes = TESManager.instance;
+            var config = GameSettings.Get();
 
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientIntensity = tes.ambientIntensity;
 
             sunObj = GameObjectUtils.CreateDirectionalLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
-            sunObj.GetComponent<Light>().shadows = tes.renderSunShadows ? LightShadows.Soft : LightShadows.None;
+            sunObj.GetComponent<Light>().shadows = config.SunShadows ? LightShadows.Soft : LightShadows.None;
             sunObj.SetActive(false);
 
-            if (tes.dayNightCycle)
+            if (config.DayNightCycle)
                 sunObj.AddComponent<DayNightCycle>();
 
             waterObj = GameObject.Instantiate(tes.waterPrefab);
             waterObj.SetActive(false);
 
             var water = waterObj.GetComponent<Water>();
-            water.waterMode = tes.waterQuality;
+            water.waterMode = config.WaterQuality;
 
             if (GraphicsSettings.renderPipelineAsset != null)
             {

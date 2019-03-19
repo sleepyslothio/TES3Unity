@@ -40,20 +40,22 @@ namespace TESUnity
         {
             TextureManager = textureManager;
 
-            var tes = TESManager.instance;
+            var config = GameSettings.Get();
+            var materialType = config.MaterialType;
+            var renderPath = config.RenderPath;
 
             // Order is important
-            if (tes.materialType != MWMaterialType.Unlit)
+            if (materialType != MWMaterialType.Unlit)
             {
 #if LWRP_ENABLED
-            if (tes.renderPath == RendererType.LightweightRP)
+            if (renderPath == RendererType.LightweightRP)
                 m_Material = new LightweightMaterial(textureManager);
 #endif
 #if HDRP_ENABLED
-			if (tes.renderPath == RendererType.HDRP)
+			if (renderPath == RendererType.HDRP)
                 m_Material = new HDRPMaterial(textureManager);
 #endif
-                if (tes.materialType == MWMaterialType.PBR)
+                if (materialType == MWMaterialType.PBR)
                     m_Material = new StandardMaterial(textureManager);
                 else
                     m_Material = new DiffuseMaterial(textureManager);

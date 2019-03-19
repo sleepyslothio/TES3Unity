@@ -34,6 +34,8 @@ namespace TESUnity.Components
             var lightGo = new GameObject("Light");
             var light = lightGo.AddComponent<Light>();
             light.shadows = LightShadows.None;
+            light.type = LightType.Directional;
+            light.transform.rotation = Quaternion.Euler(45.0f, 225.0f, 0.0f);
         }
     }
 }

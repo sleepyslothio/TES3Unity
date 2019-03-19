@@ -29,8 +29,8 @@ namespace TESUnity
                 {
                     material.mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
 
-                    if (TESManager.instance.generateNormalMap)
-                        material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture, TESManager.instance.normalGeneratorIntensity));
+                    if (m_GenerateNormalMap)
+                        material.SetTexture("_BumpMap", GenerateNormalMap((Texture2D)material.mainTexture));
                 }
 
                 if (mp.textures.bumpFilePath != null)

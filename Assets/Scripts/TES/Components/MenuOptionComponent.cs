@@ -49,7 +49,7 @@ namespace TESUnity.Components
         {
             m_Settings = GameSettings.Get();
 
-            m_AudioToggle.isOn = m_Settings.Audio;
+            m_AudioToggle.isOn = m_Settings.MusicEnabled;
             m_AudioToggle.onValueChanged.AddListener(SetAudio);
 
             var values = new[] { "1", "2", "3", "4" };
@@ -58,8 +58,8 @@ namespace TESUnity.Components
             m_CellRadiusLoad.Setup(ref values, m_Settings.CellRadiusOnLoad.ToString(), SetCellRadiusLoad);
 
             m_PostProcessDd.Setup<PostProcessingQuality>((int)m_Settings.PostProcessing, SetPostProcessing);
-            m_MaterialDd.Setup<MWMaterialType>((int)m_Settings.Material, SetMaterialQuality);
-            m_RenderPath.Setup<RendererType>((int)m_Settings.Renderer, SetRenderType);
+            m_MaterialDd.Setup<MWMaterialType>((int)m_Settings.MaterialType, SetMaterialQuality);
+            m_RenderPath.Setup<RendererType>((int)m_Settings.RenderPath, SetRenderType);
             m_SRPQuality.Setup<SRPQuality>((int)m_Settings.SRPQuality, SetSRPQuality);
 
 #if !LWRP_ENABLED && !HDRP_ENABLED
@@ -77,7 +77,7 @@ namespace TESUnity.Components
             m_LightShadowsToggle.isOn = m_Settings.LightShadows;
             m_LightShadowsToggle.onValueChanged.AddListener(SetLightShadows);
 
-            m_ExteriorLightsToggle.isOn = m_Settings.ExteriorLight;
+            m_ExteriorLightsToggle.isOn = m_Settings.ExteriorLights;
             m_ExteriorLightsToggle.onValueChanged.AddListener(SetExteriorLights);
 
             values = new[] { "1000", "500", "250", "150", "100", "50" };
@@ -141,7 +141,7 @@ namespace TESUnity.Components
 
         public void SetAudio(bool isOn)
         {
-            m_Settings.Audio = isOn;
+            m_Settings.MusicEnabled = isOn;
         }
 
         public void SetPostProcessing(int index)
@@ -151,12 +151,12 @@ namespace TESUnity.Components
 
         public void SetMaterialQuality(int index)
         {
-            m_Settings.Material = (MWMaterialType)index;
+            m_Settings.MaterialType = (MWMaterialType)index;
         }
 
         public void SetRenderType(int index)
         {
-            m_Settings.Renderer = (RendererType)index;
+            m_Settings.RenderPath = (RendererType)index;
         }
 
         public void SetSRPQuality(int index)
@@ -228,7 +228,7 @@ namespace TESUnity.Components
 
         private void SetExteriorLights(bool isOn)
         {
-            m_Settings.ExteriorLight = isOn;
+            m_Settings.ExteriorLights = isOn;
         }
 
         private void SetCameraFarClip(string value)

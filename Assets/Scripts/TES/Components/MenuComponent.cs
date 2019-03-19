@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.IO;
 using System.Threading;
+using TESUnity.Inputs;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -15,6 +17,8 @@ namespace TESUnity.Components
         private bool m_MenuLoaded = false;
 
         [Header("Panels")]
+        [SerializeField]
+        private GameObject m_PermissionPanel = null;
         [SerializeField]
         private GameObject m_PreloadPanel = null;
         [SerializeField]
@@ -50,9 +54,18 @@ namespace TESUnity.Components
         private bool m_DisplayDesktopPathOnAndroid = true;
 #endif
 
-        public bool CanLoadWorld => m_MenuLoaded && (m_PreloadThread == null || !m_PreloadThread.IsAlive);
-
         private void Awake()
+        {
+            if (!CanReadStorage())
+            {
+                RequestReadStoragePermission();
+                StartCoroutine(DeferredLoad());
+            }
+            else
+                Initialize();
+        }
+
+        private void Initialize()
         {
             m_GamePath = GameSettings.GetDataPath();
 
@@ -60,6 +73,23 @@ namespace TESUnity.Components
                 LoadMenu();
             else
                 LoadPreloader();
+        }
+
+        private IEnumerator DeferredLoad()
+        {
+            SetPanelVisible(-1);
+
+            var wait = new WaitForEndOfFrame();
+
+            while (!CanReadStorage())
+            {
+                if (InputManager.GetButtonDown(MWButton.Menu))
+                    Quit();
+
+                yield return wait;
+            }
+
+            Initialize();
         }
 
         #region PreLoading
@@ -89,7 +119,6 @@ namespace TESUnity.Components
 
             if (GameSettings.IsValidPath(m_GamePath))
             {
-                GameSettings.CreateConfigFile();
                 GameSettings.SetDataPath(m_GamePath);
                 m_PathValidationText.enabled = false;
                 LoadMenu();
@@ -208,8 +237,30 @@ namespace TESUnity.Components
 
         #endregion
 
+        private void RequestReadStoragePermission()
+        {
+#if UNITY_ANDROID
+            Permission.RequestUserPermission(Permission.ExternalStorageRead);
+#endif
+        }
+
+        public bool CanReadStorage()
+        {
+#if UNITY_ANDROID
+            return Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead);
+#else
+            return true;
+#endif
+        }
+
+        public bool CanLoadWorld()
+        {
+            return m_MenuLoaded && (m_PreloadThread == null || !m_PreloadThread.IsAlive);
+        }
+
         public void SetPanelVisible(int index)
         {
+            m_PermissionPanel.SetActive(index == -1);
             m_PreloadPanel.SetActive(index == 0);
             m_MenuPanel.SetActive(index == 1);
             m_OptionsPanel.SetActive(index == 2);

@@ -106,6 +106,7 @@ public static class GameObjectUtils
 
         var terrain = terrainObject.AddComponent<Terrain>();
         var srp = GraphicsSettings.renderPipelineAsset;
+        var materialType = GameSettings.Get().MaterialType;
 
         if (srp != null)
         {
@@ -126,7 +127,7 @@ public static class GameObjectUtils
         }
         else
         {
-            var pbr = TESManager.instance.materialType == MWMaterialType.PBR;
+            var pbr = materialType == MWMaterialType.PBR;
             terrain.materialType = pbr ? Terrain.MaterialType.BuiltInStandard : Terrain.MaterialType.BuiltInLegacyDiffuse;
         }
 

@@ -366,6 +366,8 @@ namespace TESUnity
 
         private GameObject InstantiateLight(LIGHRecord LIGH, bool indoors)
         {
+            var config = GameSettings.Get();
+
             var lightObj = new GameObject("Light");
             lightObj.isStatic = true;
 
@@ -374,13 +376,13 @@ namespace TESUnity
             lightComponent.color = new Color32(LIGH.LHDT.red, LIGH.LHDT.green, LIGH.LHDT.blue, 255);
             lightComponent.intensity = 1.5f;
             lightComponent.bounceIntensity = 0f;
-            lightComponent.shadows = TESManager.instance.renderLightShadows ? LightShadows.Soft : LightShadows.None;
+            lightComponent.shadows = config.LightShadows ? LightShadows.Soft : LightShadows.None;
 
 #if UNITY_ANDROID || UNITY_IOS
             lightComponent.renderMode = LightRenderMode.ForceVertex;
 #endif
 
-            if (!indoors && !TESManager.instance.renderExteriorCellLights) // disabling exterior cell lights because there is no day/night cycle
+            if (!indoors && !config.ExteriorLights) // disabling exterior cell lights because there is no day/night cycle
             {
                 lightComponent.enabled = false;
             }
@@ -563,8 +565,8 @@ namespace TESUnity
                     splat.smoothness = 0;
                     splat.metallic = 0;
 
-                    if (TESManager.instance.generateNormalMap)
-                        splat.normalMapTexture = BaseMaterial.GenerateNormalMap(texture, TESManager.instance.normalGeneratorIntensity);
+                    if (GameSettings.Get().GenerateNormalMaps)
+                        splat.normalMapTexture = BaseMaterial.GenerateNormalMap(texture);
 
                     splat.tileSize = new Vector2(6, 6);
 

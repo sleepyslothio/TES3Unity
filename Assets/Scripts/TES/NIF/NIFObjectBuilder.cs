@@ -228,8 +228,7 @@ namespace TESUnity
                     meshRenderer.enabled = false;
                 }
 
-                if (TESManager.instance.useStaticBatching)
-                    obj.isStatic = true;
+                obj.isStatic = true;
             }
 
             if (collidable)

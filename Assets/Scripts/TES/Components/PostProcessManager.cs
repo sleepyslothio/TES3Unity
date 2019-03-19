@@ -9,19 +9,9 @@ namespace TESUnity.Components
     [RequireComponent(typeof(PostProcessLayer))]
     public sealed class PostProcessManager : MonoBehaviour
     {
-#if UNITY_EDITOR
-        [SerializeField]
-        private bool m_BypassEditor = true;
-#endif
-
         private IEnumerator Start()
         {
             yield return new WaitForEndOfFrame();
-
-#if UNITY_EDITOR
-            if (TESManager.instance._bypassINIConfig && m_BypassEditor)
-                yield break;
-#endif
             UpdateEffects();
         }
 
@@ -32,39 +22,31 @@ namespace TESUnity.Components
             var volume = FindObjectOfType<PostProcessVolume>();
             var profile = volume.profile;
             var xrEnabled = XRManager.Enabled;
-            var mobile = false;
+            var isMobile = false;
+            var config = GameSettings.Get();
+            var quality = config.PostProcessing;
+            var antiAliasing = config.AntiAliasing;
 
 #if UNITY_ANDROID || UNITY_IOS
-            mobile = true;
+            isMobile = true;
 #endif
 #if WAVEVR_SDK
-            settings.postProcessingQuality = PostProcessingQuality.None;
+            quality = PostProcessingQuality.None;
 #endif
 
-            if (settings.postProcessingQuality != PostProcessingQuality.None)
+            if (quality != PostProcessingQuality.None)
             {
-                if (mobile)
+                if (isMobile)
                 {
-                    settings.postProcessingQuality = PostProcessingQuality.Low;
+                    quality = PostProcessingQuality.Low;
                     layer.antialiasingMode = PostProcessLayer.Antialiasing.None;
                 }
 
-                var asset = Resources.Load<PostProcessProfile>($"Rendering/Effects/PostProcessVolume-{settings.postProcessingQuality}");
+                var asset = Resources.Load<PostProcessProfile>($"Rendering/Effects/PostProcessVolume-{quality}");
                 volume.profile = asset;
-
-                // SMAA is not supported in VR.
-                if (xrEnabled && settings.antiAliasing == PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing)
-                    settings.antiAliasing = PostProcessLayer.Antialiasing.TemporalAntialiasing;
 
                 if (xrEnabled)
                 {
-                    // We use MSAA on mobile.
-                    if (!mobile)
-                    {
-                        layer.antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
-                        layer.fastApproximateAntialiasing.fastMode = true;
-                    }
-
                     UpdateEffect<Bloom>(profile, (bloom) =>
                     {
                         bloom.dirtTexture.value = null;
@@ -76,12 +58,67 @@ namespace TESUnity.Components
                     DisableEffect<Vignette>(profile);
                     DisableEffect<MotionBlur>(profile);
                 }
-            } 
+            }
             else
             {
                 volume.enabled = false;
                 layer.enabled = false;
             }
+
+            // SMAA is not supported in VR.
+            if (xrEnabled && antiAliasing == AntiAliasingMode.SMAA)
+                antiAliasing = AntiAliasingMode.TAA;
+
+            // MSAA 4X max on mobile.
+            if (antiAliasing == AntiAliasingMode.MSAA8X && isMobile)
+                antiAliasing = AntiAliasingMode.MSAA4X;
+
+            // FXAA post process on mobile.
+            if ((antiAliasing == AntiAliasingMode.SMAA || antiAliasing == AntiAliasingMode.TAA) && isMobile)
+                antiAliasing = AntiAliasingMode.FXAA;
+
+            if (antiAliasing == AntiAliasingMode.None)
+            {
+                SetMSAA(layer, 0);
+            }
+            else if (antiAliasing == AntiAliasingMode.MSAA2X)
+            {
+                SetMSAA(layer, 2);
+            }
+            else if (antiAliasing == AntiAliasingMode.MSAA4X)
+            {
+                SetMSAA(layer, 4);
+            }
+            else if (antiAliasing == AntiAliasingMode.MSAA8X)
+            {
+                SetMSAA(layer, 8);
+            }
+            else if (antiAliasing == AntiAliasingMode.SMAA)
+            {
+
+                SetPostProcessAA(layer, PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing);
+            }
+            else if (antiAliasing == AntiAliasingMode.FXAA)
+            {
+                SetPostProcessAA(layer, PostProcessLayer.Antialiasing.FastApproximateAntialiasing);
+                layer.fastApproximateAntialiasing.fastMode = isMobile;
+            }
+            else if (antiAliasing == AntiAliasingMode.TAA)
+            {
+                SetPostProcessAA(layer, PostProcessLayer.Antialiasing.TemporalAntialiasing);
+            }
+        }
+
+        private void SetMSAA(PostProcessLayer layer, int level)
+        {
+            layer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+            QualitySettings.antiAliasing = level;
+        }
+
+        private void SetPostProcessAA(PostProcessLayer layer, PostProcessLayer.Antialiasing level)
+        {
+            layer.antialiasingMode = level;
+            QualitySettings.antiAliasing = 0;
         }
 
         private void SetEffectEnabled<T>(bool isEnabled) where T : MonoBehaviour

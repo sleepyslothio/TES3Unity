@@ -11,17 +11,24 @@ namespace TESUnity
     {
         protected Dictionary<MWMaterialProps, Material> m_existingMaterials;
         protected TextureManager m_textureManager;
+        protected bool m_GenerateNormalMap;
 
         public BaseMaterial(TextureManager textureManager)
         {
             m_textureManager = textureManager;
             m_existingMaterials = new Dictionary<MWMaterialProps, Material>();
+            m_GenerateNormalMap = GameSettings.Get().GenerateNormalMaps;
         }
 
         public abstract Material BuildMaterialFromProperties(MWMaterialProps mp);
         public abstract Material BuildMaterial();
         public abstract Material BuildMaterialBlended(BlendMode sourceBlendMode, BlendMode destinationBlendMode);
         public abstract Material BuildMaterialTested(float cutoff = 0.5f);
+
+        public static Texture2D GenerateNormalMap(Texture2D source)
+        {
+            return GenerateNormalMap(source, TESManager.NormalMapGeneratorIntensity);
+        }
 
         // https://gamedev.stackexchange.com/questions/106703/create-a-normal-map-using-a-script-unity
         public static Texture2D GenerateNormalMap(Texture2D source, float strength)

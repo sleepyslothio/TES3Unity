@@ -81,7 +81,7 @@ namespace TESUnity.Components.Records
                 var fire = Utils.ContainsBitFlags((uint)lightData.flags, (uint)LightData.LightFlags.Fire);
                 var animated = flicker || flickerSlow || pulse || pulseSlow || fire;
 
-                if (animated && TESManager.instance.animateLights)
+                if (animated && GameSettings.Get().AnimateLights)
                 {
                     var lightAnim = lightData.lightComponent.gameObject.AddComponent<LightAnim>();
                     if (flicker)

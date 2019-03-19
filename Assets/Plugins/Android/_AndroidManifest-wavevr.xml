@@ -28,5 +28,9 @@
     <uses-permission android:name="com.htc.vr.core.server.VRDataProvider" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	
+	<meta-data android:name="com.htc.vr.content.NumDoFHmd" android:value="3,6DoF"/>
+	<meta-data android:name="com.htc.vr.content.NumDoFController" android:value="3,6DoF"/>
+	<meta-data android:name="com.htc.vr.content.NumController" android:value="0,1,2"/>
 </manifest>
 

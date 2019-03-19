@@ -7,14 +7,14 @@ namespace TESUnity
 {
     public class PlayerComponent : MonoBehaviour
     {
-        private Transform _camTransform;
-        private Transform _transform;
-        private CapsuleCollider _capsuleCollider;
-        private Rigidbody _rigidbody;
-        private UICrosshair _crosshair;
-        private bool _paused = false;
-        private bool _isGrounded = false;
-        private bool _isFlying = false;
+        private Transform m_CameraTransform;
+        private Transform m_Transform;
+        private CapsuleCollider m_CapsuleCollider;
+        private Rigidbody m_Rigidbody;
+        private UICrosshair m_Crosshair;
+        private bool m_Paused = false;
+        private bool m_IsGrounded = false;
+        private bool m_IsFlying = false;
         private bool m_XREnabled = false;
 
         #region Editor Fields
@@ -40,53 +40,64 @@ namespace TESUnity
 
         public bool isFlying
         {
-            get { return _isFlying; }
+            get { return m_IsFlying; }
             set
             {
-                _isFlying = value;
+                m_IsFlying = value;
 
-                if (!_isFlying)
-                    _rigidbody.useGravity = true;
+                if (!m_IsFlying)
+                    m_Rigidbody.useGravity = true;
                 else
-                    _rigidbody.useGravity = false;
+                    m_Rigidbody.useGravity = false;
             }
         }
 
         public bool Paused
         {
-            get { return _paused; }
+            get { return m_Paused; }
         }
 
         #endregion
 
         private void Start()
         {
-            _transform = GetComponent<Transform>();
-            _camTransform = Camera.main.GetComponent<Transform>();
-            _capsuleCollider = GetComponent<CapsuleCollider>();
-            _rigidbody = GetComponent<Rigidbody>();
+            m_Transform = GetComponent<Transform>();
+            m_CameraTransform = Camera.main.GetComponent<Transform>();
+            m_CapsuleCollider = GetComponent<CapsuleCollider>();
+            m_Rigidbody = GetComponent<Rigidbody>();
 
             // Setup the camera
-            var tes = TESManager.instance;
+            var config = GameSettings.Get();
             var camera = Camera.main;
+            var renderPath = config.RenderPath;
 
-            if (tes.renderPath == RendererType.Forward)
+#if !HDRP_ENABLED && !LWRP_ENABLED
+            if (renderPath == RendererType.LightweightRP)
+                renderPath = RendererType.Forward;
+            else if (renderPath == RendererType.HDRP)
+                renderPath = RendererType.Deferred;
+#endif
+
+            if (renderPath == RendererType.Forward)
             {
                 camera.renderingPath = RenderingPath.Forward;
                 camera.allowMSAA = true;
             }
-            else if (tes.renderPath == RendererType.Deferred)
+            else if (renderPath == RendererType.Deferred)
             {
                 camera.renderingPath = RenderingPath.DeferredShading;
                 camera.allowMSAA = false;
             }
 
-            camera.allowHDR = tes.renderPath == RendererType.Deferred;
-            camera.farClipPlane = tes.cameraFarClip;
+#if UNITY_EDITOR
+            // Because of a bug, HDR only works well with bloom in build or in deferred mode.
+            camera.allowHDR = config.RenderPath == RendererType.Deferred;
+#endif
+            camera.farClipPlane = config.CameraFarClip;
 
-            _crosshair = FindObjectOfType<UICrosshair>();
+            m_Crosshair = FindObjectOfType<UICrosshair>();
 
-#if !UNITY_STANDALONE
+#if !UNITY_STANDALONE && !UNITY_EDITOR
             Cursor.lockState = CursorLockMode.None;
 #endif
             m_XREnabled = XRManager.Enabled;
@@ -94,20 +105,21 @@ namespace TESUnity
 
         private void Update()
         {
-            if (_paused)
+            if (m_Paused)
                 return;
 
-            Rotate();
+            if (!m_XREnabled)
+                Rotate();
 
             if (Input.GetKeyDown(KeyCode.Tab) || Input.touchCount == 3)
                 isFlying = !isFlying;
 
-            if (_isGrounded && !isFlying && InputManager.GetButtonDown(MWButton.Jump))
+            if (m_IsGrounded && !isFlying && InputManager.GetButtonDown(MWButton.Jump))
             {
-                var newVelocity = _rigidbody.velocity;
+                var newVelocity = m_Rigidbody.velocity;
                 newVelocity.y = 5;
 
-                _rigidbody.velocity = newVelocity;
+                m_Rigidbody.velocity = newVelocity;
             }
 
             if (InputManager.GetButtonDown(MWButton.Jump))
@@ -116,17 +128,17 @@ namespace TESUnity
 
         private void FixedUpdate()
         {
-            _isGrounded = CalculateIsGrounded();
+            m_IsGrounded = CalculateIsGrounded();
 
-            if (_isGrounded || isFlying)
+            if (m_IsGrounded || isFlying)
                 SetVelocity();
-            else if (!_isGrounded || !isFlying)
+            else if (!m_IsGrounded || !isFlying)
                 ApplyAirborneForce();
         }
 
         private void Rotate()
         {
-#if UNITY_STANDALONE
+#if !UNITY_STANDALONE && !UNITY_EDITOR
             if (Cursor.lockState != CursorLockMode.Locked)
             {
                 if (Input.GetMouseButtonDown(0))
@@ -144,7 +156,7 @@ namespace TESUnity
             }
 #endif
 
-            var eulerAngles = new Vector3(_camTransform.localEulerAngles.x, _transform.localEulerAngles.y, 0);
+            var eulerAngles = new Vector3(m_CameraTransform.localEulerAngles.x, m_Transform.localEulerAngles.y, 0);
 
             // Make eulerAngles.x range from -180 to 180 so we can clamp it between a negative and positive angle.
             if (eulerAngles.x > 180)
@@ -155,10 +167,9 @@ namespace TESUnity
             eulerAngles.x = Mathf.Clamp(eulerAngles.x - deltaMouse.y, minVerticalAngle, maxVerticalAngle);
             eulerAngles.y = Mathf.Repeat(eulerAngles.y + deltaMouse.x, 360);
 
-            if (!m_XREnabled)
-                _camTransform.localEulerAngles = new Vector3(eulerAngles.x, 0, 0);
+            m_CameraTransform.localEulerAngles = new Vector3(eulerAngles.x, 0, 0);
 
-            _transform.localEulerAngles = new Vector3(0, eulerAngles.y, 0);
+            m_Transform.localEulerAngles = new Vector3(0, eulerAngles.y, 0);
         }
 
         private void SetVelocity()
@@ -167,24 +178,24 @@ namespace TESUnity
 
             if (!isFlying)
             {
-                velocity = _transform.TransformVector(CalculateLocalVelocity());
-                velocity.y = _rigidbody.velocity.y;
+                velocity = m_Transform.TransformVector(CalculateLocalVelocity());
+                velocity.y = m_Rigidbody.velocity.y;
             }
             else
-                velocity = _camTransform.TransformVector(CalculateLocalVelocity());
+                velocity = m_CameraTransform.TransformVector(CalculateLocalVelocity());
 
-            _rigidbody.velocity = velocity;
+            m_Rigidbody.velocity = velocity;
         }
 
         private void ApplyAirborneForce()
         {
-            var forceDirection = _transform.TransformVector(CalculateLocalMovementDirection());
+            var forceDirection = m_Transform.TransformVector(CalculateLocalMovementDirection());
             forceDirection.y = 0;
             forceDirection.Normalize();
 
-            var force = airborneForceMultiplier * _rigidbody.mass * forceDirection;
+            var force = airborneForceMultiplier * m_Rigidbody.mass * forceDirection;
 
-            _rigidbody.AddForce(force);
+            m_Rigidbody.AddForce(force);
         }
 
         private Vector3 CalculateLocalMovementDirection()
@@ -239,22 +250,24 @@ namespace TESUnity
 
         private bool CalculateIsGrounded()
         {
-            var playerCenter = _transform.position + _capsuleCollider.center;
-            var castedSphereRadius = 0.8f * _capsuleCollider.radius;
-            var sphereCastDistance = (_capsuleCollider.height / 2);
+            var playerCenter = m_Transform.position + m_CapsuleCollider.center;
+            var castedSphereRadius = 0.8f * m_CapsuleCollider.radius;
+            var sphereCastDistance = (m_CapsuleCollider.height / 2);
 
-            return Physics.SphereCast(new Ray(playerCenter, -_transform.up), castedSphereRadius, sphereCastDistance);
+            return Physics.SphereCast(new Ray(playerCenter, -m_Transform.up), castedSphereRadius, sphereCastDistance);
         }
 
         public void Pause(bool pause)
         {
-            _paused = pause;
-            _crosshair.SetActive(!_paused);
+            m_Paused = pause;
+            m_Crosshair.SetActive(!m_Paused);
 
             Time.timeScale = pause ? 0.0f : 1.0f;
+
+#if UNITY_STANDALONE
             Cursor.lockState = pause ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = pause;
-
+#endif
             // Used by the VR Component to enable/disable some features.
             SendMessage("OnPlayerPause", pause, SendMessageOptions.DontRequireReceiver);
         }

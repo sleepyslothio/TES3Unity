@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 477232}
   - component: {fileID: 11464354}
+  - component: {fileID: 2025599348}
   m_Layer: 0
   m_Name: TESManager
   m_TagString: Untagged
@@ -43,44 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45c2eae24c43174a92eeaa8e8613dd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bypassINIConfig: 1
-  _allowChangeCellInRealtime: 1
-  dataPath: D:\Jeux\Oldies\Morrowind\Data Files
-  alternativeDataPath:
+  dataPaths:
+  - D:\Jeux\Oldies\Morrowind\Data Files
   - D:\Jeux\Morrowind\Data Files
   useKinematicRigidbodies: 1
-  playMusic: 1
   enableLog: 0
-  waterQuality: 0
-  useStaticBatching: 1
-  cellRadius: 1
-  cellDetailRadius: 3
-  cellRadiusOnLoad: 1
-  materialType: 1
-  renderPath: 2
-  cameraFarClip: 500
-  srpQuality: 2
-  lightweightAssets:
-  - {fileID: 11400000, guid: ef1cd3c74ac5bed4589a18e5db92cd31, type: 2}
-  - {fileID: 11400000, guid: b130335045a0fa846b08b62be1eb1e8a, type: 2}
-  - {fileID: 11400000, guid: fe63e7f2b761ec040b9225f19032f6d9, type: 2}
-  lightweightMobileAsset: {fileID: 11400000, guid: 46cf5afda57805c40bbad7736c69f3c4,
-    type: 2}
-  renderScale: 1
   ambientIntensity: 1.5
-  renderSunShadows: 1
-  renderLightShadows: 1
-  renderExteriorCellLights: 1
-  animateLights: 1
-  dayNightCycle: 0
-  generateNormalMap: 1
-  normalGeneratorIntensity: 0.5
-  postProcessingQuality: 3
-  antiAliasing: 3
   waterBackSideTransparent: 0
-  followHeadDirection: 0
-  roomScale: 1
-  forceControllers: 1
   UIManager: {fileID: 0}
   UIBackgroundImg: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   UICheckmarkImg: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
@@ -94,5 +64,39 @@ MonoBehaviour:
     type: 3}
   waterPrefab: {fileID: 1586121937244772, guid: 6de569209e643e2438dd3dbfe2d466df,
     type: 3}
-  creaturesEnabled: 1
-  npcsEnabled: 0
+--- !u!114 &2025599348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 304ead6287419934296fbc2ae807f205, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Override: 0
+  playMusic: 0
+  waterQuality: 0
+  cellRadius: 4
+  cellDetailRadius: 3
+  cellRadiusOnLoad: 2
+  materialType: 1
+  renderPath: 0
+  cameraFarClip: 500
+  srpQuality: 1
+  renderScale: 1
+  ambientIntensity: 1.5
+  renderSunShadows: 0
+  renderLightShadows: 0
+  renderExteriorCellLights: 0
+  animateLights: 0
+  dayNightCycle: 0
+  generateNormalMap: 1
+  normalGeneratorIntensity: 0.75
+  postProcessingQuality: 3
+  antiAliasing: 5
+  waterBackSideTransparent: 0
+  FollowHead: 1
+  RoomScale: 1

@@ -45,9 +45,9 @@ namespace TESUnity
                     var albedoMap = m_textureManager.LoadTexture(mp.textures.mainFilePath);
                     material.SetTexture(DiffuseParameterName, albedoMap);
 
-                    if (TESManager.instance.generateNormalMap && mp.textures.bumpFilePath == null)
+                    if (m_GenerateNormalMap && mp.textures.bumpFilePath == null)
                     {
-                        material.SetTexture(BumpMapParameterName, GenerateNormalMap(albedoMap, TESManager.instance.normalGeneratorIntensity));
+                        material.SetTexture(BumpMapParameterName, GenerateNormalMap(albedoMap));
                         hasNormalMap = true;
                     }
                 }
