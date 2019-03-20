@@ -22,26 +22,12 @@ namespace TESUnity.Components
             var volume = FindObjectOfType<PostProcessVolume>();
             var profile = volume.profile;
             var xrEnabled = XRManager.Enabled;
-            var isMobile = false;
             var config = GameSettings.Get();
-            var quality = config.PostProcessing;
-            var antiAliasing = config.AntiAliasing;
-
-#if UNITY_ANDROID || UNITY_IOS
-            isMobile = true;
-#endif
-#if WAVEVR_SDK
-            quality = PostProcessingQuality.None;
-#endif
+            var quality = config.PostProcessingQuality;
+            var antiAliasing = config.AntiAliasingMode;
 
             if (quality != PostProcessingQuality.None)
             {
-                if (isMobile)
-                {
-                    quality = PostProcessingQuality.Low;
-                    layer.antialiasingMode = PostProcessLayer.Antialiasing.None;
-                }
-
                 var asset = Resources.Load<PostProcessProfile>($"Rendering/Effects/PostProcessVolume-{quality}");
                 volume.profile = asset;
 
@@ -65,48 +51,20 @@ namespace TESUnity.Components
                 layer.enabled = false;
             }
 
-            // SMAA is not supported in VR.
-            if (xrEnabled && antiAliasing == AntiAliasingMode.SMAA)
-                antiAliasing = AntiAliasingMode.TAA;
-
-            // MSAA 4X max on mobile.
-            if (antiAliasing == AntiAliasingMode.MSAA8X && isMobile)
-                antiAliasing = AntiAliasingMode.MSAA4X;
-
-            // FXAA post process on mobile.
-            if ((antiAliasing == AntiAliasingMode.SMAA || antiAliasing == AntiAliasingMode.TAA) && isMobile)
-                antiAliasing = AntiAliasingMode.FXAA;
-
             if (antiAliasing == AntiAliasingMode.None)
-            {
                 SetMSAA(layer, 0);
-            }
             else if (antiAliasing == AntiAliasingMode.MSAA2X)
-            {
                 SetMSAA(layer, 2);
-            }
             else if (antiAliasing == AntiAliasingMode.MSAA4X)
-            {
                 SetMSAA(layer, 4);
-            }
             else if (antiAliasing == AntiAliasingMode.MSAA8X)
-            {
                 SetMSAA(layer, 8);
-            }
             else if (antiAliasing == AntiAliasingMode.SMAA)
-            {
-
                 SetPostProcessAA(layer, PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing);
-            }
             else if (antiAliasing == AntiAliasingMode.FXAA)
-            {
                 SetPostProcessAA(layer, PostProcessLayer.Antialiasing.FastApproximateAntialiasing);
-                layer.fastApproximateAntialiasing.fastMode = isMobile;
-            }
             else if (antiAliasing == AntiAliasingMode.TAA)
-            {
                 SetPostProcessAA(layer, PostProcessLayer.Antialiasing.TemporalAntialiasing);
-            }
         }
 
         private void SetMSAA(PostProcessLayer layer, int level)
@@ -119,6 +77,9 @@ namespace TESUnity.Components
         {
             layer.antialiasingMode = level;
             QualitySettings.antiAliasing = 0;
+
+            if (GameSettings.IsMobile() && level == PostProcessLayer.Antialiasing.FastApproximateAntialiasing)
+                layer.fastApproximateAntialiasing.fastMode = true;
         }
 
         private void SetEffectEnabled<T>(bool isEnabled) where T : MonoBehaviour

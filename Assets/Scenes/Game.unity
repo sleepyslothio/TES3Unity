@@ -1120,65 +1120,25 @@ PrefabInstance:
       propertyPath: UIManager
       value: 
       objectReference: {fileID: 1214623308}
+    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: ds
+      value: 0.0005
+      objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: Override
+      propertyPath: PlayMusic
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: waterQuality
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: playMusic
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: cellRadiusOnLoad
+      propertyPath: CellRadius
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: cellDetailRadius
-      value: 2
+      propertyPath: CellDetailRadius
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: materialType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: renderPath
+      propertyPath: CellRadiusOnLoad
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: srpQuality
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: renderSunShadows
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: renderLightShadows
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: animateLights
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: renderExteriorCellLights
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: dayNightCycle
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: antiAliasing
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: cellRadius
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}

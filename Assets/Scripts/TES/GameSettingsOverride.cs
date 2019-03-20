@@ -9,37 +9,40 @@ namespace TESUnity.Components
     /// </summary>
     public sealed class GameSettingsOverride : MonoBehaviour
     {
-#if UNITY_EDITOR
+#if !UNITY_EDITOR
+        private void Awake() => Destroy(this);
+#else
         public bool Override = false;
 
         [Header("Global")]
-        public bool playMusic = false;
-        public Water.WaterMode waterQuality = Water.WaterMode.Simple;
+        public bool PlayMusic = false;
+        public bool KinematicRigidbodies = true;
 
         [Header("Optimizations")]
-        public int cellRadius = 4;
-        public int cellDetailRadius = 3;
-        public int cellRadiusOnLoad = 2;
+        public int CellRadius = 4;
+        public int CellDetailRadius = 3;
+        public int CellRadiusOnLoad = 2;
 
         [Header("Rendering")]
-        public MWMaterialType materialType = MWMaterialType.Standard;
-        public RendererType renderPath = RendererType.Forward;
-        public float cameraFarClip = 500.0f;
-        public SRPQuality srpQuality = SRPQuality.Medium;
-        public float renderScale = 1.0f;
+        public MWMaterialType MaterialType = MWMaterialType.PBR;
+        public RendererMode RendererType = RendererMode.Deferred;
+        public float CameraFarClip = 500.0f;
+        public SRPQuality SRPQuality = SRPQuality.High;
+        public float RenderScale = 1.0f;
+        public Water.WaterMode WaterQuality = Water.WaterMode.Simple;
+        public bool WaterTransparency = false;
 
         [Header("Lighting")]
-        public bool renderSunShadows = false;
-        public bool renderLightShadows = false;
-        public bool renderExteriorCellLights = false;
-        public bool animateLights = false;
-        public bool dayNightCycle = false;
-        public bool generateNormalMap = true;
+        public bool SunShadows = true;
+        public bool LightShadows = true;
+        public bool ExteriorCellLights = true;
+        public bool AnimateLights = true;
+        public bool DayNightCycle = false;
+        public bool GenerateNormalMap = true;
 
         [Header("Effects")]
-        public PostProcessingQuality postProcessingQuality = PostProcessingQuality.High;
-        public AntiAliasingMode antiAliasing = AntiAliasingMode.TAA;
-        public bool waterBackSideTransparent = false;
+        public PostProcessingQuality PostProcessingQuality = PostProcessingQuality.High;
+        public AntiAliasingMode AntiAliasing = AntiAliasingMode.TAA;
 
         [Header("VR")]
         public bool FollowHead = true;
@@ -51,26 +54,29 @@ namespace TESUnity.Components
                 return;
 
             var settings = GameSettings.Get();
-            settings.AnimateLights = animateLights;
-            settings.AntiAliasing = antiAliasing;
-            settings.MusicEnabled = playMusic;
-            settings.CameraFarClip = cameraFarClip;
-            settings.CellDetailRadius = cellDetailRadius;
-            settings.CellRadius = cellRadius;
-            settings.CellRadiusOnLoad = cellRadiusOnLoad;
-            settings.DayNightCycle = dayNightCycle;
-            settings.ExteriorLights = renderExteriorCellLights;
+            settings.AnimateLights = AnimateLights;
+            settings.AntiAliasingMode = AntiAliasing;
+            settings.MusicEnabled = PlayMusic;
+            settings.CameraFarClip = CameraFarClip;
+            settings.CellDetailRadius = CellDetailRadius;
+            settings.CellRadius = CellRadius;
+            settings.CellRadiusOnLoad = CellRadiusOnLoad;
+            settings.DayNightCycle = DayNightCycle;
+            settings.ExteriorLights = ExteriorCellLights;
             settings.FollowHead = FollowHead;
-            settings.GenerateNormalMaps = generateNormalMap;
-            settings.LightShadows = renderLightShadows;
-            settings.MaterialType = materialType;
-            settings.PostProcessing = postProcessingQuality;
-            settings.RenderPath = renderPath;
-            settings.RenderScale = renderScale;
+            settings.GenerateNormalMaps = GenerateNormalMap;
+            settings.LightShadows = LightShadows;
+            settings.MaterialType = MaterialType;
+            settings.PostProcessingQuality = PostProcessingQuality;
+            settings.RendererMode = RendererType;
+            settings.RenderScale = RenderScale;
             settings.RoomScale = RoomScale;
-            settings.SRPQuality = srpQuality;
-            settings.SunShadows = renderSunShadows;
-            settings.WaterQuality = waterQuality;
+            settings.SRPQuality = SRPQuality;
+            settings.SunShadows = SunShadows;
+            settings.WaterQuality = WaterQuality;
+            settings.WaterTransparency = WaterTransparency;
+            settings.KinematicRigidbody = KinematicRigidbodies;
+            settings.CheckSettings();
         }
 #endif
     }

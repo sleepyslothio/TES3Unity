@@ -1,6 +1,4 @@
 ﻿using Demonixis.Toolbox.XR;
-using System.Collections;
-using System.Collections.Generic;
 using TESUnity.Components;
 using TESUnity.Components.Records;
 using TESUnity.Effects;
@@ -23,7 +21,7 @@ namespace TESUnity
 
         private const float playerHeight = 2;
         private const float playerRadius = 0.4f;
-        private const float desiredWorkTimePerFrame = 1.0f / 200;
+        public static float desiredWorkTimePerFrame = 1.0f / 200;
         public static int cellRadiusOnLoad = 2;
         private CELLRecord _currentCell;
         private GameObject sunObj;
@@ -92,12 +90,12 @@ namespace TESUnity
                 renderer.sharedMaterial.SetColor("_RefrColor", new Color(0.58f, 0.7f, 1.0f));
             }
 
-            if (!tes.waterBackSideTransparent)
+            if (!GameSettings.Get().WaterTransparency)
             {
                 var side = waterObj.transform.GetChild(0);
                 var sideMaterial = side.GetComponent<Renderer>().sharedMaterial;
-                sideMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                sideMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                sideMaterial.SetInt("_SrcBlend", (int)BlendMode.One);
+                sideMaterial.SetInt("_DstBlend", (int)BlendMode.Zero);
                 sideMaterial.SetInt("_ZWrite", 1);
                 sideMaterial.DisableKeyword("_ALPHATEST_ON");
                 sideMaterial.DisableKeyword("_ALPHABLEND_ON");
@@ -202,7 +200,6 @@ namespace TESUnity
             }
 
             temporalLoadBalancer.RunTasks(desiredWorkTimePerFrame);
-
             CastInteractRay();
         }
 

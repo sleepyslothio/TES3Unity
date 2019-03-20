@@ -7,15 +7,18 @@ using System.Diagnostics;
 /// </summary>
 public class TemporalLoadBalancer
 {
+    private List<IEnumerator> tasks = new List<IEnumerator>();
+    private Stopwatch stopwatch = new Stopwatch();
+
     /// <summary>
     /// Adds a task coroutine and returns it.
     /// </summary>
     public IEnumerator AddTask(IEnumerator taskCoroutine)
     {
         tasks.Add(taskCoroutine);
-
         return taskCoroutine;
     }
+
     public void CancelTask(IEnumerator taskCoroutine)
     {
         tasks.Remove(taskCoroutine);
@@ -25,7 +28,7 @@ public class TemporalLoadBalancer
     {
         Debug.Assert(desiredWorkTime >= 0);
 
-        if(tasks.Count == 0)
+        if (tasks.Count == 0)
         {
             return;
         }
@@ -37,11 +40,11 @@ public class TemporalLoadBalancer
         do
         {
             // Try to execute an iteration of a task. Remove the task if it's execution has completed.
-            if(!tasks[0].MoveNext())
+            if (!tasks[0].MoveNext())
             {
                 tasks.RemoveAt(0);
             }
-        } while((tasks.Count > 0) && (stopwatch.Elapsed.TotalSeconds < desiredWorkTime));
+        } while ((tasks.Count > 0) && (stopwatch.Elapsed.TotalSeconds < desiredWorkTime));
 
         stopwatch.Stop();
     }
@@ -50,22 +53,20 @@ public class TemporalLoadBalancer
     {
         Debug.Assert(tasks.Contains(taskCoroutine));
 
-        while(taskCoroutine.MoveNext())
+        while (taskCoroutine.MoveNext())
         { }
 
         tasks.Remove(taskCoroutine);
     }
+
     public void WaitForAllTasks()
     {
-        foreach(var task in tasks)
+        foreach (var task in tasks)
         {
-            while(task.MoveNext())
+            while (task.MoveNext())
             { }
         }
 
         tasks.Clear();
     }
-
-    private List<IEnumerator> tasks = new List<IEnumerator>();
-    private Stopwatch stopwatch = new Stopwatch();
 }

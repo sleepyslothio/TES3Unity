@@ -359,7 +359,7 @@ namespace TESUnity
             }
             else
             {
-                if (TESManager.instance.enableLog)
+                if (TESManager.instance.logEnabled)
                     Debug.Log("Unknown Object: " + refCellObjInfo.refObjDataGroup.NAME.value);
             }
         }

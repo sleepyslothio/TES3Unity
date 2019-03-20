@@ -57,9 +57,9 @@ namespace TESUnity.Components
             m_CellDistanceDd.Setup(ref values, m_Settings.CellDetailRadius.ToString(), SetCellDistance);
             m_CellRadiusLoad.Setup(ref values, m_Settings.CellRadiusOnLoad.ToString(), SetCellRadiusLoad);
 
-            m_PostProcessDd.Setup<PostProcessingQuality>((int)m_Settings.PostProcessing, SetPostProcessing);
+            m_PostProcessDd.Setup<PostProcessingQuality>((int)m_Settings.PostProcessingQuality, SetPostProcessing);
             m_MaterialDd.Setup<MWMaterialType>((int)m_Settings.MaterialType, SetMaterialQuality);
-            m_RenderPath.Setup<RendererType>((int)m_Settings.RenderPath, SetRenderType);
+            m_RenderPath.Setup<RendererMode>((int)m_Settings.RendererMode, SetRenderType);
             m_SRPQuality.Setup<SRPQuality>((int)m_Settings.SRPQuality, SetSRPQuality);
 
 #if !LWRP_ENABLED && !HDRP_ENABLED
@@ -146,7 +146,7 @@ namespace TESUnity.Components
 
         public void SetPostProcessing(int index)
         {
-            m_Settings.PostProcessing = (PostProcessingQuality)index;
+            m_Settings.PostProcessingQuality = (PostProcessingQuality)index;
         }
 
         public void SetMaterialQuality(int index)
@@ -156,7 +156,7 @@ namespace TESUnity.Components
 
         public void SetRenderType(int index)
         {
-            m_Settings.RenderPath = (RendererType)index;
+            m_Settings.RendererMode = (RendererMode)index;
         }
 
         public void SetSRPQuality(int index)

@@ -1,10 +1,4 @@
-﻿#if LWRP_ENABLED || HDRP_ENABLED
-#define SRP_ENABLED
-#endif
-#if UNITY_ANDROID || UNITY_IOS
-#define MOBILE_BUILD
-#endif
-using System;
+﻿using System;
 using System.IO;
 using TESUnity.UI;
 using UnityEngine;
@@ -16,39 +10,33 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 #endif
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
-using Demonixis.Toolbox.XR;
-using TESUnity.Inputs;
+using System.Collections;
 
 namespace TESUnity
 {
     public class TESManager : MonoBehaviour
     {
-        public const string Version = "0.9.1";
+        public const string Version = "0.10.0";
         public const float NormalMapGeneratorIntensity = 0.75f;
         public static TESManager instance;
+        public static MorrowindDataReader MWDataReader { get; set; }
 
-        #region Inspector-set Members
+        private MorrowindEngine m_MorrowindEngine = null;
+        private MusicPlayer m_MusicPlayer = null;
+        private UIManager m_UIManager;
+
+        #region Inspector Members
+
+#if UNITY_EDITOR
+        [Header("Editor Only")]
+        [SerializeField]
+        private string[] m_AlternativeDataPaths = null;
+#endif
 
         [Header("Global")]
-        public string[] dataPaths;
-        public bool useKinematicRigidbodies = true;
-        public bool enableLog = false;
-
-        [Header("Lighting")]
+        public bool logEnabled = false;
         public float ambientIntensity = 1.5f;
-
-        [Header("Effects")]
-        public bool waterBackSideTransparent = false;
-
-        [Header("UI")]
-        public UIManager UIManager;
-        public Sprite UIBackgroundImg;
-        public Sprite UICheckmarkImg;
-        public Sprite UIDropdownArrowImg;
-        public Sprite UIInputFieldBackgroundImg;
-        public Sprite UIKnobImg;
-        public Sprite UIMaskImg;
-        public Sprite UISpriteImg;
+        public float desiredWorkTimePerFrame = 0.0005f;
 
         [Header("Prefabs")]
         public GameObject playerPrefab;
@@ -56,12 +44,7 @@ namespace TESUnity
 
         #endregion
 
-        public static MorrowindDataReader MWDataReader { get; set; }
-        public MorrowindEngine MWEngine = null;
-        private MusicPlayer musicPlayer = null;
-
-        public MorrowindEngine Engine => MWEngine;
-        public TextureManager TextureManager => MWEngine.textureManager;
+        public TextureManager TextureManager => m_MorrowindEngine.textureManager;
 
         private void Awake()
         {
@@ -72,47 +55,36 @@ namespace TESUnity
         {
             var config = GameSettings.Get();
             var dataPath = GameSettings.GetDataPath();
-            var renderPath = config.RenderPath;
 
-#if UNITY_STANDALONE || UNITY_EDITOR
-
-            foreach (var alt in dataPaths)
+#if UNITY_EDITOR
+            // Load the game from the alternative dataPath when in editor.
+            if (!GameSettings.IsValidPath(dataPath))
             {
-                if (GameSettings.IsValidPath(alt))
-                    dataPath = alt;
+                dataPath = string.Empty;
+
+                foreach (var alt in m_AlternativeDataPaths)
+                {
+                    if (GameSettings.IsValidPath(alt))
+                        dataPath = alt;
+                }
             }
 #endif
 
-            if (!GameSettings.IsValidPath(dataPath))
+            if (string.IsNullOrEmpty(dataPath))
                 SceneManager.LoadScene("Menu");
 
-#if MOBILE_BUILD
-            if (renderPath == RendererType.HDRP)
-                config.RenderPath = RendererType.LightweightRP;
-
-            if (renderPath == RendererType.Deferred)
-                config.RenderPath = RendererType.Forward;
-#endif
-
-#if MOBILE_BUILD
-            var xr = XRManager.Enabled;
-            waterBackSideTransparent = false;
-
-            if (xr)
-                QualitySettings.SetQualityLevel(1, false);
-#endif
-
             var srpEnabled = config.IsSRP();
-
             if (!srpEnabled)
                 GraphicsSettings.renderPipelineAsset = null;
 
-#if SRP_ENABLED
+#if LWRP_ENABLED || HDRP_ENABLED
 			if (srpEnabled)
 			{
+                var rendererMode = config.RendererMode;
 				var target = config.SRPQuality.ToString();
-				
-				if (renderPath == RendererType.LightweightRP)
+
+#if LWRP_ENABLED
+				if (rendererMode == RendererMode.LightweightRP)
 				{
 #if UNITY_ANDROID
 					target = "Mobile";
@@ -121,55 +93,53 @@ namespace TESUnity
 					lwrpAsset.renderScale = config.RenderScale;
 					GraphicsSettings.renderPipelineAsset = lwrpAsset;
 				}
-				else
+#endif
+#if HDRP_ENABLED
+				if (rendererMode == RendererMode.HDRP)
 				{
 					GraphicsSettings.renderPipelineAsset = Resources.Load<HDRPRenderPipeline>($"Rendering/HDRP/HDRPAsset-{target}");
 
 					var volumeSettings = Resources.Load<GameObject>("Rendering/HDRP/HDRP-VolumeSettings");
 					Instantiate(volumeSettings);
 				}
+#endif
 				// Only this mode is compatible with SRP.
 				config.WaterQuality = Water.WaterMode.Simple;
 			}
 #endif
 
-            if (UIManager == null)
-            {
-                UIManager = FindObjectOfType<UIManager>();
-
-                if (UIManager == null)
-                    throw new UnityException("UI Manager is missing");
-            }
+            m_UIManager = FindObjectOfType<UIManager>();
+            if (m_UIManager == null)
+                throw new UnityException("UI Manager is missing");
 
             CellManager.cellRadius = config.CellRadius;
             CellManager.detailRadius = config.CellDetailRadius;
             MorrowindEngine.cellRadiusOnLoad = config.CellRadiusOnLoad;
+            MorrowindEngine.desiredWorkTimePerFrame = desiredWorkTimePerFrame;
 
             if (MWDataReader == null)
                 MWDataReader = new MorrowindDataReader(dataPath);
 
-            MWEngine = new MorrowindEngine(MWDataReader, UIManager);
+            m_MorrowindEngine = new MorrowindEngine(MWDataReader, m_UIManager);
 
-            musicPlayer = new MusicPlayer();
+            m_MusicPlayer = new MusicPlayer();
 
             if (config.MusicEnabled)
             {
-                // Start the music.
                 var songs = Directory.GetFiles(dataPath + "/Music/Explore");
-
                 if (songs.Length > 0)
                 {
                     foreach (var songFilePath in songs)
                     {
                         if (!songFilePath.Contains("Morrowind Title"))
-                            musicPlayer.AddSong(songFilePath);
+                            m_MusicPlayer.AddSong(songFilePath);
                     }
 
-                    musicPlayer.Play();
+                    m_MusicPlayer.Play();
                 }
             }
 
-            MWEngine.SpawnPlayerOutside(playerPrefab, new Vector2i(-2, -9), new Vector3(-137.94f, 2.30f, -1037.6f));
+            m_MorrowindEngine.SpawnPlayerOutside(playerPrefab, new Vector2i(-2, -9), new Vector3(-137.94f, 2.30f, -1037.6f));
         }
 
         private void OnApplicationQuit()
@@ -177,18 +147,14 @@ namespace TESUnity
             MWDataReader?.Close();
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
-            MWEngine.Update();
-
-            musicPlayer.Update();
-
-#if UNITY_ANDROID
-            if (InputManager.GetButtonDown(MWButton.Menu) || Input.GetKeyDown(KeyCode.Escape))
-                SceneManager.LoadScene("Menu");
-#endif
+            MorrowindEngine.desiredWorkTimePerFrame = desiredWorkTimePerFrame;
+            m_MorrowindEngine.Update();
+            m_MusicPlayer.Update();
         }
 
+#if UNITY_EDITOR
         private void TestAllCells(string resultsFilePath)
         {
             using (StreamWriter writer = new StreamWriter(resultsFilePath))
@@ -199,8 +165,8 @@ namespace TESUnity
 
                     try
                     {
-                        var cellInfo = MWEngine.cellManager.StartInstantiatingCell(CELL);
-                        MWEngine.temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
+                        var cellInfo = m_MorrowindEngine.cellManager.StartInstantiatingCell(CELL);
+                        m_MorrowindEngine.temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
 
                         DestroyImmediate(cellInfo.gameObject);
 
@@ -224,5 +190,6 @@ namespace TESUnity
                 }
             }
         }
+#endif
     }
 }

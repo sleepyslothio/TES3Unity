@@ -37,7 +37,7 @@ namespace TESUnity.UI
         public event Action<BOOKRecord> OnTake = null;
         public event Action<BOOKRecord> OnClosed = null;
 
-        void Start()
+        private void Start()
         {
             var texture = TESManager.instance.TextureManager.LoadTexture("tx_menubook", true);
             _background.sprite = GUIUtils.CreateSprite(texture);

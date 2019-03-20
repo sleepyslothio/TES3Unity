@@ -69,21 +69,21 @@ namespace TESUnity
             // Setup the camera
             var config = GameSettings.Get();
             var camera = Camera.main;
-            var renderPath = config.RenderPath;
+            var renderPath = config.RendererMode;
 
 #if !HDRP_ENABLED && !LWRP_ENABLED
-            if (renderPath == RendererType.LightweightRP)
-                renderPath = RendererType.Forward;
-            else if (renderPath == RendererType.HDRP)
-                renderPath = RendererType.Deferred;
+            if (renderPath == RendererMode.LightweightRP)
+                renderPath = RendererMode.Forward;
+            else if (renderPath == RendererMode.HDRP)
+                renderPath = RendererMode.Deferred;
 #endif
 
-            if (renderPath == RendererType.Forward)
+            if (renderPath == RendererMode.Forward)
             {
                 camera.renderingPath = RenderingPath.Forward;
                 camera.allowMSAA = true;
             }
-            else if (renderPath == RendererType.Deferred)
+            else if (renderPath == RendererMode.Deferred)
             {
                 camera.renderingPath = RenderingPath.DeferredShading;
                 camera.allowMSAA = false;
@@ -91,7 +91,7 @@ namespace TESUnity
 
 #if UNITY_EDITOR
             // Because of a bug, HDR only works well with bloom in build or in deferred mode.
-            camera.allowHDR = config.RenderPath == RendererType.Deferred;
+            camera.allowHDR = config.RendererMode == RendererMode.Deferred;
 #endif
             camera.farClipPlane = config.CameraFarClip;
 

@@ -39,6 +39,10 @@ namespace TESUnity.Components.VR
                 yield break;
             }
 
+#if UNITY_ANDROID || UNITY_IOS
+            QualitySettings.SetQualityLevel(1, false);
+#endif
+
             var settings = GameSettings.Get();
             m_RoomScale = settings.RoomScale;
             m_FollowHead = settings.FollowHead;

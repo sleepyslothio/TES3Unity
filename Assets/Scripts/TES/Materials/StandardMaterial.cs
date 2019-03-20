@@ -24,12 +24,11 @@ namespace TESUnity
 
         public override Material BuildMaterialFromProperties(MWMaterialProps mp)
         {
-            Material material;
+            Material material = null;
 
             //check if the material is already cached
             if (!m_existingMaterials.TryGetValue(mp, out material))
             {
-                //otherwise create a new material and cache it
                 if (mp.alphaBlended)
                     material = BuildMaterialBlended(mp.srcBlendMode, mp.dstBlendMode);
                 else if (mp.alphaTest)

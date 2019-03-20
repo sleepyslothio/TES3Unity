@@ -44,13 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45c2eae24c43174a92eeaa8e8613dd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataPaths:
-  - D:\Jeux\Oldies\Morrowind\Data Files
+  m_AlternativeDataPaths:
   - D:\Jeux\Morrowind\Data Files
-  useKinematicRigidbodies: 1
-  enableLog: 0
+  - D:\Jeux\Oldies\Morrowind\Data Files
+  logEnabled: 0
   ambientIntensity: 1.5
-  waterBackSideTransparent: 0
   UIManager: {fileID: 0}
   UIBackgroundImg: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   UICheckmarkImg: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
@@ -76,27 +74,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 304ead6287419934296fbc2ae807f205, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Override: 0
-  playMusic: 0
-  waterQuality: 0
-  cellRadius: 4
-  cellDetailRadius: 3
-  cellRadiusOnLoad: 2
-  materialType: 1
-  renderPath: 0
-  cameraFarClip: 500
-  srpQuality: 1
-  renderScale: 1
-  ambientIntensity: 1.5
-  renderSunShadows: 0
-  renderLightShadows: 0
-  renderExteriorCellLights: 0
-  animateLights: 0
-  dayNightCycle: 0
-  generateNormalMap: 1
-  normalGeneratorIntensity: 0.75
-  postProcessingQuality: 3
-  antiAliasing: 5
-  waterBackSideTransparent: 0
+  Override: 1
+  PlayMusic: 0
+  KinematicRigidbodies: 1
+  CellRadius: 4
+  CellDetailRadius: 3
+  CellRadiusOnLoad: 2
+  MaterialType: 0
+  RendererType: 1
+  CameraFarClip: 500
+  SRPQuality: 2
+  RenderScale: 1
+  WaterQuality: 0
+  WaterTransparency: 0
+  SunShadows: 1
+  LightShadows: 1
+  ExteriorCellLights: 1
+  AnimateLights: 1
+  DayNightCycle: 0
+  GenerateNormalMap: 1
+  PostProcessingQuality: 3
+  AntiAliasing: 6
   FollowHead: 1
   RoomScale: 1

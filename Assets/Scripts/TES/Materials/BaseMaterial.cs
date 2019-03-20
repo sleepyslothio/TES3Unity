@@ -9,7 +9,14 @@ namespace TESUnity
     /// </summary>
     public abstract class BaseMaterial
     {
+        public struct MatProxy
+        {
+            public MWMaterialProps Props;
+            public Material Material;
+        }
+
         protected Dictionary<MWMaterialProps, Material> m_existingMaterials;
+        protected List<MatProxy> m_Materials = new List<MatProxy>();
         protected TextureManager m_textureManager;
         protected bool m_GenerateNormalMap;
 
@@ -18,6 +25,22 @@ namespace TESUnity
             m_textureManager = textureManager;
             m_existingMaterials = new Dictionary<MWMaterialProps, Material>();
             m_GenerateNormalMap = GameSettings.Get().GenerateNormalMaps;
+        }
+
+        public Material CompareMaterial(MWMaterialProps material)
+        {
+            foreach (var mat in m_Materials)
+            {
+                if (CompareMaterialProps(mat.Props, material))
+                    return mat.Material;
+            }
+
+            return null;
+        }
+
+        public bool CompareMaterialProps(MWMaterialProps first, MWMaterialProps second)
+        {
+            return first.alphaBlended == second.alphaBlended && first.textures.mainFilePath == second.textures.mainFilePath;
         }
 
         public abstract Material BuildMaterialFromProperties(MWMaterialProps mp);

@@ -1,16 +1,14 @@
 ﻿using Demonixis.Toolbox.XR;
 using System;
 using System.IO;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 using UnityStandardAssets.Water;
 
 namespace TESUnity
 {
     public enum MWMaterialType
     {
-        PBR, Standard, Unlit
+        PBR = 0, Standard, Unlit
     }
 
     public enum PostProcessingQuality
@@ -20,12 +18,12 @@ namespace TESUnity
 
     public enum SRPQuality
     {
-        Low, Medium, High
+        Low = 0, Medium, High
     }
 
-    public enum RendererType
+    public enum RendererMode
     {
-        Forward, Deferred, LightweightRP, HDRP
+        Forward = 0, Deferred, LightweightRP, HDRP
     }
 
     public enum AntiAliasingMode
@@ -38,26 +36,27 @@ namespace TESUnity
     {
         private const string MorrowindPathKey = "tesunity.path";
         private const string StorageKey = "tesunity.settings";
-        private const string ConfigFile = "config.ini"; // Deprecated
-        private const string MWDataPathName = "MorrowindDataPath";
+        private const string AndroidFolderName = "TESUnityXR";
         private static GameSettings Instance = null;
 
         public bool MusicEnabled = true;
-        public PostProcessingQuality PostProcessing = PostProcessingQuality.High;
+        public PostProcessingQuality PostProcessingQuality = PostProcessingQuality.High;
         public MWMaterialType MaterialType = MWMaterialType.PBR;
-        public RendererType RenderPath = RendererType.Forward;
+        public RendererMode RendererMode = RendererMode.Deferred;
         public SRPQuality SRPQuality = SRPQuality.High;
-        public AntiAliasingMode AntiAliasing = AntiAliasingMode.TAA;
+        public AntiAliasingMode AntiAliasingMode = AntiAliasingMode.TAA;
         public bool GenerateNormalMaps = true;
         public bool AnimateLights = true;
         public bool SunShadows = true;
-        public bool LightShadows = false;
-        public bool ExteriorLights = false;
-        public float CameraFarClip = 1000;
+        public bool LightShadows = true;
+        public bool ExteriorLights = true;
+        public float CameraFarClip = 500.0f;
         public int CellRadius = 2;
         public int CellDetailRadius = 2;
         public int CellRadiusOnLoad = 2;
-        public Water.WaterMode WaterQuality = UnityStandardAssets.Water.Water.WaterMode.Simple;
+        public Water.WaterMode WaterQuality = Water.WaterMode.Simple;
+        public bool WaterTransparency = false;
+        public bool KinematicRigidbody = true;
         public bool DayNightCycle = false;
         public bool FollowHead = true;
         public bool RoomScale = false;
@@ -65,15 +64,68 @@ namespace TESUnity
 
         public bool IsSRP()
         {
-            return RenderPath == RendererType.LightweightRP || RenderPath == RendererType.HDRP;
+            var lwrp = RendererMode == RendererMode.LightweightRP;
+            var hdrp = RendererMode == RendererMode.HDRP;
+
+#if !LWRP_ENABLED
+            lwrp = false;
+#endif
+
+#if !HDRP_ENABLED
+            hdrp = false;
+#endif
+
+            return lwrp || hdrp;
         }
 
         public static void Save()
         {
             var instance = Get();
+            instance.CheckSettings();
+
             var json = JsonUtility.ToJson(instance);
             PlayerPrefs.SetString(StorageKey, json);
             PlayerPrefs.Save();
+        }
+
+        public void CheckSettings()
+        {
+#if !LWRP_ENABLED
+            if (RendererMode == RendererMode.LightweightRP)
+                RendererMode = RendererMode.Forward;
+#endif
+
+#if !HDRP_ENABLED
+            if (RendererMode == RendererMode.HDRP)
+                RendererMode = RendererMode.Deferred;
+#endif
+
+#if UNITY_ANDROID || UNITY_IOS
+            // Avoid HDRP or Deferred Rendering on mobile
+            if (RendererMode == RendererType.HDRP)
+                RendererMode = RendererType.LightweightRP;
+
+            if (RendererMode == RendererType.Deferred)
+                RendererMode = RendererType.Forward;
+#endif
+
+#if WAVEVR_SDK
+            // PostProcessing is too heavy for this target
+            PostProcessingQuality = PostProcessingQuality.None;
+#endif
+
+            // SMAA is not supported in VR.
+            var xrEnabled = XRManager.Enabled;
+            if (xrEnabled && AntiAliasingMode == AntiAliasingMode.SMAA)
+                AntiAliasingMode = AntiAliasingMode.TAA;
+
+            // MSAA 4X max on mobile.
+            if (AntiAliasingMode == AntiAliasingMode.MSAA8X && IsMobile())
+                AntiAliasingMode = AntiAliasingMode.MSAA4X;
+
+            // FXAA post process on mobile.
+            if ((AntiAliasingMode == AntiAliasingMode.SMAA || AntiAliasingMode == AntiAliasingMode.TAA) && IsMobile())
+                AntiAliasingMode = AntiAliasingMode.FXAA;
         }
 
         public static GameSettings Get()
@@ -87,15 +139,16 @@ namespace TESUnity
                 Instance.SunShadows = false;
                 Instance.RenderScale = 0.9f;
                 Instance.MaterialType = MWMaterialType.Standard;
-                Instance.PostProcessing = PostProcessingQuality.None;
+                Instance.PostProcessingQuality = PostProcessingQuality.None;
                 Instance.LightShadows = false;
                 Instance.ExteriorLights = false;
                 Instance.CameraFarClip = 200;
                 Instance.DayNightCycle = false;
-                Instance.AntiAliasing = AntiAliasingMode.MSAA2X;
+                Instance.AntiAliasingMode = AntiAliasingMode.MSAA2X;
                 Instance.RoomScale = false;
                 Instance.CellDetailRadius = 1;
                 Instance.CellRadius = 1;
+                Instance.WaterTransparency = false;
 
                 if (XRManager.Enabled)
                 {
@@ -117,6 +170,15 @@ namespace TESUnity
 
         #region Static Functions
 
+        public static bool IsMobile()
+        {
+#if UNITY_ANDROID || UNITY_IOS
+            return true;
+#else
+            return false;
+#endif
+        }
+
         public static bool IsValidPath(string path)
         {
             return File.Exists(Path.Combine(path, "Morrowind.esm"));
@@ -135,12 +197,12 @@ namespace TESUnity
                 return path;
 
 #if UNITY_ANDROID
-            return "/sdcard/TESUnityXR";
+            return $"/sdcard/{AndroidFolderName}";
 #else
             return string.Empty;
 #endif
         }
 
-        #endregion
+#endregion
     }
 }

@@ -235,7 +235,7 @@ namespace TESUnity
             {
                 obj.AddComponent<MeshCollider>().sharedMesh = mesh;
 
-                if (!obj.isStatic && TESManager.instance.useKinematicRigidbodies)
+                if (!obj.isStatic && GameSettings.Get().KinematicRigidbody)
                     obj.AddComponent<Rigidbody>().isKinematic = true;
             }
 

@@ -27,9 +27,6 @@ namespace Demonixis.UniversalXR
 
         private void Start()
         {
-#if UNITY_ANDROID
-            enabled = false;
-#endif
             m_Transform = transform;
 
             m_GroundMarker = Instantiate(m_GroundMarkerPrefab);
@@ -47,6 +44,8 @@ namespace Demonixis.UniversalXR
 
             m_RootTransform = m_Transform.root;
             m_InitialPositionY = m_RootTransform.position.y;
+
+            enabled = XRManager.Enabled;
         }
 
         public void InputIsPressed()

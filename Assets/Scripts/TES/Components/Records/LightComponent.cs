@@ -46,7 +46,7 @@ namespace TESUnity.Components.Records
 
                 if (Utils.ContainsBitFlags((uint)lightData.flags, (uint)LightData.LightFlags.CanCarry))
                 {
-                    if (TESManager.instance.useKinematicRigidbodies)
+                    if (GameSettings.Get().KinematicRigidbody)
                     {
                         gameObject.AddComponent<Rigidbody>().isKinematic = true;
                         gameObject.AddComponent<BoxCollider>().size *= 0.5f;
