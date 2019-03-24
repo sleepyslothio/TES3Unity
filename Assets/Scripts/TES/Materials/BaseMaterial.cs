@@ -15,6 +15,7 @@ namespace TESUnity
             public Material Material;
         }
 
+        private static Dictionary<Texture2D, Texture2D> m_GeneratedNormalMaps = new Dictionary<Texture2D, Texture2D>();
         protected Dictionary<MWMaterialProps, Material> m_existingMaterials;
         protected List<MatProxy> m_Materials = new List<MatProxy>();
         protected TextureManager m_textureManager;
@@ -56,6 +57,9 @@ namespace TESUnity
         // https://gamedev.stackexchange.com/questions/106703/create-a-normal-map-using-a-script-unity
         public static Texture2D GenerateNormalMap(Texture2D source, float strength)
         {
+            if (m_GeneratedNormalMaps.ContainsKey(source))
+                return m_GeneratedNormalMaps[source];
+
             strength = Mathf.Clamp(strength, 0.0F, 100.0f);
 
             Texture2D normalTexture;
@@ -66,7 +70,7 @@ namespace TESUnity
             float yDelta;
             float xDelta;
 
-            normalTexture = new Texture2D(source.width, source.height, TextureFormat.ARGB32, true);
+            normalTexture = new Texture2D(source.width, source.height, TextureFormat.RGB24, true);
 
             for (int y = 0; y < normalTexture.height; y++)
             {

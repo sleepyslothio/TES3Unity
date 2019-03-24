@@ -138,7 +138,6 @@ namespace TESUnity
 
         private void Rotate()
         {
-#if !UNITY_STANDALONE && !UNITY_EDITOR
             if (Cursor.lockState != CursorLockMode.Locked)
             {
                 if (Input.GetMouseButtonDown(0))
@@ -154,7 +153,6 @@ namespace TESUnity
                     Cursor.visible = true;
                 }
             }
-#endif
 
             var eulerAngles = new Vector3(m_CameraTransform.localEulerAngles.x, m_Transform.localEulerAngles.y, 0);
 
