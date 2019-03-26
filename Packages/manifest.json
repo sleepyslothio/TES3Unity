@@ -2,6 +2,8 @@
   "dependencies": {
     "com.unity.package-manager-ui": "2.1.1",
     "com.unity.postprocessing": "2.1.4",
+    "com.unity.render-pipelines.high-definition": "5.10.0-preview",
+    "com.unity.render-pipelines.lightweight": "5.10.0",
     "com.unity.xr.oculus.android": "1.29.1",
     "com.unity.xr.oculus.standalone": "1.29.1",
     "com.unity.xr.openvr.standalone": "1.0.3",

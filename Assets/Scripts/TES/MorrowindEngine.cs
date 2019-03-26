@@ -4,6 +4,7 @@ using TESUnity.Components.Records;
 using TESUnity.Effects;
 using TESUnity.ESM;
 using TESUnity.Inputs;
+using TESUnity.Rendering;
 using TESUnity.UI;
 using UnityEngine;
 using UnityEngine.Rendering;

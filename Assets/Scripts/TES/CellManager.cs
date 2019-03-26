@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TESUnity.Components.Records;
 using TESUnity.ESM;
+using TESUnity.Rendering;
 using UnityEngine;
 
 namespace TESUnity

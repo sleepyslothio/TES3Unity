@@ -614,7 +614,11 @@ namespace TESUnity
 				g = reader.ReadLESingle();
 				b = reader.ReadLESingle();
 			}
+
+            public Color ToColor() => new Color(r, g, b);
 		}
+
+
 		public class Color4
 		{
 			public float r;

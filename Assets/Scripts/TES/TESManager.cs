@@ -10,7 +10,7 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 #endif
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
-using System.Collections;
+using UnityStandardAssets.Water;
 
 namespace TESUnity
 {
@@ -97,10 +97,10 @@ namespace TESUnity
 #if HDRP_ENABLED
 				if (rendererMode == RendererMode.HDRP)
 				{
-					GraphicsSettings.renderPipelineAsset = Resources.Load<HDRPRenderPipeline>($"Rendering/HDRP/HDRPAsset-{target}");
+					GraphicsSettings.renderPipelineAsset = Resources.Load<HDRenderPipelineAsset>($"Rendering/HDRP/HDRPAsset-{target}");
 
-					var volumeSettings = Resources.Load<GameObject>("Rendering/HDRP/HDRP-VolumeSettings");
-					Instantiate(volumeSettings);
+					//var volumeSettings = Resources.Load<GameObject>("Rendering/HDRP/HDRP-VolumeSettings");
+					//Instantiate(volumeSettings);
 				}
 #endif
 				// Only this mode is compatible with SRP.

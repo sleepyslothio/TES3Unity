@@ -1,8 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
-using ur = UnityEngine.Rendering;
+using UnityEngine.Rendering;
 
-namespace TESUnity
+namespace TESUnity.Rendering
 {
     public enum MatTestMode { Always, Less, LEqual, Equal, GEqual, Greater, NotEqual, Never }
 
@@ -20,11 +19,16 @@ namespace TESUnity
     {
         public MWMaterialTextures textures;
         public bool alphaBlended;
-        public ur.BlendMode srcBlendMode;
-        public ur.BlendMode dstBlendMode;
+        public BlendMode srcBlendMode;
+        public BlendMode dstBlendMode;
         public bool alphaTest;
         public float alphaCutoff;
         public bool zWrite;
+        public Color diffuseColor;
+        public Color specularColor;
+        public Color emissiveColor;
+        public float glossiness;
+        public float alpha;
     }
 
     /// <summary>
@@ -48,17 +52,25 @@ namespace TESUnity
             if (materialType != MWMaterialType.Unlit)
             {
 #if LWRP_ENABLED
-                if (renderPath == RendererType.LightweightRP)
-                    m_Material = new LightweightMaterial(textureManager);
+                if (renderPath == RendererMode.LightweightRP)
+                {
+                    if (config.MaterialType == MWMaterialType.PBR)
+                        m_Material = new LWRPMaterial(textureManager);
+                    else
+                        m_Material = new LWRPSimpleMaterial(textureManager);
+                }
 #endif
 #if HDRP_ENABLED
-			    if (renderPath == RendererType.HDRP)
+			    if (renderPath == RendererMode.HDRP)
                     m_Material = new HDRPMaterial(textureManager);
 #endif
-                if (materialType == MWMaterialType.PBR)
-                    m_Material = new StandardMaterial(textureManager);
-                else
-                    m_Material = new DiffuseMaterial(textureManager);
+                if (!config.IsSRP())
+                {
+                    if (materialType == MWMaterialType.PBR)
+                        m_Material = new StandardMaterial(textureManager);
+                    else
+                        m_Material = new DiffuseMaterial(textureManager);
+                }
             }
             else
                 m_Material = new UnliteMaterial(textureManager);
