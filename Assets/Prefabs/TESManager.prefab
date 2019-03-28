@@ -47,17 +47,10 @@ MonoBehaviour:
   m_AlternativeDataPaths:
   - D:\Jeux\Morrowind\Data Files
   - D:\Jeux\Oldies\Morrowind\Data Files
+  - /Users/yannick/Jeux/Morrowind/Data Files
   logEnabled: 0
   ambientIntensity: 1.5
-  UIManager: {fileID: 0}
-  UIBackgroundImg: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  UICheckmarkImg: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
-  UIDropdownArrowImg: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
-  UIInputFieldBackgroundImg: {fileID: 10911, guid: 0000000000000000f000000000000000,
-    type: 0}
-  UIKnobImg: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  UIMaskImg: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
-  UISpriteImg: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  desiredWorkTimePerFrame: 0.0005
   playerPrefab: {fileID: 1000014283173620, guid: bb4f50960e3bc08459bb6f708eb7d79f,
     type: 3}
   waterPrefab: {fileID: 1586121937244772, guid: 6de569209e643e2438dd3dbfe2d466df,
@@ -75,13 +68,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Override: 1
-  PlayMusic: 0
+  PlayMusic: 1
   KinematicRigidbodies: 1
-  CellRadius: 4
+  CellRadius: 1
   CellDetailRadius: 3
-  CellRadiusOnLoad: 2
+  CellRadiusOnLoad: 1
   MaterialType: 0
-  RendererType: 1
+  RendererType: 3
   CameraFarClip: 500
   SRPQuality: 2
   RenderScale: 1

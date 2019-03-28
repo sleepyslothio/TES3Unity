@@ -1,9 +1,9 @@
 ﻿#if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.Build;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -14,6 +14,11 @@ namespace Demonixis.GunSpinningVR
         public enum RenderingPath
         {
             Legacy, LWRP, HDRP
+        }
+
+        public enum VRSDK
+        {
+            None = 0, OculusMobile, WaveVR
         }
 
         private static readonly string[] RenderingSymboles = new string[]
@@ -29,7 +34,9 @@ namespace Demonixis.GunSpinningVR
         private static string WaveVRSDKPath => $"{Application.dataPath}/Vendors/WaveVR/Plugins";
         private const string LWRPPackageName = "com.unity.render-pipelines.lightweight";
         private const string HDRPPackageName = "com.unity.render-pipelines.high-definition";
-        private const string OculusPackage = "com.unity.xr.oculus.android";
+        private const string OculusMobilePackage = "com.unity.xr.oculus.android";
+        private const string OculusDesktopPackage = "com.unity.xr.oculus.standalone";
+        private const string OpenVRPackage = "com.unity.xr.openvr.standalone";
 
         private static bool[] EnabledFeatures;
         private static string[] FeatureNames;
@@ -91,14 +98,20 @@ namespace Demonixis.GunSpinningVR
             if (GUILayout.Button("Enable Oculus"))
             {
                 RemoveAllSymbolsAdd("OCULUS_SDK", true);
-                SetVRSDK(0);               
+                SetVRSDK(VRSDK.OculusMobile);
             }
 
             if (GUILayout.Button("Enable WaveVR"))
             {
                 RemoveAllSymbolsAdd("WAVEVR_SDK", true);
-                SetVRSDK(1);
+                SetVRSDK(VRSDK.WaveVR);
             }
+        }
+
+        private void SetupMobile()
+        {
+            Client.Remove(OpenVRPackage);
+            Client.Remove(OculusDesktopPackage);
         }
 
         public void SetupLegacy()
@@ -133,17 +146,17 @@ namespace Demonixis.GunSpinningVR
             UpdateEnabled();
         }
 
-        public void SetVRSDK(int id)
+        public void SetVRSDK(VRSDK vrSDK)
         {
-            if (id == 1) // WaveVR
+            if (vrSDK == VRSDK.WaveVR)
             {
                 PlayerSettings.SetVirtualRealitySupported(BuildTargetGroup.Android, false);
                 PlayerSettings.SetVirtualRealitySDKs(BuildTargetGroup.Android, null);
-                Client.Remove(OculusPackage);
-                EnablePluginFolder(1);
+                Client.Remove(OculusMobilePackage);
+
                 SetAndroidManifest("wavevr");
             }
-            else // Oculus
+            else if (vrSDK == VRSDK.OculusMobile)
             {
                 PlayerSettings.SetVirtualRealitySupported(BuildTargetGroup.Android, true);
 
@@ -154,24 +167,26 @@ namespace Demonixis.GunSpinningVR
                     if (sdk.ToLower().Contains("oculus"))
                     {
                         PlayerSettings.SetVirtualRealitySDKs(BuildTargetGroup.Android, new string[] { sdk });
-                        Client.Add(OculusPackage);
-                        EnablePluginFolder(0);
+                        Client.Add(OculusMobilePackage);
+                        EnablePluginFolder(VRSDK.OculusMobile);
                         SetAndroidManifest("oculus");
                     }
                 }
             }
+
+            EnablePluginFolder(vrSDK);
         }
 
-        private static void EnablePluginFolder(int id)
+        private static void EnablePluginFolder(VRSDK id)
         {
             try
             {
                 // Disable non required plugins.
-                if (id == 0 && Directory.Exists(WaveVRSDKPath))
+                if (id != VRSDK.WaveVR && Directory.Exists(WaveVRSDKPath))
                     Directory.Move(WaveVRSDKPath, $"{WaveVRSDKPath}~");
 
                 // Enable required plugins.
-                if (id == 1 && Directory.Exists($"{WaveVRSDKPath}~"))
+                if (id == VRSDK.WaveVR && Directory.Exists($"{WaveVRSDKPath}~"))
                     Directory.Move($"{WaveVRSDKPath}~", $"{WaveVRSDKPath}");
             }
             catch (Exception ex)
