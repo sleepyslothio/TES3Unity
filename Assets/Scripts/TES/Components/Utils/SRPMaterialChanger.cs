@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using TESUnity.Rendering;
 using UnityEngine;
+#if HDRP_ENABLED
 using UnityEngine.Experimental.Rendering.HDPipeline;
+#endif
 using UnityEngine.Rendering;
+#if LWRP_ENABLED
 using UnityEngine.Rendering.LWRP;
+#endif
 
 namespace TESUnity.Components.Utilities
 {
