@@ -34,11 +34,11 @@ namespace TESUnity.Rendering
             if (m_existingMaterials.TryGetValue(mp, out material))
                 return material;
 
-            if (mp.alphaBlended)
+            /*if (mp.alphaBlended)
                 material = BuildMaterialBlended(mp.srcBlendMode, mp.dstBlendMode);
             else if (mp.alphaTest)
                 material = BuildMaterialTested(mp.alphaCutoff);
-            else
+            else*/
                 material = BuildMaterial();
 
             SetupMaterial(material, mp);
