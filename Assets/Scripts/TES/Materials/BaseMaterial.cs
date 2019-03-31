@@ -33,13 +33,19 @@ namespace TESUnity.Rendering
 
             if (m_existingMaterials.TryGetValue(mp, out material))
                 return material;
+                
+            material = BuildMaterial();
 
             if (mp.alphaBlended)
-                material = BuildMaterialBlended(mp.srcBlendMode, mp.dstBlendMode);
-            else if (mp.alphaTest)
-                material = BuildMaterialTested(mp.alphaCutoff);
-            else
-                material = BuildMaterial();
+            {
+                material.SetInt(m_SrcBlendParameter, (int)mp.srcBlendMode);
+                material.SetInt(m_DstBlendParameter, (int)mp.dstBlendMode);
+
+                if (m_CutoutMaterial != null)
+                    material.CopyPropertiesFromMaterial(m_CutoutMaterial);
+
+                material.SetFloat(m_CutoutParameter, 0.75f);
+            }
 
             SetupMaterial(material, mp);
 

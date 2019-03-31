@@ -237,10 +237,13 @@ namespace TESUnity
            
             if (collidable)
             {
-                obj.AddComponent<MeshCollider>().sharedMesh = mesh;
+                var collider = obj.AddComponent<MeshCollider>();
+                collider.sharedMesh = mesh;
 
                 if (!obj.isStatic && GameSettings.Get().KinematicRigidbody)
+                {
                     obj.AddComponent<Rigidbody>().isKinematic = true;
+                }
             }
 
             ApplyNiAVObject(triShape, obj);
@@ -413,20 +416,13 @@ namespace TESUnity
                 ushort oldflags = flags;
                 byte srcbm = (byte)(BitConverter.GetBytes(flags >> 1)[0] & 15);
                 byte dstbm = (byte)(BitConverter.GetBytes(flags >> 5)[0] & 15);
+
                 mp.zWrite = BitConverter.GetBytes(flags >> 15)[0] == 1;//smush
-
-                if (Utils.ContainsBitFlags(flags, 0x01)) // if flags contain the alpha blend flag at bit 0 in byte 0
-                {
-                    mp.alphaBlended = true;
-                    mp.srcBlendMode = FigureBlendMode(srcbm);
-                    mp.dstBlendMode = FigureBlendMode(dstbm);
-                }
-
-                else if (Utils.ContainsBitFlags(flags, 0x100)) // if flags contain the alpha test flag
-                {
-                    mp.alphaTest = true;
-                    mp.alphaCutoff = (float)alphaProperty.threshold / 255;
-                }
+                mp.alphaBlended = Utils.ContainsBitFlags(flags, 0x01);
+                mp.srcBlendMode = FigureBlendMode(srcbm);
+                mp.dstBlendMode = FigureBlendMode(dstbm);
+                mp.alphaTest = Utils.ContainsBitFlags(flags, 0x100);
+                mp.alphaCutoff = (float)alphaProperty.threshold / 255;
             }
             else
             {

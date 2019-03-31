@@ -48,11 +48,8 @@ namespace TESUnity.Components
                 camera.allowMSAA = false;
             }
 
-#if UNITY_EDITOR
-            // Because of a bug, HDR only works well with bloom in build or in deferred mode.
-            camera.allowHDR = config.RendererMode == RendererMode.Deferred;
-#endif
             camera.farClipPlane = config.CameraFarClip;
+            camera.allowHDR = !GameSettings.IsMobile();
 
             // 2. Setup SRP if enabled.
             var srpEnabled = config.IsSRP();

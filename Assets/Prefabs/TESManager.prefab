@@ -73,7 +73,7 @@ MonoBehaviour:
   CellRadius: 1
   CellDetailRadius: 3
   CellRadiusOnLoad: 2
-  MaterialType: 2
+  MaterialType: 0
   RendererType: 0
   CameraFarClip: 150
   SRPQuality: 2
@@ -86,7 +86,7 @@ MonoBehaviour:
   AnimateLights: 0
   DayNightCycle: 0
   GenerateNormalMap: 0
-  PostProcessingQuality: 1
+  PostProcessingQuality: 2
   AntiAliasing: 4
   FollowHead: 1
   RoomScale: 1

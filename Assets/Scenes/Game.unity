@@ -1127,26 +1127,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: MaterialType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: GenerateNormalMap
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: AnimateLights
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: ExteriorCellLights
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: LightShadows
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
 --- !u!1001 &2082843862
