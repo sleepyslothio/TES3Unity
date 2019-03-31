@@ -224,6 +224,9 @@ namespace TESUnity
                 var meshRenderer = obj.AddComponent<MeshRenderer>();
                 meshRenderer.material = materialManager.BuildMaterialFromProperties(materialProps);
 
+                if (materialProps.textures.mainFilePath == null)
+                    meshRenderer.enabled = false;
+
                 if (Utils.ContainsBitFlags(triShape.flags, (uint)NiAVObject.Flags.Hidden))
                 {
                     meshRenderer.enabled = false;
@@ -231,7 +234,7 @@ namespace TESUnity
 
                 obj.isStatic = true;
             }
-
+           
             if (collidable)
             {
                 obj.AddComponent<MeshCollider>().sharedMesh = mesh;

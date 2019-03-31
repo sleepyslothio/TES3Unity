@@ -21,7 +21,7 @@ namespace TESUnity.Components
 #endif
 
     [RequireComponent(typeof(PostProcessLayer), typeof(Camera))]
-    public sealed class PostProcessManager : MonoBehaviour
+    public sealed class GraphicsManager : MonoBehaviour
     {
         private void Start()
         {

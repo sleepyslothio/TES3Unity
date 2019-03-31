@@ -62,7 +62,7 @@ namespace TESUnity.Rendering
 
         protected virtual Material BuildMaterialBlended(BlendMode sourceBlendMode, BlendMode destinationBlendMode)
         {
-            var material = BuildMaterial();
+            var material = BuildMaterialTested();
             material.SetInt(m_SrcBlendParameter, (int)sourceBlendMode);
             material.SetInt(m_DstBlendParameter, (int)destinationBlendMode);
             return material;

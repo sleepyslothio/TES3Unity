@@ -72,21 +72,21 @@ MonoBehaviour:
   KinematicRigidbodies: 1
   CellRadius: 1
   CellDetailRadius: 3
-  CellRadiusOnLoad: 1
-  MaterialType: 0
-  RendererType: 3
-  CameraFarClip: 500
+  CellRadiusOnLoad: 2
+  MaterialType: 2
+  RendererType: 0
+  CameraFarClip: 150
   SRPQuality: 2
   RenderScale: 1
   WaterQuality: 0
   WaterTransparency: 0
   SunShadows: 1
-  LightShadows: 1
-  ExteriorCellLights: 1
-  AnimateLights: 1
+  LightShadows: 0
+  ExteriorCellLights: 0
+  AnimateLights: 0
   DayNightCycle: 0
-  GenerateNormalMap: 1
-  PostProcessingQuality: 3
-  AntiAliasing: 6
+  GenerateNormalMap: 0
+  PostProcessingQuality: 1
+  AntiAliasing: 4
   FollowHead: 1
   RoomScale: 1

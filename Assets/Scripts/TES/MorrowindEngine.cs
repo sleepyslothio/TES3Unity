@@ -293,7 +293,8 @@ namespace TESUnity
                 waterObj.SetActive(true);
                 underwaterEffect.Level = waterObj.transform.position.y;
             }
-            else
+            // FIXME: The water is disabled in interior cells for now.
+            //else
             {
                 waterObj.SetActive(false);
             }
@@ -356,6 +357,8 @@ namespace TESUnity
             playerComponent = player.GetComponent<PlayerComponent>();
             playerInventory = player.GetComponent<PlayerInventory>();
             underwaterEffect = playerCamera.GetComponent<UnderwaterEffect>();
+
+            player.GetComponent<Rigidbody>().isKinematic = false;
 
             return player;
         }

@@ -81,6 +81,7 @@ namespace TESUnity
                 return null;
             }
         }
+
         public void UpdateExteriorCells(Vector3 currentPosition, bool immediate = false, int cellRadiusOverride = -1)
         {
             var cameraCellIndices = GetExteriorCellIndices(currentPosition);
@@ -187,6 +188,7 @@ namespace TESUnity
                 return null;
             }
         }
+
         public InRangeCellInfo StartInstantiatingCell(CELLRecord CELL)
         {
             Debug.Assert(CELL != null);
@@ -215,6 +217,7 @@ namespace TESUnity
 
             return new InRangeCellInfo(cellObj, cellObjectsContainer, CELL, cellObjectsCreationCoroutine);
         }
+
         public void DestroyAllCells()
         {
             foreach (var keyValuePair in cellObjects)
@@ -244,15 +247,10 @@ namespace TESUnity
             if (CELL == null && LAND == null)
                 yield break;
 
-            var watch = new Watcher();
-            watch.Start();
-
             // Start pre-loading all required textures for the terrain.
             if (LAND != null)
             {
                 var landTextureFilePaths = GetLANDTextureFilePaths(LAND);
-
-                watch.Print("GetLANDTextureFilePaths");
 
                 if (landTextureFilePaths != null)
                 {
@@ -260,14 +258,11 @@ namespace TESUnity
                     {
                         textureManager.PreloadTextureFileAsync(landTextureFilePath);
                     }
-
-                    watch.Print($"PreloadTextureFileAsync[{landTextureFilePaths.Count}]");
                 }
             }
 
             // Extract information about referenced objects.
             var refCellObjInfos = GetRefCellObjInfos(CELL);
-            watch.Print("GetRefCellObjInfos");
 
             // Start pre-loading all required files for referenced objects. The NIF manager will load the textures as well.
 
@@ -279,14 +274,13 @@ namespace TESUnity
                 }
             }
 
-            watch.Print($"refCellObjInfos[{refCellObjInfos.Length}]");
+
+            yield return null;
 
             // Instantiate terrain.
             if (LAND != null)
             {
                 var instantiateLANDTaskEnumerator = InstantiateLANDCoroutine(LAND, cellObj);
-
-                watch.Print("InstantiateLANDCoroutine");
 
                 // Run the LAND instantiation coroutine.
                 while (instantiateLANDTaskEnumerator.MoveNext())
@@ -295,7 +289,7 @@ namespace TESUnity
                     yield return null;
                 }
 
-                watch.Print("instantiateLANDTaskEnumerator");
+                yield return null;
             }
 
             // Instantiate objects.
@@ -303,8 +297,6 @@ namespace TESUnity
             {
                 InstantiateCellObject(CELL, cellObjectsContainer, refCellObjInfo);
             }
-
-            watch.Print("InstantiateCellObject");
 
             yield return null;
         }
@@ -525,9 +517,6 @@ namespace TESUnity
                 yield break;
             }
 
-            var watch = new Watcher();
-            watch.Start();
-
             const int LAND_SIDE_LENGTH_IN_SAMPLES = 65;
             var heights = new float[LAND_SIDE_LENGTH_IN_SAMPLES, LAND_SIDE_LENGTH_IN_SAMPLES];
 
@@ -561,8 +550,6 @@ namespace TESUnity
                 }
             }
 
-            watch.Print("Created heights");
-
             // Texture the terrain.
             TerrainLayer[] splatPrototypes = null;
             float[,,] alphaMap = null;
@@ -573,8 +560,6 @@ namespace TESUnity
             // Create splat prototypes.
             var splatPrototypeList = new List<TerrainLayer>();
             var texInd2splatInd = new Dictionary<ushort, int>();
-
-            Debug.Log($"--> Number of indices {textureIndices.Length}");
 
             for (int i = 0; i < textureIndices.Length; i++)
             {
@@ -617,7 +602,7 @@ namespace TESUnity
 
             splatPrototypes = splatPrototypeList.ToArray();
 
-            watch.Print("Created splatePrototypes");
+            yield return null;
 
             // Create the alpha map.
             int VTEX_ROWS = 16;
@@ -649,16 +634,12 @@ namespace TESUnity
                 }
             }
 
-            watch.Print("Created alpha map");
-
             // Create the terrain.
             var heightRange = maxHeight - minHeight;
             var terrainPosition = new Vector3(Convert.exteriorCellSideLengthInMeters * LAND.gridCoords.x, minHeight / Convert.meterInMWUnits, Convert.exteriorCellSideLengthInMeters * LAND.gridCoords.y);
             var heightSampleDistance = Convert.exteriorCellSideLengthInMeters / (LAND_SIDE_LENGTH_IN_SAMPLES - 1);
             var terrainGameObject = GameObjectUtils.CreateTerrain(heights, heightRange / Convert.meterInMWUnits, heightSampleDistance, splatPrototypes, alphaMap, terrainPosition);
             terrainGameObject.transform.parent = parent.transform;
-
-            watch.Print("Created the terrain");
 
             yield return null;
         }
