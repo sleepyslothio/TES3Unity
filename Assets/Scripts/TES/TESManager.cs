@@ -10,7 +10,7 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 #endif
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
-using System.Collections;
+using UnityStandardAssets.Water;
 
 namespace TESUnity
 {
@@ -73,41 +73,6 @@ namespace TESUnity
             if (string.IsNullOrEmpty(dataPath))
                 SceneManager.LoadScene("Menu");
 
-            var srpEnabled = config.IsSRP();
-            if (!srpEnabled)
-                GraphicsSettings.renderPipelineAsset = null;
-
-#if LWRP_ENABLED || HDRP_ENABLED
-			if (srpEnabled)
-			{
-                var rendererMode = config.RendererMode;
-				var target = config.SRPQuality.ToString();
-
-#if LWRP_ENABLED
-				if (rendererMode == RendererMode.LightweightRP)
-				{
-#if UNITY_ANDROID
-					target = "Mobile";
-#endif
-					var lwrpAsset = Resources.Load<LightweightRenderPipelineAsset>($"Rendering/LWRP/LightweightAsset-{target}");
-					lwrpAsset.renderScale = config.RenderScale;
-					GraphicsSettings.renderPipelineAsset = lwrpAsset;
-				}
-#endif
-#if HDRP_ENABLED
-				if (rendererMode == RendererMode.HDRP)
-				{
-					GraphicsSettings.renderPipelineAsset = Resources.Load<HDRPRenderPipeline>($"Rendering/HDRP/HDRPAsset-{target}");
-
-					var volumeSettings = Resources.Load<GameObject>("Rendering/HDRP/HDRP-VolumeSettings");
-					Instantiate(volumeSettings);
-				}
-#endif
-				// Only this mode is compatible with SRP.
-				config.WaterQuality = Water.WaterMode.Simple;
-			}
-#endif
-
             m_UIManager = FindObjectOfType<UIManager>();
             if (m_UIManager == null)
                 throw new UnityException("UI Manager is missing");
@@ -121,7 +86,6 @@ namespace TESUnity
                 MWDataReader = new MorrowindDataReader(dataPath);
 
             m_MorrowindEngine = new MorrowindEngine(MWDataReader, m_UIManager);
-
             m_MusicPlayer = new MusicPlayer();
 
             if (config.MusicEnabled)

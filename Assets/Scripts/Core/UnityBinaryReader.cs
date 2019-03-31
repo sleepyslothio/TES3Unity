@@ -15,7 +15,7 @@ public class UnityBinaryReader : IDisposable
 
     public UnityBinaryReader(Stream input)
     {
-        reader = new BinaryReader(input, Encoding.UTF8);
+        reader = new BinaryReader(input, Encoding.ASCII);
     }
 
     public UnityBinaryReader(Stream input, Encoding encoding)

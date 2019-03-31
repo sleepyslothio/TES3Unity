@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TESUnity.Rendering;
 using UnityEngine;
 
 namespace TESUnity
@@ -35,6 +36,7 @@ namespace TESUnity
             // Instantiate the prefab.
 			return GameObject.Instantiate(prefab);
 		}
+
         public void PreloadNifFileAsync(string filePath)
         {
             // If the NIF prefab has already been created we don't have to load the file again.
@@ -65,6 +67,7 @@ namespace TESUnity
 	            prefabContainerObj.SetActive(false);
 	        }
         }
+
 	    private GameObject LoadNifPrefabDontAddToPrefabCache(string filePath)
 	    {
             Debug.Assert(!nifPrefabs.ContainsKey(filePath));

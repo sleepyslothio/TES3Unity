@@ -1,25 +1,31 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TESUnity.Rendering
 {
     /// <summary>
     /// A material that uses the legacy Bumped Diffuse Shader.
     /// </summary>
-    public class HDRPMaterial : BaseMaterial
+    public class LWRPMaterial : BaseMaterial
     {
-        public const string LitPath = "HDRP/Lit";
-        private const string DiffuseParameterName = "_BaseColorMap";
-        private const string BumpMapParameterName = "_NormalMap";
+        public const string LitPath = "Lightweight Render Pipeline/Lit";
+        public const string SimpleLitPath = "Lightweight Render Pipeline/Simple Lit";
+        private const string DiffuseParameterName = "_BaseMap";
+        private const string BumpMapParameterName = "_BumpMap";
         private const string BumpMapKeyword = "_NORMALMAP";
 
-        public HDRPMaterial(TextureManager textureManager)
+        public LWRPMaterial(TextureManager textureManager)
             : base(textureManager)
         {
-            m_Shader = Shader.Find(LitPath);
+            Initialize();
+            m_CutoutParameter = "_Cutoff";
+        }
+
+        protected virtual void Initialize()
+        {
+            m_Shader = Shader.Find("Lightweight Render Pipeline/Lit");
             m_CutoutShader = m_Shader;
-            m_Material = Resources.Load<Material>("Rendering/HDRP/Materials/Lit");
-            m_CutoutMaterial = Resources.Load<Material>("Rendering/HDRP/Materials/Lit-Cutout");
-            m_CutoutParameter = "_Cutout";
+            m_Material = Resources.Load<Material>($"Rendering/LWRP/Materials/Lit");
+            m_CutoutMaterial = Resources.Load<Material>($"Rendering/LWRP/Materials/Lit-Cutout");
         }
 
         protected override void SetupMaterial(Material material, MWMaterialProps mp)

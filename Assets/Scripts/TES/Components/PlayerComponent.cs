@@ -68,32 +68,6 @@ namespace TESUnity
 
             // Setup the camera
             var config = GameSettings.Get();
-            var camera = Camera.main;
-            var renderPath = config.RendererMode;
-
-#if !HDRP_ENABLED && !LWRP_ENABLED
-            if (renderPath == RendererMode.LightweightRP)
-                renderPath = RendererMode.Forward;
-            else if (renderPath == RendererMode.HDRP)
-                renderPath = RendererMode.Deferred;
-#endif
-
-            if (renderPath == RendererMode.Forward)
-            {
-                camera.renderingPath = RenderingPath.Forward;
-                camera.allowMSAA = true;
-            }
-            else if (renderPath == RendererMode.Deferred)
-            {
-                camera.renderingPath = RenderingPath.DeferredShading;
-                camera.allowMSAA = false;
-            }
-
-#if UNITY_EDITOR
-            // Because of a bug, HDR only works well with bloom in build or in deferred mode.
-            camera.allowHDR = config.RendererMode == RendererMode.Deferred;
-#endif
-            camera.farClipPlane = config.CameraFarClip;
 
             m_Crosshair = FindObjectOfType<UICrosshair>();
 
@@ -122,7 +96,7 @@ namespace TESUnity
                 m_Rigidbody.velocity = newVelocity;
             }
 
-            if (InputManager.GetButtonDown(MWButton.Jump))
+            if (InputManager.GetButtonDown(MWButton.Light))
                 lantern.enabled = !lantern.enabled;
         }
 
@@ -138,7 +112,6 @@ namespace TESUnity
 
         private void Rotate()
         {
-#if !UNITY_STANDALONE && !UNITY_EDITOR
             if (Cursor.lockState != CursorLockMode.Locked)
             {
                 if (Input.GetMouseButtonDown(0))
@@ -154,7 +127,6 @@ namespace TESUnity
                     Cursor.visible = true;
                 }
             }
-#endif
 
             var eulerAngles = new Vector3(m_CameraTransform.localEulerAngles.x, m_Transform.localEulerAngles.y, 0);
 

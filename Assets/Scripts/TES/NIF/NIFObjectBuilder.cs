@@ -4,6 +4,7 @@ using UnityEngine;
 namespace TESUnity
 {
     using NIF;
+    using TESUnity.Rendering;
 
     // TODO: Investigate merging meshes.
     // TODO: Investigate merging collision nodes with visual nodes.
@@ -223,6 +224,9 @@ namespace TESUnity
                 var meshRenderer = obj.AddComponent<MeshRenderer>();
                 meshRenderer.material = materialManager.BuildMaterialFromProperties(materialProps);
 
+                if (materialProps.textures.mainFilePath == null)
+                    meshRenderer.enabled = false;
+
                 if (Utils.ContainsBitFlags(triShape.flags, (uint)NiAVObject.Flags.Hidden))
                 {
                     meshRenderer.enabled = false;
@@ -230,7 +234,7 @@ namespace TESUnity
 
                 obj.isStatic = true;
             }
-
+           
             if (collidable)
             {
                 obj.AddComponent<MeshCollider>().sharedMesh = mesh;
@@ -331,12 +335,16 @@ namespace TESUnity
 
             return mesh;
         }
+
         private MWMaterialProps NiAVObjectPropertiesToMWMaterialProperties(NiAVObject obj)
         {
             // Find relevant properties.
             NiTexturingProperty texturingProperty = null;
             NiMaterialProperty materialProperty = null;
             NiAlphaProperty alphaProperty = null;
+
+            // Create the material properties.
+            MWMaterialProps mp = new MWMaterialProps();
 
             foreach (var propRef in obj.properties)
             {
@@ -355,9 +363,6 @@ namespace TESUnity
                     alphaProperty = (NiAlphaProperty)prop;
                 }
             }
-
-            // Create the material properties.
-            MWMaterialProps mp = new MWMaterialProps();
 
             #region AlphaProperty Cheat Sheet
             /*
@@ -429,8 +434,17 @@ namespace TESUnity
                 mp.alphaTest = false;
             }
 
+            if (materialProperty != null)
+            {
+                mp.alpha = materialProperty.alpha;
+                mp.diffuseColor = materialProperty.diffuseColor.ToColor();
+                mp.emissiveColor = materialProperty.emissiveColor.ToColor();
+                mp.glossiness = materialProperty.glossiness;
+            }
+
             // Apply textures.
-            if (texturingProperty != null) mp.textures = ConfigureTextureProperties(texturingProperty);
+            if (texturingProperty != null)
+                mp.textures = ConfigureTextureProperties(texturingProperty);
 
             return mp;
         }
