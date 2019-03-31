@@ -9,20 +9,8 @@ namespace TESUnity.Rendering
     /// </summary>
     public abstract class BaseMaterial
     {
-<<<<<<< HEAD
-        public struct MatProxy
-        {
-            public MWMaterialProps Props;
-            public Material Material;
-        }
-
-        protected static Dictionary<Texture2D, Texture2D> m_NormalMapCache = new Dictionary<Texture2D, Texture2D>();
-        protected Dictionary<MWMaterialProps, Material> m_existingMaterials;
-        protected List<MatProxy> m_Materials = new List<MatProxy>();
-=======
         private static Dictionary<Texture2D, Texture2D> m_GeneratedNormalMaps = new Dictionary<Texture2D, Texture2D>();
         protected static Dictionary<MWMaterialProps, Material> m_existingMaterials = new Dictionary<MWMaterialProps, Material>();
->>>>>>> unstable
         protected TextureManager m_textureManager;
         protected bool m_GenerateNormalMap;
         protected Material m_Material = null;
@@ -130,18 +118,12 @@ namespace TESUnity.Rendering
         // https://gamedev.stackexchange.com/questions/106703/create-a-normal-map-using-a-script-unity
         public static Texture2D GenerateNormalMap(Texture2D source, float strength)
         {
-<<<<<<< HEAD
-            Texture2D normalTexture;
-
-            if (m_NormalMapCache.TryGetValue(source, out normalTexture))
-                return normalTexture;
-=======
             if (m_GeneratedNormalMaps.ContainsKey(source))
                 return m_GeneratedNormalMaps[source];
->>>>>>> unstable
 
             strength = Mathf.Clamp(strength, 0.0F, 100.0f);
 
+            Texture2D normalTexture;
             float xLeft;
             float xRight;
             float yUp;
@@ -166,8 +148,6 @@ namespace TESUnity.Rendering
             }
 
             normalTexture.Apply();
-
-            m_NormalMapCache.Add(source, normalTexture);
 
             return normalTexture;
         }
