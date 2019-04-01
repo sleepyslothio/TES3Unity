@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 477232}
   - component: {fileID: 11464354}
+  - component: {fileID: 4663438948078211954}
   - component: {fileID: 2025599348}
+  - component: {fileID: 8899042093047213666}
   m_Layer: 0
   m_Name: TESManager
   m_TagString: Untagged
@@ -55,6 +57,25 @@ MonoBehaviour:
     type: 3}
   waterPrefab: {fileID: 1586121937244772, guid: 6de569209e643e2438dd3dbfe2d466df,
     type: 3}
+--- !u!114 &4663438948078211954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fea5e6a41913894c8a499534e6b19d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShotKey: 9
+  m_Show360ModKey: 304
+  m_Show360StereoModKey: 308
+  m_ScreenshotSuperSampling: 1
+  m_StereoSeparation: 0.064
+  m_TextureSize: 2048
+  m_EditorOnly: 0
 --- !u!114 &2025599348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,19 +95,38 @@ MonoBehaviour:
   CellDetailRadius: 3
   CellRadiusOnLoad: 2
   MaterialType: 0
-  RendererType: 0
-  CameraFarClip: 150
+  RendererType: 1
+  CameraFarClip: 500
   SRPQuality: 2
   RenderScale: 1
-  WaterQuality: 0
+  WaterQuality: 2
   WaterTransparency: 0
   SunShadows: 1
-  LightShadows: 0
-  ExteriorCellLights: 0
-  AnimateLights: 0
+  LightShadows: 1
+  ExteriorCellLights: 1
+  AnimateLights: 1
   DayNightCycle: 0
-  GenerateNormalMap: 0
-  PostProcessingQuality: 2
-  AntiAliasing: 4
+  GenerateNormalMap: 1
+  PostProcessingQuality: 3
+  AntiAliasing: 6
   FollowHead: 1
   RoomScale: 1
+--- !u!114 &8899042093047213666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fea5e6a41913894c8a499534e6b19d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShotKey: 9
+  m_Show360ModKey: 304
+  m_Show360StereoModKey: 308
+  m_ScreenshotSuperSampling: 1
+  m_StereoSeparation: 0.064
+  m_TextureSize: 1024
+  m_EditorOnly: 0
