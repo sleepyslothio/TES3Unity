@@ -2,15 +2,7 @@
 using System.IO;
 using TESUnity.UI;
 using UnityEngine;
-#if LWRP_ENABLED
-using UnityEngine.Rendering.LWRP;
-#endif
-#if HDRP_ENABLED
-using UnityEngine.Experimental.Rendering.HDPipeline;
-#endif
 using UnityEngine.SceneManagement;
-using UnityEngine.Rendering;
-using UnityStandardAssets.Water;
 
 namespace TESUnity
 {

@@ -9,9 +9,6 @@ namespace TESUnity.Components
     /// </summary>
     public sealed class GameSettingsOverride : MonoBehaviour
     {
-#if !UNITY_EDITOR
-        private void Awake() => Destroy(this);
-#else
         public bool Override = false;
 
         [Header("Global")]
@@ -50,6 +47,10 @@ namespace TESUnity.Components
 
         private void Awake()
         {
+#if !UNITY_EDITOR
+            enabled = false;
+            return;
+#else
             if (!Override)
                 return;
 

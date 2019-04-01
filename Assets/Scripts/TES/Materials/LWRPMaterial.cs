@@ -12,6 +12,16 @@ namespace TESUnity.Rendering
         private const string DiffuseParameterName = "_BaseMap";
         private const string BumpMapParameterName = "_BumpMap";
         private const string BumpMapKeyword = "_NORMALMAP";
+        private static Material TerrainMaterial = null;
+
+        public static Material GetTerrainMaterial()
+        {
+            if (TerrainMaterial == null)
+                TerrainMaterial = new Material(Shader.Find("Lightweight Render Pipeline/Terrain/Lit"));
+
+            return TerrainMaterial;
+        }
+
 
         public LWRPMaterial(TextureManager textureManager)
             : base(textureManager)
@@ -36,14 +46,23 @@ namespace TESUnity.Rendering
                 material.SetTexture(DiffuseParameterName, mainTexture);
 
                 if (m_GenerateNormalMap && mp.textures.bumpFilePath == null)
-                {
-                    material.SetTexture(BumpMapParameterName, GenerateNormalMap(mainTexture));
                     TryEnableTexture(material, GenerateNormalMap(mainTexture), BumpMapParameterName, BumpMapKeyword);
-                }
             }
 
             if (mp.textures.bumpFilePath != null)
                 TryEnableTexture(material, mp.textures.bumpFilePath, BumpMapParameterName, BumpMapKeyword);
+
+            TryEnableTexture(material, mp.textures.glossFilePath, "_MetallicGlossMap", "_METALLICGLOSSMAP");
+            TryEnableTexture(material, mp.textures.glowFilePath, "_EmissionMap", "_EMISSION");
+
+            material.SetColor("_Color", mp.diffuseColor);
+            material.SetColor("_Smoothness", mp.specularColor);
+
+            if (mp.emissiveColor != Color.white)
+            {
+                material.SetColor("_EmissionColor", mp.emissiveColor);
+                material.EnableKeyword("_EMISSION");
+            }
         }
     }
 }

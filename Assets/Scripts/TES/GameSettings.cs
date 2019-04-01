@@ -102,11 +102,11 @@ namespace TESUnity
 
 #if UNITY_ANDROID || UNITY_IOS
             // Avoid HDRP or Deferred Rendering on mobile
-            if (RendererMode == RendererType.HDRP)
-                RendererMode = RendererType.LightweightRP;
+            if (RendererMode == RendererMode.HDRP)
+                RendererMode = RendererMode.LightweightRP;
 
-            if (RendererMode == RendererType.Deferred)
-                RendererMode = RendererType.Forward;
+            if (RendererMode == RendererMode.Deferred)
+                RendererMode = RendererMode.Forward;
 #endif
 
 #if WAVEVR_SDK

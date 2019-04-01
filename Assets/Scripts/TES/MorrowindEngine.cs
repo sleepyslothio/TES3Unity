@@ -110,6 +110,10 @@ namespace TESUnity
 #endif
             UIManager = uiManager;
             UIManager.Active = true;
+
+#if UNITY_ANDROID
+            RenderSettings.ambientIntensity = 4;
+#endif
         }
 
         #region Player Spawn

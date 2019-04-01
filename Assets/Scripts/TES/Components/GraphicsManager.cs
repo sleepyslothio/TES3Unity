@@ -23,13 +23,11 @@ namespace TESUnity.Components
     [RequireComponent(typeof(PostProcessLayer), typeof(Camera))]
     public sealed class GraphicsManager : MonoBehaviour
     {
-        private void Start()
+        private void Awake()
         {
             var config = GameSettings.Get();
             var renderPath = config.RendererMode;
-            var camera = GetComponent<Camera>();
 
-            // 1. Setup Camera
 #if !HDRP_ENABLED && !LWRP_ENABLED
             if (renderPath == RendererMode.LightweightRP)
                 renderPath = RendererMode.Forward;
@@ -37,21 +35,7 @@ namespace TESUnity.Components
                 renderPath = RendererMode.Deferred;
 #endif
 
-            if (renderPath == RendererMode.Forward)
-            {
-                camera.renderingPath = RenderingPath.Forward;
-                camera.allowMSAA = true;
-            }
-            else if (renderPath == RendererMode.Deferred)
-            {
-                camera.renderingPath = RenderingPath.DeferredShading;
-                camera.allowMSAA = false;
-            }
-
-            camera.farClipPlane = config.CameraFarClip;
-            camera.allowHDR = !GameSettings.IsMobile();
-
-            // 2. Setup SRP if enabled.
+            // Setup SRP if enabled.
             var srpEnabled = config.IsSRP();
             if (!srpEnabled)
                 GraphicsSettings.renderPipelineAsset = null;
@@ -86,8 +70,30 @@ namespace TESUnity.Components
                 config.WaterQuality = Water.WaterMode.Simple;
             }
 #endif
+        }
 
-            // 3. Setup Post Processing.
+        private void Start()
+        {
+            var config = GameSettings.Get();
+            var renderPath = config.RendererMode;
+            var camera = GetComponent<Camera>();
+
+            // 1. Setup Camera
+            if (renderPath == RendererMode.Forward)
+            {
+                camera.renderingPath = RenderingPath.Forward;
+                camera.allowMSAA = true;
+            }
+            else if (renderPath == RendererMode.Deferred)
+            {
+                camera.renderingPath = RenderingPath.DeferredShading;
+                camera.allowMSAA = false;
+            }
+
+            camera.farClipPlane = config.CameraFarClip;
+            camera.allowHDR = !GameSettings.IsMobile();
+
+            // 2. Setup Post Processing.
             UpdateEffects();
         }
 

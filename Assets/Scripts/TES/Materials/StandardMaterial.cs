@@ -30,21 +30,18 @@ namespace TESUnity.Rendering
             if (mp.textures.bumpFilePath != null)
                 TryEnableTexture(material, mp.textures.bumpFilePath, "_BumpMap", "_NORMALMAP");
 
-            TryEnableTexture(material, mp.textures.bumpFilePath, "_MetallicGlossMap", "_METALLICGLOSSMAP");
-            TryEnableTexture(material, mp.textures.bumpFilePath, "_EmissionMap", "_EMISSION");
-            TryEnableTexture(material, mp.textures.bumpFilePath, "_DetailMask", "_DETAIL_MULX2");
+            TryEnableTexture(material, mp.textures.glossFilePath, "_MetallicGlossMap", "_METALLICGLOSSMAP");
+            TryEnableTexture(material, mp.textures.glowFilePath, "_EmissionMap", "_EMISSION");
+            TryEnableTexture(material, mp.textures.detailFilePath, "_DetailMask", "_DETAIL_MULX2");
 
             material.SetColor("_Color", mp.diffuseColor);
-            material.SetColor("_Glossiness", mp.specularColor);
+            material.SetColor("_SpecColor", mp.specularColor);
 
             if (mp.emissiveColor != Color.white)
             {
                 material.SetColor("_EmissionColor", mp.emissiveColor);
                 material.EnableKeyword("_EMISSION");
             }
-
-            if (mp.alphaCutoff > 0)
-                material.SetFloat("_Cutoff", mp.alphaCutoff);
         }
     }
 }

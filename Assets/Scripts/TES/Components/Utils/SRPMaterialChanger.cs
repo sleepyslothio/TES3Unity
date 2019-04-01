@@ -30,14 +30,18 @@ namespace TESUnity.Components.Utilities
                 material = renderer.material;
 #endif
 
+#if LWRP_ENABLED
                 if (GraphicsSettings.renderPipelineAsset is LightweightRenderPipelineAsset)
                 {
                     var pbr = GameSettings.Get().MaterialType == MWMaterialType.PBR;
                     shaderName = pbr ? LWRPMaterial.LitPath : LWRPMaterial.SimpleLitPath;
-
                 }
-                else if (GraphicsSettings.renderPipelineAsset is HDRenderPipelineAsset)
+#endif
+
+#if HDRP_ENABLED
+                if (GraphicsSettings.renderPipelineAsset is HDRenderPipelineAsset)
                     shaderName = HDRPMaterial.LitPath;
+#endif
 
                 var shader = Shader.Find(shaderName);
 

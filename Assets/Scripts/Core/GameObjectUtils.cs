@@ -1,4 +1,5 @@
 ﻿using TESUnity;
+using TESUnity.Rendering;
 using UnityEngine;
 #if HDRP_ENABLED
 using UnityEngine.Experimental.Rendering.HDPipeline;
@@ -117,7 +118,7 @@ public static class GameObjectUtils
             if (srp is LightweightRenderPipelineAsset)
             {
                 terrain.materialType = Terrain.MaterialType.Custom;
-                terrain.materialTemplate = Resources.Load<Material>("Rendering/LWRP/Materials/Lit-Terrain");
+                terrain.materialTemplate = LWRPMaterial.GetTerrainMaterial();
             }
 #endif
 #if HDRP_ENABLED

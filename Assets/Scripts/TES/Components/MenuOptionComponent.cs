@@ -80,7 +80,7 @@ namespace TESUnity.Components
             m_ExteriorLightsToggle.isOn = m_Settings.ExteriorLights;
             m_ExteriorLightsToggle.onValueChanged.AddListener(SetExteriorLights);
 
-            values = new[] { "1000", "500", "250", "150", "100", "50" };
+            values = new[] { "50", "100", "150", "250", "500", "1000" };
             m_CameraFarClipDropdown.Setup(ref values, m_Settings.CameraFarClip.ToString(), SetCameraFarClip);
 
             m_DayNightCycleToggle.isOn = m_Settings.DayNightCycle;
@@ -92,7 +92,7 @@ namespace TESUnity.Components
             m_RoomScaleToggle.isOn = m_Settings.RoomScale;
             m_RoomScaleToggle.onValueChanged.AddListener(SetRoomScale);
 
-            values = new[] { "100", "90", "80", "70", "60", "50" };
+            values = new[] { "50", "60", "70", "80", "90", "100" };
             m_RenderScaleDd.Setup(ref values, m_Settings.RenderScale.ToString(), SetRenderScale);
         }
 
