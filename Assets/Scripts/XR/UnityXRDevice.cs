@@ -5,6 +5,14 @@ using UnityEngine.XR;
 
 namespace Demonixis.Toolbox.XR
 {
+    public enum VRHeadsetModel
+    {
+        None = 0, OculusRift,
+        OculusQuest, OculusGo,
+        Vive, WindowsMR,
+        PSVR, Other
+    }
+
     /// <summary>
     /// The UnityVRDevice is an abstract device that uses the UnityEngine.VR implementation.
     /// </summary>
@@ -31,6 +39,33 @@ namespace Demonixis.Toolbox.XR
         #endregion
 
         public static bool IsOculus => XRSettings.loadedDeviceName.ToLower() == "oculus";
+
+        public static VRHeadsetModel GetVRHeadsetModel()
+        {
+            if (!XRSettings.enabled)
+                return VRHeadsetModel.None;
+
+#if UNITY_PS4
+            return VRHeadsetModel.PSVR;
+#endif
+
+            var device = XRDevice.model.ToLower();
+
+            if (device.Contains("oculus"))
+            {
+#if UNITY_ANDROID
+                return device.Contains("quest") ? VRHeadsetModel.OculusQuest : VRHeadsetModel.OculusGo;
+#else
+                return return VRHeadsetModel.OculusRift;
+#endif
+            }
+            else if (device.Contains("vive"))
+                return VRHeadsetModel.Vive;
+            else if (device.Contains("windows"))
+                return VRHeadsetModel.WindowsMR;
+
+            return VRHeadsetModel.Other;
+        }
 
         public override void Recenter() => InputTracking.Recenter();
 

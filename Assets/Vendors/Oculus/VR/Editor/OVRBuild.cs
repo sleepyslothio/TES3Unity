@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 /************************************************************************************
 
 Copyright   :   Copyright (c) Facebook Technologies, LLC and its affiliates. All rights reserved.
@@ -54,4 +53,3 @@ partial class OculusBuildApp
 		AssetDatabase.SaveAssets();
 	}
 }
-#endif

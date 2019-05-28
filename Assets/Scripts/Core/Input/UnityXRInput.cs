@@ -1,7 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.XR;
 
 namespace TESUnity.Inputs
 {

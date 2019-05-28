@@ -56,9 +56,7 @@ namespace TESUnity.Components.VR
 
             // Setup RoomScale/Sitted mode.
             var trackingSpaceType = m_RoomScale ? TrackingSpaceType.RoomScale : TrackingSpaceType.Stationary;
-            XRDevice.SetTrackingSpaceType(trackingSpaceType);
-            if (trackingSpaceType == TrackingSpaceType.RoomScale)
-                transform.GetChild(0).localPosition = Vector3.zero;
+            XRManager.Instance.TrackingSpaceType = trackingSpaceType;
 
             var uiManager = FindObjectOfType<UIManager>();
 

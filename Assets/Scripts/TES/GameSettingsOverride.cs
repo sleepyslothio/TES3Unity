@@ -78,7 +78,7 @@ namespace TESUnity.Components
             settings.WaterTransparency = WaterTransparency;
             settings.KinematicRigidbody = KinematicRigidbodies;
             settings.CheckSettings();
-        }
 #endif
+        }
     }
 }
