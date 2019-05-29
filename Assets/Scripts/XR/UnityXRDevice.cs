@@ -81,12 +81,14 @@ namespace Demonixis.Toolbox.XR
                 OVRManager.tiledMultiResLevel = m_TiledMultiResLevel;
             }
 #endif
+
+            Debug.Log($"[GSPVR] IsOculus: {IsOculus}");
         }
 
         public override void SetTrackingSpaceType(TrackingSpaceType type, Transform headTransform, float height)
         {
 #if UNITY_ANDROID
-            if (XRManager.Instance.ForceSeatedOnMobile)
+            if (XRManager.Instance.ForceSeatedOnMobile && GetVRHeadsetModel() == VRHeadsetModel.OculusQuest)
                 type = TrackingSpaceType.Stationary;
 #endif
             XRDevice.SetTrackingSpaceType(type);

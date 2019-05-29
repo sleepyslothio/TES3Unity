@@ -63,6 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_priority: 0
+  m_TiledMultiResLevel: 2
 --- !u!114 &4537370621232559901
 MonoBehaviour:
   m_ObjectHideFlags: 0

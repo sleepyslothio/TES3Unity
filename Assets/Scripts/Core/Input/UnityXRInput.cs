@@ -40,7 +40,7 @@ namespace TESUnity.Inputs
             return result;
         }
 
-        public bool GetButton(MWButton button)
+        public bool Get(MWButton button)
         {
             if (m_XRMapping == null)
                 InitializeMapping();
@@ -54,7 +54,7 @@ namespace TESUnity.Inputs
             return false;
         }
 
-        public bool GetButtonDown(MWButton button)
+        public bool GetDown(MWButton button)
         {
             if (m_XRMapping == null)
                 InitializeMapping();
@@ -68,7 +68,7 @@ namespace TESUnity.Inputs
             return false;
         }
 
-        public bool GetButtonUp(MWButton button)
+        public bool GetUp(MWButton button)
         {
             if (m_XRMapping == null)
                 InitializeMapping();

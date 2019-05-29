@@ -30,7 +30,7 @@ namespace TESUnity.Inputs
             return 0.0f;
         }
 
-        public bool GetButton(MWButton button)
+        public bool Get(MWButton button)
         {
 #if WAVEVR_SDK
             if (button == MWButton.Use)
@@ -47,7 +47,7 @@ namespace TESUnity.Inputs
             return false;
         }
 
-        public bool GetButtonDown(MWButton button)
+        public bool GetDown(MWButton button)
         {
 #if WAVEVR_SDK
             if (button == MWButton.Use)
@@ -64,7 +64,7 @@ namespace TESUnity.Inputs
             return false;
         }
 
-        public bool GetButtonUp(MWButton button)
+        public bool GetUp(MWButton button)
         {
 #if WAVEVR_SDK
             if (button == MWButton.Use)

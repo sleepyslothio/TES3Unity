@@ -20,8 +20,8 @@ namespace TESUnity.Inputs
             return 0.0f;
         }
 
-        public bool GetButton(MWButton button) => Input.GetButton(button.ToString());
-        public bool GetButtonDown(MWButton button) => Input.GetButtonDown(button.ToString());
-        public bool GetButtonUp(MWButton button) => Input.GetButtonUp(button.ToString());
+        public bool Get(MWButton button) => Input.GetButton(button.ToString());
+        public bool GetDown(MWButton button) => Input.GetButtonDown(button.ToString());
+        public bool GetUp(MWButton button) => Input.GetButtonUp(button.ToString());
     }
 }

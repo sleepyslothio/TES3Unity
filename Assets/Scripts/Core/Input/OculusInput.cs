@@ -1,39 +1,51 @@
 ﻿using Demonixis.Toolbox.XR;
+using UnityEngine;
 
 namespace TESUnity.Inputs
 {
     public class OculusInput : IInputProvider
     {
+#if OCULUS_SDK
         public delegate bool GetAxisDelegate(OVRInput.Button virtualMask, OVRInput.Controller controllerMask = OVRInput.Controller.Active);
+#endif
         private bool m_6DOFControllers = false;
 
         public bool TryInitialize()
         {
 #if OCULUS_SDK
-            if (UnityXRDevice.IsOculus)
-            {
-                m_6DOFControllers = UnityXRDevice.GetVRHeadsetModel() == VRHeadsetModel.OculusQuest;
-                return true;
-            }
-#endif
+            var model = UnityXRDevice.GetVRHeadsetModel();
+            m_6DOFControllers = model == VRHeadsetModel.OculusQuest;
+            Debug.Log($"[TESUnity] Oculus Input Initialized. 6DoF:{m_6DOFControllers}");
+            return true;
+#else
             return false;
+#endif
         }
 
         public float GetAxis(MWAxis axis)
         {
-            var result = 0.0f;
 #if OCULUS_SDK
-            var leftValue = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad, GetController(false));
+            if (m_6DOFControllers)
+            {
+                var value = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, LeftController);
 
-            if (axis == MWAxis.Vertical)
-                result = leftValue.y;
-            else if (axis == MWAxis.Horizontal)
-                result = leftValue.x;
-            else if (axis == MWAxis.MouseX)
-                return OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad, GetController(true)).x;
-
+                if (axis == MWAxis.Vertical)
+                    return value.y;
+                else if (axis == MWAxis.Horizontal)
+                    return value.x;
+                else if (axis == MWAxis.MouseX)
+                    return OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, RightController).x;
+            }
+            else
+            {
+                var leftValue = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad, LeftController);
+                if (axis == MWAxis.Vertical)
+                    return leftValue.y;
+                else if (axis == MWAxis.Horizontal)
+                    return leftValue.x;
+            }
 #endif
-            return result;
+            return 0.0f;
         }
 
         private bool GetButtonState(GetAxisDelegate inputFunction, MWButton button)
@@ -41,22 +53,22 @@ namespace TESUnity.Inputs
 #if OCULUS_SDK
             if (button == MWButton.Use)
             {
-                return inputFunction(OVRInput.Button.PrimaryIndexTrigger, GetController(true));
+                return inputFunction(OVRInput.Button.PrimaryIndexTrigger, RightController);
             }
             else if (button == MWButton.Menu)
             {
-                return inputFunction(OVRInput.Button.Back, GetController(false)) ||
-                    inputFunction(OVRInput.Button.Start, GetController(false));
+                return inputFunction(OVRInput.Button.Back, LeftController) ||
+                    inputFunction(OVRInput.Button.Start, LeftController);
             }
             else if (button == MWButton.Jump)
             {
-                inputFunction(OVRInput.Button.One, GetController(false));
+                inputFunction(OVRInput.Button.One, RightController);
             }
 #endif
             return false;
         }
 
-        public bool GetButton(MWButton button)
+        public bool Get(MWButton button)
         {
 #if OCULUS_SDK
             return GetButtonState(OVRInput.Get, button);
@@ -65,7 +77,7 @@ namespace TESUnity.Inputs
 #endif
         }
 
-        public bool GetButtonDown(MWButton button)
+        public bool GetDown(MWButton button)
         {
 #if OCULUS_SDK
             return GetButtonState(OVRInput.GetDown, button);
@@ -74,7 +86,7 @@ namespace TESUnity.Inputs
 #endif
         }
 
-        public bool GetButtonUp(MWButton button)
+        public bool GetUp(MWButton button)
         {
 #if OCULUS_SDK
             return GetButtonState(OVRInput.GetUp, button);
@@ -84,6 +96,10 @@ namespace TESUnity.Inputs
         }
 
 #if OCULUS_SDK
+
+        public OVRInput.Controller LeftController => m_6DOFControllers ? OVRInput.Controller.LTouch : OVRInput.Controller.Remote;
+        public OVRInput.Controller RightController => m_6DOFControllers ? OVRInput.Controller.RTouch : OVRInput.Controller.Remote;
+
         private OVRInput.Controller GetController(bool left)
         {
             if (m_6DOFControllers)

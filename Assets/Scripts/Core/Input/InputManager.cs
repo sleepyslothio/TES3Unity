@@ -1,7 +1,5 @@
-﻿using Demonixis.Toolbox.XR;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
 
 namespace TESUnity.Inputs
 {
@@ -30,6 +28,16 @@ namespace TESUnity.Inputs
 #if WAVEVR_SDK
             InputProviders = new IInputProvider[] { new WaveVRInput() };
 #else
+#if OCULUS_SDK
+            if (OVRManager.isHmdPresent)
+            {
+                var oculusInput = new OculusInput();
+                oculusInput.TryInitialize();
+
+                InputProviders = new IInputProvider[] { oculusInput };
+                return;
+            }
+#endif
             var providers = new IInputProvider[]
             {
                 new TouchInput(),
@@ -39,16 +47,6 @@ namespace TESUnity.Inputs
 
             var list = new List<IInputProvider>();
             var touchEnabled = false;
-
-
-
-#if UNITY_ANDROID
-            if (UnityXRDevice.IsOculus)
-            {
-                InputProviders = new IInputProvider[] { new OculusInput() };
-                return;
-            }
-#endif
 
             foreach (var provider in providers)
             {
@@ -98,9 +96,9 @@ namespace TESUnity.Inputs
         {
             EnsureStarted();
 
-            foreach (var provider in InputProviders)
+            foreach (var input in InputProviders)
             {
-                if (provider.GetButton(button))
+                if (input.Get(button))
                     return true;
             }
 
@@ -111,9 +109,9 @@ namespace TESUnity.Inputs
         {
             EnsureStarted();
 
-            foreach (var provider in InputProviders)
+            foreach (var input in InputProviders)
             {
-                if (provider.GetButtonUp(button))
+                if (input.GetUp(button))
                     return true;
             }
 
@@ -124,9 +122,9 @@ namespace TESUnity.Inputs
         {
             EnsureStarted();
 
-            foreach (var provider in InputProviders)
+            foreach (var input in InputProviders)
             {
-                if (provider.GetButtonDown(button))
+                if (input.GetDown(button))
                     return true;
             }
 

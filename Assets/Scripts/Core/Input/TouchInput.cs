@@ -55,7 +55,7 @@ namespace TESUnity.Inputs
             return result;
         }
 
-        public bool GetButton(MWButton button)
+        public bool Get(MWButton button)
         {
             if (button == MWButton.Use)
                 return Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Moved || Input.touches[0].phase == TouchPhase.Stationary;
@@ -63,7 +63,7 @@ namespace TESUnity.Inputs
             return false;
         }
 
-        public bool GetButtonDown(MWButton button)
+        public bool GetDown(MWButton button)
         {
             if (button == MWButton.Use)
                 return Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began;
@@ -71,7 +71,7 @@ namespace TESUnity.Inputs
             return false;
         }
 
-        public bool GetButtonUp(MWButton button)
+        public bool GetUp(MWButton button)
         {
             if (button == MWButton.Use)
                 return Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Ended;

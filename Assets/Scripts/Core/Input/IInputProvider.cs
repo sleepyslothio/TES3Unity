@@ -10,8 +10,8 @@ namespace TESUnity.Inputs
     {
         bool TryInitialize();
         float GetAxis(MWAxis axis);
-        bool GetButton(MWButton button);
-        bool GetButtonDown(MWButton button);
-        bool GetButtonUp(MWButton button);
+        bool Get(MWButton button);
+        bool GetDown(MWButton button);
+        bool GetUp(MWButton button);
     }
 }

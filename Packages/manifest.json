@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.mobile.android-logcat": "0.2.7-preview",
     "com.unity.package-manager-ui": "2.1.2",
     "com.unity.postprocessing": "2.2.0",
     "com.unity.xr.oculus.android": "1.36.0",
