@@ -24,16 +24,17 @@ namespace TESUnity
         private const float playerRadius = 0.4f;
         public static float desiredWorkTimePerFrame = 1.0f / 200;
         public static int cellRadiusOnLoad = 2;
-        private CELLRecord _currentCell;
-        private GameObject sunObj;
-        private GameObject waterObj;
-        private Transform playerTransform;
-        private PlayerComponent playerComponent;
-        private PlayerInventory playerInventory;
-        private GameObject playerCameraObj;
-        private UnderwaterEffect underwaterEffect;
-        private Color32 defaultAmbientColor = new Color32(137, 140, 160, 255);
-        private RaycastHit[] interactRaycastHitBuffer = new RaycastHit[32];
+
+        private CELLRecord m_CurrentCell;
+        private GameObject m_SunObj;
+        private GameObject m_WaterObj;
+        private Transform m_PlayerTransform;
+        private PlayerComponent m_Player;
+        private PlayerInventory m_PlayerInventory;
+        private GameObject m_PlayerCameraObj;
+        private UnderwaterEffect m_UnderwaterEffect;
+        private Color32 m_DefaultAmbientColor = new Color32(137, 140, 160, 255);
+        private RaycastHit[] m_InteractRaycastHitBuffer = new RaycastHit[32];
 
         #endregion
 
@@ -46,7 +47,7 @@ namespace TESUnity
         public CellManager cellManager;
         public TemporalLoadBalancer temporalLoadBalancer;
 
-        public CELLRecord currentCell => _currentCell;
+        public CELLRecord currentCell => m_CurrentCell;
 
         public static int markerLayer => LayerMask.NameToLayer("Marker");
 
@@ -72,17 +73,17 @@ namespace TESUnity
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientIntensity = tes.ambientIntensity;
 
-            sunObj = GameObjectUtils.CreateDirectionalLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
-            sunObj.GetComponent<Light>().shadows = config.SunShadows ? LightShadows.Soft : LightShadows.None;
-            sunObj.SetActive(false);
+            m_SunObj = GameObjectUtils.CreateDirectionalLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
+            m_SunObj.GetComponent<Light>().shadows = config.SunShadows ? LightShadows.Soft : LightShadows.None;
+            m_SunObj.SetActive(false);
 
             if (config.DayNightCycle)
-                sunObj.AddComponent<DayNightCycle>();
+                m_SunObj.AddComponent<DayNightCycle>();
 
-            waterObj = GameObject.Instantiate(tes.waterPrefab);
-            waterObj.SetActive(false);
+            m_WaterObj = GameObject.Instantiate(tes.waterPrefab);
+            m_WaterObj.SetActive(false);
 
-            var water = waterObj.GetComponent<Water>();
+            var water = m_WaterObj.GetComponent<Water>();
             water.waterMode = config.WaterQuality;
 
             if (GraphicsSettings.renderPipelineAsset != null)
@@ -93,7 +94,7 @@ namespace TESUnity
 
             if (!GameSettings.Get().WaterTransparency)
             {
-                var side = waterObj.transform.GetChild(0);
+                var side = m_WaterObj.transform.GetChild(0);
                 var sideMaterial = side.GetComponent<Renderer>().sharedMaterial;
                 sideMaterial.SetInt("_SrcBlend", (int)BlendMode.One);
                 sideMaterial.SetInt("_DstBlend", (int)BlendMode.Zero);
@@ -127,16 +128,16 @@ namespace TESUnity
         /// <param name="position">The target position of the player.</param>
         public void SpawnPlayerInside(GameObject playerPrefab, string interiorCellName, Vector3 position)
         {
-            _currentCell = dataReader.FindInteriorCellRecord(interiorCellName);
+            m_CurrentCell = dataReader.FindInteriorCellRecord(interiorCellName);
 
-            Debug.Assert(_currentCell != null);
+            Debug.Assert(m_CurrentCell != null);
 
-            CreatePlayer(playerPrefab, position, out playerCameraObj);
+            CreatePlayer(playerPrefab, position, out m_PlayerCameraObj);
 
             var cellInfo = cellManager.StartCreatingInteriorCell(interiorCellName);
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
 
-            OnInteriorCell(_currentCell);
+            OnInteriorCell(m_CurrentCell);
         }
 
         /// <summary>
@@ -147,16 +148,16 @@ namespace TESUnity
         /// <param name="position">The target position of the player.</param>
         public void SpawnPlayerInside(GameObject playerPrefab, Vector2i gridCoords, Vector3 position)
         {
-            _currentCell = dataReader.FindInteriorCellRecord(gridCoords);
+            m_CurrentCell = dataReader.FindInteriorCellRecord(gridCoords);
 
-            Debug.Assert(_currentCell != null);
+            Debug.Assert(m_CurrentCell != null);
 
-            CreatePlayer(playerPrefab, position, out playerCameraObj);
+            CreatePlayer(playerPrefab, position, out m_PlayerCameraObj);
 
             var cellInfo = cellManager.StartCreatingInteriorCell(gridCoords);
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
 
-            OnInteriorCell(_currentCell);
+            OnInteriorCell(m_CurrentCell);
         }
 
         /// <summary>
@@ -167,16 +168,16 @@ namespace TESUnity
         /// <param name="position">The target position of the player.</param>
         public void SpawnPlayerOutside(GameObject playerPrefab, Vector2i gridCoords, Vector3 position)
         {
-            _currentCell = dataReader.FindExteriorCellRecord(gridCoords);
+            m_CurrentCell = dataReader.FindExteriorCellRecord(gridCoords);
 
-            Debug.Assert(_currentCell != null);
+            Debug.Assert(m_CurrentCell != null);
 
-            CreatePlayer(playerPrefab, position, out playerCameraObj);
+            CreatePlayer(playerPrefab, position, out m_PlayerCameraObj);
 
             var cellInfo = cellManager.StartCreatingExteriorCell(gridCoords);
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
 
-            OnExteriorCell(_currentCell);
+            OnExteriorCell(m_CurrentCell);
         }
 
         /// <summary>
@@ -187,11 +188,11 @@ namespace TESUnity
         public void SpawnPlayerOutside(GameObject playerPrefab, Vector3 position)
         {
             var cellIndices = cellManager.GetExteriorCellIndices(position);
-            _currentCell = dataReader.FindExteriorCellRecord(cellIndices);
+            m_CurrentCell = dataReader.FindExteriorCellRecord(cellIndices);
 
-            CreatePlayer(playerPrefab, position, out playerCameraObj);
-            cellManager.UpdateExteriorCells(playerCameraObj.transform.position, true, cellRadiusOnLoad);
-            OnExteriorCell(_currentCell);
+            CreatePlayer(playerPrefab, position, out m_PlayerCameraObj);
+            cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, cellRadiusOnLoad);
+            OnExteriorCell(m_CurrentCell);
         }
 
         #endregion
@@ -199,9 +200,9 @@ namespace TESUnity
         public void Update()
         {
             // The current cell can be null if the player is outside of the defined game world.
-            if ((_currentCell == null) || !_currentCell.isInterior)
+            if ((m_CurrentCell == null) || !m_CurrentCell.isInterior)
             {
-                cellManager.UpdateExteriorCells(playerCameraObj.transform.position);
+                cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position);
             }
 
             temporalLoadBalancer.RunTasks(desiredWorkTimePerFrame);
@@ -211,14 +212,14 @@ namespace TESUnity
         public void CastInteractRay()
         {
             // Cast a ray to see what the camera is looking at.
-            var ray = new Ray(playerCameraObj.transform.position, playerCameraObj.transform.forward);
-            var raycastHitCount = Physics.RaycastNonAlloc(ray, interactRaycastHitBuffer, maxInteractDistance);
+            var ray = new Ray(m_Player.RayCastTarget.position, m_Player.RayCastTarget.forward);
+            var raycastHitCount = Physics.RaycastNonAlloc(ray, m_InteractRaycastHitBuffer, maxInteractDistance);
 
-            if (raycastHitCount > 0 && !playerComponent.Paused)
+            if (raycastHitCount > 0 && !m_Player.Paused)
             {
                 for (int i = 0; i < raycastHitCount; i++)
                 {
-                    var hitInfo = interactRaycastHitBuffer[i];
+                    var hitInfo = m_InteractRaycastHitBuffer[i];
                     var component = hitInfo.collider.GetComponentInParent<GenericObjectComponent>();
 
                     if (component != null)
@@ -237,7 +238,7 @@ namespace TESUnity
                                 component.Interact();
 
                             else if (component.pickable)
-                                playerInventory.Add(component);
+                                m_PlayerInventory.Add(component);
                         }
                         break;
                     }
@@ -269,14 +270,14 @@ namespace TESUnity
 
         private void OnExteriorCell(CELLRecord CELL)
         {
-            SetAmbientLight(defaultAmbientColor);
+            SetAmbientLight(m_DefaultAmbientColor);
 
-            sunObj.SetActive(true);
+            m_SunObj.SetActive(true);
 
-            waterObj.transform.position = Vector3.zero;
-            waterObj.SetActive(true);
-            underwaterEffect.enabled = true;
-            underwaterEffect.Level = 0.0f;
+            m_WaterObj.transform.position = Vector3.zero;
+            m_WaterObj.SetActive(true);
+            m_UnderwaterEffect.enabled = true;
+            m_UnderwaterEffect.Level = 0.0f;
         }
 
         private void OnInteriorCell(CELLRecord CELL)
@@ -286,21 +287,21 @@ namespace TESUnity
                 SetAmbientLight(ColorUtils.B8G8R8ToColor32(CELL.AMBI.ambientColor));
             }
 
-            sunObj.SetActive(false);
+            m_SunObj.SetActive(false);
 
-            underwaterEffect.enabled = CELL.WHGT != null;
+            m_UnderwaterEffect.enabled = CELL.WHGT != null;
 
             if (CELL.WHGT != null)
             {
                 var offset = 1.6f; // Interiors cells needs this offset to render at the correct location.
-                waterObj.transform.position = new Vector3(0, (CELL.WHGT.value / Convert.meterInMWUnits) - offset, 0);
-                waterObj.SetActive(true);
-                underwaterEffect.Level = waterObj.transform.position.y;
+                m_WaterObj.transform.position = new Vector3(0, (CELL.WHGT.value / Convert.meterInMWUnits) - offset, 0);
+                m_WaterObj.SetActive(true);
+                m_UnderwaterEffect.Level = m_WaterObj.transform.position.y;
             }
             // FIXME: The water is disabled in interior cells for now.
             //else
             {
-                waterObj.SetActive(false);
+                m_WaterObj.SetActive(false);
             }
         }
 
@@ -316,8 +317,8 @@ namespace TESUnity
                 cellManager.DestroyAllCells();
 
                 // Move the player.
-                playerTransform.position = component.doorData.doorExitPos;
-                playerTransform.localEulerAngles = new Vector3(0, component.doorData.doorExitOrientation.eulerAngles.y, 0);
+                m_PlayerTransform.position = component.doorData.doorExitPos;
+                m_PlayerTransform.localEulerAngles = new Vector3(0, component.doorData.doorExitOrientation.eulerAngles.y, 0);
 
                 // Load the new cell.
                 CELLRecord newCell;
@@ -336,12 +337,12 @@ namespace TESUnity
                     var cellIndices = cellManager.GetExteriorCellIndices(component.doorData.doorExitPos);
                     newCell = dataReader.FindExteriorCellRecord(cellIndices);
 
-                    cellManager.UpdateExteriorCells(playerCameraObj.transform.position, true, cellRadiusOnLoad);
+                    cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, cellRadiusOnLoad);
 
                     OnExteriorCell(newCell);
                 }
 
-                _currentCell = newCell;
+                m_CurrentCell = newCell;
             }
         }
 
@@ -356,11 +357,11 @@ namespace TESUnity
 
             player.transform.position = position;
 
-            playerTransform = player.GetComponent<Transform>();
+            m_PlayerTransform = player.GetComponent<Transform>();
             playerCamera = player.GetComponentInChildren<Camera>().gameObject;
-            playerComponent = player.GetComponent<PlayerComponent>();
-            playerInventory = player.GetComponent<PlayerInventory>();
-            underwaterEffect = playerCamera.GetComponent<UnderwaterEffect>();
+            m_Player = player.GetComponent<PlayerComponent>();
+            m_PlayerInventory = player.GetComponent<PlayerInventory>();
+            m_UnderwaterEffect = playerCamera.GetComponent<UnderwaterEffect>();
 
             player.GetComponent<Rigidbody>().isKinematic = false;
 

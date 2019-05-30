@@ -62,7 +62,20 @@ namespace TESUnity.Inputs
             }
             else if (button == MWButton.Jump)
             {
-                inputFunction(OVRInput.Button.One, RightController);
+                return inputFunction(OVRInput.Button.Two, RightController);
+            }
+            else if (button == MWButton.Run)
+            {
+                return inputFunction(OVRInput.Button.PrimaryHandTrigger, LeftController);
+            }
+            else if (button == MWButton.Recenter)
+            {
+                return inputFunction(OVRInput.Button.PrimaryThumbstick, LeftController) &&
+                    inputFunction(OVRInput.Button.PrimaryThumbstick, RightController);
+            }
+            else if (button == MWButton.Teleport)
+            {
+                return inputFunction(OVRInput.Button.PrimaryHandTrigger, LeftController);
             }
 #endif
             return false;

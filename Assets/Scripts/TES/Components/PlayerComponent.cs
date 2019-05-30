@@ -40,7 +40,7 @@ namespace TESUnity
 
         public bool isFlying
         {
-            get { return m_IsFlying; }
+            get => m_IsFlying;
             set
             {
                 m_IsFlying = value;
@@ -52,10 +52,9 @@ namespace TESUnity
             }
         }
 
-        public bool Paused
-        {
-            get { return m_Paused; }
-        }
+        public bool Paused => m_Paused;
+
+        public Transform RayCastTarget { get; private set; }
 
         #endregion
 
@@ -75,6 +74,11 @@ namespace TESUnity
             Cursor.lockState = CursorLockMode.None;
 #endif
             m_XREnabled = XRManager.Enabled;
+
+            RayCastTarget = m_CameraTransform;
+
+            if (m_XREnabled)
+                RayCastTarget = m_Transform.Find("Head/Right Hand");
         }
 
         private void Update()
