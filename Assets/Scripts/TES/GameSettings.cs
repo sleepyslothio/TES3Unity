@@ -146,17 +146,27 @@ namespace TESUnity
                 Instance.DayNightCycle = false;
                 Instance.AntiAliasingMode = AntiAliasingMode.MSAA2X;
                 Instance.RoomScale = false;
-                Instance.CellDetailRadius = 1;
+                Instance.CellDetailRadius = 2;
                 Instance.CellRadius = 1;
                 Instance.WaterTransparency = false;
 
                 if (XRManager.Enabled)
                 {
-                    Instance.CameraFarClip = 50;
-                    Instance.MaterialType = MWMaterialType.Unlit;
+                    var model = UnityXRDevice.GetVRHeadsetModel();
+
+                    if (model == VRHeadsetModel.OculusQuest)
+                    {
+                        Instance.CellDetailRadius = 2;
+                        Instance.CameraFarClip = 150;
+                        Instance.RoomScale = true;
+                    }
+                    else
+                    {
+                        Instance.CameraFarClip = 50;
+                        Instance.MaterialType = MWMaterialType.Unlit;
+                    }
                 }
 #endif
-
                 if (PlayerPrefs.HasKey(StorageKey))
                 {
                     var json = PlayerPrefs.GetString(StorageKey);
@@ -203,6 +213,6 @@ namespace TESUnity
 #endif
         }
 
-#endregion
+        #endregion
     }
 }
