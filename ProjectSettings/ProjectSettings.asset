@@ -259,7 +259,7 @@ PlayerSettings:
   AndroidTargetArchitectures: 1
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: D:/Projects/Unity/TESUnity/user.keystore
+  AndroidKeystoreName: '{inproject}: user.keystore'
   AndroidKeyaliasName: tesunityxr
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 1

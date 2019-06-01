@@ -106,6 +106,12 @@ namespace Demonixis.GunSpinningVR
                 RemoveAllSymbolsAdd("WAVEVR_SDK", true);
                 SetVRSDK(VRSDK.WaveVR);
             }
+
+            if (GUILayout.Button("Disable All VR SDK"))
+            {
+                RemoveAllSymbolsAdd(string.Empty, true);
+                SetVRSDK(VRSDK.None);
+            }
         }
 
         private void SetupMobile()
@@ -148,7 +154,12 @@ namespace Demonixis.GunSpinningVR
 
         public void SetVRSDK(VRSDK vrSDK)
         {
-            if (vrSDK == VRSDK.WaveVR)
+            if (vrSDK == VRSDK.None)
+            {
+                EnablePluginFolder(VRSDK.None);
+                SetAndroidManifest(null);
+            }
+            else if (vrSDK == VRSDK.WaveVR)
             {
                 PlayerSettings.SetVirtualRealitySupported(BuildTargetGroup.Android, false);
                 PlayerSettings.SetVirtualRealitySDKs(BuildTargetGroup.Android, null);

@@ -48,9 +48,9 @@ namespace TESUnity.Inputs
             return 0.0f;
         }
 
+#if OCULUS_SDK
         private bool GetButtonState(GetAxisDelegate inputFunction, MWButton button)
         {
-#if OCULUS_SDK
             if (button == MWButton.Use)
             {
                 return inputFunction(OVRInput.Button.PrimaryIndexTrigger, RightController);
@@ -77,9 +77,10 @@ namespace TESUnity.Inputs
             {
                 return inputFunction(OVRInput.Button.PrimaryHandTrigger, LeftController);
             }
-#endif
+
             return false;
         }
+#endif
 
         public bool Get(MWButton button)
         {

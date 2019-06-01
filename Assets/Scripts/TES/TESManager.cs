@@ -63,7 +63,11 @@ namespace TESUnity
 #endif
 
             if (string.IsNullOrEmpty(dataPath))
+            {
                 SceneManager.LoadScene("Menu");
+                enabled = false;
+                return;
+            }
 
             m_UIManager = FindObjectOfType<UIManager>();
             if (m_UIManager == null)
