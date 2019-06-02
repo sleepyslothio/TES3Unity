@@ -56,7 +56,7 @@ namespace Demonixis.Toolbox.XR
 #if UNITY_ANDROID
                 return device.Contains("quest") ? VRHeadsetModel.OculusQuest : VRHeadsetModel.OculusGo;
 #else
-                return return VRHeadsetModel.OculusRift;
+                return VRHeadsetModel.OculusRift;
 #endif
             }
             else if (device.Contains("vive"))
