@@ -17,6 +17,8 @@ namespace Demonixis.UniversalXR
         private Transform m_RayPoint = null;
         private float m_InitialPositionY;
         private Vector3 m_LastGoodTarget;
+        private OVRHand m_OVRHand = null;
+        private bool m_Pressed = false;
 
         [SerializeField]
         private GameObject m_GroundMarkerPrefab = null;
@@ -48,8 +50,12 @@ namespace Demonixis.UniversalXR
             enabled = XRManager.IsXREnabled();
         }
 
+        public void SetHand(OVRHand hand) => m_OVRHand = hand;
+
         public void InputIsPressed()
         {
+            m_Pressed = true;
+
             Debug.DrawRay(m_RayPoint.transform.position, -m_RayPoint.transform.up * 10);
 
             RaycastHit hit;
@@ -89,6 +95,8 @@ namespace Demonixis.UniversalXR
 
         public void InputWasJustReleased()
         {
+            m_Pressed = false;
+
             if (m_TargetPosition.HasValue)
             {
                 transform.root.position = m_TargetPosition.Value;
@@ -100,9 +108,28 @@ namespace Demonixis.UniversalXR
 
         private void Update()
         {
-            if (InputManager.GetButton(MWButton.Teleport))
+            var pressed = InputManager.GetButton(MWButton.Teleport);
+            var released = InputManager.GetButtonUp(MWButton.Teleport);
+
+            if (m_OVRHand != null)
+            {
+                var pitching = m_OVRHand.GetFingerIsPinching(OVRHand.HandFinger.Middle);
+                var strength = m_OVRHand.GetFingerPinchStrength(OVRHand.HandFinger.Middle);
+                var confidence = m_OVRHand.GetFingerConfidence(OVRHand.HandFinger.Middle);
+
+                if (pitching)
+                {
+                    pressed = true;
+                }
+                else if (m_Pressed)
+                {
+                    released = true;
+                }
+            }
+
+            if (pressed)
                 InputIsPressed();
-            else if (InputManager.GetButtonUp(MWButton.Teleport))
+            else if (released)
                 InputWasJustReleased();
         }
     }

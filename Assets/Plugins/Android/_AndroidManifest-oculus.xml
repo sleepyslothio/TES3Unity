@@ -27,5 +27,7 @@
 	
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="oculus.permission.handtracking" />
+	<uses-feature android:name="oculus.software.handtracking" android:required="false" />
 </manifest>
 

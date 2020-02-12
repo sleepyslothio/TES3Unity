@@ -78,7 +78,7 @@ namespace TESUnity
             RayCastTarget = m_CameraTransform;
 
             if (m_XREnabled)
-                RayCastTarget = m_Transform.Find("Head/Right Hand");
+                RayCastTarget = rightHand;
         }
 
         private void Update()

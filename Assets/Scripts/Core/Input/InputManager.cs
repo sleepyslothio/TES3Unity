@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TESUnity.Inputs
@@ -64,6 +65,18 @@ namespace TESUnity.Inputs
 
             InputProviders = list.ToArray();
 #endif
+        }
+
+        public static void AddInput(IInputProvider provider)
+        {
+            EnsureStarted();
+
+            if (provider.TryInitialize())
+            {
+                var size = InputProviders.Length;
+                Array.Resize(ref InputProviders, size + 1);
+                InputProviders[size] = provider;
+            }
         }
 
         public static float GetAxis(MWAxis axis)

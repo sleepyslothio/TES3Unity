@@ -108,6 +108,13 @@ namespace TESUnity.Components
             var quality = config.PostProcessingQuality;
             var antiAliasing = config.AntiAliasingMode;
 
+            // The post process stack is broken with the new XR Stack
+            if (XRManager.IsXREnabled())
+            {
+                layer.enabled = false;
+                return;
+            }
+
             if (quality != PostProcessingQuality.None)
             {
                 var asset = Resources.Load<PostProcessProfile>($"Rendering/Effects/PostProcessVolume-{quality}");

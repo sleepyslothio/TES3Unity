@@ -1,8 +1,10 @@
 ﻿using Demonixis.Toolbox.XR;
+using Demonixis.UniversalXR;
 using System.Collections;
 using TESUnity.Inputs;
 using TESUnity.UI;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.XR;
 
 namespace TESUnity.Components.VR
@@ -24,6 +26,14 @@ namespace TESUnity.Components.VR
 
         [SerializeField]
         private Canvas _mainCanvas = null;
+        [SerializeField]
+        private GameObject m_LeftHandPrefab = null;
+        [SerializeField]
+        private GameObject m_RightHandPrefab = null;
+        [SerializeField]
+        private Transform m_LeftHand = null;
+        [SerializeField]
+        private Transform m_RightHand = null;
 
         /// <summary>
         /// Intialize the VR support for the player.
@@ -39,11 +49,65 @@ namespace TESUnity.Components.VR
                 yield break;
             }
 
+            var hands = GetComponentsInChildren<TrackedPoseDriver>(true);
+            foreach (var hand in hands)
+            {
+                hand.transform.parent = _camTransform.parent;
+            }
+
+            var settings = GameSettings.Get();
+
+            // Setup RoomScale/Sitted mode.
+            var trackingSpaceType = m_RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
+
+            XRManager.SetTrackingOriginMode(trackingSpaceType, true);
+
+            if (XRManager.GetXRVendor() == XRVendor.Oculus)
+            {
+                var manager = gameObject.AddComponent<OVRManager>();
+                gameObject.AddComponent<OVRCameraRig>();
+
+                StartCoroutine(SwitchTrackingType());
+
+                IEnumerator SwitchTrackingType()
+                {
+                    yield return null;
+                    manager.trackingOriginType = m_RoomScale ? OVRManager.TrackingOrigin.FloorLevel : OVRManager.TrackingOrigin.EyeLevel;
+                }
+
+                if (settings.HandTracking)
+                {
+                    var leftHand = AddHandSupport(true);
+                    var rightHand = AddHandSupport(false);
+
+                    InputManager.AddInput(new OculusHandTrackingInput(leftHand, rightHand));
+
+                    OVRHand AddHandSupport(bool left)
+                    {
+                        var parent = left ? m_LeftHand : m_RightHand;
+                        var hand = Instantiate(left ? m_LeftHandPrefab : m_RightHandPrefab, parent);
+
+                        var teleporter = parent.GetComponentInChildren<Teleporter>(true);
+                        if (teleporter != null)
+                        {
+                            teleporter.SetHand(hand.GetComponent<OVRHand>());
+                        }
+
+                        return hand.GetComponent<OVRHand>();
+                    }
+                }
+            }
+
+            var teleporters = GetComponentsInChildren<Teleporter>();
+            foreach (var tp in teleporters)
+            {
+                tp.enabled = true;
+            }
+
 #if UNITY_ANDROID || UNITY_IOS
             QualitySettings.SetQualityLevel(1, false);
 #endif
 
-            var settings = GameSettings.Get();
             m_RoomScale = settings.RoomScale;
             m_FollowHead = settings.FollowHead;
 
@@ -53,11 +117,6 @@ namespace TESUnity.Components.VR
 
             if (renderScale > 0 && renderScale <= 2)
                 XRSettings.renderViewportScale = renderScale;
-
-            // Setup RoomScale/Sitted mode.
-            var trackingSpaceType = m_RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
-
-            XRManager.SetTrackingOriginMode(trackingSpaceType, true);
 
             var uiManager = FindObjectOfType<UIManager>();
 
@@ -91,10 +150,6 @@ namespace TESUnity.Components.VR
 
             // Setup the camera
             Camera.main.nearClipPlane = 0.1f;
-
-            var motionControllers = GetComponentsInChildren<MotionController>(true);
-            foreach (var controller in motionControllers)
-                controller.transform.parent = _camTransform.parent;
 
             RecenterOrientationAndPosition();
 
