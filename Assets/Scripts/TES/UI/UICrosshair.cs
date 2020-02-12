@@ -26,7 +26,7 @@ namespace TESUnity.UI
             var crosshairTexture = textureManager.LoadTexture("target", true);
             _crosshair.sprite = GUIUtils.CreateSprite(crosshairTexture);
 
-            _crosshair.enabled = !XRManager.Enabled;
+            _crosshair.enabled = !XRManager.IsXREnabled();
         }
 
         public void SetActive(bool active)

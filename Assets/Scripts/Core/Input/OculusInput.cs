@@ -13,9 +13,11 @@ namespace TESUnity.Inputs
         public bool TryInitialize()
         {
 #if OCULUS_SDK
-            var model = UnityXRDevice.GetVRHeadsetModel();
-            m_6DOFControllers = model == VRHeadsetModel.OculusQuest;
-            Debug.Log($"[TESUnity] Oculus Input Initialized. 6DoF:{m_6DOFControllers}");
+            //var model = UnityXRDevice.GetVRHeadsetModel();
+            //m_6DOFControllers = model == VRHeadsetModel.OculusQuest;
+            //Debug.Log($"[TESUnity] Oculus Input Initialized. 6DoF:{m_6DOFControllers}");
+            m_6DOFControllers = true; // FIXME
+            return OVRManager.loadedXRDevice == OVRManager.XRDevice.Oculus;
             return true;
 #else
             return false;

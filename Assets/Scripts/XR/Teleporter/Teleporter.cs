@@ -45,7 +45,7 @@ namespace Demonixis.UniversalXR
             m_RootTransform = m_Transform.root;
             m_InitialPositionY = m_RootTransform.position.y;
 
-            enabled = XRManager.Enabled;
+            enabled = XRManager.IsXREnabled();
         }
 
         public void InputIsPressed()

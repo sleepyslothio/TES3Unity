@@ -73,7 +73,7 @@ namespace TESUnity
 #if !UNITY_STANDALONE && !UNITY_EDITOR
             Cursor.lockState = CursorLockMode.None;
 #endif
-            m_XREnabled = XRManager.Enabled;
+            m_XREnabled = XRManager.IsXREnabled();
 
             RayCastTarget = m_CameraTransform;
 

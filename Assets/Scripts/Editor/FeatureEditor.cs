@@ -18,7 +18,7 @@ namespace Demonixis.GunSpinningVR
 
         public enum VRSDK
         {
-            None = 0, OculusMobile, WaveVR
+            None = 0, OculusMobile
         }
 
         private static readonly string[] RenderingSymboles = new string[]
@@ -28,15 +28,11 @@ namespace Demonixis.GunSpinningVR
 
         private static readonly string[] MobileVRSDKSymboles = new string[]
         {
-             "OCULUS_SDK", "WAVEVR_SDK"
+             "OCULUS_SDK"
         };
 
-        private static string WaveVRSDKPath => $"{Application.dataPath}/Vendors/WaveVR/Plugins";
         private const string LWRPPackageName = "com.unity.render-pipelines.lightweight";
         private const string HDRPPackageName = "com.unity.render-pipelines.high-definition";
-        private const string OculusMobilePackage = "com.unity.xr.oculus.android";
-        private const string OculusDesktopPackage = "com.unity.xr.oculus.standalone";
-        private const string OpenVRPackage = "com.unity.xr.openvr.standalone";
 
         private static bool[] EnabledFeatures;
         private static string[] FeatureNames;
@@ -101,12 +97,6 @@ namespace Demonixis.GunSpinningVR
                 SetVRSDK(VRSDK.OculusMobile);
             }
 
-            if (GUILayout.Button("Enable WaveVR"))
-            {
-                RemoveAllSymbolsAdd("WAVEVR_SDK", true);
-                SetVRSDK(VRSDK.WaveVR);
-            }
-
             if (GUILayout.Button("Disable All VR SDK"))
             {
                 RemoveAllSymbolsAdd(string.Empty, true);
@@ -116,8 +106,6 @@ namespace Demonixis.GunSpinningVR
 
         private void SetupMobile()
         {
-            Client.Remove(OpenVRPackage);
-            Client.Remove(OculusDesktopPackage);
         }
 
         public void SetupLegacy()
@@ -159,30 +147,9 @@ namespace Demonixis.GunSpinningVR
                 EnablePluginFolder(VRSDK.None);
                 SetAndroidManifest(null);
             }
-            else if (vrSDK == VRSDK.WaveVR)
-            {
-                PlayerSettings.SetVirtualRealitySupported(BuildTargetGroup.Android, false);
-                PlayerSettings.SetVirtualRealitySDKs(BuildTargetGroup.Android, null);
-                Client.Remove(OculusMobilePackage);
-
-                SetAndroidManifest("wavevr");
-            }
             else if (vrSDK == VRSDK.OculusMobile)
             {
-                PlayerSettings.SetVirtualRealitySupported(BuildTargetGroup.Android, true);
-
-                var sdks = PlayerSettings.GetAvailableVirtualRealitySDKs(BuildTargetGroup.Android);
-
-                foreach (var sdk in sdks)
-                {
-                    if (sdk.ToLower().Contains("oculus"))
-                    {
-                        PlayerSettings.SetVirtualRealitySDKs(BuildTargetGroup.Android, new string[] { sdk });
-                        Client.Add(OculusMobilePackage);
-                        EnablePluginFolder(VRSDK.OculusMobile);
-                        SetAndroidManifest("oculus");
-                    }
-                }
+                SetAndroidManifest("oculus");
             }
 
             EnablePluginFolder(vrSDK);
@@ -190,20 +157,6 @@ namespace Demonixis.GunSpinningVR
 
         private static void EnablePluginFolder(VRSDK id)
         {
-            try
-            {
-                // Disable non required plugins.
-                if (id != VRSDK.WaveVR && Directory.Exists(WaveVRSDKPath))
-                    Directory.Move(WaveVRSDKPath, $"{WaveVRSDKPath}~");
-
-                // Enable required plugins.
-                if (id == VRSDK.WaveVR && Directory.Exists($"{WaveVRSDKPath}~"))
-                    Directory.Move($"{WaveVRSDKPath}~", $"{WaveVRSDKPath}");
-            }
-            catch (Exception ex)
-            {
-                Debug.Log(ex.Message);
-            }
         }
 
         private static void SetAndroidManifest(string target)

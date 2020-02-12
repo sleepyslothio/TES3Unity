@@ -4,6 +4,7 @@ using TESUnity.Inputs;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 namespace TESUnity.Components.VR
 {
@@ -27,14 +28,13 @@ namespace TESUnity.Components.VR
             if (EventSystem.current == null)
                 throw new UnityException("[VRGazeUI] EventSystem is null.");
 
-            var device = XRManager.GetActiveDevice();
-            var scaling = device != null ? XRManager.GetActiveDevice().RenderScale : 1.0f;
+            var scaling = XRSettings.renderViewportScale;
             var screenCenter = new Vector2(Screen.width * 0.5f * scaling, Screen.height * 0.5f * scaling);
 
-            if (UnityEngine.XR.XRSettings.enabled)
+            if (XRManager.IsXREnabled())
             {
-                screenCenter.x = UnityEngine.XR.XRSettings.eyeTextureWidth * 0.5f * scaling;
-                screenCenter.y = UnityEngine.XR.XRSettings.eyeTextureHeight * 0.5f * scaling;
+                screenCenter.x = XRSettings.eyeTextureWidth * 0.5f * scaling;
+                screenCenter.y = XRSettings.eyeTextureHeight * 0.5f * scaling;
             }
 
             _eventSystem = EventSystem.current;

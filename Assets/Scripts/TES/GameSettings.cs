@@ -115,7 +115,7 @@ namespace TESUnity
 #endif
 
             // SMAA is not supported in VR.
-            var xrEnabled = XRManager.Enabled;
+            var xrEnabled = XRManager.IsXREnabled();
             if (xrEnabled && AntiAliasingMode == AntiAliasingMode.SMAA)
                 AntiAliasingMode = AntiAliasingMode.TAA;
 
@@ -150,21 +150,11 @@ namespace TESUnity
                 Instance.CellRadius = 1;
                 Instance.WaterTransparency = false;
 
-                if (XRManager.Enabled)
+                if (XRManager.IsXREnabled())
                 {
-                    var model = UnityXRDevice.GetVRHeadsetModel();
-
-                    if (model == VRHeadsetModel.OculusQuest)
-                    {
-                        Instance.CellDetailRadius = 2;
-                        Instance.CameraFarClip = 150;
-                        Instance.RoomScale = true;
-                    }
-                    else
-                    {
-                        Instance.CameraFarClip = 50;
-                        Instance.MaterialType = MWMaterialType.Unlit;
-                    }
+                    Instance.CellDetailRadius = 2;
+                    Instance.CameraFarClip = 150;
+                    Instance.RoomScale = true;
                 }
 #endif
                 if (PlayerPrefs.HasKey(StorageKey))

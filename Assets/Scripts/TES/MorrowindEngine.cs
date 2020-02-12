@@ -106,7 +106,7 @@ namespace TESUnity
             }
 
 #if UNITY_STANDALONE
-            if (!XRManager.Enabled)
+            if (!XRManager.IsXREnabled())
                 Cursor.SetCursor(textureManager.LoadTexture("tx_cursor", true), Vector2.zero, CursorMode.Auto);
 #endif
             UIManager = uiManager;

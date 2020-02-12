@@ -103,7 +103,7 @@ namespace TESUnity.Components
             var layer = GetComponent<PostProcessLayer>();
             var volume = FindObjectOfType<PostProcessVolume>();
             var profile = volume.profile;
-            var xrEnabled = XRManager.Enabled;
+            var xrEnabled = XRManager.IsXREnabled();
             var config = GameSettings.Get();
             var quality = config.PostProcessingQuality;
             var antiAliasing = config.AntiAliasingMode;

@@ -21,7 +21,7 @@ namespace TESUnity.Inputs
 
         public bool TryInitialize()
         {
-            return XRManager.Enabled;
+            return XRManager.IsXREnabled();
         }
 
         public float GetAxis(MWAxis axis)

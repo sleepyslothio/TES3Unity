@@ -34,6 +34,10 @@ namespace TESUnity
         public GameObject playerPrefab;
         public GameObject waterPrefab;
 
+        [Header("Misc")]
+        public Material DiffuseTerrainLegacy;
+        public Material StandardTerrainLegacy;
+
         #endregion
 
         public TextureManager TextureManager => m_MorrowindEngine.textureManager;

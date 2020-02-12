@@ -17,7 +17,7 @@ namespace TESUnity.Inputs
 
         public bool TryInitialize()
         {
-            var valid = !XRManager.Enabled;
+            var valid = !XRManager.IsXREnabled();
 
 #if !UNITY_MOBILE
             valid = false;

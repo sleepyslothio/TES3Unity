@@ -57,6 +57,8 @@ MonoBehaviour:
     type: 3}
   waterPrefab: {fileID: 1586121937244772, guid: 6de569209e643e2438dd3dbfe2d466df,
     type: 3}
+  DiffuseTerrainLegacy: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  StandardTerrainLegacy: {fileID: 10650, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &4663438948078211954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,7 +97,7 @@ MonoBehaviour:
   CellDetailRadius: 3
   CellRadiusOnLoad: 2
   MaterialType: 0
-  RendererType: 1
+  RendererType: 2
   CameraFarClip: 500
   SRPQuality: 2
   RenderScale: 1

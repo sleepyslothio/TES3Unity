@@ -10,14 +10,13 @@ namespace TESUnity.Components
     {
         private void Start()
         {
-            if (!XRManager.Enabled)
+            if (!XRManager.IsXREnabled())
             {
                 enabled = false;
                 return;
             }
             // Setup RoomScale/Sitted mode.
-            XRManager.Instance.TrackingSpaceType = TrackingSpaceType.Stationary;
-
+            XRManager.SetTrackingOriginMode(TrackingOriginModeFlags.Device, true);
             var menuComponent = FindObjectOfType<MenuComponent>();
 
             Debug.Assert(menuComponent != null);

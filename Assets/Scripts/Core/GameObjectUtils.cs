@@ -117,22 +117,20 @@ public static class GameObjectUtils
 #if LWRP_ENABLED
             if (srp is LightweightRenderPipelineAsset)
             {
-                terrain.materialType = Terrain.MaterialType.Custom;
                 terrain.materialTemplate = LWRPMaterial.GetTerrainMaterial();
             }
 #endif
 #if HDRP_ENABLED
 			if (srp is HDRenderPipelineAsset)
 			{
-				terrain.materialType = Terrain.MaterialType.Custom;
 				terrain.materialTemplate = Resources.Load<Material>("Rendering/HDRP/Materials/Lit-Terrain");
 			}
 #endif
         }
         else
         {
-            var pbr = materialType == MWMaterialType.PBR;
-            terrain.materialType = pbr ? Terrain.MaterialType.BuiltInStandard : Terrain.MaterialType.BuiltInLegacyDiffuse;
+            var tes = TESManager.instance;
+            terrain.materialTemplate = materialType == MWMaterialType.PBR ? tes.StandardTerrainLegacy : tes.DiffuseTerrainLegacy;
         }
 
         terrain.terrainData = terrainData;

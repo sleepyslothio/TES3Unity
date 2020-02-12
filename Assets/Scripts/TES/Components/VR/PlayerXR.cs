@@ -33,7 +33,7 @@ namespace TESUnity.Components.VR
         /// </summary>
         private IEnumerator Start()
         {
-            if (!XRManager.Enabled)
+            if (!XRManager.IsXREnabled())
             {
                 enabled = false;
                 yield break;
@@ -52,11 +52,12 @@ namespace TESUnity.Components.VR
             var renderScale = settings.RenderScale;
 
             if (renderScale > 0 && renderScale <= 2)
-                XRManager.GetActiveDevice().RenderScale = renderScale;
+                XRSettings.renderViewportScale = renderScale;
 
             // Setup RoomScale/Sitted mode.
-            var trackingSpaceType = m_RoomScale ? TrackingSpaceType.RoomScale : TrackingSpaceType.Stationary;
-            XRManager.Instance.TrackingSpaceType = trackingSpaceType;
+            var trackingSpaceType = m_RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
+
+            XRManager.SetTrackingOriginMode(trackingSpaceType, true);
 
             var uiManager = FindObjectOfType<UIManager>();
 
