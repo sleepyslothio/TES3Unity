@@ -52,6 +52,7 @@ uniform float _RefrDistort;
 struct appdata {
 	float4 vertex : POSITION;
 	float3 normal : NORMAL;
+	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 struct v2f {
@@ -67,11 +68,18 @@ struct v2f {
 		float3 viewDir : TEXCOORD2;
 	#endif
 	UNITY_FOG_COORDS(4)
+	UNITY_VERTEX_INPUT_INSTANCE_ID
+	UNITY_VERTEX_OUTPUT_STEREO
 };
 
 v2f vert(appdata v)
 {
 	v2f o;
+
+	UNITY_SETUP_INSTANCE_ID(v);
+	UNITY_TRANSFER_INSTANCE_ID(v, o);
+	UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+
 	o.pos = UnityObjectToClipPos(v.vertex);
 	
 
@@ -111,6 +119,7 @@ sampler2D _BumpMap;
 
 half4 frag( v2f i ) : SV_Target
 {
+	UNITY_SETUP_INSTANCE_ID(i);
 	i.viewDir = normalize(i.viewDir);
 	
 	// combine two scrolling bumpmaps into one

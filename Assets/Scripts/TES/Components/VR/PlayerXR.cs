@@ -64,12 +64,15 @@ namespace TESUnity.Components.VR
 
             if (XRManager.GetXRVendor() == XRVendor.Oculus)
             {
-                var manager = gameObject.AddComponent<OVRManager>();
-                gameObject.AddComponent<OVRCameraRig>();
+                var manager = GetComponent<OVRManager>();
+                manager.enabled = true;
 
-                StartCoroutine(SwitchTrackingType());
+                var cameraRig = GetComponent<OVRCameraRig>();
+                cameraRig.enabled = true;
 
-                IEnumerator SwitchTrackingType()
+                StartCoroutine(SetupOculusManager());
+
+                IEnumerator SetupOculusManager()
                 {
                     yield return null;
                     manager.trackingOriginType = m_RoomScale ? OVRManager.TrackingOrigin.FloorLevel : OVRManager.TrackingOrigin.EyeLevel;
