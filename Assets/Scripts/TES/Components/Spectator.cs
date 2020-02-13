@@ -8,6 +8,15 @@ namespace TESUnity.Components
 {
     public sealed class Spectator : MonoBehaviour
     {
+        [SerializeField]
+        private GameObject m_LeftHandPrefab = null;
+        [SerializeField]
+        private GameObject m_RightHandPrefab = null;
+        [SerializeField]
+        private Transform m_LeftHand = null;
+        [SerializeField]
+        private Transform m_RightHand = null;
+
         private void Start()
         {
             if (!XRManager.IsXREnabled())
@@ -17,6 +26,9 @@ namespace TESUnity.Components
             }
             // Setup RoomScale/Sitted mode.
             XRManager.SetTrackingOriginMode(TrackingOriginModeFlags.Device, true);
+
+           PlayerXR.TryAddOculusSupport(this, new[] { m_LeftHand, m_RightHand }, new[] { m_LeftHandPrefab, m_RightHandPrefab });
+
             var menuComponent = FindObjectOfType<MenuComponent>();
 
             Debug.Assert(menuComponent != null);

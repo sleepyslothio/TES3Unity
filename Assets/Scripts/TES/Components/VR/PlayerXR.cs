@@ -62,44 +62,7 @@ namespace TESUnity.Components.VR
 
             XRManager.SetTrackingOriginMode(trackingSpaceType, true);
 
-            if (XRManager.GetXRVendor() == XRVendor.Oculus)
-            {
-                var manager = GetComponent<OVRManager>();
-                manager.enabled = true;
-
-                var cameraRig = GetComponent<OVRCameraRig>();
-                cameraRig.enabled = true;
-
-                StartCoroutine(SetupOculusManager());
-
-                IEnumerator SetupOculusManager()
-                {
-                    yield return null;
-                    manager.trackingOriginType = m_RoomScale ? OVRManager.TrackingOrigin.FloorLevel : OVRManager.TrackingOrigin.EyeLevel;
-                }
-
-                if (settings.HandTracking)
-                {
-                    var leftHand = AddHandSupport(true);
-                    var rightHand = AddHandSupport(false);
-
-                    InputManager.AddInput(new OculusHandTrackingInput(leftHand, rightHand));
-
-                    OVRHand AddHandSupport(bool left)
-                    {
-                        var parent = left ? m_LeftHand : m_RightHand;
-                        var hand = Instantiate(left ? m_LeftHandPrefab : m_RightHandPrefab, parent);
-
-                        var teleporter = parent.GetComponentInChildren<Teleporter>(true);
-                        if (teleporter != null)
-                        {
-                            teleporter.SetHand(hand.GetComponent<OVRHand>());
-                        }
-
-                        return hand.GetComponent<OVRHand>();
-                    }
-                }
-            }
+            TryAddOculusSupport(this, new[] { m_LeftHand, m_RightHand }, new[] { m_LeftHandPrefab, m_RightHandPrefab });
 
             var teleporters = GetComponentsInChildren<Teleporter>();
             foreach (var tp in teleporters)
@@ -232,6 +195,51 @@ namespace TESUnity.Components.VR
         {
             if (paused)
                 RecenterUI();
+        }
+
+        public static void TryAddOculusSupport(MonoBehaviour target, Transform[] hands, GameObject[] handPrefabs)
+        {
+            if (XRManager.GetXRVendor() != XRVendor.Oculus)
+            {
+                return;
+            }
+
+            var settings = GameSettings.Get();
+            var manager = target.GetComponent<OVRManager>();
+            manager.enabled = true;
+
+            var cameraRig = target.GetComponent<OVRCameraRig>();
+            cameraRig.enabled = true;
+
+            target.StartCoroutine(SetupOculusManager());
+
+            IEnumerator SetupOculusManager()
+            {
+                yield return null;
+                manager.trackingOriginType = settings.RoomScale ? OVRManager.TrackingOrigin.FloorLevel : OVRManager.TrackingOrigin.EyeLevel;
+            }
+
+            if (settings.HandTracking)
+            {
+                var leftHand = AddHandSupport(true);
+                var rightHand = AddHandSupport(false);
+
+                InputManager.AddInput(new OculusHandTrackingInput(leftHand, rightHand));
+
+                OVRHand AddHandSupport(bool left)
+                {
+                    var parent = left ? hands[0] : hands[1];
+                    var hand = Instantiate(left ? handPrefabs[0] : handPrefabs[1], parent);
+
+                    var teleporter = parent.GetComponentInChildren<Teleporter>(true);
+                    if (teleporter != null)
+                    {
+                        teleporter.SetHand(hand.GetComponent<OVRHand>());
+                    }
+
+                    return hand.GetComponent<OVRHand>();
+                }
+            }
         }
     }
 }
