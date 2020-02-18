@@ -27,7 +27,7 @@ namespace TESUnity.Components
             // Setup RoomScale/Sitted mode.
             XRManager.SetTrackingOriginMode(TrackingOriginModeFlags.Device, true);
 
-           PlayerXR.TryAddOculusSupport(this, new[] { m_LeftHand, m_RightHand }, new[] { m_LeftHandPrefab, m_RightHandPrefab });
+            PlayerXR.TryAddOculusSupport(this, m_LeftHand, m_RightHand, m_LeftHandPrefab, m_RightHandPrefab);
 
             var menuComponent = FindObjectOfType<MenuComponent>();
 

@@ -10,6 +10,7 @@ namespace TESUnity
 
     public class MorrowindDataReader : IDisposable
     {
+        private string _modsPath;
         public ESMFile MorrowindESMFile;
         public BSAFile MorrowindBSAFile;
         public ESMFile BloodmoonESMFile;
@@ -36,6 +37,7 @@ namespace TESUnity
         {
             Close();
         }
+
         ~MorrowindDataReader()
         {
             Close();

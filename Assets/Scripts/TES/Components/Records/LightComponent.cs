@@ -85,19 +85,19 @@ namespace TESUnity.Components.Records
                 {
                     var lightAnim = lightData.lightComponent.gameObject.AddComponent<LightAnim>();
                     if (flicker)
-                        lightAnim.mode = LightAnimMode.Flicker;
+                        lightAnim.Mode = LightAnimMode.Flicker;
 
                     if (flickerSlow)
-                        lightAnim.mode = LightAnimMode.FlickerSlow;
+                        lightAnim.Mode = LightAnimMode.FlickerSlow;
 
                     if (pulse)
-                        lightAnim.mode = LightAnimMode.Pulse;
+                        lightAnim.Mode = LightAnimMode.Pulse;
 
                     if (pulseSlow)
-                        lightAnim.mode = LightAnimMode.PulseSlow;
+                        lightAnim.Mode = LightAnimMode.PulseSlow;
 
                     if (fire)
-                        lightAnim.mode = LightAnimMode.Fire;
+                        lightAnim.Mode = LightAnimMode.Fire;
                 }
             }
             else

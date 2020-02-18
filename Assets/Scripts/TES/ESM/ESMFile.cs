@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace TESUnity.ESM
 {
@@ -17,27 +18,28 @@ namespace TESUnity.ESM
 
         public ESMFile(string filePath)
         {
+            recordsByType = new Dictionary<Type, List<Record>>();
+            objectsByIDString = new Dictionary<string, Record>();
+            exteriorCELLRecordsByIndices = new Dictionary<Vector2i, CELLRecord>();
+            LANDRecordsByIndices = new Dictionary<Vector2i, LANDRecord>();
+
             ReadRecords(filePath);
             PostProcessRecords();
         }
 
-        void IDisposable.Dispose()
+        public void Dispose()
         {
             Close();
         }
 
-        ~ESMFile()
+        public void Close() 
         {
-            Close();
+        
         }
-
-        public void Close() { }
 
         public List<Record> GetRecordsOfType<T>() where T : Record
         {
-            List<Record> records;
-
-            if (recordsByType.TryGetValue(typeof(T), out records))
+            if (recordsByType.TryGetValue(typeof(T), out List<Record> records))
             {
                 return records;
             }
@@ -97,12 +99,12 @@ namespace TESUnity.ESM
                     return new CELLRecord();
                 case "LAND":
                     return new LANDRecord();
-                /*case "CREA":
-                    return TESManager.instance.creaturesEnabled ? new CREARecord() : null;
+                case "CREA":
+                    return TESManager.instance.loadCreatures ? new CREARecord() : null;
                 case "NPC_":
-                    return TESManager.instance.npcsEnabled ? new NPC_Record() : null;*/
+                    return TESManager.instance.loadNPCs ? new NPC_Record() : null;
                 default:
-                    //Debug.LogWarning("Unsupported ESM record type: " + recordName);
+                    Debug.LogWarning("Unsupported ESM record type: " + recordName);
                     return null;
             }
         }
@@ -120,7 +122,7 @@ namespace TESUnity.ESM
                 recordHeader.Deserialize(reader);
 
                 var recordName = recordHeader.name;
-                Record record = CreateUninitializedRecord(recordName);
+                var record = CreateUninitializedRecord(recordName);
 
                 // Read or skip the record.
                 if (record != null)
@@ -151,11 +153,6 @@ namespace TESUnity.ESM
 
         private void PostProcessRecords()
         {
-            recordsByType = new Dictionary<Type, List<Record>>();
-            objectsByIDString = new Dictionary<string, Record>();
-            exteriorCELLRecordsByIndices = new Dictionary<Vector2i, CELLRecord>();
-            LANDRecordsByIndices = new Dictionary<Vector2i, LANDRecord>();
-
             foreach (var record in records)
             {
                 if (record == null)

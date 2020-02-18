@@ -62,7 +62,7 @@ namespace TESUnity.Components.VR
 
             XRManager.SetTrackingOriginMode(trackingSpaceType, true);
 
-            TryAddOculusSupport(this, new[] { m_LeftHand, m_RightHand }, new[] { m_LeftHandPrefab, m_RightHandPrefab });
+            TryAddOculusSupport(this, m_LeftHand, m_RightHand, m_LeftHandPrefab, m_RightHandPrefab);
 
             var teleporters = GetComponentsInChildren<Teleporter>();
             foreach (var tp in teleporters)
@@ -193,7 +193,7 @@ namespace TESUnity.Components.VR
                 RecenterUI();
         }
 
-        public static void TryAddOculusSupport(MonoBehaviour target, Transform[] hands, GameObject[] handPrefabs)
+        public static void TryAddOculusSupport(MonoBehaviour target, Transform leftHandTransform, Transform rightHandTransform, GameObject leftHandPrefab, GameObject rightHandPrefab)
         {
             if (XRManager.GetXRVendor() != XRVendor.Oculus)
             {
@@ -221,8 +221,8 @@ namespace TESUnity.Components.VR
 
                 OVRHand AddHandSupport(bool left)
                 {
-                    var parent = left ? hands[0] : hands[1];
-                    var hand = Instantiate(left ? handPrefabs[0] : handPrefabs[1], parent);
+                    var parent = left ? leftHandTransform : rightHandTransform;
+                    var hand = Instantiate(left ? leftHandPrefab : rightHandPrefab, parent);
 
                     var teleporter = parent.GetComponentInChildren<Teleporter>(true);
                     if (teleporter != null)

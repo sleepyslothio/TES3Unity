@@ -4,19 +4,19 @@ using UnityEngine;
 
 namespace TESUnity
 {
-	/// <summary>
-	/// Manages loading and instantiation of Morrowind textures.
-	/// </summary>
-	public class TextureManager
-	{
+    /// <summary>
+    /// Manages loading and instantiation of Morrowind textures.
+    /// </summary>
+    public class TextureManager
+    {
         private MorrowindDataReader _dataReader;
         private Dictionary<string, Task<Texture2DInfo>> _textureFilePreloadTasks = new Dictionary<string, Task<Texture2DInfo>>();
         private Dictionary<string, Texture2D> _cachedTextures = new Dictionary<string, Texture2D>();
 
         public TextureManager(MorrowindDataReader reader)
-		{
-			_dataReader = reader;
-		}
+        {
+            _dataReader = reader;
+        }
 
         /// <summary>
         /// Loads a texture.
@@ -26,7 +26,7 @@ namespace TESUnity
         /// <returns></returns>
         public Texture2D LoadTexture(string texturePath, bool flipVertically = false)
         {
-            Texture2D texture;
+            Texture2D texture = null;
 
             if (!_cachedTextures.TryGetValue(texturePath, out texture))
             {
@@ -34,23 +34,27 @@ namespace TESUnity
                 var textureInfo = LoadTextureInfo(texturePath);
 
                 texture = (textureInfo != null) ? textureInfo.ToTexture2D() : new Texture2D(1, 1);
-                if(flipVertically) { TextureUtils.FlipTexture2DVertically(texture); }
+
+                if (flipVertically)
+                {
+                    TextureUtils.FlipTexture2DVertically(texture);
+                }
 
                 _cachedTextures[texturePath] = texture;
             }
-            
-			return texture;
-		}
+
+            return texture;
+        }
 
         public void PreloadTextureFileAsync(string texturePath)
         {
             // If the texture has already been created we don't have to load the file again.
-            if(_cachedTextures.ContainsKey(texturePath)) { return; }
+            if (_cachedTextures.ContainsKey(texturePath)) { return; }
 
             Task<Texture2DInfo> textureFileLoadingTask;
 
             // Start loading the texture file asynchronously if we haven't already started.
-            if(!_textureFilePreloadTasks.TryGetValue(texturePath, out textureFileLoadingTask))
+            if (!_textureFilePreloadTasks.TryGetValue(texturePath, out textureFileLoadingTask))
             {
                 textureFileLoadingTask = _dataReader.LoadTextureAsync(texturePath);
                 _textureFilePreloadTasks[texturePath] = textureFileLoadingTask;
@@ -67,5 +71,5 @@ namespace TESUnity
 
             return textureInfo;
         }
-	}
+    }
 }
