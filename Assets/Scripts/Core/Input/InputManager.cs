@@ -26,9 +26,6 @@ namespace TESUnity.Inputs
             if (InputProviders != null)
                 return;
 
-#if WAVEVR_SDK
-            InputProviders = new IInputProvider[] { new WaveVRInput() };
-#else
 #if OCULUS_SDK
             if (OVRManager.isHmdPresent)
             {
@@ -64,7 +61,6 @@ namespace TESUnity.Inputs
             }
 
             InputProviders = list.ToArray();
-#endif
         }
 
         public static void AddInput(IInputProvider provider)

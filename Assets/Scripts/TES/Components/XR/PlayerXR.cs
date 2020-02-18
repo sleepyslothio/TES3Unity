@@ -118,10 +118,6 @@ namespace TESUnity.Components.VR
             Camera.main.nearClipPlane = 0.1f;
 
             RecenterOrientationAndPosition();
-
-#if WAVEVR_SDK
-            m_RoomScale = false;
-#endif
         }
 
         private void Update()
@@ -183,7 +179,7 @@ namespace TESUnity.Components.VR
         /// </summary>
         public void RecenterOrientationAndPosition()
         {
-            InputTracking.Recenter();
+            XRManager.Recenter();
             RecenterUI();
         }
 
@@ -205,11 +201,8 @@ namespace TESUnity.Components.VR
             }
 
             var settings = GameSettings.Get();
-            var manager = target.GetComponent<OVRManager>();
-            manager.enabled = true;
-
-            var cameraRig = target.GetComponent<OVRCameraRig>();
-            cameraRig.enabled = true;
+            var manager = target.gameObject.AddComponent<OVRManager>();
+            var cameraRig = target.gameObject.AddComponent<OVRCameraRig>();
 
             target.StartCoroutine(SetupOculusManager());
 

@@ -38,6 +38,11 @@ namespace TESUnity
         public Material DiffuseTerrainLegacy;
         public Material StandardTerrainLegacy;
 
+        [Header("Debug")]
+        public bool loadExtensions = false;
+        public bool loadCreatures = false;
+        public bool loadNPCs = false;
+
         #endregion
 
         public TextureManager TextureManager => m_MorrowindEngine.textureManager;

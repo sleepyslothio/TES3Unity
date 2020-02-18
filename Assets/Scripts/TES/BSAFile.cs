@@ -26,6 +26,13 @@ namespace TESUnity
 			public FileNameHash pathHash;
 		}
 
+
+		/* Private */
+		private UnityBinaryReader reader;
+
+		private long hashTablePosition;
+		private long fileDataSectionPostion;
+
 		/* Public */
 		public byte[] version; // 4 bytes
 		public FileMetadata[] fileMetadatas;
@@ -102,12 +109,6 @@ namespace TESUnity
 
 			return reader.ReadBytes((int)fileMetadata.size);
 		}
-
-		/* Private */
-		private UnityBinaryReader reader;
-
-		private long hashTablePosition;
-		private long fileDataSectionPostion;
         
 		private void ReadMetadata()
 		{

@@ -110,11 +110,6 @@ namespace TESUnity
                 RendererMode = RendererMode.Forward;
 #endif
 
-#if WAVEVR_SDK
-            // PostProcessing is too heavy for this target
-            PostProcessingQuality = PostProcessingQuality.None;
-#endif
-
             // SMAA is not supported in VR.
             var xrEnabled = XRManager.IsXREnabled();
             if (xrEnabled && AntiAliasingMode == AntiAliasingMode.SMAA)

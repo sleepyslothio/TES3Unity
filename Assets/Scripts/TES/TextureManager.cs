@@ -9,9 +9,13 @@ namespace TESUnity
 	/// </summary>
 	public class TextureManager
 	{
-		public TextureManager(MorrowindDataReader dataReader)
+        private MorrowindDataReader _dataReader;
+        private Dictionary<string, Task<Texture2DInfo>> _textureFilePreloadTasks = new Dictionary<string, Task<Texture2DInfo>>();
+        private Dictionary<string, Texture2D> _cachedTextures = new Dictionary<string, Texture2D>();
+
+        public TextureManager(MorrowindDataReader reader)
 		{
-			this.dataReader = dataReader;
+			_dataReader = reader;
 		}
 
         /// <summary>
@@ -24,7 +28,7 @@ namespace TESUnity
         {
             Texture2D texture;
 
-            if (!cachedTextures.TryGetValue(texturePath, out texture))
+            if (!_cachedTextures.TryGetValue(texturePath, out texture))
             {
                 // Load & cache the texture.
                 var textureInfo = LoadTextureInfo(texturePath);
@@ -32,37 +36,34 @@ namespace TESUnity
                 texture = (textureInfo != null) ? textureInfo.ToTexture2D() : new Texture2D(1, 1);
                 if(flipVertically) { TextureUtils.FlipTexture2DVertically(texture); }
 
-                cachedTextures[texturePath] = texture;
+                _cachedTextures[texturePath] = texture;
             }
             
 			return texture;
 		}
+
         public void PreloadTextureFileAsync(string texturePath)
         {
             // If the texture has already been created we don't have to load the file again.
-            if(cachedTextures.ContainsKey(texturePath)) { return; }
+            if(_cachedTextures.ContainsKey(texturePath)) { return; }
 
             Task<Texture2DInfo> textureFileLoadingTask;
 
             // Start loading the texture file asynchronously if we haven't already started.
-            if(!textureFilePreloadTasks.TryGetValue(texturePath, out textureFileLoadingTask))
+            if(!_textureFilePreloadTasks.TryGetValue(texturePath, out textureFileLoadingTask))
             {
-                textureFileLoadingTask = dataReader.LoadTextureAsync(texturePath);
-                textureFilePreloadTasks[texturePath] = textureFileLoadingTask;
+                textureFileLoadingTask = _dataReader.LoadTextureAsync(texturePath);
+                _textureFilePreloadTasks[texturePath] = textureFileLoadingTask;
             }
         }
 
-        private MorrowindDataReader dataReader;
-        private Dictionary<string, Task<Texture2DInfo>> textureFilePreloadTasks = new Dictionary<string, Task<Texture2DInfo>>();
-		private Dictionary<string, Texture2D> cachedTextures = new Dictionary<string, Texture2D>();
-
         private Texture2DInfo LoadTextureInfo(string texturePath)
         {
-            Debug.Assert(!cachedTextures.ContainsKey(texturePath));
+            Debug.Assert(!_cachedTextures.ContainsKey(texturePath));
 
             PreloadTextureFileAsync(texturePath);
-            var textureInfo = textureFilePreloadTasks[texturePath].Result;
-            textureFilePreloadTasks.Remove(texturePath);
+            var textureInfo = _textureFilePreloadTasks[texturePath].Result;
+            _textureFilePreloadTasks.Remove(texturePath);
 
             return textureInfo;
         }

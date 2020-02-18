@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using TESUnity.Components.Records;
 using TESUnity.ESM;
 using TESUnity.Rendering;
@@ -9,27 +8,6 @@ using UnityEngine;
 
 namespace TESUnity
 {
-    public class Watcher
-    {
-        private System.Diagnostics.Stopwatch m_Watch = new System.Diagnostics.Stopwatch();
-
-        public long ElapsedMilliseconds => m_Watch.ElapsedMilliseconds;
-
-        public void Start()
-        {
-            m_Watch.Stop();
-            m_Watch.Start();
-        }
-
-        public void Print(string method)
-        {
-            m_Watch.Stop();
-            Debug.Log($"{method} in {m_Watch.ElapsedMilliseconds}ms");
-            m_Watch.Reset();
-            m_Watch.Start();
-        }
-    }
-
     public class InRangeCellInfo
     {
         public GameObject gameObject;
@@ -45,6 +23,7 @@ namespace TESUnity
             this.objectsCreationCoroutine = objectsCreationCoroutine;
         }
     }
+
     public class RefCellObjInfo
     {
         public CELLRecord.RefObjDataGroup refObjDataGroup;
@@ -54,6 +33,16 @@ namespace TESUnity
 
     public class CellManager
     {
+        public static int cellRadius = 4;
+        public static int detailRadius = 3;
+        private const string defaultLandTextureFilePath = "textures/_land_default.dds";
+
+        private MorrowindDataReader dataReader;
+        private TextureManager textureManager;
+        private NIFManager nifManager;
+        private TemporalLoadBalancer temporalLoadBalancer;
+        private Dictionary<Vector2i, InRangeCellInfo> cellObjects = new Dictionary<Vector2i, InRangeCellInfo>();
+
         public CellManager(MorrowindDataReader dataReader, TextureManager textureManager, NIFManager nifManager, TemporalLoadBalancer temporalLoadBalancer)
         {
             this.dataReader = dataReader;
@@ -156,6 +145,7 @@ namespace TESUnity
                 }
             }
         }
+
         public InRangeCellInfo StartCreatingInteriorCell(string cellName)
         {
             var CELL = dataReader.FindInteriorCellRecord(cellName);
@@ -172,6 +162,7 @@ namespace TESUnity
                 return null;
             }
         }
+
         public InRangeCellInfo StartCreatingInteriorCell(Vector2i gridCoords)
         {
             var CELL = dataReader.FindInteriorCellRecord(gridCoords);
@@ -229,16 +220,6 @@ namespace TESUnity
             cellObjects.Clear();
         }
 
-        public static int cellRadius = 4;
-        public static int detailRadius = 3;
-        private const string defaultLandTextureFilePath = "textures/_land_default.dds";
-
-        private MorrowindDataReader dataReader;
-        private TextureManager textureManager;
-        private NIFManager nifManager;
-        private TemporalLoadBalancer temporalLoadBalancer;
-        private Dictionary<Vector2i, InRangeCellInfo> cellObjects = new Dictionary<Vector2i, InRangeCellInfo>();
-
         /// <summary>
         /// A coroutine that instantiates the terrain for, and all objects in, a cell.
         /// </summary>
@@ -273,7 +254,6 @@ namespace TESUnity
                     nifManager.PreloadNifFileAsync(refCellObjInfo.modelFilePath);
                 }
             }
-
 
             yield return null;
 
@@ -504,6 +484,7 @@ namespace TESUnity
 
             return textureFilePaths;
         }
+
         /// <summary>
         /// Creates terrain representing a LAND record.
         /// </summary>

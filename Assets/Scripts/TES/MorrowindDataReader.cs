@@ -22,11 +22,14 @@ namespace TESUnity
             MorrowindESMFile = new ESMFile(MorrowindFilePath + "/Morrowind.esm");
             MorrowindBSAFile = new BSAFile(MorrowindFilePath + "/Morrowind.bsa");
 
-            /*BloodmoonESMFile = new ESMFile(MorrowindFilePath + "/Bloodmoon.esm");
-			BloodmoonBSAFile = new BSAFile(MorrowindFilePath + "/Bloodmoon.bsa");
+            if (TESManager.instance.loadExtensions)
+            {
+                BloodmoonESMFile = new ESMFile(MorrowindFilePath + "/Bloodmoon.esm");
+                BloodmoonBSAFile = new BSAFile(MorrowindFilePath + "/Bloodmoon.bsa");
 
-			TribunalESMFile = new ESMFile(MorrowindFilePath + "/Tribunal.esm");
-			TribunalBSAFile = new BSAFile(MorrowindFilePath + "/Tribunal.bsa");*/
+                TribunalESMFile = new ESMFile(MorrowindFilePath + "/Tribunal.esm");
+                TribunalBSAFile = new BSAFile(MorrowindFilePath + "/Tribunal.bsa");
+            }
         }
 
         void IDisposable.Dispose()
@@ -40,11 +43,14 @@ namespace TESUnity
 
         public void Close()
         {
-            /*TribunalBSAFile.Close();
-			TribunalESMFile.Close();
+            if (TESManager.instance.loadExtensions)
+            {
+                TribunalBSAFile.Close();
+                TribunalESMFile.Close();
 
-			BloodmoonBSAFile.Close();
-			BloodmoonESMFile.Close();*/
+                BloodmoonBSAFile.Close();
+                BloodmoonESMFile.Close();
+            }
 
             MorrowindBSAFile.Close();
             MorrowindESMFile.Close();
@@ -57,7 +63,9 @@ namespace TESUnity
             if (filePath != null)
             {
                 var fileData = MorrowindBSAFile.LoadFileData(filePath);
-                return Task.Run(() => {
+
+                return Task.Run(() => 
+                {
                     var fileExtension = Path.GetExtension(filePath);
 
                     if(fileExtension?.ToLower() == ".dds")
@@ -76,11 +84,13 @@ namespace TESUnity
                 return Task.FromResult<Texture2DInfo>(null);
             }
         }
+
         public Task<NIF.NiFile> LoadNifAsync(string filePath)
         {
             var fileData = MorrowindBSAFile.LoadFileData(filePath);
             
-            return Task.Run(() => {
+            return Task.Run(() => 
+            {
                 var file = new NIF.NiFile(Path.GetFileNameWithoutExtension(filePath));
                 file.Deserialize(new UnityBinaryReader(new MemoryStream(fileData)));
 
@@ -103,21 +113,19 @@ namespace TESUnity
 
             return null;
         }
+
         public LANDRecord FindLANDRecord(Vector2i cellIndices)
         {
-            LANDRecord LAND;
-            MorrowindESMFile.LANDRecordsByIndices.TryGetValue(cellIndices, out LAND);
-
+            MorrowindESMFile.LANDRecordsByIndices.TryGetValue(cellIndices, out LANDRecord LAND);
             return LAND;
         }
 
         public CELLRecord FindExteriorCellRecord(Vector2i cellIndices)
         {
-            CELLRecord CELL;
-            MorrowindESMFile.exteriorCELLRecordsByIndices.TryGetValue(cellIndices, out CELL);
-
+            MorrowindESMFile.exteriorCELLRecordsByIndices.TryGetValue(cellIndices, out CELLRecord CELL);
             return CELL;
         }
+
         public CELLRecord FindInteriorCellRecord(string cellName)
         {
             List<Record> records = MorrowindESMFile.GetRecordsOfType<CELLRecord>();
@@ -133,6 +141,7 @@ namespace TESUnity
 
             return null;
         }
+
         public CELLRecord FindInteriorCellRecord(Vector2i gridCoords)
         {
             List<Record> records = MorrowindESMFile.GetRecordsOfType<CELLRecord>();
