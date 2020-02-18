@@ -44,6 +44,7 @@ namespace TESUnity.Components
         [Header("VR")]
         public bool FollowHead = true;
         public bool RoomScale = true;
+        public bool HandTracking = true;
 
         private void Awake()
         {
@@ -77,6 +78,7 @@ namespace TESUnity.Components
             settings.WaterQuality = WaterQuality;
             settings.WaterTransparency = WaterTransparency;
             settings.KinematicRigidbody = KinematicRigidbodies;
+            settings.HandTracking = HandTracking;
             settings.CheckSettings();
 #endif
         }
