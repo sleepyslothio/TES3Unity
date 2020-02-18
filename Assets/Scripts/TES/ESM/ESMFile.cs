@@ -32,9 +32,9 @@ namespace TESUnity.ESM
             Close();
         }
 
-        public void Close() 
+        public void Close()
         {
-        
+
         }
 
         public List<Record> GetRecordsOfType<T>() where T : Record
@@ -51,58 +51,48 @@ namespace TESUnity.ESM
         {
             switch (recordName)
             {
-                case "TES3":
-                    return new TES3Record();
-                case "GMST":
-                    return new GMSTRecord();
-                case "GLOB":
-                    return new GLOBRecord();
-                case "SOUN":
-                    return new SOUNRecord();
-                case "REGN":
-                    return new REGNRecord();
-                case "LTEX":
-                    return new LTEXRecord();
-                case "STAT":
-                    return new STATRecord();
-                case "DOOR":
-                    return new DOORRecord();
-                case "MISC":
-                    return new MISCRecord();
-                case "WEAP":
-                    return new WEAPRecord();
-                case "CONT":
-                    return new CONTRecord();
-                case "LIGH":
-                    return new LIGHRecord();
-                case "ARMO":
-                    return new ARMORecord();
-                case "CLOT":
-                    return new CLOTRecord();
-                case "REPA":
-                    return new REPARecord();
-                case "ACTI":
-                    return new ACTIRecord();
-                case "APPA":
-                    return new APPARecord();
-                case "LOCK":
-                    return new LOCKRecord();
-                case "PROB":
-                    return new PROBRecord();
-                case "INGR":
-                    return new INGRRecord();
-                case "BOOK":
-                    return new BOOKRecord();
-                case "ALCH":
-                    return new ALCHRecord();
-                case "CELL":
-                    return new CELLRecord();
-                case "LAND":
-                    return new LANDRecord();
-                case "CREA":
-                    return TESManager.instance.loadCreatures ? new CREARecord() : null;
-                case "NPC_":
-                    return TESManager.instance.loadNPCs ? new NPC_Record() : null;
+                case "TES3": return new TES3Record();
+                case "GMST": return new GMSTRecord();
+                case "GLOB": return new GLOBRecord();
+                case "SOUN": return new SOUNRecord();
+                case "REGN": return new REGNRecord();
+                case "LTEX": return new LTEXRecord();
+                case "STAT": return new STATRecord();
+                case "DOOR": return new DOORRecord();
+                case "MISC": return new MISCRecord();
+                case "WEAP": return new WEAPRecord();
+                case "CONT": return new CONTRecord();
+                case "LIGH": return new LIGHRecord();
+                case "ARMO": return new ARMORecord();
+                case "CLOT": return new CLOTRecord();
+                case "REPA": return new REPARecord();
+                case "ACTI": return new ACTIRecord();
+                case "APPA": return new APPARecord();
+                case "LOCK": return new LOCKRecord();
+                case "PROB": return new PROBRecord();
+                case "INGR": return new INGRRecord();
+                case "BOOK": return new BOOKRecord();
+                case "ALCH": return new ALCHRecord();
+                case "CELL": return new CELLRecord();
+                case "LAND": return new LANDRecord();
+                case "CLAS": return new CLASRecord();
+                case "FACT": return new FACTRecord();
+                case "RACE": return new RACERecord();
+                case "SKIL": return new SKILRecord();
+                case "MGEF": return new MGEFRecord();
+                case "SCPT": return new SCPTRecord();
+                case "SPEL": return new SPELRecord();
+                case "BODY": return new BODYRecord();
+                case "ENCH": return new ENCHRecord();
+                case "LEVI": return new LEVIRecord();
+                case "LEVC": return new LEVCRecord();
+                case "PGRD": return new PGRDRecord();
+                case "SNDG": return new SNDGRecord();
+                case "DIAL": return new DIALRecord();
+                case "INFO": return new INFORecord();
+                case "BSGN": return new BSGNRecord();
+                case "CREA": return TESManager.instance.loadCreatures ? new CREARecord() : null;
+                case "NPC_": return TESManager.instance.loadNPCs ? new NPC_Record() : null;
                 default:
                     Debug.LogWarning("Unsupported ESM record type: " + recordName);
                     return null;

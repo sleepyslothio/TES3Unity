@@ -61,8 +61,8 @@ namespace TESUnity.ESM
 
                     var subRecordDataStreamPosition = reader.BaseStream.Position;
                     subRecord.DeserializeData(reader, subRecordHeader.dataSize);
-                    
-                    if(reader.BaseStream.Position != (subRecordDataStreamPosition + subRecord.header.dataSize))
+
+                    if (reader.BaseStream.Position != (subRecordDataStreamPosition + subRecord.header.dataSize))
                     {
                         throw new FormatException("Failed reading " + subRecord.header.name + " subrecord at offset " + subRecordStartStreamPosition);
                     }
@@ -130,7 +130,7 @@ namespace TESUnity.ESM
             }
         }
     }
-    
+
     public class GMSTRecord : Record
     {
         public NAMESubRecord NAME;
@@ -250,7 +250,7 @@ namespace TESUnity.ESM
                 blight = reader.ReadByte();
 
                 // v1.3 ESM files add 2 bytes to WEAT subrecords.
-                if(dataSize == 10)
+                if (dataSize == 10)
                 {
                     reader.ReadByte();
                     reader.ReadByte();
@@ -616,7 +616,7 @@ namespace TESUnity.ESM
                 count = reader.ReadLEInt32();
                 var bytes = reader.ReadBytes(32);
 
-                for(int i = 0; i < 32; i++)
+                for (int i = 0; i < 32; i++)
                     name[i] = System.Convert.ToChar(bytes[i]);
             }
         }
@@ -683,7 +683,7 @@ namespace TESUnity.ESM
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName)
         {
-            switch(subRecordName)
+            switch (subRecordName)
             {
                 case "NAME":
                     NAME = new NAMESubRecord();
@@ -837,7 +837,7 @@ namespace TESUnity.ESM
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName)
         {
-            switch(subRecordName)
+            switch (subRecordName)
             {
                 case "BYDT":
                     BYDT = new BYDTSubRecord();
@@ -957,7 +957,7 @@ namespace TESUnity.ESM
 
             public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
             {
-                if(dataSize == 52)
+                if (dataSize == 52)
                 {
                     level = reader.ReadLEInt16();
                     strength = reader.ReadByte();
@@ -1008,7 +1008,7 @@ namespace TESUnity.ESM
                 var bytes = reader.ReadBytes(count);
                 name = new char[32];
 
-                for(int i = 0; i < 32; i++)
+                for (int i = 0; i < 32; i++)
                     name[i] = System.Convert.ToChar(bytes[i]);
             }
         }
@@ -1022,7 +1022,7 @@ namespace TESUnity.ESM
                 var bytes = reader.ReadBytes(32);
                 name = new char[32];
 
-                for(int i = 0; i < 32; i++)
+                for (int i = 0; i < 32; i++)
                     name[i] = System.Convert.ToChar(bytes[i]);
             }
         }
@@ -1128,7 +1128,7 @@ namespace TESUnity.ESM
                 var bytes = reader.ReadBytes(32);
                 id = new char[32];
 
-                for(int i = 0; i < 32; i++)
+                for (int i = 0; i < 32; i++)
                     id[i] = System.Convert.ToChar(bytes[i]);
 
                 unknown = reader.ReadLESingle();
@@ -1154,7 +1154,7 @@ namespace TESUnity.ESM
                 var bytes = reader.ReadBytes(32);
                 id = new char[32];
 
-                for(int i = 0; i < 32; i++)
+                for (int i = 0; i < 32; i++)
                     id[i] = System.Convert.ToChar(bytes[i]);
 
                 unknown = reader.ReadLESingle();
@@ -1223,7 +1223,7 @@ namespace TESUnity.ESM
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName)
         {
-            switch(subRecordName)
+            switch (subRecordName)
             {
                 case "NAME":
                     NAME = new NAMESubRecord();
@@ -1924,7 +1924,7 @@ namespace TESUnity.ESM
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName)
         {
-            switch(subRecordName)
+            switch (subRecordName)
             {
                 case "NAME":
                     NAME = new NAMESubRecord();
@@ -2163,4 +2163,39 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    public class NotYetImplementedRecord : Record
+    {
+        private static List<string> UnimplementedRecord = new List<string>();
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        {
+            var type = GetType().Name;
+
+            if (!UnimplementedRecord.Contains(type))
+            {
+                UnimplementedRecord.Add(type);
+                Debug.Log($"{type} Not Yet Implemented");
+            }
+
+            return null;
+        }
+    }
+
+    public class CLASRecord : NotYetImplementedRecord { }
+    public class FACTRecord : NotYetImplementedRecord { }
+    public class RACERecord : NotYetImplementedRecord { }
+    public class SKILRecord : NotYetImplementedRecord { }
+    public class MGEFRecord : NotYetImplementedRecord { }
+    public class SCPTRecord : NotYetImplementedRecord { }
+    public class SPELRecord : NotYetImplementedRecord { }
+    //public class BODYRecord : NotYetImplementedRecord { }
+    public class ENCHRecord : NotYetImplementedRecord { }
+    public class LEVIRecord : NotYetImplementedRecord { }
+    //public class LEVCRecord : NotYetImplementedRecord { }
+    public class PGRDRecord : NotYetImplementedRecord { }
+    public class SNDGRecord : NotYetImplementedRecord { }
+    public class DIALRecord : NotYetImplementedRecord { }
+    public class INFORecord : NotYetImplementedRecord { }
+    public class BSGNRecord : NotYetImplementedRecord { }
 }

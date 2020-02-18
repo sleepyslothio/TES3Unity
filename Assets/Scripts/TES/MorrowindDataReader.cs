@@ -10,7 +10,7 @@ namespace TESUnity
 
     public class MorrowindDataReader : IDisposable
     {
-        private string _modsPath;
+        private string _dataFilePath;
         public ESMFile MorrowindESMFile;
         public BSAFile MorrowindBSAFile;
         public ESMFile BloodmoonESMFile;
@@ -18,18 +18,20 @@ namespace TESUnity
         public ESMFile TribunalESMFile;
         public BSAFile TribunalBSAFile;
 
-        public MorrowindDataReader(string MorrowindFilePath)
+        public MorrowindDataReader(string dataFilePath)
         {
-            MorrowindESMFile = new ESMFile(MorrowindFilePath + "/Morrowind.esm");
-            MorrowindBSAFile = new BSAFile(MorrowindFilePath + "/Morrowind.bsa");
+            _dataFilePath = dataFilePath;
+
+            MorrowindESMFile = new ESMFile(dataFilePath + "/Morrowind.esm");
+            MorrowindBSAFile = new BSAFile(dataFilePath + "/Morrowind.bsa");
 
             if (TESManager.instance.loadExtensions)
             {
-                BloodmoonESMFile = new ESMFile(MorrowindFilePath + "/Bloodmoon.esm");
-                BloodmoonBSAFile = new BSAFile(MorrowindFilePath + "/Bloodmoon.bsa");
+                BloodmoonESMFile = new ESMFile(dataFilePath + "/Bloodmoon.esm");
+                BloodmoonBSAFile = new BSAFile(dataFilePath + "/Bloodmoon.bsa");
 
-                TribunalESMFile = new ESMFile(MorrowindFilePath + "/Tribunal.esm");
-                TribunalBSAFile = new BSAFile(MorrowindFilePath + "/Tribunal.bsa");
+                TribunalESMFile = new ESMFile(dataFilePath + "/Tribunal.esm");
+                TribunalBSAFile = new BSAFile(dataFilePath + "/Tribunal.bsa");
             }
         }
 
@@ -60,25 +62,18 @@ namespace TESUnity
 
         public Task<Texture2DInfo> LoadTextureAsync(string texturePath)
         {
-            var filePath = FindTexture(texturePath);
-
-            if (filePath != null)
+#if LOAD_LOCAL_DATA
+            var localFilePath = FindLocalTexture(texturePath);
+            if (localFilePath != null)
             {
-                var fileData = MorrowindBSAFile.LoadFileData(filePath);
+                return LoadLocalTexture(localFilePath);
+            }
+#endif
 
-                return Task.Run(() => 
-                {
-                    var fileExtension = Path.GetExtension(filePath);
-
-                    if(fileExtension?.ToLower() == ".dds")
-                    {
-                        return DDS.DDSReader.LoadDDSTexture(new MemoryStream(fileData));
-                    }
-                    else
-                    {
-                        throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
-                    }
-                });
+            var bsaFilePath = FindTexture(MorrowindBSAFile, texturePath);
+            if (bsaFilePath != null)
+            {
+                return LoadTextureAsync(MorrowindBSAFile, bsaFilePath);
             }
             else
             {
@@ -87,11 +82,73 @@ namespace TESUnity
             }
         }
 
+        private Task<Texture2DInfo> LoadLocalTexture(string filePath)
+        {
+            return Task.Run(() =>
+            {
+                var fileExtension = Path.GetExtension(filePath);
+
+                if (fileExtension?.ToLower() == ".dds")
+                {
+                    var textureData = File.ReadAllBytes(filePath);
+                    return DDS.DDSReader.LoadDDSTexture(new MemoryStream(textureData));
+                }
+                else
+                {
+                    throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
+                }
+            });
+        }
+
+        private Task<Texture2DInfo> LoadTextureAsync(BSAFile bsaFile, string bsaFilePath)
+        {
+            var fileData = bsaFile.LoadFileData(bsaFilePath);
+
+            return Task.Run(() =>
+            {
+                var fileExtension = Path.GetExtension(bsaFilePath);
+
+                if (fileExtension?.ToLower() == ".dds")
+                {
+                    return DDS.DDSReader.LoadDDSTexture(new MemoryStream(fileData));
+                }
+                else
+                {
+                    throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
+                }
+            });
+        }
+
         public Task<NIF.NiFile> LoadNifAsync(string filePath)
         {
-            var fileData = MorrowindBSAFile.LoadFileData(filePath);
-            
-            return Task.Run(() => 
+#if LOAD_LOCAL_DATA
+            var localPath = Path.Combine(_dataFilePath, filePath);
+            if (File.Exists(localPath))
+            {
+                return LoadLocalNifAsync(filePath, localPath);
+            }
+#endif
+            return LoadNifAsync(MorrowindBSAFile, filePath);
+        }
+
+        private Task<NIF.NiFile> LoadNifAsync(BSAFile bsaFile, string filePath)
+        {
+            var fileData = bsaFile.LoadFileData(filePath);
+
+            return Task.Run(() =>
+            {
+                var file = new NIF.NiFile(Path.GetFileNameWithoutExtension(filePath));
+                file.Deserialize(new UnityBinaryReader(new MemoryStream(fileData)));
+
+                return file;
+            });
+        }
+
+        private Task<NIF.NiFile> LoadLocalNifAsync(string filePath, string localFilePath)
+        {
+            var fileData = File.ReadAllBytes(localFilePath);
+
+            return Task.Run(() =>
             {
                 var file = new NIF.NiFile(Path.GetFileNameWithoutExtension(filePath));
                 file.Deserialize(new UnityBinaryReader(new MemoryStream(fileData)));
@@ -163,38 +220,51 @@ namespace TESUnity
         /// <summary>
         /// Finds the actual path of a texture.
         /// </summary>
-        private string FindTexture(string texturePath)
+        private string FindTexture(BSAFile bsaFile, string texturePath)
         {
             var textureName = Path.GetFileNameWithoutExtension(texturePath);
             var textureNameInTexturesDir = "textures/" + textureName;
+            var texturePathWithoutExtension = Path.GetDirectoryName(texturePath) + '/' + textureName;
 
             var filePath = textureNameInTexturesDir + ".dds";
-            if (MorrowindBSAFile.ContainsFile(filePath))
+            if (bsaFile.ContainsFile(filePath))
             {
                 return filePath;
             }
 
             filePath = textureNameInTexturesDir + ".tga";
-            if (MorrowindBSAFile.ContainsFile(filePath))
+            if (bsaFile.ContainsFile(filePath))
             {
                 return filePath;
             }
 
-            var texturePathWithoutExtension = Path.GetDirectoryName(texturePath) + '/' + textureName;
-
             filePath = texturePathWithoutExtension + ".dds";
-            if (MorrowindBSAFile.ContainsFile(filePath))
+            if (bsaFile.ContainsFile(filePath))
             {
                 return filePath;
             }
 
             filePath = texturePathWithoutExtension + ".tga";
-            if (MorrowindBSAFile.ContainsFile(filePath))
+            if (bsaFile.ContainsFile(filePath))
             {
                 return filePath;
             }
 
             // Could not find the file.
+            return null;
+        }
+
+        private string FindLocalTexture(string texturePath)
+        {
+            var textureName = Path.GetFileNameWithoutExtension(texturePath);
+            var texturePathWithoutExtension = Path.Combine(_dataFilePath, "textures", textureName);
+            var filePath = texturePathWithoutExtension + ".dds";
+
+            if (File.Exists(filePath))
+            {
+                return filePath;
+            }
+
             return null;
         }
     }
