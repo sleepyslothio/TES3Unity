@@ -2112,7 +2112,6 @@ namespace TESUnity.ESM
                     // RefObjDataGroup sub-records
                     case "FRMR":
                         refObjDataGroups.Add(new RefObjDataGroup());
-
                         ArrayUtils.Last(refObjDataGroups).FRMR = new RefObjDataGroup.FRMRSubRecord();
                         return ArrayUtils.Last(refObjDataGroups).FRMR;
                     case "NAME":
@@ -2182,20 +2181,20 @@ namespace TESUnity.ESM
         }
     }
 
-    public class CLASRecord : NotYetImplementedRecord { }
-    public class FACTRecord : NotYetImplementedRecord { }
-    public class RACERecord : NotYetImplementedRecord { }
-    public class SKILRecord : NotYetImplementedRecord { }
-    public class MGEFRecord : NotYetImplementedRecord { }
-    public class SCPTRecord : NotYetImplementedRecord { }
-    public class SPELRecord : NotYetImplementedRecord { }
+    public class CLASRecord : NotYetImplementedRecord { } // Class definition
+    public class FACTRecord : NotYetImplementedRecord { } // Faction definition
+    public class RACERecord : NotYetImplementedRecord { } // Race definition
+    public class SKILRecord : NotYetImplementedRecord { } // Skills definition
+    public class MGEFRecord : NotYetImplementedRecord { } // Magic Effect
+    public class SCPTRecord : NotYetImplementedRecord { } // Script
+    public class SPELRecord : NotYetImplementedRecord { } // Spell definition
     //public class BODYRecord : NotYetImplementedRecord { }
-    public class ENCHRecord : NotYetImplementedRecord { }
-    public class LEVIRecord : NotYetImplementedRecord { }
-    //public class LEVCRecord : NotYetImplementedRecord { }
-    public class PGRDRecord : NotYetImplementedRecord { }
-    public class SNDGRecord : NotYetImplementedRecord { }
-    public class DIALRecord : NotYetImplementedRecord { }
-    public class INFORecord : NotYetImplementedRecord { }
-    public class BSGNRecord : NotYetImplementedRecord { }
+    public class ENCHRecord : NotYetImplementedRecord { } // Enchanting Effects
+    public class LEVIRecord : NotYetImplementedRecord { } // Levelled Items & Creatures
+    //public class LEVCRecord : NotYetImplementedRecord { } // Leveld Creatures
+    public class PGRDRecord : NotYetImplementedRecord { } // Path Grid
+    public class SNDGRecord : NotYetImplementedRecord { } // Sound Generator
+    public class DIALRecord : NotYetImplementedRecord { } // Dialogue topic (including journals)
+    public class INFORecord : NotYetImplementedRecord { } // Dialogue response record that belongs to previous DIAL record.
+    public class BSGNRecord : NotYetImplementedRecord { } // Birth Sign
 }
