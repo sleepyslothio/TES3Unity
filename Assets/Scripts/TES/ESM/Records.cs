@@ -2403,7 +2403,7 @@ namespace TESUnity.ESM
                 Specification = reader.ReadLEInt32();
 
                 UseValue = new float[4];
-                for(var i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                 {
                     UseValue[i] = reader.ReadLESingle();
                 }
@@ -2423,7 +2423,7 @@ namespace TESUnity.ESM
             }
             else if (subRecordName == "SKDT")
             {
-                
+
                 SKDT = new SKDTSubRecord();
                 return SKDT;
             }
@@ -2441,13 +2441,191 @@ namespace TESUnity.ESM
 
     #region MGEF
 
-    public class MGEFRecord : NotYetImplementedRecord { } // Magic Effect
+    public class MGEFRecord : Record
+    {
+        public enum EffectDataFlags
+        {
+            SpellMaking = 0x0200,
+            Enchanting = 0x0400,
+            Negative = 0x0800
+        }
+
+        public class MEDTSubRecord : SubRecord
+        {
+            public int SpellSchool { get; private set; }
+            public float BaseCost { get; private set; }
+            public int Flags { get; private set; }
+            public int Red { get; private set; }
+            public int Blue { get; private set; }
+            public int Green { get; private set; }
+            public float SpeedX { get; private set; }
+            public float SizeX { get; private set; }
+            public float SizeCap { get; private set; }
+
+            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+            {
+                SpellSchool = reader.ReadLEInt32();
+                BaseCost = reader.ReadLESingle();
+                Flags = reader.ReadLEInt32();
+                Red = reader.ReadLEInt32();
+                Blue = reader.ReadLEInt32();
+                Green = reader.ReadLEInt32();
+                SpeedX = reader.ReadLESingle();
+                SizeX = reader.ReadLESingle();
+                SizeCap = reader.ReadLESingle();
+            }
+        }
+
+        public Int32SubRecord INDX;
+        public MEDTSubRecord MEDT;
+        public NAMESubRecord ITEX;
+        public NAMESubRecord PTEX;
+        public NAMESubRecord CVFX;
+        public NAMESubRecord BVFX;
+        public NAMESubRecord HVFX;
+        public NAMESubRecord AVFX;
+        public NAMESubRecord DESC;
+        public NAMESubRecord CSND;
+        public NAMESubRecord BSND;
+        public NAMESubRecord HSND;
+        public NAMESubRecord ASND;
+
+        public EffectDataFlags Flags => (EffectDataFlags)MEDT.Flags;
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "INDX")
+            {
+                INDX = new Int32SubRecord();
+                return INDX;
+            }
+            else if (subRecordName == "MEDT")
+            {
+                MEDT = new MEDTSubRecord();
+                return MEDT;
+            }
+            else if (subRecordName == "ITEX")
+            {
+                ITEX = new NAMESubRecord();
+                return ITEX;
+            }
+            else if (subRecordName == "PTEX")
+            {
+                PTEX = new NAMESubRecord();
+                return PTEX;
+            }
+            else if (subRecordName == "CVFX")
+            {
+                CVFX = new NAMESubRecord();
+                return CVFX;
+            }
+            else if (subRecordName == "BVFX")
+            {
+                BVFX = new NAMESubRecord();
+                return BVFX;
+            }
+            else if (subRecordName == "HVFX")
+            {
+                HVFX = new NAMESubRecord();
+                return HVFX;
+            }
+            else if (subRecordName == "AVFX")
+            {
+                AVFX = new NAMESubRecord();
+                return AVFX;
+            }
+            else if (subRecordName == "DESC")
+            {
+                DESC = new NAMESubRecord();
+                return DESC;
+            }
+            else if (subRecordName == "CSND")
+            {
+                CSND = new NAMESubRecord();
+                return CSND;
+            }
+            else if (subRecordName == "BSND")
+            {
+                BSND = new NAMESubRecord();
+                return BSND;
+            }
+            else if (subRecordName == "HSND")
+            {
+                HSND = new NAMESubRecord();
+                return HSND;
+            }
+            else if (subRecordName == "ASND")
+            {
+                ASND = new NAMESubRecord();
+                return ASND;
+            }
+
+            return null;
+        }
+    }
 
     #endregion
 
     #region SCPT
 
-    public class SCPTRecord : NotYetImplementedRecord { } // Script
+    public class SCPTRecord : Record
+    {
+        public class SCHDSubRecord : SubRecord
+        {
+            public char[] CharName { get; private set; }
+            public uint NumShorts { get; private set; }
+            public uint NumLongs { get; private set; }
+            public uint NumFloats { get; private set; }
+            public uint ScriptDataSize { get; private set; }
+            public uint LocalVarSize { get; private set; }
+
+            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+            {
+                var bytes = reader.ReadBytes(32);
+                CharName = new char[32];
+
+                for (int i = 0; i < 32; i++)
+                    CharName[i] = System.Convert.ToChar(bytes[i]);
+
+                NumShorts = reader.ReadLEUInt32();
+                NumLongs = reader.ReadLEUInt32();
+                NumFloats = reader.ReadLEUInt32();
+                ScriptDataSize = reader.ReadLEUInt32();
+                LocalVarSize = reader.ReadLEUInt32();
+            }
+        }
+
+        public SCHDSubRecord SCHD;
+        public NAMESubRecord SCVR;
+        public ByteArraySubRecord SCDT;
+        public NAMESubRecord SCTX;
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "SCHD")
+            {
+                SCHD = new SCHDSubRecord();
+                return SCHD;
+            }
+            else if (subRecordName == "SCVR")
+            {
+                SCVR = new NAMESubRecord();
+                return SCVR;
+            }
+            else if (subRecordName == "SCDT")
+            {
+                SCDT = new ByteArraySubRecord();
+                return SCDT;
+            }
+            else if (subRecordName == "SCTX")
+            {
+                SCTX = new NAMESubRecord();
+                return SCTX;
+            }
+
+            return null;
+        }
+    }
 
     #endregion
 
@@ -2465,13 +2643,81 @@ namespace TESUnity.ESM
 
     #region LEVI
 
-    public class LEVIRecord : NotYetImplementedRecord { } // Levelled Items & Creatures
+    public class LEVIRecord : Record
+    {
+        public NAMESubRecord NAME;
+        public Int32SubRecord DATA;
+        public ByteSubRecord NNAM;
+        public Int32SubRecord INDX;
+        public NAMESubRecord INAM;
+        public INTVSubRecord INTV;
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "NAME")
+            {
+                NAME = new NAMESubRecord();
+                return NAME;
+            }
+            else if (subRecordName == "DATA")
+            {
+                DATA = new Int32SubRecord();
+                return DATA;
+            }
+            else if (subRecordName == "NNAM")
+            {
+                NNAM = new ByteSubRecord();
+                return NNAM;
+            }
+            else if (subRecordName == "INDX")
+            {
+                INDX = new Int32SubRecord();
+                return INDX;
+            }
+            else if (subRecordName == "INAM")
+            {
+                INAM = new NAMESubRecord();
+                return INAM;
+            }
+            else if (subRecordName == "INTV")
+            {
+                INTV = new INTVSubRecord();
+                return INTV;
+            }
+
+            return null;
+        }
+    }
 
     #endregion
 
     #region PGRD
 
-    public class PGRDRecord : NotYetImplementedRecord { } // Path Grid
+    public class PGRDRecord : Record
+    {
+        public class PathGridSubRecord : SubRecord
+        {
+            public byte[] PathGrid { get; private set; }
+
+            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+            {
+                PathGrid = reader.ReadBytes((int)dataSize);
+            }
+        }
+
+        public PathGridSubRecord DATA { get; private set; }
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "DATA")
+            {
+                DATA = new PathGridSubRecord();
+                return DATA;
+            }
+
+            return null;
+        }
+    }
 
     #endregion
 

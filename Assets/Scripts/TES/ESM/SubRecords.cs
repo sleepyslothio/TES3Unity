@@ -270,6 +270,17 @@ namespace TESUnity.ESM
             value = reader.ReadByte();
         }
     }
+
+    public class ByteArraySubRecord : SubRecord
+    {
+        public byte[] Value { get; private set; }
+
+        public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+        {
+            Value = reader.ReadBytes((int)dataSize);
+        }
+    }
+
     public class Int32SubRecord : SubRecord
     {
         public int value;
