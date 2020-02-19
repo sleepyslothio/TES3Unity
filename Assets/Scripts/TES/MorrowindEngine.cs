@@ -74,7 +74,7 @@ namespace TESUnity
             RenderSettings.ambientIntensity = tes.ambientIntensity;
 
             m_SunObj = GameObjectUtils.CreateDirectionalLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
-            m_SunObj.GetComponent<Light>().shadows = config.SunShadows ? LightShadows.Soft : LightShadows.None;
+            m_SunObj.GetComponent<UnityEngine.Light>().shadows = config.SunShadows ? LightShadows.Soft : LightShadows.None;
             m_SunObj.SetActive(false);
 
             if (config.DayNightCycle)
@@ -220,7 +220,7 @@ namespace TESUnity
                 for (int i = 0; i < raycastHitCount; i++)
                 {
                     var hitInfo = m_InteractRaycastHitBuffer[i];
-                    var component = hitInfo.collider.GetComponentInParent<GenericObjectComponent>();
+                    var component = hitInfo.collider.GetComponentInParent<RecordComponent>();
 
                     if (component != null)
                     {
@@ -250,7 +250,7 @@ namespace TESUnity
                 CloseInteractiveText(); //deactivate text if nothing is raycasted against
         }
 
-        public void ShowInteractiveText(GenericObjectComponent component)
+        public void ShowInteractiveText(RecordComponent component)
         {
             var data = component.objData;
             UIManager.InteractiveText.Show(GUIUtils.CreateSprite(data.icon), data.interactionPrefix, data.name, data.value, data.weight);

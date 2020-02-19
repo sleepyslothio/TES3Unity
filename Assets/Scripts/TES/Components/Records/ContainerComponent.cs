@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class ContainerComponent : GenericObjectComponent
+    public class ContainerComponent : RecordComponent
     {
         void Start()
         {

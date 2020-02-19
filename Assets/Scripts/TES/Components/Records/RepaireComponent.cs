@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class RepaireComponent : GenericObjectComponent
+    public class RepaireComponent : RecordComponent
     {
         void Start()
         {

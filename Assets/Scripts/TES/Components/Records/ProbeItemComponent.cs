@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class ProbComponent : GenericObjectComponent
+    public class ProbeItemComponent : RecordComponent
     {
         void Start()
         {

@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class AlchemyComponent : GenericObjectComponent
+    public class AlchemyComponent : RecordComponent
     {
         void Start()
         {

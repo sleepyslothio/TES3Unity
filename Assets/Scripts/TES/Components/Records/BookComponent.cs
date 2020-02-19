@@ -3,7 +3,7 @@ using TESUnity.UI;
 
 namespace TESUnity.Components.Records
 {
-    public class BookComponent : GenericObjectComponent
+    public class BookComponent : RecordComponent
     {
         private static PlayerComponent _player = null;
         private static UIManager _uiManager = null;

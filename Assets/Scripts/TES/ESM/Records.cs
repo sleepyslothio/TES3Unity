@@ -4,86 +4,8 @@ using UnityEngine;
 
 namespace TESUnity.ESM
 {
-    public class RecordHeader
-    {
-        public string name; // 4 bytes
-        public uint dataSize;
-        public uint unknown0;
-        public uint flags;
+    #region TES3
 
-        public virtual void Deserialize(UnityBinaryReader reader)
-        {
-            name = reader.ReadASCIIString(4);
-            dataSize = reader.ReadLEUInt32();
-            unknown0 = reader.ReadLEUInt32();
-            flags = reader.ReadLEUInt32();
-        }
-    }
-    public class SubRecordHeader
-    {
-        public string name; // 4 bytes
-        public uint dataSize;
-
-        public virtual void Deserialize(UnityBinaryReader reader)
-        {
-            name = reader.ReadASCIIString(4);
-            dataSize = reader.ReadLEUInt32();
-        }
-    }
-
-    public abstract class Record
-    {
-        public RecordHeader header;
-
-        /// <summary>
-        /// Return an uninitialized subrecord to deserialize, or null to skip.
-        /// </summary>
-        /// <returns>Return an uninitialized subrecord to deserialize, or null to skip.</returns>
-        public abstract SubRecord CreateUninitializedSubRecord(string subRecordName);
-
-        public void DeserializeData(UnityBinaryReader reader)
-        {
-            var dataEndPos = reader.BaseStream.Position + header.dataSize;
-
-            while (reader.BaseStream.Position < dataEndPos)
-            {
-                var subRecordStartStreamPosition = reader.BaseStream.Position;
-
-                var subRecordHeader = new SubRecordHeader();
-                subRecordHeader.Deserialize(reader);
-
-                SubRecord subRecord = CreateUninitializedSubRecord(subRecordHeader.name);
-
-                // Read or skip the record.
-                if (subRecord != null)
-                {
-                    subRecord.header = subRecordHeader;
-
-                    var subRecordDataStreamPosition = reader.BaseStream.Position;
-                    subRecord.DeserializeData(reader, subRecordHeader.dataSize);
-
-                    if (reader.BaseStream.Position != (subRecordDataStreamPosition + subRecord.header.dataSize))
-                    {
-                        throw new FormatException("Failed reading " + subRecord.header.name + " subrecord at offset " + subRecordStartStreamPosition);
-                    }
-                }
-                else
-                {
-                    reader.BaseStream.Position += subRecordHeader.dataSize;
-                }
-            }
-        }
-    }
-    public abstract class SubRecord
-    {
-        public SubRecordHeader header;
-
-        public abstract void DeserializeData(UnityBinaryReader reader, uint dataSize);
-    }
-
-    // Add new record types to ESMFile.CreateUninitializedRecord.
-
-    // TODO: implement MAST and DATA subrecords
     public class TES3Record : Record
     {
         public class HEDRSubRecord : SubRecord
@@ -118,7 +40,7 @@ namespace TESUnity.ESM
         //public MASTSubRecord[] MASTSs;
         //public DATASubRecord[] DATAs;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -131,6 +53,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region GMST
+
     public class GMSTRecord : Record
     {
         public NAMESubRecord NAME;
@@ -138,7 +64,7 @@ namespace TESUnity.ESM
         public INTVSubRecord INTV;
         public FLTVSubRecord FLTV;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -159,6 +85,11 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    #endregion
+
+    #region GLOB
+
     public class GLOBRecord : Record
     {
         public class FNAMSubRecord : ByteSubRecord { }
@@ -167,7 +98,7 @@ namespace TESUnity.ESM
         public FNAMSubRecord FNAM;
         public FLTVSubRecord FLTV;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -185,6 +116,10 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    #endregion
+
+    #region SOUN
 
     public class SOUNRecord : Record
     {
@@ -206,7 +141,7 @@ namespace TESUnity.ESM
         public FNAMSubRecord FNAM;
         public DATASubRecord DATA;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -224,6 +159,10 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    #endregion
+
+    #region REGN
 
     public class REGNRecord : Record
     {
@@ -257,6 +196,7 @@ namespace TESUnity.ESM
                 }
             }
         }
+
         public class CNAMSubRecord : SubRecord
         {
             byte red;
@@ -272,6 +212,7 @@ namespace TESUnity.ESM
                 nullByte = reader.ReadByte();
             }
         }
+
         public class SNAMSubRecord : SubRecord
         {
             byte[] soundName;
@@ -291,7 +232,7 @@ namespace TESUnity.ESM
         public CNAMSubRecord CNAM;
         public List<SNAMSubRecord> SNAMs = new List<SNAMSubRecord>();
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -322,6 +263,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region LTEX
+
     public class LTEXRecord : Record
     {
         public class DATASubRecord : STRVSubRecord { }
@@ -330,7 +275,7 @@ namespace TESUnity.ESM
         public INTVSubRecord INTV;
         public DATASubRecord DATA;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -349,12 +294,16 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region STAT
+
     public class STATRecord : Record
     {
         public NAMESubRecord NAME;
         public MODLSubRecord MODL;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -370,6 +319,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region DOOR
+
     public class DOORRecord : Record
     {
         public NAMESubRecord NAME; // door ID
@@ -379,7 +332,7 @@ namespace TESUnity.ESM
         public SNAMSubRecord SNAM;
         public ANAMSubRecord ANAM;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -407,6 +360,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region MISC
+
     public class MISCRecord : Record
     {
         public class MCDTSubRecord : SubRecord
@@ -431,7 +388,7 @@ namespace TESUnity.ESM
         public ENAMSubRecord ENAM; // enchantment ID string
         public SCRISubRecord SCRI; // script ID string
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -461,6 +418,10 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    #endregion
+
+    #region WEAP
 
     public class WEAPRecord : Record
     {
@@ -508,7 +469,7 @@ namespace TESUnity.ESM
         public ENAMSubRecord ENAM;
         public SCRISubRecord SCRI;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -538,6 +499,10 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    #endregion
+
+    #region CREA
 
     public class CREARecord : Record
     {
@@ -615,6 +580,7 @@ namespace TESUnity.ESM
             {
                 count = reader.ReadLEInt32();
                 var bytes = reader.ReadBytes(32);
+                name = new char[32];
 
                 for (int i = 0; i < 32; i++)
                     name[i] = System.Convert.ToChar(bytes[i]);
@@ -681,7 +647,7 @@ namespace TESUnity.ESM
         public NPC_Record.AI_ASubRecord AI_A;
         public XSCLSubRecord XSCL;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -733,6 +699,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region CONT
+
     public class CONTRecord : Record
     {
         public class CNDTSubRecord : FLTVSubRecord { }
@@ -756,7 +726,7 @@ namespace TESUnity.ESM
         public FLAGSubRecord FLAG; // flags
         public List<NPCOSubRecord> NPCOs = new List<NPCOSubRecord>();
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -787,55 +757,15 @@ namespace TESUnity.ESM
         }
     }
 
-    public class BYDTSubRecord : SubRecord
-    {
-        public enum BodyPart
-        {
-            Head = 0,
-            Hair = 1,
-            Neck = 2,
-            Chest = 3,
-            Groin = 4,
-            Hand = 5,
-            Wrist = 6,
-            Forearm = 7,
-            Upperarm = 8,
-            Foot = 9,
-            Ankle = 10,
-            Knee = 11,
-            Upperleg = 12,
-            Clavicle = 13,
-            Tail = 14
-        }
+    #endregion
 
-        public enum Flag
-        {
-            Female = 1, Playabe = 2
-        }
+    #region BODY
 
-        public enum BodyPartType
-        {
-            Skin = 0, Clothing = 1, Armor = 2
-        }
-
-        public byte part;
-        public byte vampire;
-        public byte flags;
-        public byte partType;
-
-        public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-        {
-            part = reader.ReadByte();
-            vampire = reader.ReadByte();
-            flags = reader.ReadByte();
-            partType = reader.ReadByte();
-        }
-    }
     public class BODYRecord : Record
     {
         public BYDTSubRecord BYDT;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -847,6 +777,10 @@ namespace TESUnity.ESM
             return null;
         }
     }
+
+    #endregion
+
+    #region LIGH
 
     public class LIGHRecord : Record
     {
@@ -884,7 +818,7 @@ namespace TESUnity.ESM
         public MODLSubRecord MODL;
         public SNAMSubRecord SNAM;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -914,6 +848,10 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    #endregion
+
+    #region NCP_
 
     public class NPC_Record : Record
     {
@@ -994,7 +932,21 @@ namespace TESUnity.ESM
             }
         }
 
-        public class FLAGSubRecord : INTVSubRecord { }
+        public enum NPCFlags
+        {
+            Female = 0x0001, 
+            Essential = 0x0002, 
+            Respawn = 0x0004, 
+            None = 0x0008, 
+            Autocalc = 0x0010, 
+            BloodSkel = 0x0400, 
+            BloodMetal = 0x0800
+        }
+
+        public class FLAGSubRecord : INTVSubRecord
+        {
+            public NPCFlags Flags => (NPCFlags)value;
+        }
 
         public class NPCOSubRecord : SubRecord
         {
@@ -1004,8 +956,7 @@ namespace TESUnity.ESM
             public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
             {
                 count = reader.ReadLEInt32();
-
-                var bytes = reader.ReadBytes(count);
+                var bytes = reader.ReadBytes(32);
                 name = new char[32];
 
                 for (int i = 0; i < 32; i++)
@@ -1050,6 +1001,8 @@ namespace TESUnity.ESM
                 Enchanting = 0x10000,
                 RepairItem = 0x20000
             }
+
+            public FlagsType Flags => (FlagsType)flags;
 
             public byte hello;
             public byte unknown1;
@@ -1100,6 +1053,8 @@ namespace TESUnity.ESM
             public float z;
             public float unknown;
 
+            public Vector3 ToVector3() => new Vector3(x, y, z);
+
             public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
             {
                 x = reader.ReadLESingle();
@@ -1117,6 +1072,8 @@ namespace TESUnity.ESM
             public short duration;
             public char[] id;
             public float unknown;
+
+            public Vector3 ToVector3() => new Vector3(x, y, z);
 
             public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
             {
@@ -1143,6 +1100,8 @@ namespace TESUnity.ESM
             public short duration;
             public char[] id;
             public float unknown;
+
+            public Vector3 ToVector3() => new Vector3(x, y, z);
 
             public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
             {
@@ -1182,6 +1141,9 @@ namespace TESUnity.ESM
             public float yRot;
             public float zRot;
 
+            public Vector3 ToVector3() => new Vector3(xPos, yPos, zPos);
+            public Quaternion ToQuaternion() => Quaternion.Euler(xRot, yRot, zRot);
+
             public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
             {
                 xPos = reader.ReadLESingle();
@@ -1199,29 +1161,112 @@ namespace TESUnity.ESM
 
         #endregion
 
+        /// <summary>
+        /// NPC ID
+        /// </summary>
         public NAMESubRecord NAME;
+
+        /// <summary>
+        /// NPC Name
+        /// </summary>
         public FNAMSubRecord FNAM;
+
+        /// <summary>
+        /// NPC Animation
+        /// </summary>
         public MODLSubRecord MODL;
+
+        /// <summary>
+        /// Race Name
+        /// </summary>
         public RNAMSubRecord RNAM;
+
+        /// <summary>
+        /// Faction Name
+        /// </summary>
         public ANAMSubRecord ANAM;
+
+        /// <summary>
+        /// Head Model
+        /// </summary>
         public BNAMSubRecord BNAM;
+
+        /// <summary>
+        /// Class Name
+        /// </summary>
         public CNAMSubRecord CNAM;
+
+        /// <summary>
+        /// Hear Model
+        /// </summary>
         public KNAMSubRecord KNAM;
+
+        /// <summary>
+        /// NPC Data
+        /// </summary>
         public NPDTSubRecord NPDT;
+
+        /// <summary>
+        /// NPC Flags
+        /// </summary>
         public FLAGSubRecord FLAG;
+
+        /// <summary>
+        /// NPC Item
+        /// </summary>
         public NPCOSubRecord NPCO;
+
+        /// <summary>
+        /// NPC AI DATA
+        /// </summary>
         public AIDTSubRecord AIDT;
+
+        /// <summary>
+        /// NPC AI Bytes
+        /// </summary>
         public AI_WSubRecord AI_W;
+
+        /// <summary>
+        /// NPC AI Travel
+        /// </summary>
         public AI_TSubRecord AI_T;
+
+        /// <summary>
+        /// NPC Follow
+        /// </summary>
         public AI_FSubRecord AI_F;
+
+        /// <summary>
+        /// NPC Escort
+        /// </summary>
         public AI_ESubRecord AI_E;
+
+        /// <summary>
+        /// Cell escort/follow
+        /// </summary>
         public CNDTSubRecord CNDT;
+
+        /// <summary>
+        /// AI Activate
+        /// </summary>
         public AI_ASubRecord AI_A;
+
+        /// <summary>
+        /// Cell Travel Destination
+        /// </summary>
         public DODTSubRecord DODT;
+
+        /// <summary>
+        /// Cell Name for previous DODT, if interior
+        /// </summary>
         public DNAMSubRecord DNAM;
+
+        /// <summary>
+        /// Scale
+        /// </summary>
         public XSCLSubRecord XSCL;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1255,9 +1300,9 @@ namespace TESUnity.ESM
                 case "FLAG":
                     FLAG = new FLAGSubRecord();
                     return FLAG;
-                //case "NPCO":
-                //NPCO = new NPCOSubRecord();
-                //return NPCO;
+                case "NPCO":
+                    NPCO = new NPCOSubRecord();
+                    return NPCO;
                 case "AIDT":
                     AIDT = new AIDTSubRecord();
                     return AIDT;
@@ -1294,6 +1339,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region ARMO
+
     public class ARMORecord : Record
     {
         public class AODTSubRecord : SubRecord
@@ -1327,7 +1376,7 @@ namespace TESUnity.ESM
         public SCRISubRecord SCRI;
         public ENAMSubRecord ENAM;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1379,6 +1428,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region CLOT
+
     public class CLOTRecord : Record
     {
         public class CTDTSubRecord : SubRecord
@@ -1408,7 +1461,7 @@ namespace TESUnity.ESM
         public ENAMSubRecord ENAM;
         public SCRISubRecord SCRI;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1460,6 +1513,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region REPA
+
     public class REPARecord : Record
     {
         public class RIDTSubRecord : SubRecord
@@ -1485,7 +1542,7 @@ namespace TESUnity.ESM
         public ITEXSubRecord ITEX;
         public SCRISubRecord SCRI;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1513,6 +1570,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region ACTI
+
     public class ACTIRecord : Record
     {
         public NAMESubRecord NAME; // door ID
@@ -1520,7 +1581,7 @@ namespace TESUnity.ESM
         public FNAMSubRecord FNAM; // item name
         public SCRISubRecord SCRI; // script ID string
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1541,6 +1602,10 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    #endregion
+
+    #region APPA
 
     public class APPARecord : Record
     {
@@ -1567,7 +1632,7 @@ namespace TESUnity.ESM
         public ITEXSubRecord ITEX;
         public SCRISubRecord SCRI;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1595,6 +1660,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region LOCK
+
     public class LOCKRecord : Record
     {
         public class LKDTSubRecord : SubRecord
@@ -1620,7 +1689,7 @@ namespace TESUnity.ESM
         public ITEXSubRecord ITEX;
         public SCRISubRecord SCRI;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1648,6 +1717,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region PROB
+
     public class PROBRecord : Record
     {
         public class PBDTSubRecord : SubRecord
@@ -1673,7 +1746,7 @@ namespace TESUnity.ESM
         public ITEXSubRecord ITEX;
         public SCRISubRecord SCRI;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1700,6 +1773,10 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    #endregion
+
+    #region INGR
 
     public class INGRRecord : Record
     {
@@ -1743,7 +1820,7 @@ namespace TESUnity.ESM
         public ITEXSubRecord ITEX;
         public SCRISubRecord SCRI;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1770,6 +1847,10 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    #endregion
+
+    #region BOOK
 
     public class BOOKRecord : Record
     {
@@ -1799,7 +1880,7 @@ namespace TESUnity.ESM
         public SCRISubRecord SCRI;
         public TEXTSubRecord TEXT;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1829,6 +1910,10 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    #endregion
+
+    #region ALCH
 
     public class ALCHRecord : Record
     {
@@ -1877,7 +1962,7 @@ namespace TESUnity.ESM
         public TEXTSubRecord TEXT;
         public SCRISubRecord SCRI;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1908,6 +1993,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region LEVC
+
     public class LEVCRecord : Record
     {
         public class DATASubRecord : INTVSubRecord { }
@@ -1922,7 +2011,7 @@ namespace TESUnity.ESM
         public CNAMSubRecord CNAM;
         public INTVSubRecord INTV;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)
             {
@@ -1950,6 +2039,10 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region CELL
+
     // TODO: add support for strange INTV before object data?
     public class CELLRecord : Record
     {
@@ -1966,10 +2059,12 @@ namespace TESUnity.ESM
                 gridY = reader.ReadLEInt32();
             }
         }
+
         public class RGNNSubRecord : NAMESubRecord { }
         public class NAM0SubRecord : UInt32SubRecord { }
         public class NAM5SubRecord : Int32SubRecord { } // map color (COLORREF)
         public class WHGTSubRecord : FLTVSubRecord { }
+
         public class AMBISubRecord : SubRecord
         {
             public uint ambientColor;
@@ -1985,6 +2080,7 @@ namespace TESUnity.ESM
                 fogDensity = reader.ReadLESingle();
             }
         }
+
         public class RefObjDataGroup
         {
             public class FRMRSubRecord : UInt32SubRecord { }
@@ -2044,6 +2140,7 @@ namespace TESUnity.ESM
                 return Utils.ContainsBitFlags(DATA.flags, 0x01);
             }
         }
+
         public Vector2i gridCoords
         {
             get
@@ -2069,7 +2166,7 @@ namespace TESUnity.ESM
 
         public List<RefObjDataGroup> refObjDataGroups = new List<RefObjDataGroup>();
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             if (!isReadingObjectDataGroups && subRecordName == "FRMR")
             {
@@ -2163,11 +2260,97 @@ namespace TESUnity.ESM
         }
     }
 
+    #endregion
+
+    #region CLAS
+
+    public class CLASRecord : NotYetImplementedRecord { } // Class definition
+
+    #endregion
+
+    #region FACT
+
+    public class FACTRecord : NotYetImplementedRecord { } // Faction definition
+
+    #endregion
+
+    #region RACER
+
+    public class RACERecord : NotYetImplementedRecord { } // Race definition
+
+    #endregion
+
+    #region SKIL
+
+    public class SKILRecord : NotYetImplementedRecord { } // Skills definition
+
+    #endregion
+
+    #region MGEF
+
+    public class MGEFRecord : NotYetImplementedRecord { } // Magic Effect
+
+    #endregion
+
+    #region SCPT
+
+    public class SCPTRecord : NotYetImplementedRecord { } // Script
+
+    #endregion
+
+    #region SPEL
+
+    public class SPELRecord : NotYetImplementedRecord { } // Spell definition
+
+    #endregion
+
+    #region ENCH
+
+    public class ENCHRecord : NotYetImplementedRecord { } // Enchanting Effects
+
+    #endregion
+
+    #region LEVI
+
+    public class LEVIRecord : NotYetImplementedRecord { } // Levelled Items & Creatures
+
+    #endregion
+
+    #region PGRD
+
+    public class PGRDRecord : NotYetImplementedRecord { } // Path Grid
+
+    #endregion
+
+    #region SNDG
+
+    public class SNDGRecord : NotYetImplementedRecord { } // Sound Generator
+
+    #endregion
+
+    #region DIAL
+
+    public class DIALRecord : NotYetImplementedRecord { } // Dialogue topic (including journals)
+
+    #endregion
+
+    #region INFO
+
+    public class INFORecord : NotYetImplementedRecord { } // Dialogue response record that belongs to previous DIAL record.
+
+    #endregion
+
+    #region BSGN
+
+    public class BSGNRecord : NotYetImplementedRecord { } // Birth Sign
+
+    #endregion
+
     public class NotYetImplementedRecord : Record
     {
         private static List<string> UnimplementedRecord = new List<string>();
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName)
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             var type = GetType().Name;
 
@@ -2180,21 +2363,4 @@ namespace TESUnity.ESM
             return null;
         }
     }
-
-    public class CLASRecord : NotYetImplementedRecord { } // Class definition
-    public class FACTRecord : NotYetImplementedRecord { } // Faction definition
-    public class RACERecord : NotYetImplementedRecord { } // Race definition
-    public class SKILRecord : NotYetImplementedRecord { } // Skills definition
-    public class MGEFRecord : NotYetImplementedRecord { } // Magic Effect
-    public class SCPTRecord : NotYetImplementedRecord { } // Script
-    public class SPELRecord : NotYetImplementedRecord { } // Spell definition
-    //public class BODYRecord : NotYetImplementedRecord { }
-    public class ENCHRecord : NotYetImplementedRecord { } // Enchanting Effects
-    public class LEVIRecord : NotYetImplementedRecord { } // Levelled Items & Creatures
-    //public class LEVCRecord : NotYetImplementedRecord { } // Leveld Creatures
-    public class PGRDRecord : NotYetImplementedRecord { } // Path Grid
-    public class SNDGRecord : NotYetImplementedRecord { } // Sound Generator
-    public class DIALRecord : NotYetImplementedRecord { } // Dialogue topic (including journals)
-    public class INFORecord : NotYetImplementedRecord { } // Dialogue response record that belongs to previous DIAL record.
-    public class BSGNRecord : NotYetImplementedRecord { } // Birth Sign
 }

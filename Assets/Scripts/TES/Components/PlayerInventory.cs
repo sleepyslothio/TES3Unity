@@ -19,7 +19,7 @@ namespace TESUnity.Components
             _player = GetComponent<PlayerComponent>();
         }
 
-        public void Add(GenericObjectComponent item)
+        public void Add(RecordComponent item)
         {
             Add(item.record);
 

@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class LockComponent : GenericObjectComponent
+    public class LockComponent : RecordComponent
     {
         void Start()
         {

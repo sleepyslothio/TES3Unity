@@ -50,10 +50,12 @@ namespace TESUnity
             this.nifManager = nifManager;
             this.temporalLoadBalancer = temporalLoadBalancer;
         }
+
         public Vector2i GetExteriorCellIndices(Vector3 point)
         {
             return new Vector2i(Mathf.FloorToInt(point.x / Convert.exteriorCellSideLengthInMeters), Mathf.FloorToInt(point.z / Convert.exteriorCellSideLengthInMeters));
         }
+
         public InRangeCellInfo StartCreatingExteriorCell(Vector2i cellIndices)
         {
             var CELL = dataReader.FindExteriorCellRecord(cellIndices);
@@ -283,14 +285,16 @@ namespace TESUnity
 
         private RefCellObjInfo[] GetRefCellObjInfos(CELLRecord CELL)
         {
-            RefCellObjInfo[] refCellObjInfos = new RefCellObjInfo[CELL.refObjDataGroups.Count];
-            for (int i = 0; i < CELL.refObjDataGroups.Count; i++)
+            var count = CELL.refObjDataGroups.Count;
+            var refCellObjInfos = new RefCellObjInfo[count];
+
+            for (int i = 0; i < count; i++)
             {
                 var refObjInfo = new RefCellObjInfo();
                 refObjInfo.refObjDataGroup = CELL.refObjDataGroups[i];
 
                 // Get the record the RefObjDataGroup references.
-                dataReader.MorrowindESMFile.objectsByIDString.TryGetValue(refObjInfo.refObjDataGroup.NAME.value, out refObjInfo.referencedRecord);
+                dataReader.MorrowindESMFile.ObjectsByIDString.TryGetValue(refObjInfo.refObjDataGroup.NAME.value, out refObjInfo.referencedRecord);
 
                 if (refObjInfo.referencedRecord != null)
                 {
@@ -325,6 +329,15 @@ namespace TESUnity
                     PostProcessInstantiatedCellObject(modelObj, refCellObjInfo);
 
                     modelObj.transform.parent = parent.transform;
+                }
+
+                if (refCellObjInfo.referencedRecord is NPC_Record)
+                {
+                    var NPC_ = (NPC_Record)refCellObjInfo.referencedRecord;
+                    var npcGameObject = InstantiateNPC(NPC_);
+
+                    PostProcessInstantiatedCellObject(npcGameObject, refCellObjInfo);
+                    npcGameObject.transform.parent = parent.transform;
                 }
 
                 // If the object has a light, instantiate it.
@@ -373,6 +386,52 @@ namespace TESUnity
             }
         }
 
+        private GameObject InstantiateNPC(NPC_Record NPC_)
+        {
+            var npc = new GameObject($"NPC_{NPC_.CNAM.value}");
+            var npcTransform = npc.transform;
+
+            // Load animation file.
+            if (NPC_.MODL != null)
+            {
+                //var anim = nifManager.InstantiateNIF($"meshes\\{NPC_.MODL.value}");
+                //anim.name = "NPC_Anim";
+                //anim.transform.parent = npcTransform;
+            }
+
+            var head = new GameObject("Head");
+            head.transform.parent = npcTransform;
+            head.transform.localPosition = new Vector3(0, 1.4f, 0); // FIXME
+
+            // Load head model
+            if (NPC_.BNAM != null)
+            {
+                var headModel = nifManager.InstantiateNIF($"meshes\\b\\{NPC_.BNAM.value}.NIF");
+                headModel.transform.parent = head.transform;
+                headModel.transform.localPosition = Vector3.zero;
+            }
+
+            // Load hair model
+            if (NPC_.KNAM != null)
+            {
+                var hairModel = nifManager.InstantiateNIF($"meshes\\b\\{NPC_.KNAM.value}.NIF");
+                hairModel.transform.parent = head.transform;
+                hairModel.transform.localPosition = Vector3.zero;
+            }
+
+            // Add a fake body: FIXME
+            var body = new GameObject("Body");
+            body.transform.parent = npcTransform;
+            body.transform.localPosition = Vector3.zero;
+
+            var capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            capsule.transform.parent = body.transform;
+            capsule.transform.localPosition = new Vector3(0, 0.5f, 0);
+            capsule.transform.localScale = new Vector3(0.25f, 0.8f, 0.25f);
+
+            return npc;
+        }
+
         private GameObject InstantiateLight(LIGHRecord LIGH, bool indoors)
         {
             var config = GameSettings.Get();
@@ -380,7 +439,7 @@ namespace TESUnity
             var lightObj = new GameObject("Light");
             lightObj.isStatic = true;
 
-            var lightComponent = lightObj.AddComponent<Light>();
+            var lightComponent = lightObj.AddComponent<UnityEngine.Light>();
             lightComponent.range = 3 * (LIGH.LHDT.radius / Convert.meterInMWUnits);
             lightComponent.color = new Color32(LIGH.LHDT.red, LIGH.LHDT.green, LIGH.LHDT.blue, 255);
             lightComponent.intensity = 1.5f;
@@ -446,9 +505,11 @@ namespace TESUnity
             {
                 var obj = GameObjectUtils.FindTopLevelObject(gameObject);
                 if (obj == null)
-                { return; }
+                {
+                    return;
+                }
 
-                var component = GenericObjectComponent.Create(obj, record, tag);
+                var component = RecordComponent.Create(obj, record, tag);
 
                 //only door records need access to the cell object data group so far
                 if (record is DOORRecord)
@@ -461,7 +522,10 @@ namespace TESUnity
         private List<string> GetLANDTextureFilePaths(LANDRecord LAND)
         {
             // Don't return anything if the LAND doesn't have height data or texture data.
-            if ((LAND.VHGT == null) || (LAND.VTEX == null)) { return null; }
+            if ((LAND.VHGT == null) || (LAND.VTEX == null))
+            {
+                return null;
+            }
 
             var textureFilePaths = new List<string>();
             var distinctTextureIndices = LAND.VTEX.textureIndices.Distinct().ToList();

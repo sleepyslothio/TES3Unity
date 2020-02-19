@@ -181,7 +181,7 @@ namespace TESUnity
 
         public CELLRecord FindExteriorCellRecord(Vector2i cellIndices)
         {
-            MorrowindESMFile.exteriorCELLRecordsByIndices.TryGetValue(cellIndices, out CELLRecord CELL);
+            MorrowindESMFile.ExteriorCELLRecordsByIndices.TryGetValue(cellIndices, out CELLRecord CELL);
             return CELL;
         }
 

@@ -13,7 +13,7 @@ namespace TESUnity.Components.Records
         void Pick();
     }
 
-    public class GenericObjectComponent : MonoBehaviour
+    public class RecordComponent : MonoBehaviour
     {
         public class ObjectData
         {
@@ -41,7 +41,7 @@ namespace TESUnity.Components.Records
         {
         }
 
-        public static GenericObjectComponent Create(GameObject gameObject, Record record, string tag)
+        public static RecordComponent Create(GameObject gameObject, Record record, string tag)
         {
             gameObject.tag = tag;
 
@@ -50,7 +50,7 @@ namespace TESUnity.Components.Records
             for (int i = 0, l = transform.childCount; i < l; i++)
                 transform.GetChild(i).tag = tag;
 
-            GenericObjectComponent component = null;
+            RecordComponent component = null;
 
             if (record is DOORRecord)
                 component = gameObject.AddComponent<DoorComponent>();
@@ -83,7 +83,7 @@ namespace TESUnity.Components.Records
                 component = gameObject.AddComponent<LockComponent>();
 
             else if (record is PROBRecord)
-                component = gameObject.AddComponent<ProbComponent>();
+                component = gameObject.AddComponent<ProbeItemComponent>();
 
             else if (record is REPARecord)
                 component = gameObject.AddComponent<RepaireComponent>();
@@ -104,7 +104,7 @@ namespace TESUnity.Components.Records
                 component = gameObject.AddComponent<NPCComponent>();
 
             else
-                component = gameObject.AddComponent<GenericObjectComponent>();
+                component = gameObject.AddComponent<RecordComponent>();
 
             component.record = record;
 

@@ -4,7 +4,7 @@ using TESUnity.ESM;
 
 namespace TESUnity.Components.Records
 {
-    public class DoorComponent : GenericObjectComponent
+    public class DoorComponent : RecordComponent
     {
         public class DoorData
         {

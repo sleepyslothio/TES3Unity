@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class ArmorComponent : GenericObjectComponent
+    public class ArmorComponent : RecordComponent
     {
         void Start()
         {

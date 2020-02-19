@@ -4,12 +4,12 @@ using TESUnity.ESM;
 
 namespace TESUnity.Components.Records
 {
-    public class LightComponent : GenericObjectComponent
+    public class LightComponent : RecordComponent
     {
         [System.Serializable]
         public class LightData
         {
-            public Light lightComponent;
+            public UnityEngine.Light lightComponent;
             public enum LightFlags
             {
                 Dynamic = 0x0001,
@@ -33,7 +33,7 @@ namespace TESUnity.Components.Records
             LIGHRecord LIGH = (LIGHRecord)record;
 
             lightData = new LightData();
-            lightData.lightComponent = gameObject.GetComponentInChildren<Light>(true);
+            lightData.lightComponent = gameObject.GetComponentInChildren<UnityEngine.Light>(true);
 
             if (LIGH.FNAM != null)
                 objData.name = LIGH.FNAM.value;
@@ -63,7 +63,7 @@ namespace TESUnity.Components.Records
             //wait until we have found the light component. this will typically be the frame /after/ object creation as the light component is added after this component is created
             while (lightData.lightComponent == null && time < 5f)
             {
-                lightData.lightComponent = gameObject.GetComponentInChildren<Light>(true);
+                lightData.lightComponent = gameObject.GetComponentInChildren<UnityEngine.Light>(true);
                 yield return new WaitForEndOfFrame();
                 time += Time.deltaTime;
             }
