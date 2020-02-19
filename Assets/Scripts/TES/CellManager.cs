@@ -388,7 +388,7 @@ namespace TESUnity
 
         private GameObject InstantiateNPC(NPC_Record NPC_)
         {
-            var npc = new GameObject($"NPC_{NPC_.CNAM.value}");
+            var npc = new GameObject($"NPC_{NPC_.FNAM.value}");
             var npcTransform = npc.transform;
 
             // Load animation file.
@@ -419,15 +419,50 @@ namespace TESUnity
                 hairModel.transform.localPosition = Vector3.zero;
             }
 
+            // Load body parts
+            var race = NPC_.RNAM.value.ToLower();
+            var gender = NPC_.FLAG.Flags == NPC_Record.NPCFlags.Female ? "f" : "m";
+            var ankle = $"b_n_{race}_{gender}_ankle";
+            var foot = $"b_n_{race}_{gender}_foot";
+            var forarm = $"b_n_{race}_{gender}_forearm";
+            var groin = $"b_n_{race}_{gender}_groin";
+            var hands1st = $"b_n_{race}_{gender}_hands.1st";
+            var knee = $"b_n_{race}_{gender}_knee";
+            var neck = $"b_n_{race}_{gender}_neck";
+            var skins = $"b_n_{race}_{gender}_skins";
+            var upperArm = $"b_n_{race}_{gender}_upper arm";
+            var upperLeg = $"b_n_{race}_{gender}_upper leg";
+            var wrist = $"b_n_{race}_{gender}_wrist";
+
             // Add a fake body: FIXME
             var body = new GameObject("Body");
-            body.transform.parent = npcTransform;
-            body.transform.localPosition = Vector3.zero;
+            var bodyTransform = body.transform;
+            bodyTransform.parent = npcTransform;
+            bodyTransform.localPosition = Vector3.zero;
+
+            /*CreateBodyPart(ankle, bodyTransform);
+            CreateBodyPart(foot, bodyTransform);
+            CreateBodyPart(forarm, bodyTransform);
+            CreateBodyPart(groin, bodyTransform);
+            CreateBodyPart(hands1st, bodyTransform);
+            CreateBodyPart(knee, bodyTransform);
+            CreateBodyPart(neck, bodyTransform);
+            CreateBodyPart(skins, bodyTransform);
+            CreateBodyPart(upperArm, bodyTransform);
+            CreateBodyPart(upperLeg, bodyTransform);
+            CreateBodyPart(wrist, bodyTransform);*/
 
             var capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             capsule.transform.parent = body.transform;
             capsule.transform.localPosition = new Vector3(0, 0.5f, 0);
             capsule.transform.localScale = new Vector3(0.25f, 0.8f, 0.25f);
+
+            GameObject CreateBodyPart(string path, Transform parent)
+            {
+                var part = nifManager.InstantiateNIF($"meshes\\b\\{path}.NIF");
+                part.transform.parent = parent;
+                return part;
+            }
 
             return npc;
         }

@@ -934,12 +934,12 @@ namespace TESUnity.ESM
 
         public enum NPCFlags
         {
-            Female = 0x0001, 
-            Essential = 0x0002, 
-            Respawn = 0x0004, 
-            None = 0x0008, 
-            Autocalc = 0x0010, 
-            BloodSkel = 0x0400, 
+            Female = 0x0001,
+            Essential = 0x0002,
+            Respawn = 0x0004,
+            None = 0x0008,
+            Autocalc = 0x0010,
+            BloodSkel = 0x0400,
             BloodMetal = 0x0800
         }
 
@@ -2270,19 +2270,172 @@ namespace TESUnity.ESM
 
     #region FACT
 
-    public class FACTRecord : NotYetImplementedRecord { } // Faction definition
+    public class FACTRecord : Record
+    {
+        public class FADTSubRecord : SubRecord
+        {
+            // TODO implement FACTRecord::FADT SubRecord
+            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+            {
+                reader.BaseStream.Position += dataSize;
+            }
+        }
+
+        public NAMESubRecord NAME;
+        public FNAMSubRecord FNAME;
+        public NAMESubRecord RNAME;
+        public FADTSubRecord FADT;
+        public NAMESubRecord ANAM;
+        public INTVSubRecord INTV;
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "NAME")
+            {
+                NAME = new NAMESubRecord();
+                return NAME;
+            }
+            else if (subRecordName == "FNAME")
+            {
+                FNAME = new FNAMSubRecord();
+                return FNAME;
+            }
+            else if (subRecordName == "RNAME")
+            {
+                RNAME = new NAMESubRecord();
+                return RNAME;
+            }
+            else if (subRecordName == "FADT")
+            {
+                FADT = new FADTSubRecord();
+                return FADT;
+            }
+            else if (subRecordName == "ANAM")
+            {
+                ANAM = new NAMESubRecord();
+                return ANAM;
+            }
+            else if (subRecordName == "INTV")
+            {
+                INTV = new INTVSubRecord();
+                return INTV;
+            }
+
+            return null;
+        }
+    }
 
     #endregion
 
     #region RACER
 
-    public class RACERecord : NotYetImplementedRecord { } // Race definition
+    public class RACERecord : Record
+    {
+        public class RADTSubRecord : SubRecord
+        {
+            // TODO implement RACERecord::RADT SubRecord
+            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+            {
+                reader.BaseStream.Position += dataSize;
+            }
+        }
+
+        public NAMESubRecord NAME;
+        public NAMESubRecord FNAME;
+        public RADTSubRecord RADT;
+        public NAMESubRecord NPCS;
+        public NAMESubRecord DESC;
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "NAME")
+            {
+                NAME = new NAMESubRecord();
+                return NAME;
+            }
+            else if (subRecordName == "FNAME")
+            {
+                FNAME = new NAMESubRecord();
+                return FNAME;
+            }
+            else if (subRecordName == "RADT")
+            {
+                RADT = new RADTSubRecord();
+                return RADT;
+            }
+            else if (subRecordName == "NPCS")
+            {
+                NPCS = new NAMESubRecord();
+                return NPCS;
+            }
+            else if (subRecordName == "DESC")
+            {
+                DESC = new NAMESubRecord();
+                return DESC;
+            }
+
+            return null;
+        }
+    }
 
     #endregion
 
     #region SKIL
 
-    public class SKILRecord : NotYetImplementedRecord { } // Skills definition
+    public class SKILRecord : Record
+    {
+        public enum SkillSpecification
+        {
+            Combat = 0, Magic, Stealth
+        }
+
+        public class SKDTSubRecord : SubRecord
+        {
+            public long Attribute;
+            public long Specification;
+            public float[] UseValue;
+
+            public SkillSpecification SkillSpecification => (SkillSpecification)Specification;
+
+            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+            {
+                Attribute = reader.ReadLEInt32();
+                Specification = reader.ReadLEInt32();
+
+                UseValue = new float[4];
+                for(var i = 0; i < 4; i++)
+                {
+                    UseValue[i] = reader.ReadLESingle();
+                }
+            }
+        }
+
+        public Int32SubRecord INDX;
+        public SKDTSubRecord SKDT;
+        public NAMESubRecord DESC;
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "INDX")
+            {
+                INDX = new Int32SubRecord();
+                return INDX;
+            }
+            else if (subRecordName == "SKDT")
+            {
+                
+                SKDT = new SKDTSubRecord();
+                return SKDT;
+            }
+            else if (subRecordName == "DESC")
+            {
+                DESC = new NAMESubRecord();
+                return DESC;
+            }
+
+            return null;
+        }
+    }
 
     #endregion
 

@@ -226,6 +226,17 @@ namespace TESUnity.ESM
             }
         }
     }
+
+    public class LONGSubRecord : SubRecord
+    {
+        public long Value { get; private set; }
+
+        public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+        {
+            Value = reader.ReadLEInt64();
+        }
+    }
+
     public class INTVTwoI32SubRecord : SubRecord
     {
         public int value0, value1;
