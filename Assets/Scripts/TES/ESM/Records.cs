@@ -2477,7 +2477,53 @@ namespace TESUnity.ESM
 
     #region SNDG
 
-    public class SNDGRecord : NotYetImplementedRecord { } // Sound Generator
+    public class SNDGRecord : Record
+    {
+        public enum SoundTypeData
+        {
+            LeftFoot = 0,
+            RightFoot = 1,
+            SwimLeft = 2,
+            SwimRight = 3,
+            Moan = 4,
+            Roar = 5,
+            Scream = 6,
+            Land = 7
+        }
+
+        public NAMESubRecord NAME;
+        public Int32SubRecord DATA;
+        public NAMESubRecord SNAM;
+        public NAMESubRecord CNAM;
+
+        public SoundTypeData SoundType => (SoundTypeData)DATA.value;
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "NAME")
+            {
+                NAME = new NAMESubRecord();
+                return NAME;
+            }
+            else if (subRecordName == "DATA")
+            {
+                DATA = new Int32SubRecord();
+                return DATA;
+            }
+            else if (subRecordName == "SNAM")
+            {
+                SNAM = new NAMESubRecord();
+                return SNAM;
+            }
+            else if (subRecordName == "CNAM")
+            {
+                CNAM = new NAMESubRecord();
+                return CNAM;
+            }
+
+            return null;
+        }
+    }
 
     #endregion
 
@@ -2495,7 +2541,45 @@ namespace TESUnity.ESM
 
     #region BSGN
 
-    public class BSGNRecord : NotYetImplementedRecord { } // Birth Sign
+    public class BSGNRecord : Record
+    {
+        public NAMESubRecord NAME;
+        public FNAMSubRecord FNAM;
+        public NAMESubRecord TNAM;
+        public NAMESubRecord DESC;
+        public NAMESubRecord NPCS;
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "NAME")
+            {
+                NAME = new NAMESubRecord();
+                return NAME;
+            }
+            else if (subRecordName == "FNAM")
+            {
+                FNAM = new FNAMSubRecord();
+                return FNAM;
+            }
+            else if (subRecordName == "TNAM")
+            {
+                TNAM = new NAMESubRecord();
+                return TNAM;
+            }
+            else if (subRecordName == "DESC")
+            {
+                DESC = new NAMESubRecord();
+                return DESC;
+            }
+            else if (subRecordName == "NPCS")
+            {
+                NPCS = new NAMESubRecord();
+                return NPCS;
+            }
+
+            return null;
+        }
+    }
 
     #endregion
 
