@@ -115,7 +115,7 @@ public static class GameObjectUtils
         if (srp != null)
         {
 #if LWRP_ENABLED
-            if (srp is LightweightRenderPipelineAsset)
+            if (srp is UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset)
             {
                 terrain.materialTemplate = LWRPMaterial.GetTerrainMaterial();
             }

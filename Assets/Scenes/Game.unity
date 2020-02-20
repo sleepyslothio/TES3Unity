@@ -1145,31 +1145,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: LightShadows
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: ExteriorCellLights
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: RendererType
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: CellDetailRadius
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: CellRadiusOnLoad
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: SunShadows
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: PostProcessingQuality
-      value: 0
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: AnimateLights
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
@@ -1180,6 +1184,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1595370636251502, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}
+      propertyPath: m_Name
+      value: Volume
+      objectReference: {fileID: 0}
+    - target: {fileID: 1595370636251502, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4034773250036686, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1212,12 +1224,18 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 114519115477436294, guid: e8dd5aef3d574fb4484f3e8c72568b4b,
-        type: 3}
-      propertyPath: sharedProfile
-      value: 
-      objectReference: {fileID: 11400000, guid: c8e2952d1aa06074b81679e88b2fd5b6,
-        type: 2}
+    - target: {fileID: 4034773250036686, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034773250036686, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034773250036686, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}
 --- !u!1 &2109136063

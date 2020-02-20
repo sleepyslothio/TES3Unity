@@ -31,7 +31,7 @@ namespace TESUnity.Components.Utilities
 #endif
 
 #if LWRP_ENABLED
-                if (GraphicsSettings.renderPipelineAsset is LightweightRenderPipelineAsset)
+                if (GraphicsSettings.renderPipelineAsset is UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset)
                 {
                     var pbr = GameSettings.Get().MaterialType == MWMaterialType.PBR;
                     shaderName = pbr ? LWRPMaterial.LitPath : LWRPMaterial.SimpleLitPath;

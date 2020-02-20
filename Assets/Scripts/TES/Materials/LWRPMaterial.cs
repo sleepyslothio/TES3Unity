@@ -7,17 +7,17 @@ namespace TESUnity.Rendering
     /// </summary>
     public class LWRPMaterial : BaseMaterial
     {
-        public const string LitPath = "Lightweight Render Pipeline/Lit";
-        public const string SimpleLitPath = "Lightweight Render Pipeline/Simple Lit";
-        private const string DiffuseParameterName = "_BaseMap";
-        private const string BumpMapParameterName = "_BumpMap";
-        private const string BumpMapKeyword = "_NORMALMAP";
+        public const string LitPath = "TESUnity/MWStandard";
+        public const string SimpleLitPath = "TESUnity/MWStandard";
+        private const string DiffuseParameterName = "Albedo";
+        private const string BumpMapParameterName = "";
+        private const string BumpMapKeyword = "";
         private static Material TerrainMaterial = null;
 
         public static Material GetTerrainMaterial()
         {
             if (TerrainMaterial == null)
-                TerrainMaterial = new Material(Shader.Find("Lightweight Render Pipeline/Terrain/Lit"));
+                TerrainMaterial = new Material(Shader.Find("Universal Render Pipeline/Terrain/Lit"));
 
             return TerrainMaterial;
         }
@@ -32,10 +32,10 @@ namespace TESUnity.Rendering
 
         protected virtual void Initialize()
         {
-            m_Shader = Shader.Find("Lightweight Render Pipeline/Lit");
-            m_CutoutShader = m_Shader;
-            m_Material = Resources.Load<Material>($"Rendering/LWRP/Materials/Lit");
-            m_CutoutMaterial = Resources.Load<Material>($"Rendering/LWRP/Materials/Lit-Cutout");
+            m_Shader = Shader.Find("TESUnity/MWStandard");
+            m_CutoutShader = Shader.Find("TESUnity/MWStandard-Cutout");
+            //m_Material = Resources.Load<Material>($"Rendering/LWRP/Materials/Lit");
+            //m_CutoutMaterial = Resources.Load<Material>($"Rendering/LWRP/Materials/Lit-Cutout");
         }
 
         protected override void SetupMaterial(Material material, MWMaterialProps mp)
@@ -45,11 +45,11 @@ namespace TESUnity.Rendering
                 var mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
                 material.SetTexture(DiffuseParameterName, mainTexture);
 
-                if (m_GenerateNormalMap && mp.textures.bumpFilePath == null)
-                    TryEnableTexture(material, GenerateNormalMap(mainTexture), BumpMapParameterName, BumpMapKeyword);
+                //if (m_GenerateNormalMap && mp.textures.bumpFilePath == null)
+                    //TryEnableTexture(material, GenerateNormalMap(mainTexture), BumpMapParameterName, BumpMapKeyword);
             }
 
-            if (mp.textures.bumpFilePath != null)
+            /*if (mp.textures.bumpFilePath != null)
                 TryEnableTexture(material, mp.textures.bumpFilePath, BumpMapParameterName, BumpMapKeyword);
 
             TryEnableTexture(material, mp.textures.glossFilePath, "_MetallicGlossMap", "_METALLICGLOSSMAP");
@@ -62,7 +62,7 @@ namespace TESUnity.Rendering
             {
                 material.SetColor("_EmissionColor", mp.emissiveColor);
                 material.EnableKeyword("_EMISSION");
-            }
+            }*/
         }
     }
 }
