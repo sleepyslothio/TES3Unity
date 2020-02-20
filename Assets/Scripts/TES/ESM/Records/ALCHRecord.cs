@@ -15,6 +15,7 @@
                 autoCalc = reader.ReadLEInt32();
             }
         }
+
         public class ENAMSubRecord : SubRecord
         {
             public short effectID;
