@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace TESUnity.ESM
 {
@@ -77,6 +79,24 @@ namespace TESUnity.ESM
                     reader.BaseStream.Position += subRecordHeader.dataSize;
                 }
             }
+        }
+    }
+
+    public class NotYetImplementedRecord : Record
+    {
+        private static List<string> UnimplementedRecord = new List<string>();
+
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        {
+            var type = GetType().Name;
+
+            if (!UnimplementedRecord.Contains(type))
+            {
+                UnimplementedRecord.Add(type);
+                Debug.Log($"{type} Not Yet Implemented");
+            }
+
+            return null;
         }
     }
 }

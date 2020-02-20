@@ -72,6 +72,7 @@ namespace TESUnity.ESM
                 }
             }
         }
+
         public class VHGTSubRecord : SubRecord
         {
             public float referenceHeight;
@@ -96,6 +97,7 @@ namespace TESUnity.ESM
                 reader.ReadSByte();
             }
         }
+
         public class WNAMSubRecord : SubRecord
         {
             // Low-LOD heightmap (signed chars)
@@ -110,6 +112,7 @@ namespace TESUnity.ESM
                 }
             }
         }
+
         public class VCLRSubRecord : SubRecord
         {
             // 24 bit RGB
@@ -126,6 +129,7 @@ namespace TESUnity.ESM
                 }
             }
         }
+
         public class VTEXSubRecord : SubRecord
         {
             public ushort[] textureIndices;
@@ -249,6 +253,7 @@ namespace TESUnity.ESM
             value1 = reader.ReadLEInt32();
         }
     }
+
     public class INDXSubRecord : INTVSubRecord { }
 
     public class FLTVSubRecord : SubRecord
@@ -290,6 +295,7 @@ namespace TESUnity.ESM
             value = reader.ReadLEInt32();
         }
     }
+
     public class UInt32SubRecord : SubRecord
     {
         public uint value;
