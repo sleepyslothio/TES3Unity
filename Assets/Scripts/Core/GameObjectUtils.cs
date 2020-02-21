@@ -5,9 +5,7 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering.HDPipeline;
 #endif
 using UnityEngine.Rendering;
-#if LWRP_ENABLED
-using UnityEngine.Rendering.LWRP;
-#endif
+using UnityEngine.Rendering.Universal;
 
 public static class GameObjectUtils
 {
@@ -112,30 +110,19 @@ public static class GameObjectUtils
         var srp = GraphicsSettings.renderPipelineAsset;
         var materialType = GameSettings.Get().MaterialType;
 
-        if (srp != null)
+        if (srp is UniversalRenderPipelineAsset)
         {
-#if LWRP_ENABLED
-            if (srp is UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset)
-            {
-                terrain.materialTemplate = LWRPMaterial.GetTerrainMaterial();
-            }
-#endif
+            terrain.materialTemplate = URPMaterial.GetTerrainMaterial();
+        }
 #if HDRP_ENABLED
-			if (srp is HDRenderPipelineAsset)
-			{
-				terrain.materialTemplate = Resources.Load<Material>("Rendering/HDRP/Materials/Lit-Terrain");
-			}
+		if (srp is HDRenderPipelineAsset)
+		{
+			terrain.materialTemplate = Resources.Load<Material>("Rendering/HDRP/Materials/Lit-Terrain");
+		}
 #endif
-        }
-        else
-        {
-            var tes = TESManager.instance;
-            terrain.materialTemplate = materialType == MWMaterialType.PBR ? tes.StandardTerrainLegacy : tes.DiffuseTerrainLegacy;
-        }
 
         terrain.terrainData = terrainData;
         terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;
-
         terrainObject.transform.position = position;
 
         return terrainObject;

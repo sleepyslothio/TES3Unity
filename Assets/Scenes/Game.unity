@@ -1188,10 +1188,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Volume
       objectReference: {fileID: 0}
-    - target: {fileID: 1595370636251502, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4034773250036686, guid: e8dd5aef3d574fb4484f3e8c72568b4b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

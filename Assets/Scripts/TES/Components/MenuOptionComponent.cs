@@ -62,9 +62,6 @@ namespace TESUnity.Components
             m_RenderPath.Setup<RendererMode>((int)m_Settings.RendererMode, SetRenderType);
             m_SRPQuality.Setup<SRPQuality>((int)m_Settings.SRPQuality, SetSRPQuality);
 
-#if !LWRP_ENABLED && !HDRP_ENABLED
-            m_SRPQuality.SetInteractable(false);
-#endif
             m_GenerateNormalMapsToggle.isOn = m_Settings.GenerateNormalMaps;
             m_GenerateNormalMapsToggle.onValueChanged.AddListener(SetGenerateNormalMaps);
 

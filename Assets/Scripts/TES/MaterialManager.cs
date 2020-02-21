@@ -49,31 +49,18 @@ namespace TESUnity.Rendering
             var renderPath = config.RendererMode;
 
             // Order is important
-            if (materialType != MWMaterialType.Unlit)
+            if (renderPath == RendererMode.UniversalRP)
             {
-#if LWRP_ENABLED
-                if (renderPath == RendererMode.LightweightRP)
-                {
-                    if (config.MaterialType == MWMaterialType.PBR)
-                        m_Material = new LWRPMaterial(textureManager);
-                    else
-                        m_Material = new LWRPSimpleMaterial(textureManager);
-                }
-#endif
+                if (config.MaterialType == MWMaterialType.PBR)
+                    m_Material = new URPMaterial(textureManager);
+                else
+                    m_Material = new URPMaterial(textureManager);
+            }
 #if HDRP_ENABLED
 			    if (renderPath == RendererMode.HDRP)
                     m_Material = new HDRPMaterial(textureManager);
 #endif
-                if (!config.IsSRP())
-                {
-                    if (materialType == MWMaterialType.PBR)
-                        m_Material = new StandardMaterial(textureManager);
-                    else
-                        m_Material = new DiffuseMaterial(textureManager);
-                }
-            }
-            else
-                m_Material = new UnliteMaterial(textureManager);
+
         }
 
         public Material BuildMaterialFromProperties(MWMaterialProps mp)

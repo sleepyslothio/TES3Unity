@@ -6,9 +6,6 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering.HDPipeline;
 #endif
 using UnityEngine.Rendering;
-#if LWRP_ENABLED
-using UnityEngine.Rendering.LWRP;
-#endif
 using UnityStandardAssets.Water;
 
 namespace TESUnity.Components
@@ -27,40 +24,31 @@ namespace TESUnity.Components
             var renderPath = config.RendererMode;
 
             // Setup SRP if enabled.
-            var srpEnabled = config.IsSRP();
-            if (!srpEnabled)
-                GraphicsSettings.renderPipelineAsset = null;
-
-#if LWRP_ENABLED || HDRP_ENABLED
-            if (srpEnabled)
-            {
-                var rendererMode = config.RendererMode;
-                var target = config.SRPQuality.ToString();
+            var rendererMode = config.RendererMode;
+            var target = config.SRPQuality.ToString();
 
 #if LWRP_ENABLED
-                if (rendererMode == RendererMode.LightweightRP)
-                {
+            if (rendererMode == RendererMode.UniversalRP)
+            {
 #if UNITY_ANDROID
 					target = "Mobile";
 #endif
-                    var lwrpAsset = Resources.Load<UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset>($"Rendering/LWRP/LightweightAsset-{target}");
-                    lwrpAsset.renderScale = config.RenderScale;
-                    GraphicsSettings.renderPipelineAsset = lwrpAsset;
-                }
-#endif
-#if HDRP_ENABLED
-                if (rendererMode == RendererMode.HDRP)
-                {
-                    GraphicsSettings.renderPipelineAsset = Resources.Load<HDRenderPipelineAsset>($"Rendering/HDRP/HDRPAsset-{target}");
-
-                    var volumeSettings = Resources.Load<GameObject>("Rendering/HDRP/HDRP-Volume");
-                    Instantiate(volumeSettings);
-                }
-#endif
-                // Only this mode is compatible with SRP.
-                config.WaterQuality = Water.WaterMode.Simple;
+                var lwrpAsset = Resources.Load<UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset>($"Rendering/LWRP/LightweightAsset-{target}");
+                lwrpAsset.renderScale = config.RenderScale;
+                GraphicsSettings.renderPipelineAsset = lwrpAsset;
             }
 #endif
+#if HDRP_ENABLED
+            if (rendererMode == RendererMode.HDRP)
+            {
+                GraphicsSettings.renderPipelineAsset = Resources.Load<HDRenderPipelineAsset>($"Rendering/HDRP/HDRPAsset-{target}");
+
+                var volumeSettings = Resources.Load<GameObject>("Rendering/HDRP/HDRP-Volume");
+                Instantiate(volumeSettings);
+            }
+#endif
+            // Only this mode is compatible with SRP.
+            config.WaterQuality = Water.WaterMode.Simple;
         }
 
         private void Start()

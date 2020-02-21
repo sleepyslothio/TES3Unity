@@ -13,8 +13,6 @@ namespace TESUnity.Rendering
         protected static Dictionary<MWMaterialProps, Material> m_existingMaterials = new Dictionary<MWMaterialProps, Material>();
         protected TextureManager m_textureManager;
         protected bool m_GenerateNormalMap;
-        protected Material m_Material = null;
-        protected Material m_CutoutMaterial = null;
         protected Shader m_Shader = null;
         protected Shader m_CutoutShader = null;
         protected string m_SrcBlendParameter = "_SrcBlend";
@@ -33,17 +31,13 @@ namespace TESUnity.Rendering
 
             if (m_existingMaterials.TryGetValue(mp, out material))
                 return material;
-                
-            material = BuildMaterial();
+
+            material = BuildMaterial(mp.alphaBlended);
 
             if (mp.alphaBlended)
             {
                 material.SetInt(m_SrcBlendParameter, (int)mp.srcBlendMode);
                 material.SetInt(m_DstBlendParameter, (int)mp.dstBlendMode);
-
-                if (m_CutoutMaterial != null)
-                    material.CopyPropertiesFromMaterial(m_CutoutMaterial);
-
                 material.SetFloat(m_CutoutParameter, 0.75f);
             }
 
@@ -56,33 +50,13 @@ namespace TESUnity.Rendering
 
         protected abstract void SetupMaterial(Material material, MWMaterialProps mp);
 
-        protected virtual Material BuildMaterial()
+        protected virtual Material BuildMaterial(bool alphaBlended)
         {
-            var material = new Material(m_Shader);
-
-            if (m_Material != null)
-                material.CopyPropertiesFromMaterial(m_Material);
-
-            return material;
-        }
-
-        protected virtual Material BuildMaterialBlended(BlendMode sourceBlendMode, BlendMode destinationBlendMode)
-        {
-            var material = BuildMaterialTested();
-            material.SetInt(m_SrcBlendParameter, (int)sourceBlendMode);
-            material.SetInt(m_DstBlendParameter, (int)destinationBlendMode);
-            return material;
-        }
-
-        protected virtual Material BuildMaterialTested(float cutoff = 0.5f)
-        {
-            var material = new Material(m_CutoutShader);
-
-            if (m_CutoutMaterial != null)
-                material.CopyPropertiesFromMaterial(m_CutoutMaterial);
-
-            material.SetFloat(m_CutoutParameter, cutoff);
-            return material;
+            if (m_CutoutShader == null || m_Shader == null)
+            {
+                var s = "opl";
+            }
+            return new Material(alphaBlended ? m_CutoutShader : m_Shader); 
         }
 
         protected void TryEnableTexture(Material material, string texturePath, string textureParameter, string shaderKeyword)

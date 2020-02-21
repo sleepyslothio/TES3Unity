@@ -5,9 +5,7 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering.HDPipeline;
 #endif
 using UnityEngine.Rendering;
-#if LWRP_ENABLED
-using UnityEngine.Rendering.LWRP;
-#endif
+using UnityEngine.Rendering.Universal;
 
 namespace TESUnity.Components.Utilities
 {
@@ -30,13 +28,10 @@ namespace TESUnity.Components.Utilities
                 material = renderer.material;
 #endif
 
-#if LWRP_ENABLED
-                if (GraphicsSettings.renderPipelineAsset is UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset)
+                if (GraphicsSettings.renderPipelineAsset is UniversalRenderPipelineAsset)
                 {
-                    var pbr = GameSettings.Get().MaterialType == MWMaterialType.PBR;
-                    shaderName = pbr ? LWRPMaterial.LitPath : LWRPMaterial.SimpleLitPath;
+                    shaderName = URPMaterial.LitPath;
                 }
-#endif
 
 #if HDRP_ENABLED
                 if (GraphicsSettings.renderPipelineAsset is HDRenderPipelineAsset)

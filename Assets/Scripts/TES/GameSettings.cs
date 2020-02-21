@@ -23,12 +23,12 @@ namespace TESUnity
 
     public enum RendererMode
     {
-        Forward = 0, Deferred, LightweightRP, HDRP
+        Forward = 0, Deferred, UniversalRP, HDRP
     }
 
     public enum AntiAliasingMode
     {
-        None = 0, MSAA2X, MSAA4X, MSAA8X, FXAA, SMAA, TAA
+        None = 0, MSAA, FXAA, SMAA, TAA
     }
 
     [Serializable]
@@ -65,18 +65,13 @@ namespace TESUnity
 
         public bool IsSRP()
         {
-            var lwrp = RendererMode == RendererMode.LightweightRP;
             var hdrp = RendererMode == RendererMode.HDRP;
-
-#if !LWRP_ENABLED
-            lwrp = false;
-#endif
 
 #if !HDRP_ENABLED
             hdrp = false;
 #endif
 
-            return lwrp || hdrp;
+            return true;
         }
 
         public static void Save()
@@ -91,23 +86,15 @@ namespace TESUnity
 
         public void CheckSettings()
         {
-#if !LWRP_ENABLED
-            if (RendererMode == RendererMode.LightweightRP)
-                RendererMode = RendererMode.Forward;
-#endif
-
 #if !HDRP_ENABLED
             if (RendererMode == RendererMode.HDRP)
-                RendererMode = RendererMode.Deferred;
+                RendererMode = RendererMode.UniversalRP;
 #endif
 
 #if UNITY_ANDROID || UNITY_IOS
             // Avoid HDRP or Deferred Rendering on mobile
             if (RendererMode == RendererMode.HDRP)
-                RendererMode = RendererMode.LightweightRP;
-
-            if (RendererMode == RendererMode.Deferred)
-                RendererMode = RendererMode.Forward;
+                RendererMode = RendererMode.UniversalRP;
 #endif
 
             // SMAA is not supported in VR.
@@ -116,8 +103,8 @@ namespace TESUnity
                 AntiAliasingMode = AntiAliasingMode.TAA;
 
             // MSAA 4X max on mobile.
-            if (AntiAliasingMode == AntiAliasingMode.MSAA8X && IsMobile())
-                AntiAliasingMode = AntiAliasingMode.MSAA4X;
+            if (AntiAliasingMode == AntiAliasingMode.MSAA && IsMobile())
+                AntiAliasingMode = AntiAliasingMode.MSAA;
 
             // FXAA post process on mobile.
             if ((AntiAliasingMode == AntiAliasingMode.SMAA || AntiAliasingMode == AntiAliasingMode.TAA) && IsMobile())

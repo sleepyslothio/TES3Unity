@@ -16,9 +16,7 @@ namespace TESUnity.Rendering
             : base(textureManager)
         {
             m_Shader = Shader.Find(LitPath);
-            m_CutoutShader = m_Shader;
-            m_Material = Resources.Load<Material>("Rendering/HDRP/Materials/Lit");
-            m_CutoutMaterial = Resources.Load<Material>("Rendering/HDRP/Materials/Lit-Cutout");
+            m_CutoutShader = Shader.Find(LitPath); ;
             m_CutoutParameter = "_Cutout";
         }
 
