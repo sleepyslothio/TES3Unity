@@ -21,12 +21,10 @@ namespace TESUnity.Components
         public int CellRadiusOnLoad = 2;
 
         [Header("Rendering")]
-        public MWMaterialType MaterialType = MWMaterialType.PBR;
-        public RendererMode RendererType = RendererMode.Deferred;
+        public RendererMode RendererType = RendererMode.UniversalRP;
         public float CameraFarClip = 500.0f;
         public SRPQuality SRPQuality = SRPQuality.High;
         public float RenderScale = 1.0f;
-        public Water.WaterMode WaterQuality = Water.WaterMode.Simple;
         public bool WaterTransparency = false;
 
         [Header("Lighting")]
@@ -68,14 +66,12 @@ namespace TESUnity.Components
             settings.FollowHead = FollowHead;
             settings.GenerateNormalMaps = GenerateNormalMap;
             settings.LightShadows = LightShadows;
-            settings.MaterialType = MaterialType;
             settings.PostProcessingQuality = PostProcessingQuality;
             settings.RendererMode = RendererType;
             settings.RenderScale = RenderScale;
             settings.RoomScale = RoomScale;
             settings.SRPQuality = SRPQuality;
             settings.SunShadows = SunShadows;
-            settings.WaterQuality = WaterQuality;
             settings.WaterTransparency = WaterTransparency;
             settings.KinematicRigidbody = KinematicRigidbodies;
             settings.HandTracking = HandTracking;

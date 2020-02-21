@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering.HDPipeline;
 #endif
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityStandardAssets.Water;
 
 namespace TESUnity.Components
@@ -21,23 +22,21 @@ namespace TESUnity.Components
         private void Awake()
         {
             var config = GameSettings.Get();
-            var renderPath = config.RendererMode;
-
-            // Setup SRP if enabled.
             var rendererMode = config.RendererMode;
             var target = config.SRPQuality.ToString();
 
-#if LWRP_ENABLED
+#if UNITY_ANDROID
+            rendererMode = RendererMode.UniversalRP
+            target = "Mobile";
+#endif
+
             if (rendererMode == RendererMode.UniversalRP)
             {
-#if UNITY_ANDROID
-					target = "Mobile";
-#endif
-                var lwrpAsset = Resources.Load<UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset>($"Rendering/LWRP/LightweightAsset-{target}");
+                var lwrpAsset = Resources.Load<UniversalRenderPipelineAsset>($"Rendering/UniversalRP/URP-{target}");
                 lwrpAsset.renderScale = config.RenderScale;
                 GraphicsSettings.renderPipelineAsset = lwrpAsset;
             }
-#endif
+
 #if HDRP_ENABLED
             if (rendererMode == RendererMode.HDRP)
             {
@@ -47,37 +46,42 @@ namespace TESUnity.Components
                 Instantiate(volumeSettings);
             }
 #endif
-            // Only this mode is compatible with SRP.
-            config.WaterQuality = Water.WaterMode.Simple;
         }
 
         private void Start()
         {
             var config = GameSettings.Get();
-            var renderPath = config.RendererMode;
-            var camera = GetComponent<Camera>();
+            var camera = Camera.main;
 
             // 1. Setup Camera
-            if (renderPath == RendererMode.Forward)
-            {
-                camera.renderingPath = RenderingPath.Forward;
-                camera.allowMSAA = true;
-            }
-            else if (renderPath == RendererMode.Deferred)
-            {
-                camera.renderingPath = RenderingPath.DeferredShading;
-                camera.allowMSAA = false;
-            }
-
             camera.farClipPlane = config.CameraFarClip;
-            camera.allowHDR = !GameSettings.IsMobile();
 
-            // 2. Setup Post Processing.
-            UpdateEffects();
-        }
+            var additionalData = camera.GetComponent<UniversalAdditionalCameraData>();
+            additionalData.renderPostProcessing = config.PostProcessingQuality != PostProcessingQuality.None;
 
-        public void UpdateEffects()
-        {
+            switch (config.AntiAliasingMode)
+            {
+                case AntiAliasingMode.None:
+                case AntiAliasingMode.MSAA:
+                    additionalData.antialiasing = AntialiasingMode.None;
+                    break;
+                case AntiAliasingMode.FXAA:
+                case AntiAliasingMode.TAA:
+                    additionalData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+                    break;
+                case AntiAliasingMode.SMAA:
+                    additionalData.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+                    break;
+            }
+
+            var urpAsset = GraphicsSettings.renderPipelineAsset as UniversalRenderPipelineAsset;
+            if (urpAsset != null)
+            {
+                if (config.AntiAliasingMode != AntiAliasingMode.MSAA)
+                {
+                    urpAsset.msaaSampleCount = 0;
+                }
+            }
         }
     }
 }

@@ -6,11 +6,6 @@ using UnityStandardAssets.Water;
 
 namespace TESUnity
 {
-    public enum MWMaterialType
-    {
-        PBR = 0, Standard, Unlit
-    }
-
     public enum PostProcessingQuality
     {
         None = 0, Low, Medium, High
@@ -23,7 +18,7 @@ namespace TESUnity
 
     public enum RendererMode
     {
-        Forward = 0, Deferred, UniversalRP, HDRP
+        UniversalRP, HDRP
     }
 
     public enum AntiAliasingMode
@@ -41,8 +36,7 @@ namespace TESUnity
 
         public bool MusicEnabled = true;
         public PostProcessingQuality PostProcessingQuality = PostProcessingQuality.High;
-        public MWMaterialType MaterialType = MWMaterialType.PBR;
-        public RendererMode RendererMode = RendererMode.Deferred;
+        public RendererMode RendererMode = RendererMode.UniversalRP;
         public SRPQuality SRPQuality = SRPQuality.High;
         public AntiAliasingMode AntiAliasingMode = AntiAliasingMode.TAA;
         public bool GenerateNormalMaps = true;
@@ -54,7 +48,6 @@ namespace TESUnity
         public int CellRadius = 2;
         public int CellDetailRadius = 2;
         public int CellRadiusOnLoad = 2;
-        public Water.WaterMode WaterQuality = Water.WaterMode.Simple;
         public bool WaterTransparency = false;
         public bool KinematicRigidbody = true;
         public bool DayNightCycle = false;
@@ -62,17 +55,6 @@ namespace TESUnity
         public bool RoomScale = false;
         public float RenderScale = 1.0f;
         public bool HandTracking = false;
-
-        public bool IsSRP()
-        {
-            var hdrp = RendererMode == RendererMode.HDRP;
-
-#if !HDRP_ENABLED
-            hdrp = false;
-#endif
-
-            return true;
-        }
 
         public static void Save()
         {

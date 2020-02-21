@@ -40,17 +40,12 @@ namespace TESUnity
 
         [Header("Debug")]
         public bool loadExtensions = false;
-        public bool loadCreatures = false;
-        public bool loadNPCs = false;
 
         #endregion
 
         public TextureManager TextureManager => m_MorrowindEngine.textureManager;
 
-        private void Awake()
-        {
-            instance = this;
-        }
+        private void Awake() => instance = this;
 
         private void Start()
         {

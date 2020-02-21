@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 11464354}
   - component: {fileID: 4663438948078211954}
   - component: {fileID: 2025599348}
-  - component: {fileID: 8899042093047213666}
+  - component: {fileID: 493214117}
   m_Layer: 0
   m_Name: TESManager
   m_TagString: Untagged
@@ -59,6 +59,9 @@ MonoBehaviour:
     type: 3}
   DiffuseTerrainLegacy: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
   StandardTerrainLegacy: {fileID: 10650, guid: 0000000000000000f000000000000000, type: 0}
+  loadExtensions: 0
+  loadCreatures: 0
+  loadNPCs: 0
 --- !u!114 &4663438948078211954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,10 +101,10 @@ MonoBehaviour:
   CellRadiusOnLoad: 2
   MaterialType: 0
   RendererType: 2
-  CameraFarClip: 500
+  CameraFarClip: 250
   SRPQuality: 2
-  RenderScale: 1
-  WaterQuality: 2
+  RenderScale: 0.95
+  WaterQuality: 0
   WaterTransparency: 0
   SunShadows: 1
   LightShadows: 1
@@ -110,10 +113,11 @@ MonoBehaviour:
   DayNightCycle: 0
   GenerateNormalMap: 1
   PostProcessingQuality: 3
-  AntiAliasing: 6
+  AntiAliasing: 4
   FollowHead: 1
   RoomScale: 1
---- !u!114 &8899042093047213666
+  HandTracking: 1
+--- !u!114 &493214117
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,13 +126,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 156636}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fea5e6a41913894c8a499534e6b19d5, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e8e298e5c40ff74baee3e6259ce0c1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShotKey: 9
-  m_Show360ModKey: 304
-  m_Show360StereoModKey: 308
-  m_ScreenshotSuperSampling: 1
-  m_StereoSeparation: 0.064
-  m_TextureSize: 1024
-  m_EditorOnly: 0

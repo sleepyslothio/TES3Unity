@@ -108,7 +108,6 @@ public static class GameObjectUtils
 
         var terrain = terrainObject.AddComponent<Terrain>();
         var srp = GraphicsSettings.renderPipelineAsset;
-        var materialType = GameSettings.Get().MaterialType;
 
         if (srp is UniversalRenderPipelineAsset)
         {

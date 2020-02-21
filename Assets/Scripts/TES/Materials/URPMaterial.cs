@@ -7,8 +7,8 @@ namespace TESUnity.Rendering
     /// </summary>
     public class URPMaterial : BaseMaterial
     {
-        public const string LitPath = "TESUnity/MWStandard";
-        public const string LitCutoffPath = "TESUnity/MWStandard-Cutoff";
+        public const string LitPath = "TESUnity/URP-Lit";
+        public const string LitCutoffPath = "TESUnity/URP-Lit-Cutoff";
         private const string DiffuseParameterName = "Albedo";
         private const string BumpMapParameterName = "";
         private const string BumpMapKeyword = "";

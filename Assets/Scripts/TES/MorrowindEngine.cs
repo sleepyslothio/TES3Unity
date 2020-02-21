@@ -84,13 +84,8 @@ namespace TESUnity
             m_WaterObj.SetActive(false);
 
             var water = m_WaterObj.GetComponent<Water>();
-            water.waterMode = config.WaterQuality;
-
-            if (GraphicsSettings.renderPipelineAsset != null)
-            {
-                var renderer = water.GetComponent<MeshRenderer>();
-                renderer.sharedMaterial.SetColor("_RefrColor", new Color(0.58f, 0.7f, 1.0f));
-            }
+            var renderer = water.GetComponent<MeshRenderer>();
+            renderer.sharedMaterial.SetColor("_RefrColor", new Color(0.58f, 0.7f, 1.0f));
 
             if (!GameSettings.Get().WaterTransparency)
             {
@@ -107,8 +102,12 @@ namespace TESUnity
 
 #if UNITY_STANDALONE
             if (!XRManager.IsXREnabled())
-                Cursor.SetCursor(textureManager.LoadTexture("tx_cursor", true), Vector2.zero, CursorMode.Auto);
+            {
+                var texture = textureManager.LoadTexture("tx_cursor", true);
+                Cursor.SetCursor(texture, Vector2.zero, CursorMode.Auto);
+            }
 #endif
+
             UIManager = uiManager;
             UIManager.Active = true;
 

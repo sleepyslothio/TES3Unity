@@ -15,7 +15,7 @@ namespace UnityStandardAssets.Water
         };
 
 
-        public WaterMode waterMode = WaterMode.Refractive;
+        public WaterMode waterMode = WaterMode.Simple;
         public bool disablePixelLights = true;
         public int textureSize = 256;
         public float clipPlaneOffset = 0.07f;
@@ -31,6 +31,11 @@ namespace UnityStandardAssets.Water
         private int m_OldReflectionTextureSize;
         private int m_OldRefractionTextureSize;
         private static bool s_InsideWater;
+
+        public void Start()
+        {
+            //waterMode = WaterMode.Simple; // Force it because we use SRP
+        }
 
 
         // This is called when it's known that the object will be rendered by some

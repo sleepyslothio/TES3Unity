@@ -394,14 +394,14 @@ namespace TESUnity
             // Load animation file.
             if (NPC_.MODL != null)
             {
-                //var anim = nifManager.InstantiateNIF($"meshes\\{NPC_.MODL.value}");
+                var anim = nifManager.InstantiateNIF($"meshes\\{NPC_.MODL.value}");
                 //anim.name = "NPC_Anim";
                 //anim.transform.parent = npcTransform;
             }
 
             var head = new GameObject("Head");
             head.transform.parent = npcTransform;
-            head.transform.localPosition = new Vector3(0, 1.4f, 0); // FIXME
+            head.transform.localPosition = new Vector3(0, 1.2f, 0); // FIXME
 
             // Load head model
             if (NPC_.BNAM != null)
@@ -455,7 +455,7 @@ namespace TESUnity
             var capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             capsule.transform.parent = body.transform;
             capsule.transform.localPosition = new Vector3(0, 0.5f, 0);
-            capsule.transform.localScale = new Vector3(0.25f, 0.8f, 0.25f);
+            capsule.transform.localScale = new Vector3(0.25f, 0.6f, 0.25f);
 
             GameObject CreateBodyPart(string path, Transform parent)
             {

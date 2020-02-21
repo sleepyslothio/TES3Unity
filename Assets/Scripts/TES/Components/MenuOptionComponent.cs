@@ -19,8 +19,6 @@ namespace TESUnity.Components
         [SerializeField]
         private UISelectorWidget m_PostProcessDd = null;
         [SerializeField]
-        private UISelectorWidget m_MaterialDd = null;
-        [SerializeField]
         private UISelectorWidget m_RenderPath = null;
         [SerializeField]
         private UISelectorWidget m_SRPQuality = null;
@@ -43,6 +41,8 @@ namespace TESUnity.Components
         [SerializeField]
         private Toggle m_RoomScaleToggle = null;
         [SerializeField]
+        private Toggle m_HandTrackingToggle = null;
+        [SerializeField]
         private UISelectorWidget m_RenderScaleDd = null;
 
         private void Awake()
@@ -58,7 +58,6 @@ namespace TESUnity.Components
             m_CellRadiusLoad.Setup(ref values, m_Settings.CellRadiusOnLoad.ToString(), SetCellRadiusLoad);
 
             m_PostProcessDd.Setup<PostProcessingQuality>((int)m_Settings.PostProcessingQuality, SetPostProcessing);
-            m_MaterialDd.Setup<MWMaterialType>((int)m_Settings.MaterialType, SetMaterialQuality);
             m_RenderPath.Setup<RendererMode>((int)m_Settings.RendererMode, SetRenderType);
             m_SRPQuality.Setup<SRPQuality>((int)m_Settings.SRPQuality, SetSRPQuality);
 
@@ -88,6 +87,9 @@ namespace TESUnity.Components
 
             m_RoomScaleToggle.isOn = m_Settings.RoomScale;
             m_RoomScaleToggle.onValueChanged.AddListener(SetRoomScale);
+
+            m_HandTrackingToggle.isOn = m_Settings.HandTracking;
+            m_HandTrackingToggle.onValueChanged.AddListener(SetHandTracking);
 
             values = new[] { "50", "60", "70", "80", "90", "100" };
             m_RenderScaleDd.Setup(ref values, m_Settings.RenderScale.ToString(), SetRenderScale);
@@ -144,11 +146,6 @@ namespace TESUnity.Components
         public void SetPostProcessing(int index)
         {
             m_Settings.PostProcessingQuality = (PostProcessingQuality)index;
-        }
-
-        public void SetMaterialQuality(int index)
-        {
-            m_Settings.MaterialType = (MWMaterialType)index;
         }
 
         public void SetRenderType(int index)
@@ -239,6 +236,11 @@ namespace TESUnity.Components
         private void SetRoomScale(bool isOn)
         {
             m_Settings.RoomScale = isOn;
+        }
+
+        private void SetHandTracking(bool isOn)
+        {
+            m_Settings.HandTracking = isOn;
         }
     }
 }

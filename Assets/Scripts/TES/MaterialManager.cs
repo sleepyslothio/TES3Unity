@@ -44,23 +44,18 @@ namespace TESUnity.Rendering
         {
             TextureManager = textureManager;
 
-            var config = GameSettings.Get();
-            var materialType = config.MaterialType;
-            var renderPath = config.RendererMode;
-
-            // Order is important
-            if (renderPath == RendererMode.UniversalRP)
-            {
-                if (config.MaterialType == MWMaterialType.PBR)
-                    m_Material = new URPMaterial(textureManager);
-                else
-                    m_Material = new URPMaterial(textureManager);
-            }
 #if HDRP_ENABLED
-			    if (renderPath == RendererMode.HDRP)
-                    m_Material = new HDRPMaterial(textureManager);
+            var config = GameSettings.Get();
+			if (config.RendererMode == RendererMode.HDRP)
+            {            
+                m_Material = new HDRPMaterial(textureManager);
+            }   
 #endif
 
+            if (m_Material == null)
+            {
+                m_Material = new URPMaterial(textureManager);
+            }
         }
 
         public Material BuildMaterialFromProperties(MWMaterialProps mp)

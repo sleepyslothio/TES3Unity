@@ -109,6 +109,7 @@ namespace TESUnity
 			}
 			public static NiObject ReadNiObject(UnityBinaryReader reader)
 			{
+				// TODO: When loading a skeleton, a length is lesser than 0. That prevent us to load anything.
 				var nodeTypeBytes = reader.ReadLELength32PrefixedBytes();
 
 				if(StringUtils.Equals(nodeTypeBytes, "NiNode"))

@@ -184,6 +184,8 @@ namespace TESUnity.ESM
                     RecordsByType.Add(recordType, recordsOfSameType);
                 }
 
+                var name = record.GetType().Name.Replace("Record", "");
+
                 // TODO: Record.FriendlyName
                 // Add the record to the object dictionary if applicable.
                 if (record is GMSTRecord)
