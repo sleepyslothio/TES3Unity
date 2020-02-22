@@ -5,232 +5,232 @@ using UnityEngine;
 
 namespace TESUnity
 {
-	public class BSAFile : IDisposable
-	{
-		public struct FileNameHash
-		{
-			public uint value1;
-			public uint value2;
+    public class BSAFile : IDisposable
+    {
+        public struct FileNameHash
+        {
+            public uint value1;
+            public uint value2;
 
-			public override int GetHashCode()
-			{
-				return unchecked((int)(value1 ^ value2));
-			}
-		}
+            public override int GetHashCode()
+            {
+                return unchecked((int)(value1 ^ value2));
+            }
+        }
 
-		public class FileMetadata
-		{
-			public uint size;
-			public uint offsetInDataSection;
-			public string path;
-			public FileNameHash pathHash;
-		}
+        public class FileMetadata
+        {
+            public uint size;
+            public uint offsetInDataSection;
+            public string path;
+            public FileNameHash pathHash;
+        }
 
 
-		/* Private */
-		private UnityBinaryReader reader;
+        /* Private */
+        private UnityBinaryReader reader;
 
-		private long hashTablePosition;
-		private long fileDataSectionPostion;
+        private long hashTablePosition;
+        private long fileDataSectionPostion;
 
-		/* Public */
-		public byte[] version; // 4 bytes
-		public FileMetadata[] fileMetadatas;
-        
-		public Dictionary<FileNameHash, FileMetadata> fileMetadataHashTable;
-		
-		public VirtualFileSystem.Directory rootDir;
+        /* Public */
+        public byte[] version; // 4 bytes
+        public FileMetadata[] fileMetadatas;
 
-		public bool isAtEOF
-		{
-			get
-			{
+        public Dictionary<FileNameHash, FileMetadata> fileMetadataHashTable;
+
+        public VirtualFileSystem.Directory rootDir;
+
+        public bool isAtEOF
+        {
+            get
+            {
                 return reader.BaseStream.Position >= reader.BaseStream.Length;
-			}
-		}
+            }
+        }
 
-		public BSAFile(string filePath)
-		{
-			reader = new UnityBinaryReader(File.Open(filePath, FileMode.Open, FileAccess.Read));
-			ReadMetadata();
-		}
+        public BSAFile(string filePath)
+        {
+            reader = new UnityBinaryReader(File.Open(filePath, FileMode.Open, FileAccess.Read));
+            ReadMetadata();
+        }
 
-		void IDisposable.Dispose()
-		{
-			Close();
-		}
+        void IDisposable.Dispose()
+        {
+            Close();
+        }
 
-		~BSAFile()
-		{
-			Close();
-		}
+        ~BSAFile()
+        {
+            Close();
+        }
 
-		public void Close()
-		{
-			if(reader != null)
-			{
-				reader.Close();
-				reader = null;
-			}
-		}
+        public void Close()
+        {
+            if (reader != null)
+            {
+                reader.Close();
+                reader = null;
+            }
+        }
 
-		/// <summary>
-		/// Determines whether the BSA archive contains a file.
-		/// </summary>
-		public bool ContainsFile(string filePath)
-		{
-			return fileMetadataHashTable.ContainsKey(HashFilePath(filePath));
-		}
+        /// <summary>
+        /// Determines whether the BSA archive contains a file.
+        /// </summary>
+        public bool ContainsFile(string filePath)
+        {
+            return fileMetadataHashTable.ContainsKey(HashFilePath(filePath));
+        }
 
-		/// <summary>
-		/// Loads an archived file's data.
-		/// </summary>
-		public byte[] LoadFileData(string filePath)
-		{
-			var hash = HashFilePath(filePath);
-			FileMetadata metadata;
+        /// <summary>
+        /// Loads an archived file's data.
+        /// </summary>
+        public byte[] LoadFileData(string filePath)
+        {
+            var hash = HashFilePath(filePath);
+            FileMetadata metadata;
 
-			if(fileMetadataHashTable.TryGetValue(hash, out metadata))
-			{
-				return LoadFileData(metadata);
-			}
-			else
-			{
-				throw new FileNotFoundException("Could not find file \"" + filePath + "\" in a BSA file.");
-			}
-		}
+            if (fileMetadataHashTable.TryGetValue(hash, out metadata))
+            {
+                return LoadFileData(metadata);
+            }
+            else
+            {
+                throw new FileNotFoundException("Could not find file \"" + filePath + "\" in a BSA file.");
+            }
+        }
 
-		/// <summary>
-		/// Loads an archived file's data.
-		/// </summary>
-		public byte[] LoadFileData(FileMetadata fileMetadata)
-		{
-			reader.BaseStream.Position = fileDataSectionPostion + fileMetadata.offsetInDataSection;
+        /// <summary>
+        /// Loads an archived file's data.
+        /// </summary>
+        public byte[] LoadFileData(FileMetadata fileMetadata)
+        {
+            reader.BaseStream.Position = fileDataSectionPostion + fileMetadata.offsetInDataSection;
 
-			return reader.ReadBytes((int)fileMetadata.size);
-		}
-        
-		private void ReadMetadata()
-		{
-			// Read the header.
-			version = reader.ReadBytes(4);
-			uint hashTableOffsetFromEndOfHeader = reader.ReadLEUInt32(); // minus header size (12 bytes)
-			uint fileCount = reader.ReadLEUInt32();
+            return reader.ReadBytes((int)fileMetadata.size);
+        }
 
-			// Calculate some useful values.
-			var headerSize = reader.BaseStream.Position;
-			hashTablePosition = headerSize + hashTableOffsetFromEndOfHeader;
-			fileDataSectionPostion = hashTablePosition + (8 * fileCount);
+        private void ReadMetadata()
+        {
+            // Read the header.
+            version = reader.ReadBytes(4);
+            uint hashTableOffsetFromEndOfHeader = reader.ReadLEUInt32(); // minus header size (12 bytes)
+            uint fileCount = reader.ReadLEUInt32();
 
-			// Create file metadatas.
-			fileMetadatas = new FileMetadata[fileCount];
+            // Calculate some useful values.
+            var headerSize = reader.BaseStream.Position;
+            hashTablePosition = headerSize + hashTableOffsetFromEndOfHeader;
+            fileDataSectionPostion = hashTablePosition + (8 * fileCount);
 
-			for(int i = 0; i < fileCount; i++)
-			{
-				fileMetadatas[i] = new FileMetadata();
-			}
+            // Create file metadatas.
+            fileMetadatas = new FileMetadata[fileCount];
 
-			// Read file sizes/offsets.
-			for(int i = 0; i < fileCount; i++)
-			{
-				fileMetadatas[i].size = reader.ReadLEUInt32();
-				fileMetadatas[i].offsetInDataSection = reader.ReadLEUInt32();
-			}
+            for (int i = 0; i < fileCount; i++)
+            {
+                fileMetadatas[i] = new FileMetadata();
+            }
 
-			// Read filename offsets.
-			var filenameOffsets = new uint[fileCount]; // relative offset in filenames section
+            // Read file sizes/offsets.
+            for (int i = 0; i < fileCount; i++)
+            {
+                fileMetadatas[i].size = reader.ReadLEUInt32();
+                fileMetadatas[i].offsetInDataSection = reader.ReadLEUInt32();
+            }
 
-			for(int i = 0; i < fileCount; i++)
-			{
-				filenameOffsets[i] = reader.ReadLEUInt32();
-			}
+            // Read filename offsets.
+            var filenameOffsets = new uint[fileCount]; // relative offset in filenames section
 
-			// Read filenames.
-			var filenamesSectionStartPos = reader.BaseStream.Position;
-			var filenameBuffer = new List<byte>(64);
+            for (int i = 0; i < fileCount; i++)
+            {
+                filenameOffsets[i] = reader.ReadLEUInt32();
+            }
 
-			for(int i = 0; i < fileCount; i++)
-			{
-				reader.BaseStream.Position = filenamesSectionStartPos + filenameOffsets[i];
+            // Read filenames.
+            var filenamesSectionStartPos = reader.BaseStream.Position;
+            var filenameBuffer = new List<byte>(64);
 
-				filenameBuffer.Clear();
-				byte curCharAsByte;
+            for (int i = 0; i < fileCount; i++)
+            {
+                reader.BaseStream.Position = filenamesSectionStartPos + filenameOffsets[i];
 
-				while((curCharAsByte = reader.ReadByte()) != 0)
-				{
-					filenameBuffer.Add(curCharAsByte);
-				}
+                filenameBuffer.Clear();
+                byte curCharAsByte;
 
-				fileMetadatas[i].path = System.Text.Encoding.ASCII.GetString(filenameBuffer.ToArray());
-			}
+                while ((curCharAsByte = reader.ReadByte()) != 0)
+                {
+                    filenameBuffer.Add(curCharAsByte);
+                }
 
-			// Read filename hashes.
-			reader.BaseStream.Position = hashTablePosition;
+                fileMetadatas[i].path = System.Text.Encoding.ASCII.GetString(filenameBuffer.ToArray());
+            }
 
-			for(int i = 0; i < fileCount; i++)
-			{
-				fileMetadatas[i].pathHash.value1 = reader.ReadLEUInt32();
-				fileMetadatas[i].pathHash.value2 = reader.ReadLEUInt32();
-			}
+            // Read filename hashes.
+            reader.BaseStream.Position = hashTablePosition;
 
-			// Create the file metadata hash table.
-			fileMetadataHashTable = new Dictionary<FileNameHash, FileMetadata>();
+            for (int i = 0; i < fileCount; i++)
+            {
+                fileMetadatas[i].pathHash.value1 = reader.ReadLEUInt32();
+                fileMetadatas[i].pathHash.value2 = reader.ReadLEUInt32();
+            }
 
-			for(int i = 0; i < fileCount; i++)
-			{
-				fileMetadataHashTable[fileMetadatas[i].pathHash] = fileMetadatas[i];
-			}
+            // Create the file metadata hash table.
+            fileMetadataHashTable = new Dictionary<FileNameHash, FileMetadata>();
 
-			// Create a virtual directory tree.
-			rootDir = new VirtualFileSystem.Directory();
+            for (int i = 0; i < fileCount; i++)
+            {
+                fileMetadataHashTable[fileMetadatas[i].pathHash] = fileMetadatas[i];
+            }
 
-			foreach(var fileMetadata in fileMetadatas)
-			{
-				rootDir.CreateDescendantFile(fileMetadata.path);
-			}
+            // Create a virtual directory tree.
+            rootDir = new VirtualFileSystem.Directory();
 
-			// Skip to the file data section.
-			reader.BaseStream.Position = fileDataSectionPostion;
-		}
+            foreach (var fileMetadata in fileMetadatas)
+            {
+                rootDir.CreateDescendantFile(fileMetadata.path);
+            }
 
-		private FileNameHash HashFilePath(string filePath)
-		{
-			filePath = filePath.Replace('/', '\\');
-			filePath = filePath.ToLower();
+            // Skip to the file data section.
+            reader.BaseStream.Position = fileDataSectionPostion;
+        }
 
-			FileNameHash hash = new FileNameHash();
+        private FileNameHash HashFilePath(string filePath)
+        {
+            filePath = filePath.Replace('/', '\\');
+            filePath = filePath.ToLower();
 
-			uint len = (uint)filePath.Length;
-			uint l = (len >> 1);
-			int off, i;
-			uint sum, temp, n;
+            FileNameHash hash = new FileNameHash();
 
-			sum = 0;
-			off = 0;
+            uint len = (uint)filePath.Length;
+            uint l = (len >> 1);
+            int off, i;
+            uint sum, temp, n;
 
-			for(i = 0; i < l; i++)
-			{
-				sum ^= (uint)(filePath[i]) << (off & 0x1F);
-				off += 8;
-			}
+            sum = 0;
+            off = 0;
 
-			hash.value1 = sum;
+            for (i = 0; i < l; i++)
+            {
+                sum ^= (uint)(filePath[i]) << (off & 0x1F);
+                off += 8;
+            }
 
-			sum = 0;
-			off = 0;
+            hash.value1 = sum;
 
-			for(; i < len; i++)
-			{
-				temp = (uint)(filePath[i]) << (off & 0x1F);
-				sum ^= temp;
-				n = temp & 0x1F;
-				sum = (sum << (32 - (int)n)) | (sum >> (int)n);
-				off += 8;
-			}
+            sum = 0;
+            off = 0;
 
-			hash.value2 = sum;
+            for (; i < len; i++)
+            {
+                temp = (uint)(filePath[i]) << (off & 0x1F);
+                sum ^= temp;
+                n = temp & 0x1F;
+                sum = (sum << (32 - (int)n)) | (sum >> (int)n);
+                off += 8;
+            }
 
-			return hash;
-		}
-	}
+            hash.value2 = sum;
+
+            return hash;
+        }
+    }
 }

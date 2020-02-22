@@ -6,11 +6,13 @@ namespace TESUnity
 {
     using ESM;
     using System.Threading.Tasks;
+    using TESUnity.NIF;
     using UnityEngine;
 
     public class MorrowindDataReader : IDisposable
     {
         private string _dataFilePath;
+        private bool _disposing;
         public ESMFile MorrowindESMFile;
         public BSAFile MorrowindBSAFile;
         public ESMFile BloodmoonESMFile;
@@ -35,78 +37,46 @@ namespace TESUnity
             }
         }
 
-        void IDisposable.Dispose()
-        {
-            Close();
-        }
+        public void Dispose() => Dispose(true);
 
-        ~MorrowindDataReader()
+        protected void Dispose(bool disposing)
         {
+            if (_disposing)
+            {
+                return;
+            }
+
+            _disposing = true;
+
             Close();
         }
 
         public void Close()
         {
-            if (TESManager.instance.loadExtensions)
-            {
-                TribunalBSAFile.Close();
-                TribunalESMFile.Close();
+            TribunalBSAFile?.Close();
+            TribunalESMFile?.Close();
 
-                BloodmoonBSAFile.Close();
-                BloodmoonESMFile.Close();
-            }
+            BloodmoonBSAFile?.Close();
+            BloodmoonESMFile?.Close();
 
             MorrowindBSAFile.Close();
             MorrowindESMFile.Close();
         }
 
-        public Task<Texture2DInfo> LoadTextureAsync(string texturePath)
-        {
-#if LOAD_LOCAL_DATA
-            var localFilePath = FindLocalTexture(texturePath);
-            if (localFilePath != null)
-            {
-                return LoadLocalTexture(localFilePath);
-            }
-#endif
+        #region Texture Loading
 
-            var bsaFilePath = FindTexture(MorrowindBSAFile, texturePath);
-            if (bsaFilePath != null)
-            {
-                return LoadTextureAsync(MorrowindBSAFile, bsaFilePath);
-            }
-            else
-            {
-                Debug.LogWarning("Could not find file \"" + texturePath + "\" in a BSA file.");
-                return Task.FromResult<Texture2DInfo>(null);
-            }
+        public Texture2DInfo LoadTexture(string texturePath)
+        {
+            return LoadTexture(MorrowindBSAFile, texturePath);
         }
 
-        private Task<Texture2DInfo> LoadLocalTexture(string filePath)
+        public Texture2DInfo LoadTexture(BSAFile bsaFile, string texturePath)
         {
-            return Task.Run(() =>
+            var path = FindTexture(bsaFile, texturePath);
+            if (path != null)
             {
-                var fileExtension = Path.GetExtension(filePath);
-
-                if (fileExtension?.ToLower() == ".dds")
-                {
-                    var textureData = File.ReadAllBytes(filePath);
-                    return DDS.DDSReader.LoadDDSTexture(new MemoryStream(textureData));
-                }
-                else
-                {
-                    throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
-                }
-            });
-        }
-
-        private Task<Texture2DInfo> LoadTextureAsync(BSAFile bsaFile, string bsaFilePath)
-        {
-            var fileData = bsaFile.LoadFileData(bsaFilePath);
-
-            return Task.Run(() =>
-            {
-                var fileExtension = Path.GetExtension(bsaFilePath);
+                var fileData = bsaFile.LoadFileData(path);
+                var fileExtension = Path.GetExtension(path);
 
                 if (fileExtension?.ToLower() == ".dds")
                 {
@@ -114,48 +84,63 @@ namespace TESUnity
                 }
                 else
                 {
-                    throw new NotSupportedException($"Unsupported texture type: {fileExtension}");
+                    Debug.LogWarning($"Unsupported texture type: {fileExtension}");
                 }
-            });
-        }
-
-        public Task<NIF.NiFile> LoadNifAsync(string filePath)
-        {
-#if LOAD_LOCAL_DATA
-            var localPath = Path.Combine(_dataFilePath, filePath);
-            if (File.Exists(localPath))
-            {
-                return LoadLocalNifAsync(filePath, localPath);
             }
-#endif
-            return LoadNifAsync(MorrowindBSAFile, filePath);
+            else
+            {
+                Debug.LogWarning("Could not find file \"" + texturePath + "\" in a BSA file.");
+            }
+
+            return null;
         }
 
-        private Task<NIF.NiFile> LoadNifAsync(BSAFile bsaFile, string filePath)
+        private Texture2DInfo LoadLocalTexture(string filePath)
+        {
+            var fileExtension = Path.GetExtension(filePath);
+
+            if (fileExtension?.ToLower() == ".dds")
+            {
+                var textureData = File.ReadAllBytes(filePath);
+                return DDS.DDSReader.LoadDDSTexture(new MemoryStream(textureData));
+            }
+
+            return null;
+        }
+
+        #endregion
+
+        #region Model Loading
+
+        public NiFile LoadNif(string filePath)
+        {
+            return LoadNif(MorrowindBSAFile, filePath);
+        }
+
+        public NiFile LoadNif(BSAFile bsaFile, string filePath)
         {
             var fileData = bsaFile.LoadFileData(filePath);
-
-            return Task.Run(() =>
-            {
-                var file = new NIF.NiFile(Path.GetFileNameWithoutExtension(filePath));
-                file.Deserialize(new UnityBinaryReader(new MemoryStream(fileData)));
-
-                return file;
-            });
+            var file = new NiFile(Path.GetFileNameWithoutExtension(filePath));
+            file.Deserialize(new UnityBinaryReader(new MemoryStream(fileData)));
+            return file;
         }
 
-        private Task<NIF.NiFile> LoadLocalNifAsync(string filePath, string localFilePath)
+        private NiFile LoadLocalNif(string filePath)
         {
-            var fileData = File.ReadAllBytes(localFilePath);
+            var localPath = Path.Combine(_dataFilePath, filePath);
 
-            return Task.Run(() =>
+            if (File.Exists(localPath))
             {
-                var file = new NIF.NiFile(Path.GetFileNameWithoutExtension(filePath));
+                var fileData = File.ReadAllBytes(localPath);
+                var file = new NiFile(Path.GetFileNameWithoutExtension(filePath));
                 file.Deserialize(new UnityBinaryReader(new MemoryStream(fileData)));
-
                 return file;
-            });
+            }
+
+            return null;
         }
+
+        #endregion
 
         public LTEXRecord FindLTEXRecord(int index)
         {
@@ -167,7 +152,9 @@ namespace TESUnity
                 LTEX = (LTEXRecord)records[i];
 
                 if (LTEX.INTV.value == index)
+                {
                     return LTEX;
+                }
             }
 
             return null;
@@ -195,7 +182,9 @@ namespace TESUnity
                 CELL = (CELLRecord)records[i];
 
                 if (CELL.NAME.value == cellName)
+                {
                     return CELL;
+                }
             }
 
             return null;
@@ -211,7 +200,9 @@ namespace TESUnity
                 CELL = (CELLRecord)records[i];
 
                 if (CELL.gridCoords.x == gridCoords.x && CELL.gridCoords.y == gridCoords.y)
+                {
                     return CELL;
+                }
             }
 
             return null;

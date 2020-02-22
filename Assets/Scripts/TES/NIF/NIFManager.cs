@@ -14,8 +14,6 @@ namespace TESUnity
         private MorrowindDataReader _dataReader;
         private MaterialManager _materialManager;
         private GameObject _prefabContainerObj;
-
-        private Dictionary<string, Task<NiFile>> nifFilePreloadTasks = new Dictionary<string, Task<NiFile>>();
         private Dictionary<string, GameObject> nifPrefabs = new Dictionary<string, GameObject>();
 
         public NIFManager(MorrowindDataReader dataReader, MaterialManager materialManager)
@@ -55,18 +53,6 @@ namespace TESUnity
 
         public void PreloadNifFileAsync(string filePath)
         {
-            // If the NIF prefab has already been created we don't have to load the file again.
-            if (nifPrefabs.ContainsKey(filePath))
-            {
-                return;
-            }
-
-            // Start loading the NIF asynchronously if we haven't already started.
-            if (!nifFilePreloadTasks.TryGetValue(filePath, out Task<NiFile> nifFileLoadingTask))
-            {
-                nifFileLoadingTask = _dataReader.LoadNifAsync(filePath);
-                nifFilePreloadTasks[filePath] = nifFileLoadingTask;
-            }
         }
 
         private GameObject LoadNifPrefabDontAddToPrefabCache(string filePath)
@@ -75,22 +61,7 @@ namespace TESUnity
 
             PreloadNifFileAsync(filePath);
 
-            var file = nifFilePreloadTasks[filePath].Result;
-            nifFilePreloadTasks.Remove(filePath);
-
-            // Start pre-loading all the NIF's textures.
-            NiSourceTexture anNiSourceTexture = null;
-
-            foreach (var anNiObject in file.blocks)
-            {
-                anNiSourceTexture = anNiObject as NiSourceTexture;
-
-                if (anNiSourceTexture != null && !string.IsNullOrEmpty(anNiSourceTexture.fileName))
-                {
-                    _materialManager.TextureManager.PreloadTextureFileAsync(anNiSourceTexture.fileName);
-                }
-            }
-
+            var file = _dataReader.LoadNif(filePath);
             var objBuilder = new NIFObjectBuilder(file, _materialManager);
             var prefab = objBuilder.BuildObject();
             prefab.transform.parent = _prefabContainerObj.transform;
