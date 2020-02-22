@@ -34,10 +34,6 @@ namespace TESUnity
         public GameObject playerPrefab;
         public GameObject waterPrefab;
 
-        [Header("Misc")]
-        public Material DiffuseTerrainLegacy;
-        public Material StandardTerrainLegacy;
-
         [Header("Debug")]
         public bool loadExtensions = false;
 
