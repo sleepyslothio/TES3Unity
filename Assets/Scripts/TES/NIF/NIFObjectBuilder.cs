@@ -8,32 +8,36 @@ namespace TESUnity
 
     // TODO: Investigate merging meshes.
     // TODO: Investigate merging collision nodes with visual nodes.
-    public class NIFObjectBuilder
+    public sealed class NIFObjectBuilder
     {
+        private NiFile _file;
+        private MaterialManager _materialManager;
+
         public NIFObjectBuilder(NiFile file, MaterialManager materialManager)
         {
-            this.file = file;
-            this.materialManager = materialManager;
+            _file = file;
+            _materialManager = materialManager;
         }
+
         public GameObject BuildObject()
         {
-            Debug.Assert((file.name != null) && (file.footer.roots.Length > 0));
+            Debug.Assert((_file.name != null) && (_file.footer.roots.Length > 0));
 
             // NIF files can have any number of root NiObjects.
             // If there is only one root, instantiate that directly.
             // If there are multiple roots, create a container GameObject and parent it to the roots.
-            if (file.footer.roots.Length == 1)
+            if (_file.footer.roots.Length == 1)
             {
-                var rootNiObject = file.blocks[file.footer.roots[0]];
+                var rootNiObject = _file.blocks[_file.footer.roots[0]];
 
                 GameObject gameObject = InstantiateRootNiObject(rootNiObject);
 
                 // If the file doesn't contain any NiObjects we are looking for, return an empty GameObject.
                 if (gameObject == null)
                 {
-                    Debug.Log(file.name + " resulted in a null GameObject when instantiated.");
+                    Debug.Log(_file.name + " resulted in a null GameObject when instantiated.");
 
-                    gameObject = new GameObject(file.name);
+                    gameObject = new GameObject(_file.name);
                 }
                 // If gameObject != null and the root NiObject is an NiNode, discard any transformations (Morrowind apparently does).
                 else if (rootNiObject is NiNode)
@@ -47,13 +51,13 @@ namespace TESUnity
             }
             else
             {
-                Debug.Log(file.name + " has multiple roots.");
+                Debug.Log(_file.name + " has multiple roots.");
 
-                GameObject gameObject = new GameObject(file.name);
+                GameObject gameObject = new GameObject(_file.name);
 
-                foreach (var rootRef in file.footer.roots)
+                foreach (var rootRef in _file.footer.roots)
                 {
-                    var child = InstantiateRootNiObject(file.blocks[rootRef]);
+                    var child = InstantiateRootNiObject(_file.blocks[rootRef]);
 
                     if (child != null)
                     {
@@ -65,9 +69,6 @@ namespace TESUnity
             }
         }
 
-        private NiFile file;
-        private MaterialManager materialManager;
-
         private GameObject InstantiateRootNiObject(NiObject obj)
         {
             var gameObject = InstantiateNiObject(obj);
@@ -75,7 +76,7 @@ namespace TESUnity
             bool shouldAddMissingColliders, isMarker;
             ProcessExtraData(obj, out shouldAddMissingColliders, out isMarker);
 
-            if ((file.name != null) && IsMarkerFileName(file.name))
+            if ((_file.name != null) && IsMarkerFileName(_file.name))
             {
                 shouldAddMissingColliders = false;
                 isMarker = true;
@@ -94,6 +95,7 @@ namespace TESUnity
 
             return gameObject;
         }
+
         private void ProcessExtraData(NiObject obj, out bool shouldAddMissingColliders, out bool isMarker)
         {
             shouldAddMissingColliders = true;
@@ -102,7 +104,7 @@ namespace TESUnity
             if (obj is NiObjectNET)
             {
                 var objNET = (NiObjectNET)obj;
-                var extraData = (objNET.extraData.value >= 0) ? (NiExtraData)file.blocks[objNET.extraData.value] : null;
+                var extraData = (objNET.extraData.value >= 0) ? (NiExtraData)_file.blocks[objNET.extraData.value] : null;
 
                 while (extraData != null)
                 {
@@ -124,7 +126,7 @@ namespace TESUnity
                     // Move to the next NiExtraData.
                     if (extraData.nextExtraData.value >= 0)
                     {
-                        extraData = (NiExtraData)file.blocks[extraData.nextExtraData.value];
+                        extraData = (NiExtraData)_file.blocks[extraData.nextExtraData.value];
                     }
                     else
                     {
@@ -195,7 +197,7 @@ namespace TESUnity
                 // NiNodes can have child references < 0 meaning null.
                 if (!childIndex.isNull)
                 {
-                    var child = InstantiateNiObject(file.blocks[childIndex.value]);
+                    var child = InstantiateNiObject(_file.blocks[childIndex.value]);
 
                     if (child != null)
                     {
@@ -208,11 +210,12 @@ namespace TESUnity
 
             return obj;
         }
+
         private GameObject InstantiateNiTriShape(NiTriShape triShape, bool visual, bool collidable)
         {
             Debug.Assert(visual || collidable);
 
-            var mesh = NiTriShapeDataToMesh((NiTriShapeData)file.blocks[triShape.data.value]);
+            var mesh = NiTriShapeDataToMesh((NiTriShapeData)_file.blocks[triShape.data.value]);
             var obj = new GameObject(triShape.name);
 
             if (visual)
@@ -222,7 +225,7 @@ namespace TESUnity
                 var materialProps = NiAVObjectPropertiesToMWMaterialProperties(triShape);
 
                 var meshRenderer = obj.AddComponent<MeshRenderer>();
-                meshRenderer.material = materialManager.BuildMaterialFromProperties(materialProps);
+                meshRenderer.material = _materialManager.BuildMaterialFromProperties(materialProps);
 
                 if (materialProps.textures.mainFilePath == null)
                     meshRenderer.enabled = false;
@@ -250,6 +253,7 @@ namespace TESUnity
 
             return obj;
         }
+
         private GameObject InstantiateRootCollisionNode(RootCollisionNode collisionNode)
         {
             GameObject obj = new GameObject("Root Collision Node");
@@ -259,7 +263,7 @@ namespace TESUnity
                 // NiNodes can have child references < 0 meaning null.
                 if (!childIndex.isNull)
                 {
-                    AddColliderFromNiObject(file.blocks[childIndex.value], obj);
+                    AddColliderFromNiObject(_file.blocks[childIndex.value], obj);
                 }
             }
 
@@ -351,7 +355,7 @@ namespace TESUnity
 
             foreach (var propRef in obj.properties)
             {
-                var prop = file.blocks[propRef.value];
+                var prop = _file.blocks[propRef.value];
 
                 if (prop is NiTexturingProperty)
                 {
@@ -451,32 +455,32 @@ namespace TESUnity
             if (ntp.textureCount < 1) return tp;
             if (ntp.hasBaseTexture)
             {
-                NiSourceTexture src = (NiSourceTexture)file.blocks[ntp.baseTexture.source.value];
+                NiSourceTexture src = (NiSourceTexture)_file.blocks[ntp.baseTexture.source.value];
                 tp.mainFilePath = src.fileName;
             }
             if (ntp.hasDarkTexture)
             {
-                NiSourceTexture src = (NiSourceTexture)file.blocks[ntp.darkTexture.source.value];
+                NiSourceTexture src = (NiSourceTexture)_file.blocks[ntp.darkTexture.source.value];
                 tp.darkFilePath = src.fileName;
             }
             if (ntp.hasDetailTexture)
             {
-                NiSourceTexture src = (NiSourceTexture)file.blocks[ntp.detailTexture.source.value];
+                NiSourceTexture src = (NiSourceTexture)_file.blocks[ntp.detailTexture.source.value];
                 tp.detailFilePath = src.fileName;
             }
             if (ntp.hasGlossTexture)
             {
-                NiSourceTexture src = (NiSourceTexture)file.blocks[ntp.glossTexture.source.value];
+                NiSourceTexture src = (NiSourceTexture)_file.blocks[ntp.glossTexture.source.value];
                 tp.glossFilePath = src.fileName;
             }
             if (ntp.hasGlowTexture)
             {
-                NiSourceTexture src = (NiSourceTexture)file.blocks[ntp.glowTexture.source.value];
+                NiSourceTexture src = (NiSourceTexture)_file.blocks[ntp.glowTexture.source.value];
                 tp.glowFilePath = src.fileName;
             }
             if (ntp.hasBumpMapTexture)
             {
-                NiSourceTexture src = (NiSourceTexture)file.blocks[ntp.bumpMapTexture.source.value];
+                NiSourceTexture src = (NiSourceTexture)_file.blocks[ntp.bumpMapTexture.source.value];
                 tp.bumpFilePath = src.fileName;
             }
             return tp;
