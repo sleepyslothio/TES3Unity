@@ -12,6 +12,7 @@ namespace VirtualFileSystem
         {
             this.name = name;
         }
+
         public string GetAbsolutePath()
         {
             var absolutePath = name;
@@ -30,15 +31,13 @@ namespace VirtualFileSystem
             return absolutePath;
         }
 
-        public override string ToString()
-        {
-            return name;
-        }
+        public override string ToString() => name;
     }
+
     public class Directory : Entry
     {
+        private static char[] pathSeparators = new char[] { '/', '\\' };
         public List<Entry> children = new List<Entry>();
-
         public Directory(string name = "") : base(name) { }
 
         public void AddChild(Entry entry)
@@ -49,6 +48,7 @@ namespace VirtualFileSystem
             entry.parent = this;
             children.Add(entry);
         }
+
         public Directory CreateChildDirectory(string directoryName)
         {
             var childDir = new Directory(directoryName);
@@ -56,6 +56,7 @@ namespace VirtualFileSystem
 
             return childDir;
         }
+
         public File CreateChildFile(string fileName)
         {
             var childFile = new File(fileName);
@@ -98,12 +99,14 @@ namespace VirtualFileSystem
                 return entry.name == entryName;
             });
         }
+
         public Directory FindChildDirectory(string directoryName)
         {
             var childEntry = FindChildEntry(directoryName);
 
             return (childEntry is Directory) ? (Directory)childEntry : null;
         }
+
         public File FindChildFile(string fileName)
         {
             var childEntry = FindChildEntry(fileName);
@@ -123,16 +126,16 @@ namespace VirtualFileSystem
         {
             return FindChildEntry(entryName) != null;
         }
+
         public bool ContainsChildDirectory(string directoryName)
         {
             return FindChildDirectory(directoryName) != null;
         }
+
         public bool ContainsChildFile(string fileName)
         {
             return FindChildFile(fileName) != null;
         }
-
-        private static char[] pathSeparators = new char[] { '/', '\\' };
 
         private void FindDescendantEntries(string entryName, List<Entry> descendantEntries)
         {
@@ -153,6 +156,7 @@ namespace VirtualFileSystem
             }
         }
     }
+
     public class File : Entry
     {
         public File(string name = "") : base(name) { }

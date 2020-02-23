@@ -198,7 +198,7 @@ namespace TESUnity
             {
                 CELL = (CELLRecord)records[i];
 
-                if (CELL.gridCoords.x == gridCoords.x && CELL.gridCoords.y == gridCoords.y)
+                if (CELL.gridCoords.X == gridCoords.X && CELL.gridCoords.Y == gridCoords.Y)
                 {
                     return CELL;
                 }

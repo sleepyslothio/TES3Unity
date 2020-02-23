@@ -19,6 +19,7 @@ public class FlyingCameraComponent : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
     }
+
     private void Update()
     {
         Rotate();
@@ -28,6 +29,7 @@ public class FlyingCameraComponent : MonoBehaviour
             Translate();
         }
     }
+
     private void FixedUpdate()
     {
         if (rigidbody != null)
@@ -58,10 +60,12 @@ public class FlyingCameraComponent : MonoBehaviour
 
         transform.eulerAngles = eulerAngles;
     }
+
     private void Translate()
     {
         transform.Translate(Time.deltaTime * CalculateLocalVelocity());
     }
+
     private void UpdateVelocity()
     {
         rigidbody.velocity = transform.TransformVector(CalculateLocalVelocity());
@@ -104,6 +108,7 @@ public class FlyingCameraComponent : MonoBehaviour
 
         return direction.normalized;
     }
+
     private float CalculateSpeed()
     {
         if (Input.GetKey(KeyCode.LeftShift))
@@ -119,6 +124,7 @@ public class FlyingCameraComponent : MonoBehaviour
             return normalSpeed;
         }
     }
+
     private Vector3 CalculateLocalVelocity()
     {
         return CalculateSpeed() * CalculateLocalMovementDirection();

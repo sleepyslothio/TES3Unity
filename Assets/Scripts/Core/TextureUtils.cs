@@ -30,6 +30,7 @@ public static class TextureUtils
 
         return mipMapCount;
     }
+
     public static int CalculateMipMappedTextureDataSize(int baseTextureWidth, int baseTextureHeight, int bytesPerPixel)
     {
         Debug.Assert((baseTextureWidth > 0) && (baseTextureHeight > 0) && (bytesPerPixel > 0));

@@ -3,20 +3,21 @@
 /// <summary>
 /// Stores information about a 2D texture.
 /// </summary>
-public class Texture2DInfo
+public sealed class Texture2DInfo
 {
-    public int width, height;
-    public TextureFormat format;
-    public bool hasMipmaps;
-    public byte[] rawData;
+    public int Width { get; private set; }
+    public int Height { get; private set; }
+    public TextureFormat Format { get; private set; }
+    public bool HasMipmaps { get; private set; }
+    public byte[] RawData { get; private set; }
 
     public Texture2DInfo(int width, int height, TextureFormat format, bool hasMipmaps, byte[] rawData)
     {
-        this.width = width;
-        this.height = height;
-        this.format = format;
-        this.hasMipmaps = hasMipmaps;
-        this.rawData = rawData;
+        Width = width;
+        Height = height;
+        Format = format;
+        HasMipmaps = hasMipmaps;
+        RawData = rawData;
     }
 
     /// <summary>
@@ -24,11 +25,11 @@ public class Texture2DInfo
     /// </summary>
     public Texture2D ToTexture2D()
     {
-        var texture = new Texture2D(width, height, format, hasMipmaps);
+        var texture = new Texture2D(Width, Height, Format, HasMipmaps);
 
-        if (rawData != null)
+        if (RawData != null)
         {
-            texture.LoadRawTextureData(rawData);
+            texture.LoadRawTextureData(RawData);
             texture.Apply();
         }
 

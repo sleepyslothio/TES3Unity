@@ -78,17 +78,17 @@ namespace TESUnity
             var cameraCellIndices = GetExteriorCellIndices(currentPosition);
 
             var cellRadius = (cellRadiusOverride >= 0) ? cellRadiusOverride : CellManager.cellRadius;
-            var minCellX = cameraCellIndices.x - cellRadius;
-            var maxCellX = cameraCellIndices.x + cellRadius;
-            var minCellY = cameraCellIndices.y - cellRadius;
-            var maxCellY = cameraCellIndices.y + cellRadius;
+            var minCellX = cameraCellIndices.X - cellRadius;
+            var maxCellX = cameraCellIndices.X + cellRadius;
+            var minCellY = cameraCellIndices.Y - cellRadius;
+            var maxCellY = cameraCellIndices.Y + cellRadius;
 
             // Destroy out of range cells.
             var outOfRangeCellIndices = new List<Vector2i>();
 
             foreach (var KVPair in cellObjects)
             {
-                if ((KVPair.Key.x < minCellX) || (KVPair.Key.x > maxCellX) || (KVPair.Key.y < minCellY) || (KVPair.Key.y > maxCellY))
+                if ((KVPair.Key.X < minCellX) || (KVPair.Key.X > maxCellX) || (KVPair.Key.Y < minCellY) || (KVPair.Key.Y > maxCellY))
                 {
                     outOfRangeCellIndices.Add(KVPair.Key);
                 }
@@ -108,8 +108,8 @@ namespace TESUnity
                     {
                         var cellIndices = new Vector2i(x, y);
 
-                        var cellXDistance = Mathf.Abs(cameraCellIndices.x - cellIndices.x);
-                        var cellYDistance = Mathf.Abs(cameraCellIndices.y - cellIndices.y);
+                        var cellXDistance = Mathf.Abs(cameraCellIndices.X - cellIndices.X);
+                        var cellYDistance = Mathf.Abs(cameraCellIndices.Y - cellIndices.Y);
                         var cellDistance = Mathf.Max(cellXDistance, cellYDistance);
 
                         if ((cellDistance == r) && !cellObjects.ContainsKey(cellIndices))
@@ -131,8 +131,8 @@ namespace TESUnity
                 Vector2i cellIndices = keyValuePair.Key;
                 InRangeCellInfo cellInfo = keyValuePair.Value;
 
-                var cellXDistance = Mathf.Abs(cameraCellIndices.x - cellIndices.x);
-                var cellYDistance = Mathf.Abs(cameraCellIndices.y - cellIndices.y);
+                var cellXDistance = Mathf.Abs(cameraCellIndices.X - cellIndices.X);
+                var cellYDistance = Mathf.Abs(cameraCellIndices.Y - cellIndices.Y);
                 var cellDistance = Mathf.Max(cellXDistance, cellYDistance);
 
                 if (cellDistance <= detailRadius)
@@ -155,7 +155,7 @@ namespace TESUnity
             if (CELL != null)
             {
                 var cellInfo = StartInstantiatingCell(CELL);
-                cellObjects[Vector2i.zero] = cellInfo;
+                cellObjects[Vector2i.Zero] = cellInfo;
 
                 return cellInfo;
             }
@@ -172,7 +172,7 @@ namespace TESUnity
             if (CELL != null)
             {
                 var cellInfo = StartInstantiatingCell(CELL);
-                cellObjects[Vector2i.zero] = cellInfo;
+                cellObjects[Vector2i.Zero] = cellInfo;
 
                 return cellInfo;
             }
@@ -716,7 +716,7 @@ namespace TESUnity
 
             // Create the terrain.
             var heightRange = maxHeight - minHeight;
-            var terrainPosition = new Vector3(Convert.exteriorCellSideLengthInMeters * LAND.gridCoords.x, minHeight / Convert.meterInMWUnits, Convert.exteriorCellSideLengthInMeters * LAND.gridCoords.y);
+            var terrainPosition = new Vector3(Convert.exteriorCellSideLengthInMeters * LAND.gridCoords.X, minHeight / Convert.meterInMWUnits, Convert.exteriorCellSideLengthInMeters * LAND.gridCoords.Y);
             var heightSampleDistance = Convert.exteriorCellSideLengthInMeters / (LAND_SIDE_LENGTH_IN_SAMPLES - 1);
             var terrainGameObject = GameObjectUtils.CreateTerrain(heights, heightRange / Convert.meterInMWUnits, heightSampleDistance, splatPrototypes, alphaMap, terrainPosition);
             terrainGameObject.transform.parent = parent.transform;
