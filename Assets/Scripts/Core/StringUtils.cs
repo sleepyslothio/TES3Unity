@@ -5,14 +5,14 @@
     /// </summary>
     public static bool Equals(byte[] ASCIIBytes, string str)
     {
-        if(ASCIIBytes.Length != str.Length)
+        if (ASCIIBytes.Length != str.Length)
         {
             return false;
         }
 
-        for(int i = 0; i < ASCIIBytes.Length; i++)
+        for (int i = 0; i < ASCIIBytes.Length; i++)
         {
-            if(ASCIIBytes[i] != str[i])
+            if (ASCIIBytes[i] != str[i])
             {
                 return false;
             }

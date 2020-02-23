@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Wacki {
+namespace Wacki
+{
     public class LaserPointerEventData : PointerEventData
     {
         public GameObject current;

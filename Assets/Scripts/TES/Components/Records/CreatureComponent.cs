@@ -11,7 +11,7 @@ namespace TESUnity.Components.Records
         {
             _creature = (CREARecord)record;
 
-            transform.rotation = Quaternion.Euler(-70, 0, 0); 
+            transform.rotation = Quaternion.Euler(-70, 0, 0);
         }
     }
 }

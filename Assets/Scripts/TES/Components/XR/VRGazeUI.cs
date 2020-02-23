@@ -115,7 +115,7 @@ namespace TESUnity.Components.VR
 
             var targetScale = go == null ? 1.0f : 1.5f;
 
-            _transform.localScale = new Vector3(targetScale, targetScale, targetScale); 
+            _transform.localScale = new Vector3(targetScale, targetScale, targetScale);
         }
     }
 }

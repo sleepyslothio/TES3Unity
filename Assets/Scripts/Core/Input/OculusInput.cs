@@ -1,7 +1,4 @@
-﻿using Demonixis.Toolbox.XR;
-using UnityEngine;
-
-namespace TESUnity.Inputs
+﻿namespace TESUnity.Inputs
 {
     public class OculusInput : IInputProvider
     {

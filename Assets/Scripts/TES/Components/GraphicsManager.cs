@@ -1,13 +1,9 @@
-﻿using Demonixis.Toolbox.XR;
-using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 #if HDRP_ENABLED
 using UnityEngine.Experimental.Rendering.HDPipeline;
 #endif
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using UnityStandardAssets.Water;
 
 namespace TESUnity.Components
 {

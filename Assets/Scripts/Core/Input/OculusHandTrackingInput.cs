@@ -1,6 +1,4 @@
 ﻿using Demonixis.Toolbox.XR;
-using TESUnity;
-using TESUnity.Inputs;
 
 namespace TESUnity.Inputs
 {

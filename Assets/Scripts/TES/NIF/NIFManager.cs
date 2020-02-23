@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using TESUnity.NIF;
 using TESUnity.Rendering;
 using UnityEngine;
 

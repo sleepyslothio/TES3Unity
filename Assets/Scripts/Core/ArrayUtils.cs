@@ -25,7 +25,7 @@ public static class ArrayUtils
         min = float.MaxValue;
         max = float.MinValue;
 
-        foreach(var element in array)
+        foreach (var element in array)
         {
             min = Math.Min(min, element);
             max = Math.Max(max, element);
@@ -40,7 +40,7 @@ public static class ArrayUtils
         min = float.MaxValue;
         max = float.MinValue;
 
-        foreach(var element in array)
+        foreach (var element in array)
         {
             min = Math.Min(min, element);
             max = Math.Max(max, element);
@@ -55,7 +55,7 @@ public static class ArrayUtils
         min = float.MaxValue;
         max = float.MinValue;
 
-        foreach(var element in array)
+        foreach (var element in array)
         {
             min = Math.Min(min, element);
             max = Math.Max(max, element);
@@ -81,7 +81,7 @@ public static class ArrayUtils
         var tmpRow = new T[columnCount];
         var lastRowIndex = rowCount - 1;
 
-        for(int rowIndex = 0; rowIndex < (rowCount / 2); rowIndex++)
+        for (int rowIndex = 0; rowIndex < (rowCount / 2); rowIndex++)
         {
             var otherRowIndex = lastRowIndex - rowIndex;
 

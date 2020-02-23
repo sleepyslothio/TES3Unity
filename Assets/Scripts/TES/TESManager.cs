@@ -41,7 +41,7 @@ namespace TESUnity
         public int CellDetailRadius = 3;
         public int CellRadiusOnLoad = 2;
 #endif
-#endregion
+        #endregion
 
         public TextureManager TextureManager => m_MorrowindEngine.textureManager;
 
@@ -53,6 +53,10 @@ namespace TESUnity
             var dataPath = GameSettings.GetDataPath();
 
 #if UNITY_EDITOR
+            CellRadius = config.CellRadius;
+            CellDetailRadius = config.CellDetailRadius;
+            CellRadiusOnLoad = config.CellRadiusOnLoad;
+
             // Load the game from the alternative dataPath when in editor.
             if (!GameSettings.IsValidPath(dataPath))
             {

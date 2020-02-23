@@ -8,7 +8,7 @@ namespace TESUnity.Components.Records
         {
             usable = true;
             pickable = false;
-            var ACTI = (ACTIRecord)record; 
+            var ACTI = (ACTIRecord)record;
             objData.name = ACTI.FNAM.value;
             objData.interactionPrefix = "Use ";
         }

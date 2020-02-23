@@ -237,7 +237,7 @@ namespace TESUnity
 
                 obj.isStatic = true;
             }
-           
+
             if (collidable)
             {
                 var collider = obj.AddComponent<MeshCollider>();

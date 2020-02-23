@@ -1,7 +1,6 @@
 ﻿using Demonixis.Toolbox.XR;
 using TESUnity.Inputs;
 using UnityEngine;
-using UnityEngine.XR;
 
 namespace Demonixis.UniversalXR
 {

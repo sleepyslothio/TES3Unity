@@ -1,5 +1,4 @@
-﻿using TESUnity;
-using TESUnity.Rendering;
+﻿using TESUnity.Rendering;
 using UnityEngine;
 #if HDRP_ENABLED
 using UnityEngine.Experimental.Rendering.HDPipeline;

@@ -13,13 +13,13 @@ namespace TESUnity
     public class NifParserGenerator
     {
         public const uint MORROWIND_NIF_VERSION = 0x04000002;
-		private const int SPACES_PER_INDENT = 4;
-		private uint _nifVersion;
-		private XDocument _nifXmlDoc;
-		private StringBuilder _strBuilder;
-		private int _indentLevel;
+        private const int SPACES_PER_INDENT = 4;
+        private uint _nifVersion;
+        private XDocument _nifXmlDoc;
+        private StringBuilder _strBuilder;
+        private int _indentLevel;
 
-		public void GenerateParser(string nifXmlFilePath, uint nifVersion, string generatedParserFilePath)
+        public void GenerateParser(string nifXmlFilePath, uint nifVersion, string generatedParserFilePath)
         {
             _nifXmlDoc = XDocument.Load(nifXmlFilePath);
             _nifVersion = nifVersion;
@@ -43,7 +43,7 @@ namespace TESUnity
 
         private string ConvertTypeName(string typeName)
         {
-            switch(typeName)
+            switch (typeName)
             {
                 case "uint":
                     return "uint";
@@ -58,7 +58,7 @@ namespace TESUnity
 
         private string CleanDescription(string description)
         {
-            if(description == null) { return description; }
+            if (description == null) { return description; }
 
             return Regex.Replace(description.Trim(), "\r?\n", "");
         }
@@ -72,7 +72,7 @@ namespace TESUnity
 
             uint versionInt = 0;
 
-            for(int i = 0; i < versionNumberStrings.Length; i++)
+            for (int i = 0; i < versionNumberStrings.Length; i++)
             {
                 versionInt |= uint.Parse(versionNumberStrings[i]) << (32 - (8 * (i + 1)));
             }
@@ -117,13 +117,13 @@ namespace TESUnity
 
         private void GenerateEnums()
         {
-            foreach(var enumElement in _nifXmlDoc.Descendants("enum").Where(IsElementInVersion))
+            foreach (var enumElement in _nifXmlDoc.Descendants("enum").Where(IsElementInVersion))
             {
                 var enumName = enumElement.Attribute("name").Value;
                 var enumElementType = ConvertTypeName(enumElement.Attribute("storage").Value);
                 var enumDescription = CleanDescription(enumElement.Nodes().OfType<XText>().FirstOrDefault()?.Value);
 
-                if(!string.IsNullOrWhiteSpace(enumDescription)) { GenerateLine($"// {enumDescription}"); }
+                if (!string.IsNullOrWhiteSpace(enumDescription)) { GenerateLine($"// {enumDescription}"); }
                 GenerateLine($"public enum {enumName} : {enumElementType}");
                 GenerateLine("{", 1);
                 GenerateEnumValues(enumElement);
@@ -137,23 +137,23 @@ namespace TESUnity
             var optionElements = enumElement.Descendants("option").Where(IsElementInVersion).ToArray();
             var lastOptionElementIndex = optionElements.Length - 1;
 
-            for(var i = 0; i < optionElements.Length; i++)
+            for (var i = 0; i < optionElements.Length; i++)
             {
                 var optionElement = optionElements[i];
-                
+
                 var optionName = GetConvertedOptionName(enumElement, optionElement);
                 var optionValue = optionElement.Attribute("value").Value;
                 var optionDescription = CleanDescription(optionElement.Nodes().OfType<XText>().FirstOrDefault()?.Value);
 
                 Generate($"{optionName} = {optionValue}");
-                if(i < lastOptionElementIndex) { Generate(','); }
-                if(!string.IsNullOrWhiteSpace(optionDescription)) { Generate($" // {optionDescription}"); }
+                if (i < lastOptionElementIndex) { Generate(','); }
+                if (!string.IsNullOrWhiteSpace(optionDescription)) { Generate($" // {optionDescription}"); }
                 EndLine((i < lastOptionElementIndex) ? 0 : -1);
             }
         }
     }
 
-	/*public class NIFParserGenerator
+    /*public class NIFParserGenerator
 	{
 		public void GenerateParser(string NIFXMLFilePath, string parserFilePath)
 		{

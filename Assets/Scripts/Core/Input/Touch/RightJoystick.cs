@@ -14,8 +14,8 @@ calculates and ouputs a normalized direction vector for another script to use in
 */
 
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class RightJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler
 {
@@ -79,7 +79,7 @@ public class RightJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
                 localPoint.x becomes (from Left to Right -1 to 0) (-1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0)
                 localPoint.y becomes (from Bottom to Top 0 to 1) (0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
             */
-            localPoint.x = (localPoint.x / bgImage.rectTransform.sizeDelta.x); 
+            localPoint.x = (localPoint.x / bgImage.rectTransform.sizeDelta.x);
             localPoint.y = (localPoint.y / bgImage.rectTransform.sizeDelta.y);
 
             /*
@@ -144,6 +144,6 @@ public class RightJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
     // ouputs the direction vector, use this public function from another script to control movement of a game object (such as a player character or any desired game object)
     public Vector3 GetInputDirection()
     {
-        return new Vector3(inputVector.x, inputVector.y, 0); 
+        return new Vector3(inputVector.x, inputVector.y, 0);
     }
 }

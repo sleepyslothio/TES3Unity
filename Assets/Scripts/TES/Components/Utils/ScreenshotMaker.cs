@@ -22,7 +22,7 @@ namespace TESUnity
         private KeyCode m_Show360ModKey = KeyCode.LeftShift;
         [SerializeField]
         private KeyCode m_Show360StereoModKey = KeyCode.LeftAlt;
-		
+
 #if XRINPUT_ENABLED
         [SerializeField]
         private bool m_LeftHand = true;
@@ -66,10 +66,10 @@ namespace TESUnity
 
         private void Update()
         {
-			var screenshot = Input.GetKeyDown(m_ShotKey);
-			var mod360 = Input.GetKey(m_Show360ModKey);
-			var stereo360 = Input.GetKey(m_Show360StereoModKey);
-			
+            var screenshot = Input.GetKeyDown(m_ShotKey);
+            var mod360 = Input.GetKey(m_Show360ModKey);
+            var stereo360 = Input.GetKey(m_Show360StereoModKey);
+
 #if XRINPUT_ENABLED
             var xr = XRInput.Instance;
             screenshot |= xr.GetButtonDown(m_ShotButton, m_LeftHand);

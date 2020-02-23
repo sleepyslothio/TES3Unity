@@ -1,5 +1,4 @@
 ﻿using TESUnity.ESM;
-using UnityEngine;
 
 namespace TESUnity.Components.Records
 {

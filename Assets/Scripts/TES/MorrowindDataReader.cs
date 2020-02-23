@@ -5,7 +5,6 @@ using System.IO;
 namespace TESUnity
 {
     using ESM;
-    using System.Threading.Tasks;
     using TESUnity.NIF;
     using UnityEngine;
 

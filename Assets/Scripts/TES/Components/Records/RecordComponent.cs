@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using TESUnity.ESM;
+﻿using TESUnity.ESM;
+using UnityEngine;
 
 namespace TESUnity.Components.Records
 {
@@ -25,7 +25,7 @@ namespace TESUnity.Components.Records
         }
 
         protected Transform m_transform = null;
-   
+
         public CELLRecord.RefObjDataGroup refObjDataGroup = null;
         public Record record;
         public ObjectData objData = new ObjectData();

@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using MP3Sharp;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
-using MP3Sharp;
 
 // TODO: Handle long audio files.
 

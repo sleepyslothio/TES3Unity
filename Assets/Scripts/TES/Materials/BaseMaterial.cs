@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace TESUnity.Rendering
 {
@@ -56,7 +55,7 @@ namespace TESUnity.Rendering
             {
                 var s = "opl";
             }
-            return new Material(alphaBlended ? m_CutoutShader : m_Shader); 
+            return new Material(alphaBlended ? m_CutoutShader : m_Shader);
         }
 
         protected void TryEnableTexture(Material material, string texturePath, string textureParameter, string shaderKeyword)

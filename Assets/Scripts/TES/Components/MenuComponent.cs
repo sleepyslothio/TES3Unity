@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading;
 using TESUnity.Inputs;
 using UnityEngine;
-using UnityEngine.Android;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 

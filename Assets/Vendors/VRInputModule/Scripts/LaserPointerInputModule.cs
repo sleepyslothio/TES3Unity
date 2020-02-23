@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections.Generic;
 
 namespace Wacki
 {
@@ -149,7 +149,7 @@ namespace Wacki
                 // make sure our controller knows about the raycast result
                 // we add 0.01 because that is the near plane distance of our camera and we want the correct distance
                 //if (data.pointerEvent.pointerCurrentRaycast.distance > 0.0f)
-                    //controller.LimitLaserDistance(data.pointerEvent.pointerCurrentRaycast.distance + 0.01f);
+                //controller.LimitLaserDistance(data.pointerEvent.pointerCurrentRaycast.distance + 0.01f);
 
                 // stop if no UI element was hit
                 //if(pointerEvent.pointerCurrentRaycast.gameObject == null)
