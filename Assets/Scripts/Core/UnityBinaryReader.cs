@@ -161,8 +161,9 @@ public class UnityBinaryReader : IDisposable
 
     public byte[] ReadLELength32PrefixedBytes()
     {
-        var length = ReadLEUInt32();
-        return reader.ReadBytes((int)length);
+        var length = ReadLEInt32();
+        var count = (int)length;
+        return reader.ReadBytes(count);
     }
 
     public string ReadLELength32PrefixedASCIIString()

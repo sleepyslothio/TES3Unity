@@ -36,8 +36,12 @@ namespace TESUnity
 
         [Header("Debug")]
         public bool loadExtensions = false;
-
-        #endregion
+#if UNITY_EDITOR
+        public int CellRadius = 4;
+        public int CellDetailRadius = 3;
+        public int CellRadiusOnLoad = 2;
+#endif
+#endregion
 
         public TextureManager TextureManager => m_MorrowindEngine.textureManager;
 
@@ -115,6 +119,13 @@ namespace TESUnity
         }
 
 #if UNITY_EDITOR
+        private void OnValidate()
+        {
+            CellManager.cellRadius = CellRadius;
+            CellManager.detailRadius = CellDetailRadius;
+            MorrowindEngine.cellRadiusOnLoad = CellRadiusOnLoad;
+        }
+
         private void TestAllCells(string resultsFilePath)
         {
             using (StreamWriter writer = new StreamWriter(resultsFilePath))
