@@ -1,47 +1,49 @@
 ﻿using UnityEngine;
 #if HDRP_ENABLED
-using UnityEngine.Experimental.Rendering.HDPipeline;
+using UnityEngine.Rendering.HDPipeline;
 #endif
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 namespace TESUnity.Components
 {
-#if HDRP_ENABLED
-    using Bloom = UnityEngine.Rendering.PostProcessing.Bloom;
-    using MotionBlur = UnityEngine.Rendering.PostProcessing.MotionBlur;
-    using Vignette = UnityEngine.Rendering.PostProcessing.Vignette;
-#endif
-
     public sealed class GraphicsManager : MonoBehaviour
     {
         private void Awake()
         {
+#if UNITY_EDITOR
+            // We need to call this component now because SRP settings is very early
+            // And we want to be sure it's called before SRP settings.
+            var settingsOverride = FindObjectOfType<GameSettingsOverride>();
+            settingsOverride?.ApplyEditorSettingsOverride();
+#endif
             var config = GameSettings.Get();
-            var rendererMode = config.RendererMode;
+            var hdrp = config.RendererMode == RendererMode.HDRP;
             var target = config.SRPQuality.ToString();
 
 #if UNITY_ANDROID
             rendererMode = RendererMode.UniversalRP
             target = "Mobile";
 #endif
+#if !HDRP_ENABLED
+            hdrp = false; // Double check
+#endif
 
-            if (rendererMode == RendererMode.UniversalRP)
+            if (!hdrp)
             {
                 var lwrpAsset = Resources.Load<UniversalRenderPipelineAsset>($"Rendering/UniversalRP/URP-{target}");
                 lwrpAsset.renderScale = config.RenderScale;
                 GraphicsSettings.renderPipelineAsset = lwrpAsset;
-            }
 
-#if HDRP_ENABLED
-            if (rendererMode == RendererMode.HDRP)
+                // Instantiate URP Volume
+            }
+            else
             {
+#if HDRP_ENABLED
                 GraphicsSettings.renderPipelineAsset = Resources.Load<HDRenderPipelineAsset>($"Rendering/HDRP/HDRPAsset-{target}");
-
-                var volumeSettings = Resources.Load<GameObject>("Rendering/HDRP/HDRP-Volume");
-                Instantiate(volumeSettings);
-            }
+                // Instantiate HDRP Volume (Post Processing + Environment)
 #endif
+            }
         }
 
         private void Start()

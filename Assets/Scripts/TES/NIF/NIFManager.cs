@@ -10,11 +10,11 @@ namespace TESUnity
     public sealed class NIFManager
     {
         private MorrowindDataReader _dataReader;
-        private MaterialManager _materialManager;
+        private TESMaterial _materialManager;
         private GameObject _prefabContainerObj;
         private Dictionary<string, GameObject> nifPrefabs = new Dictionary<string, GameObject>();
 
-        public NIFManager(MorrowindDataReader dataReader, MaterialManager materialManager)
+        public NIFManager(MorrowindDataReader dataReader, TESMaterial materialManager)
         {
             _dataReader = dataReader;
             _materialManager = materialManager;

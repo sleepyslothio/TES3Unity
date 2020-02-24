@@ -668,8 +668,8 @@ namespace TESUnity
                     splat.smoothness = 0;
                     splat.metallic = 0;
 
-                    if (GameSettings.Get().GenerateNormalMaps)
-                        splat.normalMapTexture = BaseMaterial.GenerateNormalMap(texture);
+                    //if (GameSettings.Get().GenerateNormalMaps)
+                        //splat.normalMapTexture = TESMaterial.GenerateNormalMap(texture);
 
                     splat.tileSize = new Vector2(6, 6);
 

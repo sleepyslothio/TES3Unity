@@ -43,12 +43,13 @@ namespace TESUnity.Components
         public bool RoomScale = true;
         public bool HandTracking = true;
 
-        private void Awake()
+        /// <summary>
+        /// Apply overriden settings from the editor for testing purpose only.
+        /// This method do nothing in a build.
+        /// </summary>
+        public void ApplyEditorSettingsOverride()
         {
-#if !UNITY_EDITOR
-            enabled = false;
-            return;
-#else
+#if UNITY_EDITOR
             if (!Override)
                 return;
 

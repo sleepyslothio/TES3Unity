@@ -11,9 +11,9 @@ namespace TESUnity
     public sealed class NIFObjectBuilder
     {
         private NiFile _file;
-        private MaterialManager _materialManager;
+        private TESMaterial _materialManager;
 
-        public NIFObjectBuilder(NiFile file, MaterialManager materialManager)
+        public NIFObjectBuilder(NiFile file, TESMaterial materialManager)
         {
             _file = file;
             _materialManager = materialManager;
@@ -343,7 +343,7 @@ namespace TESUnity
             return mesh;
         }
 
-        private MWMaterialProps NiAVObjectPropertiesToMWMaterialProperties(NiAVObject obj)
+        private TESMaterialProps NiAVObjectPropertiesToMWMaterialProperties(NiAVObject obj)
         {
             // Find relevant properties.
             NiTexturingProperty texturingProperty = null;
@@ -351,7 +351,7 @@ namespace TESUnity
             NiAlphaProperty alphaProperty = null;
 
             // Create the material properties.
-            MWMaterialProps mp = new MWMaterialProps();
+            TESMaterialProps mp = new TESMaterialProps();
 
             foreach (var propRef in obj.properties)
             {
@@ -449,9 +449,9 @@ namespace TESUnity
             return mp;
         }
 
-        private MWMaterialTextures ConfigureTextureProperties(NiTexturingProperty ntp)
+        private TESMaterialTextures ConfigureTextureProperties(NiTexturingProperty ntp)
         {
-            MWMaterialTextures tp = new MWMaterialTextures();
+            TESMaterialTextures tp = new TESMaterialTextures();
             if (ntp.textureCount < 1) return tp;
             if (ntp.hasBaseTexture)
             {

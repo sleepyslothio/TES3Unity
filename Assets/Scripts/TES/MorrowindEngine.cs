@@ -42,7 +42,7 @@ namespace TESUnity
 
         public MorrowindDataReader dataReader;
         public TextureManager textureManager;
-        public MaterialManager materialManager;
+        public TESMaterial materialManager;
         public NIFManager nifManager;
         public CellManager cellManager;
         public TemporalLoadBalancer temporalLoadBalancer;
@@ -62,7 +62,7 @@ namespace TESUnity
             instance = this;
             dataReader = mwDataReader;
             textureManager = new TextureManager(dataReader);
-            materialManager = new MaterialManager(textureManager);
+            materialManager = new TESMaterial(textureManager);
             nifManager = new NIFManager(dataReader, materialManager);
             temporalLoadBalancer = new TemporalLoadBalancer();
             cellManager = new CellManager(dataReader, textureManager, nifManager, temporalLoadBalancer);

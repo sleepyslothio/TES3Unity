@@ -1,4 +1,5 @@
-﻿using TESUnity.Rendering;
+﻿using TESUnity;
+using TESUnity.Rendering;
 using UnityEngine;
 #if HDRP_ENABLED
 using UnityEngine.Experimental.Rendering.HDPipeline;
@@ -108,17 +109,7 @@ public static class GameObjectUtils
         var terrain = terrainObject.AddComponent<Terrain>();
         var srp = GraphicsSettings.renderPipelineAsset;
 
-        if (srp is UniversalRenderPipelineAsset)
-        {
-            terrain.materialTemplate = URPMaterial.GetTerrainMaterial();
-        }
-#if HDRP_ENABLED
-		if (srp is HDRenderPipelineAsset)
-		{
-			terrain.materialTemplate = Resources.Load<Material>("Rendering/HDRP/Materials/Lit-Terrain");
-		}
-#endif
-
+        terrain.materialTemplate = TESMaterial.GetTerrainMaterial(GameSettings.Get().RendererMode == RendererMode.HDRP);
         terrain.terrainData = terrainData;
         terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;
         terrainObject.transform.position = position;

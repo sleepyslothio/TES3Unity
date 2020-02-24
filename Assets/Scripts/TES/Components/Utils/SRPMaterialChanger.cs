@@ -30,12 +30,12 @@ namespace TESUnity.Components.Utilities
 
                 if (GraphicsSettings.renderPipelineAsset is UniversalRenderPipelineAsset)
                 {
-                    shaderName = URPMaterial.LitPath;
+                    shaderName = TESMaterial.URPLitPath;
                 }
 
 #if HDRP_ENABLED
                 if (GraphicsSettings.renderPipelineAsset is HDRenderPipelineAsset)
-                    shaderName = HDRPMaterial.LitPath;
+                    shaderName = TESMaterial.HDRPLitPath;
 #endif
 
                 var shader = Shader.Find(shaderName);
