@@ -64,7 +64,7 @@ namespace TESUnity.ESM
             return null;
         }
 
-        public static Record CreateUninitializedRecord(string recordName)
+        public static Record CreateRecordOfType(string recordName)
         {
             switch (recordName)
             {
@@ -130,7 +130,7 @@ namespace TESUnity.ESM
                     recordHeader.Deserialize(reader);
 
                     var recordName = recordHeader.name;
-                    var record = CreateUninitializedRecord(recordName);
+                    var record = CreateRecordOfType(recordName);
 
                     // Read or skip the record.
                     if (record != null)
@@ -138,7 +138,15 @@ namespace TESUnity.ESM
                         record.header = recordHeader;
 
                         var recordDataStreamPosition = reader.BaseStream.Position;
-                        record.DeserializeData(reader);
+
+                        if (record.NewFetchMethod)
+                        {
+                            record.DeserializeDataNew(reader);
+                        }
+                        else
+                        {
+                            record.DeserializeData(reader);
+                        }
 
                         if (reader.BaseStream.Position != (recordDataStreamPosition + record.header.dataSize))
                         {

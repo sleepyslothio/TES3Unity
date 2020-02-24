@@ -38,6 +38,11 @@ namespace TESUnity.ESM
 
     public abstract class Record
     {
+        // A flag that indicates if we use the new method or not.
+        // This flag will be removed when the new system is finished.
+        public virtual bool NewFetchMethod { get; }
+
+        // Get ride of this when the new system is finished.
         public RecordHeader header;
 
         /// <summary>
@@ -78,5 +83,30 @@ namespace TESUnity.ESM
                 }
             }
         }
+
+        #region New API to deserialize SubRecords
+
+        public virtual bool DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            return false;
+        }
+
+        public void DeserializeDataNew(UnityBinaryReader reader)
+        {
+            var dataEndPos = reader.BaseStream.Position + header.dataSize;
+
+            while (reader.BaseStream.Position < dataEndPos)
+            {
+                var subRecordName = reader.ReadASCIIString(4);
+                var dataSize = reader.ReadLEUInt32();
+
+                if (!DeserializeSubRecord(reader, subRecordName, dataSize))
+                {
+                    reader.BaseStream.Position += dataSize;
+                }
+            }
+        }
+
+        #endregion
     }
 }
