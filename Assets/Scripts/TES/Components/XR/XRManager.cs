@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.XR.Oculus;
+using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Management;
 
@@ -9,20 +10,67 @@ namespace Demonixis.Toolbox.XR
         None = 0, Oculus, WindowsMR, SteamVR
     }
 
+    public enum XRHeadset
+    {
+        None = 0, OculusGo, OculusQuest, OculusRift, WindowsMR, HTCVive
+    }
+
     public static class XRManager
     {
+        public static XRLoader GetXRLoader()
+        {
+            return XRGeneralSettings.Instance?.Manager?.activeLoader;
+        }
+
+        public static XRInputSubsystem GetXRInput()
+        {
+            var xrLoader = GetXRLoader();
+            return xrLoader?.GetLoadedSubsystem<XRInputSubsystem>();
+        }
+
         public static bool IsXREnabled()
         {
-            var loader = XRGeneralSettings.Instance?.Manager?.activeLoader;
+            var loader = GetXRLoader();
             return loader != null;
+        }
+
+        public static XRHeadset GetXRHeadset()
+        {
+            var vendor = GetXRVendor();
+
+            if (vendor != XRVendor.None)
+            {
+                if (vendor == XRVendor.Oculus)
+                {
+#if UNITY_ANDROID
+                    var oculusLoader =(OculusLoader)GetXRLoader();
+                    if (oculusLoader.GetSettings().V2Signing)
+                    {
+                        return XRHeadset.OculusQuest;
+                    }
+
+                    return XRHeadset.OculusGo;
+#else
+                    return XRHeadset.OculusRift;
+#endif
+                }
+                else if (vendor == XRVendor.SteamVR)
+                {
+                    return XRHeadset.HTCVive;
+                }
+                else if (vendor == XRVendor.WindowsMR)
+                {
+                    return XRHeadset.WindowsMR;
+                }
+            }
+
+            return XRHeadset.None;
         }
 
         public static XRVendor GetXRVendor(bool logName = true)
         {
-            var xrLoader = XRGeneralSettings.Instance?.Manager?.activeLoader;
+            var xrLoader = GetXRLoader();
             var name = xrLoader?.name.ToLower() ?? string.Empty;
-
-            Debug.Log(name);
 
             if (name.Contains("oculus"))
             {
@@ -42,8 +90,7 @@ namespace Demonixis.Toolbox.XR
 
         public static void SetTrackingOriginMode(TrackingOriginModeFlags origin, bool recenter)
         {
-            var xrLoader = XRGeneralSettings.Instance?.Manager?.activeLoader;
-            var xrInput = xrLoader?.GetLoadedSubsystem<XRInputSubsystem>();
+            var xrInput = GetXRInput();
             xrInput?.TrySetTrackingOriginMode(origin);
 
             if (recenter)
@@ -54,8 +101,7 @@ namespace Demonixis.Toolbox.XR
 
         public static void Recenter()
         {
-            var xrLoader = XRGeneralSettings.Instance?.Manager?.activeLoader;
-            var xrInput = xrLoader?.GetLoadedSubsystem<XRInputSubsystem>();
+            var xrInput = GetXRInput();
             xrInput?.TryRecenter();
         }
     }

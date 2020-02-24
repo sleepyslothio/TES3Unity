@@ -474,7 +474,7 @@ namespace TESUnity
             var lightObj = new GameObject("Light");
             lightObj.isStatic = true;
 
-            var lightComponent = lightObj.AddComponent<UnityEngine.Light>();
+            var lightComponent = lightObj.AddComponent<Light>();
             lightComponent.range = 3 * (LIGH.LHDT.radius / Convert.meterInMWUnits);
             lightComponent.color = new Color32(LIGH.LHDT.red, LIGH.LHDT.green, LIGH.LHDT.blue, 255);
             lightComponent.intensity = 1.5f;
@@ -667,9 +667,10 @@ namespace TESUnity
                     splat.diffuseTexture = texture;
                     splat.smoothness = 0;
                     splat.metallic = 0;
+                    splat.specular = Color.black;
 
-                    //if (GameSettings.Get().GenerateNormalMaps)
-                        //splat.normalMapTexture = TESMaterial.GenerateNormalMap(texture);
+                    if (GameSettings.Get().GenerateNormalMaps)
+                        splat.normalMapTexture = TESMaterial.GenerateNormalMap(texture);
 
                     splat.tileSize = new Vector2(6, 6);
 

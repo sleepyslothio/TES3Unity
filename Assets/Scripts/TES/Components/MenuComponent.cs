@@ -47,7 +47,7 @@ namespace TESUnity.Components
         [SerializeField]
         private GameObject m_ButtonsContainer = null;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
         [Header("Editor Only")]
         [SerializeField]
         private bool m_DisplayDesktopPathOnAndroid = true;

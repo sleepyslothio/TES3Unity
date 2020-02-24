@@ -12,12 +12,11 @@ namespace Demonixis.Toolbox.XR
 
         private void Start()
         {
+            var headset = XRManager.GetXRHeadset();
             var settings = GameSettings.Get();
 
-            if (settings.HandTracking)
-            {
-                gameObject.SetActive(false);
-            }
+            m_OculusGoController.SetActive(headset == XRHeadset.OculusGo && !settings.HandTracking);
+            m_OculusQuestAndSController.SetActive(headset != XRHeadset.OculusGo && !settings.HandTracking);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using TESUnity.Rendering;
 using UnityEngine;
-#if HDRP_ENABLED
-using UnityEngine.Experimental.Rendering.HDPipeline;
-#endif
 using UnityEngine.Rendering;
+#if HDRP_ENABLED
+using UnityEngine.Rendering.HighDefinition;
+#endif
 using UnityEngine.Rendering.Universal;
 
 namespace TESUnity.Components.Utilities

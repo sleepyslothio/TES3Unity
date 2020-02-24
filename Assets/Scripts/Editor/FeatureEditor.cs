@@ -1,7 +1,4 @@
 ﻿#if UNITY_EDITOR
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.PackageManager;
@@ -13,7 +10,7 @@ namespace Demonixis.GunSpinningVR
     {
         public enum RenderingPath
         {
-            URP, HDRP
+            UniversalRP, HDRP
         }
 
         private static readonly string[] RenderingSymboles = new string[]
@@ -21,7 +18,6 @@ namespace Demonixis.GunSpinningVR
             "HDRP_ENABLED"
         };
 
-        private const string LWRPPackageName = "com.unity.render-pipelines.lightweight";
         private const string HDRPPackageName = "com.unity.render-pipelines.high-definition";
 
         public int callbackOrder => 0;
@@ -33,34 +29,17 @@ namespace Demonixis.GunSpinningVR
         {
             GUILayout.Label("Rendering", EditorStyles.boldLabel);
 
-            if (GUILayout.Button("LWRP"))
-                SetupLWRP();
+            if (GUILayout.Button("Enable HDRP"))
+            {
+                Client.Add(HDRPPackageName);
+                RemoveAllSymbolsAdd("HDRP_ENABLED", false);
+            }
 
-            if (GUILayout.Button("HDRP"))
-                SetupHDRP();
-
-            if (GUILayout.Button("All"))
-                SetupAll();
-        }
-
-        public void SetupLWRP()
-        {
-            Client.Add(LWRPPackageName);
-            Client.Remove(HDRPPackageName);
-        }
-
-        public void SetupHDRP()
-        {
-            Client.Remove(LWRPPackageName);
-            Client.Add(HDRPPackageName);
-            RemoveAllSymbolsAdd("HDRP_ENABLED", false);
-        }
-
-        public void SetupAll()
-        {
-            Client.Add(LWRPPackageName);
-            Client.Add(HDRPPackageName);
-            AddDefines("HDRP_ENABLED");
+            if (GUILayout.Button("Disable HDRP"))
+            {
+                Client.Remove(HDRPPackageName);
+                RemoveAllSymbolsAdd(null, false);
+            }
         }
  
         private static void RemoveAllSymbolsAdd(string symbolToAdd, bool mobile)
@@ -73,24 +52,6 @@ namespace Demonixis.GunSpinningVR
 
             if (!string.IsNullOrEmpty(symbolToAdd))
                 symbols.Add(symbolToAdd);
-
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, string.Join(";", symbols.ToArray()));
-        }
-
-        public static void AddDefines(params string[] symbolsToAdd)
-        {
-            var definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
-            var symbols = definesString.Split(';').ToList();
-
-
-            if (symbolsToAdd == null)
-                return;
-
-            foreach (var symbol in symbolsToAdd)
-            {
-                if (!symbols.Contains(symbol))
-                    symbols.AddRange(symbolsToAdd);
-            }
 
             PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, string.Join(";", symbols.ToArray()));
         }

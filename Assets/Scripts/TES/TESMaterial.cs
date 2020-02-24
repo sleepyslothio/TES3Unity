@@ -53,14 +53,15 @@ namespace TESUnity.Rendering
         public const string URPTerrainPath = "Universal Render Pipeline/Terrain/Lit";
         public const string HDRPLitPath = "TESUnity/HDRP-Lit";
         public const string HDRPLitCutoffPath = "TESUnity/HDRP-Lit-Cutoff";
-        public const string HDRPTerrainPath = "HD Render Pipeline/TerrainLit";
-        public const string DiffuseParameterName = "Albedo";
+        public const string HDRPTerrainPath = "HDRP/TerrainLit";
+        public const string DiffuseParameterName = "_Albedo";
         public const string m_SrcBlendParameter = "_SrcBlend";
         public const string m_DstBlendParameter = "_DstBlend";
         public const string m_CutoutParameter = "_Cutout";
         // Static variables
         private static Material TerrainMaterial = null;
-        private static Dictionary<TESMaterialProps, Material> m_existingMaterials = new Dictionary<TESMaterialProps, Material>();
+        private static Dictionary<Texture2D, Texture2D> GeneratedNormalMapsStore = new Dictionary<Texture2D, Texture2D>();
+        private static Dictionary<TESMaterialProps, Material> MaterialStore = new Dictionary<TESMaterialProps, Material>();
         // Private variables
         private TextureManager m_textureManager;
         private Shader m_Shader = null;
@@ -86,8 +87,8 @@ namespace TESUnity.Rendering
 
         public Material BuildMaterialFromProperties(TESMaterialProps mp)
         {
-            if (m_existingMaterials.ContainsKey(mp))
-                return m_existingMaterials[mp];
+            if (MaterialStore.ContainsKey(mp))
+                return MaterialStore[mp];
 
             var material = new Material(mp.alphaBlended ? m_CutoutShader : m_Shader);
 
@@ -104,9 +105,51 @@ namespace TESUnity.Rendering
                 material.SetTexture(DiffuseParameterName, mainTexture);
             }
 
-            m_existingMaterials.Add(mp, material);
+            MaterialStore.Add(mp, material);
 
             return material;
+        }
+
+        public static Texture2D GenerateNormalMap(Texture2D source)
+        {
+            return GenerateNormalMap(source, TESManager.NormalMapGeneratorIntensity);
+        }
+
+        // https://gamedev.stackexchange.com/questions/106703/create-a-normal-map-using-a-script-unity
+        public static Texture2D GenerateNormalMap(Texture2D source, float strength)
+        {
+            if (GeneratedNormalMapsStore.ContainsKey(source))
+                return GeneratedNormalMapsStore[source];
+
+            strength = Mathf.Clamp(strength, 0.0F, 100.0f);
+
+            Texture2D normalTexture;
+            float xLeft;
+            float xRight;
+            float yUp;
+            float yDown;
+            float yDelta;
+            float xDelta;
+
+            normalTexture = new Texture2D(source.width, source.height, TextureFormat.RGB24, true);
+
+            for (int y = 0; y < normalTexture.height; y++)
+            {
+                for (int x = 0; x < normalTexture.width; x++)
+                {
+                    xLeft = source.GetPixel(x - 1, y).grayscale * strength;
+                    xRight = source.GetPixel(x + 1, y).grayscale * strength;
+                    yUp = source.GetPixel(x, y - 1).grayscale * strength;
+                    yDown = source.GetPixel(x, y + 1).grayscale * strength;
+                    xDelta = ((xLeft - xRight) + 1) * 0.5f;
+                    yDelta = ((yUp - yDown) + 1) * 0.5f;
+                    normalTexture.SetPixel(x, y, new Color(xDelta, yDelta, 1.0f, yDelta));
+                }
+            }
+
+            normalTexture.Apply();
+
+            return normalTexture;
         }
     }
 }

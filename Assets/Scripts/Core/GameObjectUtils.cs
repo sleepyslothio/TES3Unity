@@ -1,11 +1,10 @@
 ﻿using TESUnity;
 using TESUnity.Rendering;
 using UnityEngine;
-#if HDRP_ENABLED
-using UnityEngine.Experimental.Rendering.HDPipeline;
-#endif
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
+#if HDRP_ENABLED
+using UnityEngine.Rendering.HighDefinition;
+#endif
 
 public static class GameObjectUtils
 {
@@ -38,6 +37,20 @@ public static class GameObjectUtils
 
         light.transform.position = position;
         light.transform.rotation = orientation;
+
+#if HDRP_ENABLED
+        if (GameSettings.Get().RendererMode == RendererMode.HDRP)
+        {
+            var lightData = light.GetComponent<HDAdditionalLightData>();
+            if (lightData == null)
+            {
+                lightData = light.AddComponent<HDAdditionalLightData>();
+            }
+
+            lightData.SetIntensity(10000, LightUnit.Lux);
+            lightData.EnableColorTemperature(true);
+        }
+#endif
 
         return light;
     }

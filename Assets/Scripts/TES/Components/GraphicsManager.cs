@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 #if HDRP_ENABLED
-using UnityEngine.Rendering.HDPipeline;
+using UnityEngine.Rendering.HighDefinition;
 #endif
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -9,6 +9,10 @@ namespace TESUnity.Components
 {
     public sealed class GraphicsManager : MonoBehaviour
     {
+
+
+        private bool m_UniversalRP = true;
+
         private void Awake()
         {
 #if UNITY_EDITOR
@@ -18,32 +22,43 @@ namespace TESUnity.Components
             settingsOverride?.ApplyEditorSettingsOverride();
 #endif
             var config = GameSettings.Get();
-            var hdrp = config.RendererMode == RendererMode.HDRP;
             var target = config.SRPQuality.ToString();
 
-#if UNITY_ANDROID
-            rendererMode = RendererMode.UniversalRP
-            target = "Mobile";
-#endif
-#if !HDRP_ENABLED
-            hdrp = false; // Double check
-#endif
+            m_UniversalRP = config.RendererMode == RendererMode.UniversalRP;
 
-            if (!hdrp)
+#if !HDRP_ENABLED || UNITY_ANDROID
+            m_UniversalRP = true; // Double check
+#endif
+            var assetPath = GetPipelineAssetPath(m_UniversalRP);
+            var volumePath = GetVolumePath(m_UniversalRP);
+
+            if (m_UniversalRP)
             {
-                var lwrpAsset = Resources.Load<UniversalRenderPipelineAsset>($"Rendering/UniversalRP/URP-{target}");
+#if UNITY_ANDROID
+                target = "Mobile";
+#endif
+                // Setup the UniversalRP Asset.
+                var lwrpAsset = Resources.Load<UniversalRenderPipelineAsset>($"{assetPath}/URPAsset-{target}");
                 lwrpAsset.renderScale = config.RenderScale;
                 GraphicsSettings.renderPipelineAsset = lwrpAsset;
 
                 // Instantiate URP Volume
+                var profile = Resources.Load<VolumeProfile>($"{volumePath}/PostProcess-Profile");
+                CreateVolume(profile);
             }
+#if HDRP_ENABLED
             else
             {
-#if HDRP_ENABLED
-                GraphicsSettings.renderPipelineAsset = Resources.Load<HDRenderPipelineAsset>($"Rendering/HDRP/HDRPAsset-{target}");
+                // Setup the HDRP Asset.
+                var hdrpAsset = Resources.Load<HDRenderPipelineAsset>($"{assetPath}/HDRPAsset-{target}");
+                GraphicsSettings.renderPipelineAsset = hdrpAsset;
+
                 // Instantiate HDRP Volume (Post Processing + Environment)
-#endif
+                var postProcessingProfile = Resources.Load<VolumeProfile>($"{volumePath}/PostProcess-Profile");
+                var environmentProfile = Resources.Load<VolumeProfile>($"{volumePath}/Environment-Profile");
+                CreateVolume(postProcessingProfile, environmentProfile);
             }
+#endif
         }
 
         private void Start()
@@ -54,32 +69,65 @@ namespace TESUnity.Components
             // 1. Setup Camera
             camera.farClipPlane = config.CameraFarClip;
 
-            var additionalData = camera.GetComponent<UniversalAdditionalCameraData>();
-            additionalData.renderPostProcessing = config.PostProcessingQuality != PostProcessingQuality.None;
-
-            switch (config.AntiAliasingMode)
+            if (m_UniversalRP)
             {
-                case AntiAliasingMode.None:
-                case AntiAliasingMode.MSAA:
-                    additionalData.antialiasing = AntialiasingMode.None;
-                    break;
-                case AntiAliasingMode.FXAA:
-                case AntiAliasingMode.TAA:
-                    additionalData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
-                    break;
-                case AntiAliasingMode.SMAA:
-                    additionalData.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
-                    break;
-            }
+                var additionalData = camera.GetComponent<UniversalAdditionalCameraData>();
+                additionalData.renderPostProcessing = config.PostProcessingQuality != PostProcessingQuality.None;
 
-            var urpAsset = GraphicsSettings.renderPipelineAsset as UniversalRenderPipelineAsset;
-            if (urpAsset != null)
-            {
-                if (config.AntiAliasingMode != AntiAliasingMode.MSAA)
+                switch (config.AntiAliasingMode)
                 {
-                    urpAsset.msaaSampleCount = 0;
+                    case AntiAliasingMode.None:
+                    case AntiAliasingMode.MSAA:
+                        additionalData.antialiasing = AntialiasingMode.None;
+                        break;
+                    case AntiAliasingMode.FXAA:
+                    case AntiAliasingMode.TAA:
+                        additionalData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+                        break;
+                    case AntiAliasingMode.SMAA:
+                        additionalData.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+                        break;
+                }
+
+                var urpAsset = GraphicsSettings.renderPipelineAsset as UniversalRenderPipelineAsset;
+                if (urpAsset != null)
+                {
+                    if (config.AntiAliasingMode != AntiAliasingMode.MSAA)
+                    {
+                        urpAsset.msaaSampleCount = 0;
+                    }
                 }
             }
+#if HDRP_ENABLED
+            else
+            {
+            }
+#endif
+        }
+
+        private static void CreateVolume(params VolumeProfile[] profiles)
+        {
+            var volumeGo = new GameObject("Volume");
+            volumeGo.transform.localPosition = Vector3.zero;
+
+            Volume volume = null;
+
+            foreach (var profile in profiles)
+            {
+                volume = volumeGo.AddComponent<Volume>();
+                volume.isGlobal = true;
+                volume.sharedProfile = profile;
+            }
+        }
+
+        public static string GetPipelineAssetPath(bool universalRP)
+        {
+            return $"Rendering/{(universalRP ? "UniversalRP" : "HDRP")}/PipelineAssets";
+        }
+
+        public static string GetVolumePath(bool universalRP)
+        {
+            return $"Rendering/{(universalRP ? "UniversalRP" : "HDRP")}/Volumes";
         }
     }
 }
