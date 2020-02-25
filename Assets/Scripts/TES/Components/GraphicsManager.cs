@@ -4,6 +4,7 @@ using UnityEngine.Rendering.HighDefinition;
 #endif
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using System.Collections;
 
 namespace TESUnity.Components
 {
@@ -61,10 +62,17 @@ namespace TESUnity.Components
 #endif
         }
 
-        private void Start()
+        private IEnumerator Start()
         {
             var config = GameSettings.Get();
             var camera = Camera.main;
+            var wait = new WaitForSeconds(1);
+
+            while (camera == null)
+            {
+                camera = Camera.main;
+                yield return wait;
+            }
 
             // 1. Setup Camera
             camera.farClipPlane = config.CameraFarClip;
@@ -72,6 +80,11 @@ namespace TESUnity.Components
             if (m_UniversalRP)
             {
                 var additionalData = camera.GetComponent<UniversalAdditionalCameraData>();
+                if (additionalData == null)
+                {
+                    additionalData = camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
+                }
+
                 additionalData.renderPostProcessing = config.PostProcessingQuality != PostProcessingQuality.None;
 
                 switch (config.AntiAliasingMode)
@@ -101,19 +114,42 @@ namespace TESUnity.Components
 #if HDRP_ENABLED
             else
             {
+                var additionalData = camera.GetComponent<HDAdditionalCameraData>();
+                if (additionalData == null)
+                {
+                    additionalData = camera.gameObject.AddComponent<HDAdditionalCameraData>();
+                }
+
+                switch (config.AntiAliasingMode)
+                {
+                    case AntiAliasingMode.None:
+                    case AntiAliasingMode.MSAA:
+                        additionalData.antialiasing = HDAdditionalCameraData.AntialiasingMode.None;
+                        break;
+                    case AntiAliasingMode.FXAA:
+                        additionalData.antialiasing = HDAdditionalCameraData.AntialiasingMode.FastApproximateAntialiasing;
+                        break;
+                    case AntiAliasingMode.TAA:
+                        additionalData.antialiasing = HDAdditionalCameraData.AntialiasingMode.TemporalAntialiasing;
+                        break;
+                    case AntiAliasingMode.SMAA:
+                        additionalData.antialiasing = HDAdditionalCameraData.AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+                        break;
+                }
             }
 #endif
         }
 
         private static void CreateVolume(params VolumeProfile[] profiles)
         {
-            var volumeGo = new GameObject("Volume");
-            volumeGo.transform.localPosition = Vector3.zero;
-
+            GameObject volumeGo = null;
             Volume volume = null;
 
             foreach (var profile in profiles)
             {
+                volumeGo = new GameObject($"{(profile.name.Replace("-Profile", "Volume"))}");
+                volumeGo.transform.localPosition = Vector3.zero;
+
                 volume = volumeGo.AddComponent<Volume>();
                 volume.isGlobal = true;
                 volume.sharedProfile = profile;

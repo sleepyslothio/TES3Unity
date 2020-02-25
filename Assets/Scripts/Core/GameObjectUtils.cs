@@ -47,8 +47,7 @@ public static class GameObjectUtils
                 lightData = light.AddComponent<HDAdditionalLightData>();
             }
 
-            lightData.SetIntensity(10000, LightUnit.Lux);
-            lightData.EnableColorTemperature(true);
+            lightData.SetIntensity(3.141593f, LightUnit.Lux);
         }
 #endif
 

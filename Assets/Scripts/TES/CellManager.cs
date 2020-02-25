@@ -36,6 +36,7 @@ namespace TESUnity
         public static int cellRadius = 4;
         public static int detailRadius = 3;
         private const string defaultLandTextureFilePath = "textures/_land_default.dds";
+        private static Dictionary<Texture2D, TerrainLayer> TerrainLayers = new Dictionary<Texture2D, TerrainLayer>();
 
         private MorrowindDataReader dataReader;
         private TextureManager textureManager;
@@ -632,6 +633,7 @@ namespace TESUnity
 
             // Texture the terrain.
             TerrainLayer[] splatPrototypes = null;
+            TerrainLayer splat = null;
             float[,,] alphaMap = null;
 
             const int LAND_TEXTURE_INDICES_COUNT = 256;
@@ -662,17 +664,28 @@ namespace TESUnity
 
                     var texture = textureManager.LoadTexture(textureFilePath);
 
-                    // Create the splat prototype.
-                    var splat = new TerrainLayer();
-                    splat.diffuseTexture = texture;
-                    splat.smoothness = 0;
-                    splat.metallic = 0;
-                    splat.specular = Color.black;
+                    if (!TerrainLayers.ContainsKey(texture))
+                    {
+                        // Create the splat prototype.
+                        splat = new TerrainLayer();
+                        splat.diffuseTexture = texture;
+                        splat.smoothness = 0.3f;
+                        splat.metallic = 0.2f;
+                        splat.specular = Color.black;
+                        // Metallic, Oclusion, Detail, Smoothness
+                        splat.maskMapTexture = TextureManager.CreateMaskTexture(0.2f, 0, 0, 0.3f);
 
-                    if (GameSettings.Get().GenerateNormalMaps)
-                        splat.normalMapTexture = TESMaterial.GenerateNormalMap(texture);
+                        if (GameSettings.Get().GenerateNormalMaps)
+                            splat.normalMapTexture = TESMaterial.GenerateNormalMap(texture);
 
-                    splat.tileSize = new Vector2(6, 6);
+                        splat.tileSize = new Vector2(6, 6);
+
+                        TerrainLayers.Add(texture, splat);
+                    }
+                    else
+                    {
+                        splat = TerrainLayers[texture];
+                    }
 
                     // Update collections.
                     var splatIndex = splatPrototypeList.Count;

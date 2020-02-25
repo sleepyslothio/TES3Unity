@@ -66,7 +66,7 @@ namespace TESUnity.Rendering
         private TextureManager m_textureManager;
         private Shader m_Shader = null;
         private Shader m_CutoutShader = null;
-        
+
         private bool m_HDRP;
 
         public static Material GetTerrainMaterial(bool hdrp = false)
@@ -82,7 +82,7 @@ namespace TESUnity.Rendering
             m_textureManager = textureManager;
             m_HDRP = GameSettings.Get().RendererMode == RendererMode.HDRP;
             m_Shader = Shader.Find(m_HDRP ? HDRPLitPath : URPLitPath);
-            m_CutoutShader = Shader.Find(m_HDRP ?  HDRPLitCutoffPath : URPLitCutoffPath);
+            m_CutoutShader = Shader.Find(m_HDRP ? HDRPLitCutoffPath : URPLitCutoffPath);
         }
 
         public Material BuildMaterialFromProperties(TESMaterialProps mp)
@@ -96,7 +96,16 @@ namespace TESUnity.Rendering
             {
                 material.SetInt(m_SrcBlendParameter, (int)mp.srcBlendMode);
                 material.SetInt(m_DstBlendParameter, (int)mp.dstBlendMode);
-                material.SetFloat(m_CutoutParameter, 0.75f);
+                material.SetFloat(m_CutoutParameter, 0.5f);
+
+                if (m_HDRP)
+                {
+                    material.EnableKeyword("_ALPHATEST_ON");
+                    material.SetFloat("_AlphaCutoffEnable", 1.0f);
+
+                    var m = Resources.Load<Material>("Rendering/HDRP/Materials/HDRP-Cutoff");
+                    material.CopyPropertiesFromMaterial(m);
+                }
             }
 
             if (mp.textures.mainFilePath != null)

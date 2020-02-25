@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cf1dab834d4ec34195b920ea7bbf9ec, type: 3}
   m_Name: HDRPAsset-High
   m_EditorClassIdentifier: 
-  m_Version: 12
+  m_Version: 14
   m_ObsoleteFrameSettings:
     overrides: 0
     enableShadow: 0
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_RenderingPathDefaultCameraFrameSettings:
     bitDatas:
       data1: 70297877217117
-      data2: 4539628424926265344
+      data2: 4539628425463136256
     lodBias: 1
     lodBiasMode: 0
     lodBiasQualityLevel: 0
@@ -206,7 +206,7 @@ MonoBehaviour:
     lightLayerName6: Light Layer 6
     lightLayerName7: Light Layer 7
     supportDistortion: 1
-    supportTransparentBackface: 0
+    supportTransparentBackface: 1
     supportTransparentDepthPrepass: 1
     supportTransparentDepthPostpass: 1
     colorBufferFormat: 74
@@ -221,13 +221,13 @@ MonoBehaviour:
     supportTerrainHole: 0
     supportRayTracing: 0
     lightLoopSettings:
-      cookieAtlasSize: 128
+      cookieAtlasSize: 2048
       cookieFormat: 74
       pointCookieSize: 128
       cubeCookieTexArraySize: 16
       cookieAtlasLastValidMip: 0
       cookieTexArraySize: 16
-      planarReflectionAtlasSize: 1024
+      planarReflectionAtlasSize: 8192
       reflectionProbeCacheSize: 64
       reflectionCubemapSize: 256
       reflectionCacheCompressed: 0
