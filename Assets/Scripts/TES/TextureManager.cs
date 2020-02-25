@@ -10,6 +10,8 @@ namespace TESUnity
     {
         private static Dictionary<string, Texture2D> TextureStore = new Dictionary<string, Texture2D>();
         private static Dictionary<Color, Texture2D> MaskTextureStore = new Dictionary<Color, Texture2D>();
+        private static Dictionary<Texture2D, Texture2D> NormalMapsStore = new Dictionary<Texture2D, Texture2D>();
+
         private MorrowindDataReader _dataReader;
 
         public TextureManager(MorrowindDataReader reader)
@@ -41,6 +43,49 @@ namespace TESUnity
             MaskTextureStore.Add(color, texture);
 
             return texture;
+        }
+
+        public static Texture2D CreateNormalMapTexture(Texture2D source)
+        {
+            return GenerateNormalMap(source, TESManager.NormalMapGeneratorIntensity);
+        }
+
+        // https://gamedev.stackexchange.com/questions/106703/create-a-normal-map-using-a-script-unity
+        public static Texture2D GenerateNormalMap(Texture2D source, float strength)
+        {
+            if (NormalMapsStore.ContainsKey(source))
+            {
+                return NormalMapsStore[source];
+            }
+
+            strength = Mathf.Clamp(strength, 0.0F, 100.0f);
+
+            float xLeft;
+            float xRight;
+            float yUp;
+            float yDown;
+            float yDelta;
+            float xDelta;
+
+            var normalTexture = new Texture2D(source.width, source.height, TextureFormat.RGB24, true);
+
+            for (int y = 0; y < normalTexture.height; y++)
+            {
+                for (int x = 0; x < normalTexture.width; x++)
+                {
+                    xLeft = source.GetPixel(x - 1, y).grayscale * strength;
+                    xRight = source.GetPixel(x + 1, y).grayscale * strength;
+                    yUp = source.GetPixel(x, y - 1).grayscale * strength;
+                    yDown = source.GetPixel(x, y + 1).grayscale * strength;
+                    xDelta = ((xLeft - xRight) + 1) * 0.5f;
+                    yDelta = ((yUp - yDown) + 1) * 0.5f;
+                    normalTexture.SetPixel(x, y, new Color(xDelta, yDelta, 1.0f, yDelta));
+                }
+            }
+
+            normalTexture.Apply();
+
+            return normalTexture;
         }
 
         public Texture2D LoadTexture(string texturePath, bool flipVertically = false)

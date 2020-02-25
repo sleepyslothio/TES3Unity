@@ -5,13 +5,12 @@ using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using TESUnity.Rendering;
 
 namespace TESUnity.Components
 {
     public sealed class GraphicsManager : MonoBehaviour
     {
-
-
         private bool m_UniversalRP = true;
 
         private void Awake()
@@ -46,6 +45,8 @@ namespace TESUnity.Components
                 // Instantiate URP Volume
                 var profile = Resources.Load<VolumeProfile>($"{volumePath}/PostProcess-Profile");
                 CreateVolume(profile);
+
+                RenderSettings.skybox = new Material(Shader.Find("Skybox/Procedural"));
             }
 #if HDRP_ENABLED
             else
@@ -147,7 +148,7 @@ namespace TESUnity.Components
 
             foreach (var profile in profiles)
             {
-                volumeGo = new GameObject($"{(profile.name.Replace("-Profile", "Volume"))}");
+                volumeGo = new GameObject($"{(profile.name.Replace("-Profile", "-Volume"))}");
                 volumeGo.transform.localPosition = Vector3.zero;
 
                 volume = volumeGo.AddComponent<Volume>();

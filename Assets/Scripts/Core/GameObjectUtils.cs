@@ -8,8 +8,6 @@ using UnityEngine.Rendering.HighDefinition;
 
 public static class GameObjectUtils
 {
-    private static bool s_LoggedOnce = false;
-
     /// <summary>
     /// Creates a camera identical to the one added to new scenes by default.
     /// </summary>
@@ -28,7 +26,7 @@ public static class GameObjectUtils
         return cameraObject;
     }
 
-    public static GameObject CreateDirectionalLight(Vector3 position, Quaternion orientation)
+    public static GameObject CreateSunLight(Vector3 position, Quaternion orientation)
     {
         var light = new GameObject("Directional Light");
 
@@ -97,7 +95,9 @@ public static class GameObjectUtils
             terrainData.SetHeights(0, 0, heightPercents);
         }
         else
+        {
             terrainData.size = new Vector3(terrainWidth, 1, terrainWidth);
+        }
 
         // Texture the terrain.
         if ((splatPrototypes != null) && (alphaMap != null))

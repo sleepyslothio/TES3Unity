@@ -73,7 +73,7 @@ namespace TESUnity
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientIntensity = tes.ambientIntensity;
 
-            m_SunObj = GameObjectUtils.CreateDirectionalLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
+            m_SunObj = GameObjectUtils.CreateSunLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
             m_SunObj.GetComponent<Light>().shadows = config.SunShadows ? LightShadows.Soft : LightShadows.None;
             m_SunObj.SetActive(false);
 

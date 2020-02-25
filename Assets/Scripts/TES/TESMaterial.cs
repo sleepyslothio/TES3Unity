@@ -60,22 +60,13 @@ namespace TESUnity.Rendering
         public const string m_CutoutParameter = "_Cutout";
         // Static variables
         private static Material TerrainMaterial = null;
-        private static Dictionary<Texture2D, Texture2D> GeneratedNormalMapsStore = new Dictionary<Texture2D, Texture2D>();
+        private static Material HDRPCutoffMaterial = null;
         private static Dictionary<TESMaterialProps, Material> MaterialStore = new Dictionary<TESMaterialProps, Material>();
         // Private variables
         private TextureManager m_textureManager;
         private Shader m_Shader = null;
         private Shader m_CutoutShader = null;
-
         private bool m_HDRP;
-
-        public static Material GetTerrainMaterial(bool hdrp = false)
-        {
-            if (TerrainMaterial == null)
-                TerrainMaterial = new Material(Shader.Find(hdrp ? HDRPTerrainPath : URPTerrainPath));
-
-            return TerrainMaterial;
-        }
 
         public TESMaterial(TextureManager textureManager)
         {
@@ -88,24 +79,26 @@ namespace TESUnity.Rendering
         public Material BuildMaterialFromProperties(TESMaterialProps mp)
         {
             if (MaterialStore.ContainsKey(mp))
+            {
                 return MaterialStore[mp];
+            }
 
             var material = new Material(mp.alphaBlended ? m_CutoutShader : m_Shader);
 
             if (mp.alphaBlended)
             {
-                material.SetInt(m_SrcBlendParameter, (int)mp.srcBlendMode);
-                material.SetInt(m_DstBlendParameter, (int)mp.dstBlendMode);
-                material.SetFloat(m_CutoutParameter, 0.5f);
-
                 if (m_HDRP)
                 {
-                    material.EnableKeyword("_ALPHATEST_ON");
-                    material.SetFloat("_AlphaCutoffEnable", 1.0f);
+                    if (HDRPCutoffMaterial == null)
+                    {
+                        var materialPath = $"{GetMaterialAssetPath(true)}/HDRP-Cutoff";
+                        HDRPCutoffMaterial = Resources.Load<Material>(materialPath);
+                    }
 
-                    var m = Resources.Load<Material>("Rendering/HDRP/Materials/HDRP-Cutoff");
-                    material.CopyPropertiesFromMaterial(m);
+                    material.CopyPropertiesFromMaterial(HDRPCutoffMaterial);
                 }
+                
+                material.SetFloat(m_CutoutParameter, 0.5f);
             }
 
             if (mp.textures.mainFilePath != null)
@@ -119,46 +112,17 @@ namespace TESUnity.Rendering
             return material;
         }
 
-        public static Texture2D GenerateNormalMap(Texture2D source)
+        public static Material GetTerrainMaterial(bool hdrp = false)
         {
-            return GenerateNormalMap(source, TESManager.NormalMapGeneratorIntensity);
+            if (TerrainMaterial == null)
+                TerrainMaterial = new Material(Shader.Find(hdrp ? HDRPTerrainPath : URPTerrainPath));
+
+            return TerrainMaterial;
         }
 
-        // https://gamedev.stackexchange.com/questions/106703/create-a-normal-map-using-a-script-unity
-        public static Texture2D GenerateNormalMap(Texture2D source, float strength)
+        public static string GetMaterialAssetPath(bool hdrp = false)
         {
-            if (GeneratedNormalMapsStore.ContainsKey(source))
-                return GeneratedNormalMapsStore[source];
-
-            strength = Mathf.Clamp(strength, 0.0F, 100.0f);
-
-            Texture2D normalTexture;
-            float xLeft;
-            float xRight;
-            float yUp;
-            float yDown;
-            float yDelta;
-            float xDelta;
-
-            normalTexture = new Texture2D(source.width, source.height, TextureFormat.RGB24, true);
-
-            for (int y = 0; y < normalTexture.height; y++)
-            {
-                for (int x = 0; x < normalTexture.width; x++)
-                {
-                    xLeft = source.GetPixel(x - 1, y).grayscale * strength;
-                    xRight = source.GetPixel(x + 1, y).grayscale * strength;
-                    yUp = source.GetPixel(x, y - 1).grayscale * strength;
-                    yDown = source.GetPixel(x, y + 1).grayscale * strength;
-                    xDelta = ((xLeft - xRight) + 1) * 0.5f;
-                    yDelta = ((yUp - yDown) + 1) * 0.5f;
-                    normalTexture.SetPixel(x, y, new Color(xDelta, yDelta, 1.0f, yDelta));
-                }
-            }
-
-            normalTexture.Apply();
-
-            return normalTexture;
+            return $"Rendering/{(hdrp ? "HDRP" : "UniversalRP")}/Materials";
         }
     }
 }

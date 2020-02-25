@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TESUnity.Components.Records;
 using TESUnity.ESM;
-using TESUnity.Rendering;
 using UnityEngine;
 
 namespace TESUnity
@@ -672,11 +671,10 @@ namespace TESUnity
                         splat.smoothness = 0.3f;
                         splat.metallic = 0.2f;
                         splat.specular = Color.black;
-                        // Metallic, Oclusion, Detail, Smoothness
-                        splat.maskMapTexture = TextureManager.CreateMaskTexture(0.2f, 0, 0, 0.3f);
+                        splat.maskMapTexture = TextureManager.CreateMaskTexture(splat.metallic, 0, 0, splat.smoothness);
 
                         if (GameSettings.Get().GenerateNormalMaps)
-                            splat.normalMapTexture = TESMaterial.GenerateNormalMap(texture);
+                            splat.normalMapTexture = TextureManager.CreateNormalMapTexture(texture);
 
                         splat.tileSize = new Vector2(6, 6);
 

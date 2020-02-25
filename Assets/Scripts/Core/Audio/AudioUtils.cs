@@ -1,11 +1,9 @@
-﻿using MP3Sharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 // TODO: Handle long audio files.
-
 public static class AudioUtils
 {
     public static AudioClip CreateAudioClip(string name, PCMAudioBuffer audioBuffer)
@@ -164,7 +162,7 @@ public static class AudioUtils
         {
             // Read some sample frames.
             int sampleFramesLeftToRead = totalSampleFramesToRead - sampleFramesRead;
-            int sampleFramesReturned = audioStream.ReadSampleFrames(intermediateBuffer.data, 0, Math.Min(sampleFramesLeftToRead, intermediateBuffer.sampleFrameCount));
+            int sampleFramesReturned = audioStream.ReadSampleFrames(intermediateBuffer.data, 0, Math.Min(sampleFramesLeftToRead, intermediateBuffer.SampleFrameCount));
 
             if (sampleFramesReturned > 0)
             {
@@ -265,185 +263,4 @@ public static class AudioUtils
             }
         });
     }
-}
-
-/// <summary>
-/// Pulse-code modulation (uncompressed samples) audio buffer
-/// </summary>
-public struct PCMAudioBuffer
-{
-    public int channelCount;
-    public int bitDepth; // bits per sample
-    public int samplingRate; // sample frames per second
-    public byte[] data; // sample data (channels are interleaved)
-
-    public int bytesPerSample
-    {
-        get { return bitDepth / 8; }
-    }
-
-    public int bytesPerSampleFrame
-    {
-        get { return channelCount * bytesPerSample; }
-    }
-
-    public int sampleFrameCount
-    {
-        get { return sampleCount / channelCount; }
-    }
-    public int sampleCount
-    {
-        get { return data.Length / bytesPerSample; }
-    }
-
-    public PCMAudioBuffer(int channelCount, int bitDepth, int samplingRate, int sampleFrameCount)
-    {
-        this.channelCount = channelCount;
-        this.bitDepth = bitDepth;
-        this.samplingRate = samplingRate;
-        data = null; // Finish assigning values to all members so that properties can be used.
-
-        data = new byte[sampleFrameCount * bytesPerSampleFrame];
-    }
-    public PCMAudioBuffer(int channelCount, int bitDepth, int samplingRate, byte[] data)
-    {
-        this.channelCount = channelCount;
-        this.bitDepth = bitDepth;
-        this.samplingRate = samplingRate;
-        this.data = data;
-
-        Debug.Assert((data.Length % bytesPerSampleFrame) == 0);
-    }
-
-    public float[] ToFloatArray()
-    {
-        float[] floatArray = new float[sampleCount];
-        ToFloatArray(floatArray, 0, sampleFrameCount);
-
-        return floatArray;
-    }
-
-    // TODO: assert numSampleFrames valid
-    public void ToFloatArray(float[] floatArray, int offsetInSampleFrames, int numSampleFrames)
-    {
-        int offsetInSamples = offsetInSampleFrames * channelCount;
-        int numSamples = numSampleFrames * channelCount;
-
-        switch (bitDepth)
-        {
-            case 8:
-                for (int i = 0; i < numSamples; i++)
-                {
-                    floatArray[offsetInSamples + i] = (float)(unchecked((sbyte)data[i])) / sbyte.MaxValue;
-                }
-
-                break;
-            case 16:
-                for (int i = 0; i < numSamples; i++)
-                {
-                    floatArray[offsetInSamples + i] = (float)BitConverter.ToInt16(data, 2 * i) / short.MaxValue;
-                }
-
-                break;
-            case 32:
-                for (int i = 0; i < numSamples; i++)
-                {
-                    floatArray[offsetInSamples + i] = BitConverter.ToSingle(data, 4 * i);
-                }
-
-                break;
-            case 64:
-                for (int i = 0; i < numSamples; i++)
-                {
-                    floatArray[offsetInSamples + i] = (float)BitConverter.ToDouble(data, 8 * i);
-                }
-
-                break;
-            default:
-                throw new NotImplementedException("Tried to convert a PCMAudioBuffer with an unsupported bit depth (" + bitDepth.ToString() + ") to a float array.");
-        }
-    }
-}
-
-// TODO: Handle exceptions
-// TODO: Change MP3 libraries to properly handle mono/stereo.
-public class MP3StreamReader : IDisposable
-{
-    public readonly int channelCount = 2;
-    public readonly int bitDepth = 16; // bits per sample
-    public readonly int samplingRate; // sample frames per second
-    public readonly long compressedStreamLengthInBytes;
-    public bool isDoneStreaming
-    {
-        get
-        {
-            return !isOpen || audioStream.IsEOF;
-        }
-    }
-    public bool isOpen
-    {
-        get
-        {
-            return audioStream != null;
-        }
-    }
-
-    public MP3StreamReader(string filePath)
-    {
-        audioStream = new MP3Stream(filePath);
-        samplingRate = audioStream.Frequency;
-        compressedStreamLengthInBytes = audioStream.Length;
-    }
-
-    public void Close()
-    {
-        Debug.Assert(isOpen);
-
-        audioStream.Close();
-        audioStream = null;
-    }
-    public void Dispose()
-    {
-        if (isOpen)
-        {
-            Close();
-        }
-    }
-
-    // Returns how many sample frames were actually read.
-    public int ReadSampleFrames(byte[] buffer, int offsetInSampleFrames, int sampleFrameCount)
-    {
-        Debug.Assert(isOpen);
-
-        int offsetInBytes = AudioUtils.SampleFramesToBytes(offsetInSampleFrames, channelCount, bitDepth);
-        int requestedByteCount = AudioUtils.SampleFramesToBytes(sampleFrameCount, channelCount, bitDepth);
-
-        int bytesRead = 0;
-        int bytesReturned;
-
-        do
-        {
-            bytesReturned = audioStream.Read(buffer, offsetInBytes + bytesRead, requestedByteCount - bytesRead);
-            bytesRead += bytesReturned;
-        } while (bytesReturned > 0);
-
-        Debug.Assert((bytesRead % AudioUtils.SampleFramesToBytes(1, channelCount, bitDepth)) == 0);
-
-        // Stereoize audio and fix MP3Sharp's strange behavior.
-        if (audioStream.ChannelCount == 1)
-        {
-            int iEnd = offsetInBytes + bytesRead;
-
-            for (int i = offsetInBytes; i < iEnd; i += 4)
-            {
-                buffer[i + 2] = buffer[i];
-                buffer[i + 3] = buffer[i + 1];
-            }
-        }
-
-        int sampleFramesRead = AudioUtils.BytesToSampleFrames(bytesRead, channelCount, bitDepth);
-        return sampleFramesRead;
-    }
-
-    private MP3Stream audioStream;
 }
