@@ -9,7 +9,6 @@ using TESUnity.UI;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityStandardAssets.Water;
-using UnityEngine.XR.Interaction.Toolkit.UI;
 using TESUnity.Components.XR;
 
 namespace TESUnity
@@ -31,7 +30,7 @@ namespace TESUnity
         private GameObject m_SunObj;
         private GameObject m_WaterObj;
         private Transform m_PlayerTransform;
-        private PlayerController m_Player;
+        private PlayerController m_PlayerController;
         private PlayerCharacter m_PlayerCharacter;
         private PlayerInventory m_PlayerInventory;
         private GameObject m_PlayerCameraObj;
@@ -81,9 +80,12 @@ namespace TESUnity
             m_SunObj.SetActive(false);
 
             if (config.DayNightCycle)
+            {
                 m_SunObj.AddComponent<DayNightCycle>();
+            }
 
-            m_WaterObj = GameObject.Instantiate(tes.waterPrefab);
+            var waterPrefab = Resources.Load<GameObject>("Prefabs/Water");
+            m_WaterObj = GameObject.Instantiate(waterPrefab);
             m_WaterObj.SetActive(false);
 
             var water = m_WaterObj.GetComponent<Water>();
@@ -130,13 +132,13 @@ namespace TESUnity
         /// <param name="playerPrefab">The player prefab.</param>
         /// <param name="interiorCellName">The name of the desired cell.</param>
         /// <param name="position">The target position of the player.</param>
-        public void SpawnPlayerInside(GameObject playerPrefab, string interiorCellName, Vector3 position)
+        public void SpawnPlayerInside(string interiorCellName, Vector3 position, Quaternion rotation)
         {
             m_CurrentCell = dataReader.FindInteriorCellRecord(interiorCellName);
 
             Debug.Assert(m_CurrentCell != null);
 
-            CreatePlayer(playerPrefab, position, out m_PlayerCameraObj);
+            CreatePlayer(position, rotation);
 
             var cellInfo = cellManager.StartCreatingInteriorCell(interiorCellName);
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
@@ -150,13 +152,13 @@ namespace TESUnity
         /// <param name="playerPrefab">The player prefab.</param>
         /// <param name="gridCoords">The grid coordinates.</param>
         /// <param name="position">The target position of the player.</param>
-        public void SpawnPlayerInside(GameObject playerPrefab, Vector2i gridCoords, Vector3 position)
+        public void SpawnPlayerInside(Vector2i gridCoords, Vector3 position, Quaternion rotation)
         {
             m_CurrentCell = dataReader.FindInteriorCellRecord(gridCoords);
 
             Debug.Assert(m_CurrentCell != null);
 
-            CreatePlayer(playerPrefab, position, out m_PlayerCameraObj);
+            CreatePlayer(position, rotation);
 
             var cellInfo = cellManager.StartCreatingInteriorCell(gridCoords);
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
@@ -167,16 +169,16 @@ namespace TESUnity
         /// <summary>
         /// Spawns the player outside using the cell's grid coordinates.
         /// </summary>
-        /// <param name="playerPrefab">The player prefab.</param>
         /// <param name="gridCoords">The grid coordinates.</param>
         /// <param name="position">The target position of the player.</param>
-        public void SpawnPlayerOutside(GameObject playerPrefab, Vector2i gridCoords, Vector3 position)
+        /// <param name="rotation">The target rotation of the player.</param>
+        public void SpawnPlayerOutside(Vector2i gridCoords, Vector3 position, Quaternion rotation)
         {
             m_CurrentCell = dataReader.FindExteriorCellRecord(gridCoords);
 
             Debug.Assert(m_CurrentCell != null);
 
-            CreatePlayer(playerPrefab, position, out m_PlayerCameraObj);
+            CreatePlayer(position, rotation);
 
             var cellInfo = cellManager.StartCreatingExteriorCell(gridCoords);
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
@@ -187,14 +189,14 @@ namespace TESUnity
         /// <summary>
         /// Spawns the player outside using the position of the player.
         /// </summary>
-        /// <param name="playerPrefab">The player prefab.</param>
         /// <param name="position">The target position of the player.</param>
-        public void SpawnPlayerOutside(GameObject playerPrefab, Vector3 position)
+        /// <param name="rotation">The target rotation of the player.</param>
+        public void SpawnPlayerOutside(Vector3 position, Quaternion rotation)
         {
             var cellIndices = cellManager.GetExteriorCellIndices(position);
             m_CurrentCell = dataReader.FindExteriorCellRecord(cellIndices);
 
-            CreatePlayer(playerPrefab, position, out m_PlayerCameraObj);
+            CreatePlayer(position, rotation);
             cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, cellRadiusOnLoad);
             OnExteriorCell(m_CurrentCell);
         }
@@ -219,7 +221,7 @@ namespace TESUnity
             var ray = new Ray(m_PlayerCharacter.RayCastTarget.position, m_PlayerCharacter.RayCastTarget.forward);
             var raycastHitCount = Physics.RaycastNonAlloc(ray, m_InteractRaycastHitBuffer, maxInteractDistance);
 
-            if (raycastHitCount > 0 && !m_Player.Paused)
+            if (raycastHitCount > 0 && !m_PlayerController.Paused)
             {
                 for (int i = 0; i < raycastHitCount; i++)
                 {
@@ -247,11 +249,17 @@ namespace TESUnity
                         break;
                     }
                     else
-                        CloseInteractiveText(); //deactivate text if no interactable [ DOORS ONLY - REQUIRES EXPANSION ] is found
+                    {
+                        //deactivate text if no interactable [ DOORS ONLY - REQUIRES EXPANSION ] is found
+                        CloseInteractiveText(); 
+                    }
                 }
             }
             else
-                CloseInteractiveText(); //deactivate text if nothing is raycasted against
+            {
+                //deactivate text if nothing is raycasted against
+                CloseInteractiveText(); 
+            }
         }
 
         public void ShowInteractiveText(RecordComponent component)
@@ -293,8 +301,6 @@ namespace TESUnity
 
             m_SunObj.SetActive(false);
 
-            m_UnderwaterEffect.enabled = CELL.WHGT != null;
-
             if (CELL.WHGT != null)
             {
                 var offset = 1.6f; // Interiors cells needs this offset to render at the correct location.
@@ -307,6 +313,8 @@ namespace TESUnity
             {
                 m_WaterObj.SetActive(false);
             }
+
+            m_UnderwaterEffect.enabled = m_WaterObj.activeSelf;
         }
 
         private void OpenDoor(Door component)
@@ -350,34 +358,41 @@ namespace TESUnity
             }
         }
 
-        private GameObject CreatePlayer(GameObject playerPrefab, Vector3 position, out GameObject playerCamera)
+        private GameObject CreatePlayer(Vector3 position, Quaternion rotation)
         {
-            var xr = XRManager.IsXREnabled();
+            var xrEnabled = XRManager.IsXREnabled();
+            var playerPrefabPath = "Prefabs/Player";           
 
             // First, create the interaction system if XR is enabled.
-            if (xr)
+            if (xrEnabled)
             {
                 PlayerXR.CreateInteractionSystem();
+                playerPrefabPath += "XR";
             }
 
             // Then create the player.
             var player = GameObject.FindWithTag("Player");
             if (player == null)
             {
+                var playerPrefab = Resources.Load<GameObject>(playerPrefabPath);
                 player = GameObject.Instantiate(playerPrefab);
                 player.name = "Player";
             }
 
-            player.transform.position = position;
+            m_PlayerTransform = player.transform;
+            m_PlayerTransform.position = position;
+            m_PlayerTransform.rotation = rotation;
 
-            m_PlayerTransform = player.GetComponent<Transform>();
-            playerCamera = player.GetComponentInChildren<Camera>().gameObject;
+            m_PlayerCameraObj = player.GetComponentInChildren<Camera>().gameObject;
+
             m_PlayerCharacter = player.GetComponent<PlayerCharacter>();
-            m_Player = player.GetComponent<PlayerController>();
+            m_PlayerController = player.GetComponent<PlayerController>();
             m_PlayerInventory = player.GetComponent<PlayerInventory>();
-            m_UnderwaterEffect = playerCamera.GetComponent<UnderwaterEffect>();
+            m_UnderwaterEffect = m_PlayerCameraObj.GetComponent<UnderwaterEffect>();
 
-            player.GetComponent<Rigidbody>().isKinematic = false;
+            // Kinematic Rigidbody for XR.
+            var rb = player.GetComponent<Rigidbody>();
+            rb.isKinematic = xrEnabled;
 
             return player;
         }

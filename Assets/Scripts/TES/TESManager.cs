@@ -29,17 +29,12 @@ namespace TESUnity
         public float ambientIntensity = 1.5f;
         public float desiredWorkTimePerFrame = 0.0005f;
 
-        [Header("Prefabs")]
-        public GameObject playerPrefab;
-        public GameObject playerXRPrefab;
-        public GameObject waterPrefab;
-
         [Header("Debug")]
         public bool loadExtensions = false;
 #if UNITY_EDITOR
-        public int CellRadius = 4;
-        public int CellDetailRadius = 3;
-        public int CellRadiusOnLoad = 2;
+        public int CellRadius = 0;
+        public int CellDetailRadius = 0;
+        public int CellRadiusOnLoad = 0;
 #endif
         #endregion
 
@@ -82,8 +77,11 @@ namespace TESUnity
             MorrowindEngine.cellRadiusOnLoad = config.CellRadiusOnLoad;
             MorrowindEngine.desiredWorkTimePerFrame = desiredWorkTimePerFrame;
 
+            // When loaded from the Menu, this variable is already preloaded.
             if (MWDataReader == null)
+            {
                 MWDataReader = new MorrowindDataReader(dataPath);
+            }
 
             m_MorrowindEngine = new MorrowindEngine(MWDataReader);
             m_MusicPlayer = new MusicPlayer();
@@ -103,9 +101,8 @@ namespace TESUnity
                 }
             }
 
-            // Spawn the player
-            var xr = XRManager.IsXREnabled();
-            m_MorrowindEngine.SpawnPlayerOutside(xr ? playerXRPrefab : playerPrefab, new Vector2i(-2, -9), new Vector3(-137.94f, 2.30f, -1037.6f));
+            // Later we'll read the saved file and spawn the player at the correct location.
+            m_MorrowindEngine.SpawnPlayerOutside(new Vector2i(-2, -9), new Vector3(-137.94f, 2.30f, -1037.6f), Quaternion.identity);
         }
 
         private void OnApplicationQuit()
@@ -115,7 +112,9 @@ namespace TESUnity
 
         private void Update()
         {
+#if UNITY_EDITOR
             MorrowindEngine.desiredWorkTimePerFrame = desiredWorkTimePerFrame;
+#endif
             m_MorrowindEngine.Update();
             m_MusicPlayer.Update();
         }

@@ -24,9 +24,19 @@ namespace TESUnity.Components.Records
 
             _renderers = GetComponentsInChildren<Renderer>();
 
-            var colliders = GetComponents<MeshCollider>();
-            for (int i = 0; i < colliders.Length; i++)
-                Destroy(colliders[i]);
+            // Replace MeshCollider by Box. Will change in the future.
+            var meshColliders = GetComponentsInChildren<MeshCollider>();
+            for (int i = 0; i < meshColliders.Length; i++)
+            {
+                Destroy(meshColliders[i]);
+            }
+
+            gameObject.isStatic = false;
+
+            for(var i = 0; i < transform.childCount; i++)
+            {
+                transform.GetChild(i).gameObject.isStatic = false;
+            }
         }
 
         private void Update()

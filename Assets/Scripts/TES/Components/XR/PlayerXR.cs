@@ -118,9 +118,6 @@ namespace TESUnity.Components.XR
 
         public void ShowUICursor(bool visible)
         {
-            // TODO: Add hand selector for the Touchs and the Vive.
-            var uiCursor = GetComponentInChildren<VRGazeUI>(true);
-            uiCursor.SetActive(visible);
         }
 
         /// <summary>
