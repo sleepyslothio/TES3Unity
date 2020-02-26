@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.XR;
 
-namespace TESUnity.Components.VR
+namespace TESUnity.Components.XR
 {
     /// <summary>
     /// Display a crosshair in a world space canvas and use it to interact with the UI.

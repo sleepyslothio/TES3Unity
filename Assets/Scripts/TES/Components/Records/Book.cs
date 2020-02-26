@@ -5,15 +5,15 @@ namespace TESUnity.Components.Records
 {
     public class Book : RecordComponent
     {
-        private static PlayerComponent _player = null;
+        private static PlayerController _player = null;
         private static UIManager _uiManager = null;
 
-        public static PlayerComponent Player
+        public static PlayerController Player
         {
             get
             {
                 if (_player == null)
-                    _player = FindObjectOfType<PlayerComponent>();
+                    _player = FindObjectOfType<PlayerController>();
 
                 return _player;
             }

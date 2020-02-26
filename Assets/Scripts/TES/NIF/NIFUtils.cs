@@ -12,7 +12,7 @@ namespace TESUnity
         }
         public static Vector3 NifPointToUnityPoint(Vector3 NIFPoint)
         {
-            return NifVectorToUnityVector(NIFPoint) / Convert.meterInMWUnits;
+            return NifVectorToUnityVector(NIFPoint) / Convert.MeterInMWUnits;
         }
         public static Matrix4x4 NifRotationMatrixToUnityRotationMatrix(Matrix4x4 NIFRotationMatrix)
         {

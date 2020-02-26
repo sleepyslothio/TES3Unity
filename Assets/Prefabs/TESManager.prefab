@@ -57,11 +57,10 @@ MonoBehaviour:
     type: 3}
   waterPrefab: {fileID: 1586121937244772, guid: 6de569209e643e2438dd3dbfe2d466df,
     type: 3}
-  DiffuseTerrainLegacy: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
-  StandardTerrainLegacy: {fileID: 10650, guid: 0000000000000000f000000000000000, type: 0}
   loadExtensions: 0
-  loadCreatures: 0
-  loadNPCs: 0
+  CellRadius: 4
+  CellDetailRadius: 3
+  CellRadiusOnLoad: 2
 --- !u!114 &4663438948078211954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,13 +97,11 @@ MonoBehaviour:
   KinematicRigidbodies: 1
   CellRadius: 1
   CellDetailRadius: 3
-  CellRadiusOnLoad: 2
-  MaterialType: 0
-  RendererType: 2
-  CameraFarClip: 250
+  CellRadiusOnLoad: 1
+  RendererType: 0
+  CameraFarClip: 500
   SRPQuality: 2
   RenderScale: 0.95
-  WaterQuality: 0
   WaterTransparency: 0
   SunShadows: 1
   LightShadows: 1
@@ -116,7 +113,6 @@ MonoBehaviour:
   AntiAliasing: 4
   FollowHead: 1
   RoomScale: 1
-  HandTracking: 1
 --- !u!114 &493214117
 MonoBehaviour:
   m_ObjectHideFlags: 0

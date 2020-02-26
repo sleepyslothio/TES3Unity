@@ -1,7 +1,7 @@
 ﻿using TESUnity.Inputs;
 using Wacki;
 
-namespace TESUnity.Components.VR
+namespace TESUnity.Components.XR
 {
     public sealed class LaserPointer : IUILaserPointer
     {

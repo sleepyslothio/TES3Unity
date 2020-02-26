@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TESUnity
 {
-    public class PlayerComponent : MonoBehaviour
+    public class PlayerController : MonoBehaviour
     {
         private Transform m_CameraTransform;
         private Transform m_Transform;

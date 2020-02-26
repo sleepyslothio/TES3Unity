@@ -17,6 +17,8 @@ namespace Demonixis.Toolbox.XR
 
     public static class XRManager
     {
+        private static bool? XREnabled;
+
         public static XRLoader GetXRLoader()
         {
             return XRGeneralSettings.Instance?.Manager?.activeLoader;
@@ -28,10 +30,17 @@ namespace Demonixis.Toolbox.XR
             return xrLoader?.GetLoadedSubsystem<XRInputSubsystem>();
         }
 
-        public static bool IsXREnabled()
+        public static bool IsXREnabled(bool force = false)
         {
+            if (XREnabled.HasValue && !force)
+            {
+                return XREnabled.Value;
+            }
+
             var loader = GetXRLoader();
-            return loader != null;
+            XREnabled = loader != null;
+
+            return XREnabled.Value;
         }
 
         public static XRHeadset GetXRHeadset()

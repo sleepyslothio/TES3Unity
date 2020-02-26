@@ -54,6 +54,14 @@ public static class GameObjectUtils
         return light;
     }
 
+    public static GameObject CreateEventSystem<T>() where T : BaseInputModule
+    {
+        var gameObject = new GameObject("EventSystem");
+        gameObject.AddComponent<EventSystem>();
+        gameObject.AddComponent<T>();
+        return gameObject;
+    }
+
     /// <summary>
     /// Creates a terrain from heights.
     /// </summary>

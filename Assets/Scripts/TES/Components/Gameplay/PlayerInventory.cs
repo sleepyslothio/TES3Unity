@@ -9,14 +9,14 @@ namespace TESUnity.Components
     {
         private List<Record> _inventory = new List<Record>();
         private Transform _disabledObjects = null;
-        private PlayerComponent _player = null;
+        private PlayerController _player = null;
 
         void Start()
         {
             var disabledObjectGO = new GameObject("DisabledObjects");
             disabledObjectGO.SetActive(false);
             _disabledObjects = disabledObjectGO.GetComponent<Transform>();
-            _player = GetComponent<PlayerComponent>();
+            _player = GetComponent<PlayerController>();
         }
 
         public void Add(RecordComponent item)

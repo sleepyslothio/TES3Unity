@@ -1,22 +1,18 @@
 ﻿using Demonixis.Toolbox.XR;
-using Demonixis.UniversalXR;
 using System.Collections;
 using TESUnity.Inputs;
 using TESUnity.UI;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
-using UnityEngine.XR;
 
-namespace TESUnity.Components.VR
+namespace TESUnity.Components.XR
 {
     /// <summary>
     /// This component is responsible to enable the VR feature and deal with VR SDKs.
     /// VR SDKs allows us to provide more support (moving controller, teleportation, etc.)
     /// To enable a VR SDKs, please read the README.md file located in the Vendors folder.
     /// </summary>
-    public class PlayerXR : MonoBehaviour
+    public class PlayerXR : PlayerXRBase
     {
-        private Transform _camTransform = null;
         private Transform _transform = null;
         private RectTransform _canvas = null;
         private Transform _pivotCanvas = null;
@@ -33,46 +29,30 @@ namespace TESUnity.Components.VR
         /// - The HUD canvas is not recommanded, it's usefull for small informations
         /// - The UI is for all other UIs: Menu, Life, etc.
         /// </summary>
-        private IEnumerator Start()
+        protected override void Start()
         {
+            base.Start();
+
             if (!XRManager.IsXREnabled())
             {
                 enabled = false;
-                yield break;
-            }
-
-            var hands = GetComponentsInChildren<TrackedPoseDriver>(true);
-            foreach (var hand in hands)
-            {
-                hand.transform.parent = _camTransform.parent;
-            }
-
-            var settings = GameSettings.Get();
-
-            // Setup RoomScale/Sitted mode.
-            var trackingSpaceType = m_RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
-
-            XRManager.SetTrackingOriginMode(trackingSpaceType, true);
-
-            var teleporters = GetComponentsInChildren<Teleporter>();
-            foreach (var tp in teleporters)
-            {
-                tp.enabled = true;
+                return;
             }
 
 #if UNITY_ANDROID || UNITY_IOS
             QualitySettings.SetQualityLevel(1, false);
 #endif
 
-            m_RoomScale = settings.RoomScale;
-            m_FollowHead = settings.FollowHead;
+            StartCoroutine(DeferredStart());
+        }
 
+        private IEnumerator DeferredStart()
+        {
             yield return new WaitForEndOfFrame();
 
-            var renderScale = settings.RenderScale;
-
-            if (renderScale > 0 && renderScale <= 2)
-                XRSettings.renderViewportScale = renderScale;
+            var settings = GameSettings.Get();
+            m_RoomScale = settings.RoomScale;
+            m_FollowHead = settings.FollowHead;
 
             var uiManager = FindObjectOfType<UIManager>();
 
@@ -92,7 +72,6 @@ namespace TESUnity.Components.VR
             m_HUD = _canvas.Find("HUD");
 
             // Put the Canvas in WorldSpace and Attach it to the camera.
-            _camTransform = Camera.main.GetComponent<Transform>();
             _transform = transform;
 
             // Add a pivot to the UI. It'll help to rotate it in the inverse direction of the camera.
@@ -121,7 +100,7 @@ namespace TESUnity.Components.VR
 
             RecenterUI();
 
-            var centerEye = _camTransform;
+            var centerEye = CameraTransform;
             var root = centerEye.parent;
             var prevPos = root.position;
             var prevRot = root.rotation;
@@ -154,11 +133,11 @@ namespace TESUnity.Components.VR
             if (!onlyPosition)
             {
                 var pivotRot = _pivotCanvas.localRotation;
-                pivotRot.y = _camTransform.localRotation.y;
+                pivotRot.y = CameraTransform.localRotation.y;
                 _pivotCanvas.localRotation = pivotRot;
             }
 
-            var camPosition = _camTransform.position;
+            var camPosition = CameraTransform.position;
             var targetPosition = _pivotCanvas.position;
             targetPosition.y = camPosition.y;
             _pivotCanvas.position = targetPosition;

@@ -4,6 +4,21 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2020-xx-xx
+### Added
+- XRInteractionToolkit for VR interactions (TP, Grab, etc..)
+- Missing Record
+- Initial work for NPC support
+- Vulkan support for Oculus Quest
+- New Unity Input System
+### Changed
+- Universal Render Pipeline is the main renderer
+- Better HDRP integration
+### Removed
+- Oculus AssetStore Package
+- HTC Vive Focus Support
+- Legacy Renderer support
+
 ## [0.9.0] - 2019-xx-xx
 ### Added
 - Android (Touch) Support

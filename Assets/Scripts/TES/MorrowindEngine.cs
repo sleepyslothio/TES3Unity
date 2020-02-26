@@ -9,6 +9,7 @@ using TESUnity.UI;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityStandardAssets.Water;
+using UnityEngine.XR.Interaction.Toolkit.UI;
 
 namespace TESUnity
 {
@@ -29,7 +30,7 @@ namespace TESUnity
         private GameObject m_SunObj;
         private GameObject m_WaterObj;
         private Transform m_PlayerTransform;
-        private PlayerComponent m_Player;
+        private PlayerController m_Player;
         private PlayerInventory m_PlayerInventory;
         private GameObject m_PlayerCameraObj;
         private UnderwaterEffect m_UnderwaterEffect;
@@ -112,10 +113,6 @@ namespace TESUnity
             var uiCanvas = GameObject.Instantiate(uiCanvasPrefab);
 
             UIManager = uiCanvas.GetComponent<UIManager>();
-
-            var xr = XRManager.IsXREnabled();
-            var eventSystemPrefab = Resources.Load<GameObject>($"Prefabs/{(xr ? "XR" : "")}EventSystem");
-            GameObject.Instantiate(eventSystemPrefab);
             
 #if UNITY_ANDROID
             RenderSettings.ambientIntensity = 4;
@@ -299,7 +296,7 @@ namespace TESUnity
             if (CELL.WHGT != null)
             {
                 var offset = 1.6f; // Interiors cells needs this offset to render at the correct location.
-                m_WaterObj.transform.position = new Vector3(0, (CELL.WHGT.value / Convert.meterInMWUnits) - offset, 0);
+                m_WaterObj.transform.position = new Vector3(0, (CELL.WHGT.value / Convert.MeterInMWUnits) - offset, 0);
                 m_WaterObj.SetActive(true);
                 m_UnderwaterEffect.Level = m_WaterObj.transform.position.y;
             }
@@ -364,7 +361,7 @@ namespace TESUnity
 
             m_PlayerTransform = player.GetComponent<Transform>();
             playerCamera = player.GetComponentInChildren<Camera>().gameObject;
-            m_Player = player.GetComponent<PlayerComponent>();
+            m_Player = player.GetComponent<PlayerController>();
             m_PlayerInventory = player.GetComponent<PlayerInventory>();
             m_UnderwaterEffect = playerCamera.GetComponent<UnderwaterEffect>();
 

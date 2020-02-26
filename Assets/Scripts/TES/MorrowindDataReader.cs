@@ -26,7 +26,7 @@ namespace TESUnity
             MorrowindESMFile = new ESMFile(dataFilePath + "/Morrowind.esm");
             MorrowindBSAFile = new BSAFile(dataFilePath + "/Morrowind.bsa");
 
-            if (TESManager.instance.loadExtensions)
+            if (TESManager.instance?.loadExtensions ?? false)
             {
                 BloodmoonESMFile = new ESMFile(dataFilePath + "/Bloodmoon.esm");
                 BloodmoonBSAFile = new BSAFile(dataFilePath + "/Bloodmoon.bsa");

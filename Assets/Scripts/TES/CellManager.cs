@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using Demonixis.Toolbox.XR;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TESUnity.Components.Records;
 using TESUnity.ESM;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 namespace TESUnity
 {
@@ -53,7 +55,7 @@ namespace TESUnity
 
         public Vector2i GetExteriorCellIndices(Vector3 point)
         {
-            return new Vector2i(Mathf.FloorToInt(point.x / Convert.exteriorCellSideLengthInMeters), Mathf.FloorToInt(point.z / Convert.exteriorCellSideLengthInMeters));
+            return new Vector2i(Mathf.FloorToInt(point.x / Convert.ExteriorCellSideLengthInMeters), Mathf.FloorToInt(point.z / Convert.ExteriorCellSideLengthInMeters));
         }
 
         public InRangeCellInfo StartCreatingExteriorCell(Vector2i cellIndices)
@@ -475,7 +477,7 @@ namespace TESUnity
             lightObj.isStatic = true;
 
             var lightComponent = lightObj.AddComponent<Light>();
-            lightComponent.range = 3 * (LIGH.LHDT.radius / Convert.meterInMWUnits);
+            lightComponent.range = 3 * (LIGH.LHDT.radius / Convert.MeterInMWUnits);
             lightComponent.color = new Color32(LIGH.LHDT.red, LIGH.LHDT.green, LIGH.LHDT.blue, 255);
             lightComponent.intensity = 1.5f;
             lightComponent.bounceIntensity = 0f;
@@ -512,7 +514,9 @@ namespace TESUnity
             var tagTarget = gameObject;
             var coll = gameObject.GetComponentInChildren<Collider>(); // if the collider is on a child object and not on the object with the component, we need to set that object's tag instead.
             if (coll != null)
+            {
                 tagTarget = coll.gameObject;
+            }
 
             ProcessObjectType<DOORRecord>(tagTarget, refCellObjInfo, "Door");
             ProcessObjectType<ACTIRecord>(tagTarget, refCellObjInfo, "Activator");
@@ -674,7 +678,9 @@ namespace TESUnity
                         splat.maskMapTexture = TextureManager.CreateMaskTexture(splat.metallic, 0, 0, splat.smoothness);
 
                         if (GameSettings.Get().GenerateNormalMaps)
+                        {
                             splat.normalMapTexture = TextureManager.CreateNormalMapTexture(texture);
+                        }
 
                         splat.tileSize = new Vector2(6, 6);
 
@@ -728,10 +734,15 @@ namespace TESUnity
 
             // Create the terrain.
             var heightRange = maxHeight - minHeight;
-            var terrainPosition = new Vector3(Convert.exteriorCellSideLengthInMeters * LAND.gridCoords.X, minHeight / Convert.meterInMWUnits, Convert.exteriorCellSideLengthInMeters * LAND.gridCoords.Y);
-            var heightSampleDistance = Convert.exteriorCellSideLengthInMeters / (LAND_SIDE_LENGTH_IN_SAMPLES - 1);
-            var terrainGameObject = GameObjectUtils.CreateTerrain(heights, heightRange / Convert.meterInMWUnits, heightSampleDistance, splatPrototypes, alphaMap, terrainPosition);
+            var terrainPosition = new Vector3(Convert.ExteriorCellSideLengthInMeters * LAND.gridCoords.X, minHeight / Convert.MeterInMWUnits, Convert.ExteriorCellSideLengthInMeters * LAND.gridCoords.Y);
+            var heightSampleDistance = Convert.ExteriorCellSideLengthInMeters / (LAND_SIDE_LENGTH_IN_SAMPLES - 1);
+            var terrainGameObject = GameObjectUtils.CreateTerrain(heights, heightRange / Convert.MeterInMWUnits, heightSampleDistance, splatPrototypes, alphaMap, terrainPosition);
             terrainGameObject.transform.parent = parent.transform;
+
+            if (XRManager.IsXREnabled())
+            {
+                terrainGameObject.AddComponent<TeleportationArea>();
+            }
 
             yield return null;
         }
