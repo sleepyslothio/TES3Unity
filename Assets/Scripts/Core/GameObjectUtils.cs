@@ -1,6 +1,8 @@
 ﻿using TESUnity;
 using TESUnity.Rendering;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.Rendering;
 #if HDRP_ENABLED
 using UnityEngine.Rendering.HighDefinition;

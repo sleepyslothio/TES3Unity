@@ -53,7 +53,6 @@ namespace TESUnity
         public bool FollowHead = true;
         public bool RoomScale = false;
         public float RenderScale = 1.0f;
-        public bool HandTracking = false;
 
         public static void Save()
         {

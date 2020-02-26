@@ -41,8 +41,6 @@ namespace TESUnity.Components
         [SerializeField]
         private Toggle m_RoomScaleToggle = null;
         [SerializeField]
-        private Toggle m_HandTrackingToggle = null;
-        [SerializeField]
         private UISelectorWidget m_RenderScaleDd = null;
 
         private void Awake()
@@ -87,9 +85,6 @@ namespace TESUnity.Components
 
             m_RoomScaleToggle.isOn = m_Settings.RoomScale;
             m_RoomScaleToggle.onValueChanged.AddListener(SetRoomScale);
-
-            m_HandTrackingToggle.isOn = m_Settings.HandTracking;
-            m_HandTrackingToggle.onValueChanged.AddListener(SetHandTracking);
 
             values = new[] { "50", "60", "70", "80", "90", "100" };
             m_RenderScaleDd.Setup(ref values, m_Settings.RenderScale.ToString(), SetRenderScale);
@@ -236,11 +231,6 @@ namespace TESUnity.Components
         private void SetRoomScale(bool isOn)
         {
             m_Settings.RoomScale = isOn;
-        }
-
-        private void SetHandTracking(bool isOn)
-        {
-            m_Settings.HandTracking = isOn;
         }
     }
 }

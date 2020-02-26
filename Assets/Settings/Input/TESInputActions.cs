@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Settings/TESInputActions.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/Settings/Input/TESInputActions.inputactions'
 
 using System;
 using System.Collections;

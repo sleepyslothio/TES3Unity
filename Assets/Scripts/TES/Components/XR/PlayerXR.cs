@@ -26,14 +26,6 @@ namespace TESUnity.Components.VR
 
         [SerializeField]
         private Canvas _mainCanvas = null;
-        [SerializeField]
-        private GameObject m_LeftHandPrefab = null;
-        [SerializeField]
-        private GameObject m_RightHandPrefab = null;
-        [SerializeField]
-        private Transform m_LeftHand = null;
-        [SerializeField]
-        private Transform m_RightHand = null;
 
         /// <summary>
         /// Intialize the VR support for the player.
@@ -61,8 +53,6 @@ namespace TESUnity.Components.VR
             var trackingSpaceType = m_RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
 
             XRManager.SetTrackingOriginMode(trackingSpaceType, true);
-
-            TryAddOculusSupport(this, m_LeftHand, m_RightHand, m_LeftHandPrefab, m_RightHandPrefab);
 
             var teleporters = GetComponentsInChildren<Teleporter>();
             foreach (var tp in teleporters)
@@ -191,48 +181,6 @@ namespace TESUnity.Components.VR
         {
             if (paused)
                 RecenterUI();
-        }
-
-        public static void TryAddOculusSupport(MonoBehaviour target, Transform leftHandTransform, Transform rightHandTransform, GameObject leftHandPrefab, GameObject rightHandPrefab)
-        {
-            if (XRManager.GetXRVendor() != XRVendor.Oculus)
-            {
-                return;
-            }
-
-            var settings = GameSettings.Get();
-            var manager = target.gameObject.AddComponent<OVRManager>();
-            var cameraRig = target.gameObject.AddComponent<OVRCameraRig>();
-
-            target.StartCoroutine(SetupOculusManager());
-
-            IEnumerator SetupOculusManager()
-            {
-                yield return null;
-                manager.trackingOriginType = settings.RoomScale ? OVRManager.TrackingOrigin.FloorLevel : OVRManager.TrackingOrigin.EyeLevel;
-            }
-
-            if (settings.HandTracking)
-            {
-                var leftHand = AddHandSupport(true);
-                var rightHand = AddHandSupport(false);
-
-                InputManager.AddInput(new OculusHandTrackingInput(leftHand, rightHand));
-
-                OVRHand AddHandSupport(bool left)
-                {
-                    var parent = left ? leftHandTransform : rightHandTransform;
-                    var hand = Instantiate(left ? leftHandPrefab : rightHandPrefab, parent);
-
-                    var teleporter = parent.GetComponentInChildren<Teleporter>(true);
-                    if (teleporter != null)
-                    {
-                        teleporter.SetHand(hand.GetComponent<OVRHand>());
-                    }
-
-                    return hand.GetComponent<OVRHand>();
-                }
-            }
         }
     }
 }

@@ -16,7 +16,6 @@ namespace Demonixis.UniversalXR
         private Transform m_RayPoint = null;
         private float m_InitialPositionY;
         private Vector3 m_LastGoodTarget;
-        private OVRHand m_OVRHand = null;
         private bool m_Pressed = false;
 
         [SerializeField]
@@ -48,8 +47,6 @@ namespace Demonixis.UniversalXR
 
             enabled = XRManager.IsXREnabled();
         }
-
-        public void SetHand(OVRHand hand) => m_OVRHand = hand;
 
         public void InputIsPressed()
         {
@@ -109,22 +106,6 @@ namespace Demonixis.UniversalXR
         {
             var pressed = InputManager.GetButton(MWButton.Teleport);
             var released = InputManager.GetButtonUp(MWButton.Teleport);
-
-            if (m_OVRHand != null)
-            {
-                var pitching = m_OVRHand.GetFingerIsPinching(OVRHand.HandFinger.Middle);
-                var strength = m_OVRHand.GetFingerPinchStrength(OVRHand.HandFinger.Middle);
-                var confidence = m_OVRHand.GetFingerConfidence(OVRHand.HandFinger.Middle);
-
-                if (pitching)
-                {
-                    pressed = true;
-                }
-                else if (m_Pressed)
-                {
-                    released = true;
-                }
-            }
 
             if (pressed)
                 InputIsPressed();

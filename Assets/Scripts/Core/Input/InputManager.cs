@@ -26,16 +26,6 @@ namespace TESUnity.Inputs
             if (InputProviders != null)
                 return;
 
-#if OCULUS_SDK
-            if (OVRManager.isHmdPresent)
-            {
-                var oculusInput = new OculusInput();
-                oculusInput.TryInitialize();
-
-                InputProviders = new IInputProvider[] { oculusInput };
-                return;
-            }
-#endif
             var providers = new IInputProvider[]
             {
                 new TouchInput(),

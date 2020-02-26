@@ -113,6 +113,10 @@ namespace TESUnity
 
             UIManager = uiCanvas.GetComponent<UIManager>();
 
+            var xr = XRManager.IsXREnabled();
+            var eventSystemPrefab = Resources.Load<GameObject>($"Prefabs/{(xr ? "XR" : "")}EventSystem");
+            GameObject.Instantiate(eventSystemPrefab);
+            
 #if UNITY_ANDROID
             RenderSettings.ambientIntensity = 4;
 #endif

@@ -41,7 +41,6 @@ namespace TESUnity.Components
         [Header("VR")]
         public bool FollowHead = true;
         public bool RoomScale = true;
-        public bool HandTracking = true;
 
         /// <summary>
         /// Apply overriden settings from the editor for testing purpose only.
@@ -74,7 +73,6 @@ namespace TESUnity.Components
             settings.SunShadows = SunShadows;
             settings.WaterTransparency = WaterTransparency;
             settings.KinematicRigidbody = KinematicRigidbodies;
-            settings.HandTracking = HandTracking;
             settings.CheckSettings();
 #endif
         }
