@@ -55,7 +55,7 @@ namespace TESUnity
 
         #endregion
 
-        public MorrowindEngine(MorrowindDataReader mwDataReader, UIManager uiManager)
+        public MorrowindEngine(MorrowindDataReader mwDataReader)
         {
             Debug.Assert(instance == null);
 
@@ -108,8 +108,10 @@ namespace TESUnity
             }
 #endif
 
-            UIManager = uiManager;
-            UIManager.Active = true;
+            var uiCanvasPrefab = Resources.Load<GameObject>("Prefabs/GameUI");
+            var uiCanvas = GameObject.Instantiate(uiCanvasPrefab);
+
+            UIManager = uiCanvas.GetComponent<UIManager>();
 
 #if UNITY_ANDROID
             RenderSettings.ambientIntensity = 4;
@@ -230,8 +232,8 @@ namespace TESUnity
 
                         if (InputManager.GetButtonDown(MWButton.Use))
                         {
-                            if (component is DoorComponent)
-                                OpenDoor((DoorComponent)component);
+                            if (component is Door)
+                                OpenDoor((Door)component);
 
                             else if (component.usable)
                                 component.Interact();
@@ -304,7 +306,7 @@ namespace TESUnity
             }
         }
 
-        private void OpenDoor(DoorComponent component)
+        private void OpenDoor(Door component)
         {
             if (!component.doorData.leadsToAnotherCell)
             {

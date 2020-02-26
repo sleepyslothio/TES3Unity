@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class IngredientComponent : RecordComponent
+    public class Ingredient : RecordComponent
     {
         void Start()
         {

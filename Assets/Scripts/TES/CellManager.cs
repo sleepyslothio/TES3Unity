@@ -549,7 +549,7 @@ namespace TESUnity
                 //only door records need access to the cell object data group so far
                 if (record is DOORRecord)
                 {
-                    ((DoorComponent)component).refObjDataGroup = info.refObjDataGroup;
+                    ((Door)component).refObjDataGroup = info.refObjDataGroup;
                 }
             }
         }

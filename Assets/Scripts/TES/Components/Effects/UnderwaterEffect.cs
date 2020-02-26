@@ -28,6 +28,11 @@ namespace TESUnity.Effects
 
         void Start()
         {
+            if (GameSettings.Get().RendererMode == RendererMode.HDRP)
+            {
+                enabled = false;
+            }
+
             _defaultFog = RenderSettings.fog;
             _defaultFogColor = RenderSettings.fogColor;
             _defaultFogDensity = RenderSettings.fogDensity;

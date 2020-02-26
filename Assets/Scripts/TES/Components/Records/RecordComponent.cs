@@ -53,55 +53,55 @@ namespace TESUnity.Components.Records
             RecordComponent component = null;
 
             if (record is DOORRecord)
-                component = gameObject.AddComponent<DoorComponent>();
+                component = gameObject.AddComponent<Door>();
 
             else if (record is LIGHRecord)
-                component = gameObject.AddComponent<LightComponent>();
+                component = gameObject.AddComponent<TESLight>();
 
             else if (record is BOOKRecord)
-                component = gameObject.AddComponent<BookComponent>();
+                component = gameObject.AddComponent<Book>();
 
             else if (record is CONTRecord)
-                component = gameObject.AddComponent<ContainerComponent>();
+                component = gameObject.AddComponent<Container>();
 
             else if (record is MISCRecord)
-                component = gameObject.AddComponent<MiscObjectComponent>();
+                component = gameObject.AddComponent<MiscObject>();
 
             else if (record is WEAPRecord)
-                component = gameObject.AddComponent<WeaponComponent>();
+                component = gameObject.AddComponent<Weapon>();
 
             else if (record is ARMORecord)
-                component = gameObject.AddComponent<ArmorComponent>();
+                component = gameObject.AddComponent<Armor>();
 
             else if (record is INGRRecord)
-                component = gameObject.AddComponent<IngredientComponent>();
+                component = gameObject.AddComponent<Ingredient>();
 
             else if (record is ACTIRecord)
-                component = gameObject.AddComponent<ActivatorComponent>();
+                component = gameObject.AddComponent<Activator>();
 
             else if (record is LOCKRecord)
-                component = gameObject.AddComponent<LockComponent>();
+                component = gameObject.AddComponent<Lock>();
 
             else if (record is PROBRecord)
-                component = gameObject.AddComponent<ProbeItemComponent>();
+                component = gameObject.AddComponent<ProbeItem>();
 
             else if (record is REPARecord)
-                component = gameObject.AddComponent<RepaireComponent>();
+                component = gameObject.AddComponent<Repaire>();
 
             else if (record is CLOTRecord)
-                component = gameObject.AddComponent<ClothComponent>();
+                component = gameObject.AddComponent<Cloth>();
 
             else if (record is ALCHRecord)
-                component = gameObject.AddComponent<AlchemyComponent>();
+                component = gameObject.AddComponent<Alchemy>();
 
             else if (record is APPARecord)
-                component = gameObject.AddComponent<AlchemyApparatusComponent>();
+                component = gameObject.AddComponent<AlchemyApparatus>();
 
             else if (record is CREARecord)
-                component = gameObject.AddComponent<CreatureComponent>();
+                component = gameObject.AddComponent<Creature>();
 
             else if (record is NPC_Record)
-                component = gameObject.AddComponent<NPCComponent>();
+                component = gameObject.AddComponent<NPC>();
 
             else
                 component = gameObject.AddComponent<RecordComponent>();

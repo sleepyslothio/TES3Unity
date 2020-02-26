@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TESUnity.Components.Records
 {
-    public class WeaponComponent : RecordComponent
+    public class Weapon : RecordComponent
     {
         private bool _isEquiped = false;
         private bool _isVisible = true;

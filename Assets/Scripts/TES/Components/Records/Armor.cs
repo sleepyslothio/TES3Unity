@@ -2,15 +2,15 @@
 
 namespace TESUnity.Components.Records
 {
-    public class AlchemyApparatusComponent : RecordComponent
+    public class Armor : RecordComponent
     {
         void Start()
         {
-            var APPA = (APPARecord)record;
+            var ARMO = (ARMORecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 
-            objData.name = APPA.FNAM.value;
-            objData.weight = APPA.AADT.weight.ToString();
-            objData.value = APPA.AADT.value.ToString();
+            objData.name = ARMO.FNAM.value;
+            objData.weight = ARMO.AODT.weight.ToString();
+            objData.value = ARMO.AODT.value.ToString();
             objData.interactionPrefix = "Take ";
         }
     }

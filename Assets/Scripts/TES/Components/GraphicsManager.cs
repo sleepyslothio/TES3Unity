@@ -46,7 +46,19 @@ namespace TESUnity.Components
                 var profile = Resources.Load<VolumeProfile>($"{volumePath}/PostProcess-Profile");
                 CreateVolume(profile);
 
-                RenderSettings.skybox = new Material(Shader.Find("Skybox/Procedural"));
+                var skyboxMaterial = new Material(Shader.Find("Skybox/Procedural"));
+                var lowQualitySkybox = config.SRPQuality != SRPQuality.Low;
+#if UNITY_ANDROID
+                lowQualitySkybox = true;
+#endif
+
+                if (lowQualitySkybox)
+                {
+                    skyboxMaterial.DisableKeyword("_SUNDISK_HIGH_QUALITY");
+                    skyboxMaterial.EnableKeyword("_SUNDISK_SIMPLE");
+                }
+
+                RenderSettings.skybox = skyboxMaterial;
             }
 #if HDRP_ENABLED
             else

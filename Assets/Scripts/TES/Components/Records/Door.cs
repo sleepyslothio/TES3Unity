@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TESUnity.Components.Records
 {
-    public class DoorComponent : RecordComponent
+    public class Door : RecordComponent
     {
         public class DoorData
         {

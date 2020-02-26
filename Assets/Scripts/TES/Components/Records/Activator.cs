@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class ActivatorComponent : RecordComponent
+    public class Activator : RecordComponent
     {
         void Start()
         {

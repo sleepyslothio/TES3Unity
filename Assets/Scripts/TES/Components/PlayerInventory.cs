@@ -24,14 +24,14 @@ namespace TESUnity.Components
             Add(item.record);
 
             // For now.
-            var weapon = item as WeaponComponent;
+            var weapon = item as Weapon;
             if (weapon != null)
             {
                 var rightHand = _player.rightHand;
                 if (rightHand.childCount > 0)
                     rightHand.GetChild(0).parent = _disabledObjects;
 
-                ((WeaponComponent)item).Equip(rightHand);
+                ((Weapon)item).Equip(rightHand);
                 return;
             }
 

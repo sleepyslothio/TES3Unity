@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TESUnity.Components.Records
 {
-    public class CreatureComponent : RecordComponent
+    public class Creature : RecordComponent
     {
         protected CREARecord _creature;
 

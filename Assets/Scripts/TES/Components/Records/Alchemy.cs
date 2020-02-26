@@ -2,15 +2,15 @@
 
 namespace TESUnity.Components.Records
 {
-    public class ProbeItemComponent : RecordComponent
+    public class Alchemy : RecordComponent
     {
         void Start()
         {
-            var PROB = (PROBRecord)record;
+            var ALCH = (ALCHRecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 
-            objData.name = PROB.FNAM.value;
-            objData.weight = PROB.PBDT.weight.ToString();
-            objData.value = PROB.PBDT.value.ToString();
+            objData.name = ALCH.FNAM.value;
+            objData.weight = ALCH.ALDT.weight.ToString();
+            objData.value = ALCH.ALDT.value.ToString();
             objData.interactionPrefix = "Take ";
         }
     }

@@ -2,15 +2,15 @@
 
 namespace TESUnity.Components.Records
 {
-    public class AlchemyComponent : RecordComponent
+    public class Repaire : RecordComponent
     {
         void Start()
         {
-            var ALCH = (ALCHRecord)record;
+            var REPA = (REPARecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 
-            objData.name = ALCH.FNAM.value;
-            objData.weight = ALCH.ALDT.weight.ToString();
-            objData.value = ALCH.ALDT.value.ToString();
+            objData.name = REPA.FNAM.value;
+            objData.weight = REPA.RIDT.weight.ToString();
+            objData.value = REPA.RIDT.value.ToString();
             objData.interactionPrefix = "Take ";
         }
     }

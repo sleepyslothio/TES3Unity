@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using TESUnity.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,7 +14,6 @@ namespace TESUnity
 
         private MorrowindEngine m_MorrowindEngine = null;
         private MusicPlayer m_MusicPlayer = null;
-        private UIManager m_UIManager;
 
         #region Inspector Members
 
@@ -77,10 +75,6 @@ namespace TESUnity
                 return;
             }
 
-            m_UIManager = FindObjectOfType<UIManager>();
-            if (m_UIManager == null)
-                throw new UnityException("UI Manager is missing");
-
             CellManager.cellRadius = config.CellRadius;
             CellManager.detailRadius = config.CellDetailRadius;
             MorrowindEngine.cellRadiusOnLoad = config.CellRadiusOnLoad;
@@ -89,7 +83,7 @@ namespace TESUnity
             if (MWDataReader == null)
                 MWDataReader = new MorrowindDataReader(dataPath);
 
-            m_MorrowindEngine = new MorrowindEngine(MWDataReader, m_UIManager);
+            m_MorrowindEngine = new MorrowindEngine(MWDataReader);
             m_MusicPlayer = new MusicPlayer();
 
             if (config.MusicEnabled)

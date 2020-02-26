@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class NPCComponent : RecordComponent
+    public class NPC : RecordComponent
     {
         protected NPC_Record _npc;
 

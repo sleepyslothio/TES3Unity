@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class CharacterComponent : RecordComponent
+    public class Character : RecordComponent
     {
         public CLASRecord Class { get; protected set; }
         public FACTRecord Faction { get; protected set; }

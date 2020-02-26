@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TESUnity.Components.Records
 {
-    public class LightComponent : RecordComponent
+    public class TESLight : RecordComponent
     {
         [System.Serializable]
         public class LightData

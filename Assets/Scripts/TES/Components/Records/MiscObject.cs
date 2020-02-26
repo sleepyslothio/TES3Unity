@@ -2,7 +2,7 @@
 
 namespace TESUnity.Components.Records
 {
-    public class MiscObjectComponent : RecordComponent
+    public class MiscObject : RecordComponent
     {
         void Start()
         {
