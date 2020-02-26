@@ -16,7 +16,6 @@ namespace Demonixis.UniversalXR
         private Transform m_RayPoint = null;
         private float m_InitialPositionY;
         private Vector3 m_LastGoodTarget;
-        private bool m_Pressed = false;
 
         [SerializeField]
         private GameObject m_GroundMarkerPrefab = null;
@@ -50,8 +49,6 @@ namespace Demonixis.UniversalXR
 
         public void InputIsPressed()
         {
-            m_Pressed = true;
-
             Debug.DrawRay(m_RayPoint.transform.position, -m_RayPoint.transform.up * 10);
 
             RaycastHit hit;
@@ -91,8 +88,6 @@ namespace Demonixis.UniversalXR
 
         public void InputWasJustReleased()
         {
-            m_Pressed = false;
-
             if (m_TargetPosition.HasValue)
             {
                 transform.root.position = m_TargetPosition.Value;

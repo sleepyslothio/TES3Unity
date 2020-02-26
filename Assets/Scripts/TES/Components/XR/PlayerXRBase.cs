@@ -1,17 +1,22 @@
 ﻿using Demonixis.Toolbox.XR;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.UI;
 
 namespace TESUnity.Components.XR
 {
+    using XRIController = UnityEngine.XR.Interaction.Toolkit.XRController;
+
     public class PlayerXRBase : MonoBehaviour
     {
+        [SerializeField]
+        private bool m_Spectator = false;
+
         public Transform CameraTransform { get; protected set; }
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             if (!XRManager.IsXREnabled())
             {
@@ -29,19 +34,8 @@ namespace TESUnity.Components.XR
 
             Debug.Assert(CameraTransform != null);
 
-            // Detech hands from the head node.
-            var hands = GetComponentsInChildren<TrackedPoseDriver>(true);
-            foreach (var hand in hands)
-            {
-                hand.transform.parent = CameraTransform.parent;
-            }
-
-            // Setup RoomScale/Sitted mode.
             var settings = GameSettings.Get();
-            var trackingSpaceType = settings.RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
-
-            XRManager.SetTrackingOriginMode(trackingSpaceType, true);
-
+  
             // RenderScale
             var renderScale = settings.RenderScale;
 
@@ -60,6 +54,51 @@ namespace TESUnity.Components.XR
             // Allow to interact with the UI
             var mainUI = GUIUtils.MainCanvas;
             mainUI.AddComponent<TrackedDeviceGraphicRaycaster>();
+
+            if (m_Spectator)
+            {
+                var canvas = mainUI.GetComponent<Canvas>();
+                GUIUtils.SetCanvasToWorldSpace(canvas, null, 2.5f, 0.015f, 1.7f);
+            }
+
+            CreateLocomotionSystem(gameObject);
+        }
+
+        public static void CreateInteractionSystem()
+        {
+            var interactionManager = new GameObject("Interaction Manager");
+            interactionManager.AddComponent<XRInteractionManager>();
+        }
+
+        public static void CreateLocomotionSystem(GameObject player)
+        {
+            var settings = GameSettings.Get();
+            var trackingSpaceType = settings.RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
+            var xrRig = player.GetComponent<XRRig>();
+            xrRig.TrackingOriginMode = trackingSpaceType;
+
+            var xrControllers = player.GetComponentsInChildren<XRIController>();
+            XRIController rightController = null;
+
+            foreach (var controller in xrControllers)
+            {
+                if (controller.name.ToLower().Contains("right"))
+                {
+                    rightController = controller;
+                }
+            }
+
+            var gameObject = new GameObject("Locomotion System");
+
+            var locomotionSystem = gameObject.AddComponent<LocomotionSystem>();
+            locomotionSystem.xrRig = xrRig;
+
+            var teleportion = gameObject.AddComponent<TeleportationProvider>();
+            teleportion.system = locomotionSystem;
+
+            var snapTurn = gameObject.AddComponent<SnapTurnProvider>();
+            snapTurn.system = locomotionSystem;
+            snapTurn.controllers.AddRange(xrControllers);
         }
     }
 }

@@ -9,14 +9,14 @@ namespace TESUnity.Components
     {
         private List<Record> _inventory = new List<Record>();
         private Transform _disabledObjects = null;
-        private PlayerController _player = null;
+        private PlayerCharacter _player = null;
 
         void Start()
         {
             var disabledObjectGO = new GameObject("DisabledObjects");
             disabledObjectGO.SetActive(false);
             _disabledObjects = disabledObjectGO.GetComponent<Transform>();
-            _player = GetComponent<PlayerController>();
+            _player = GetComponent<PlayerCharacter>();
         }
 
         public void Add(RecordComponent item)
@@ -27,7 +27,7 @@ namespace TESUnity.Components
             var weapon = item as Weapon;
             if (weapon != null)
             {
-                var rightHand = _player.rightHand;
+                var rightHand = _player.RightHand;
                 if (rightHand.childCount > 0)
                     rightHand.GetChild(0).parent = _disabledObjects;
 

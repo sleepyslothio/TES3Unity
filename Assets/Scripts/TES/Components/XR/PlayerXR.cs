@@ -29,10 +29,8 @@ namespace TESUnity.Components.XR
         /// - The HUD canvas is not recommanded, it's usefull for small informations
         /// - The UI is for all other UIs: Menu, Life, etc.
         /// </summary>
-        protected override void Start()
+        private void Start()
         {
-            base.Start();
-
             if (!XRManager.IsXREnabled())
             {
                 enabled = false;

@@ -29,11 +29,6 @@ namespace TESUnity
         public float minVerticalAngle = -90;
         public float maxVerticalAngle = 90;
 
-        [Header("Misc")]
-        public Light lantern;
-        public Transform leftHand;
-        public Transform rightHand;
-
         #endregion
 
         #region Public Fields
@@ -54,8 +49,6 @@ namespace TESUnity
 
         public bool Paused => m_Paused;
 
-        public Transform RayCastTarget { get; private set; }
-
         #endregion
 
         private void Start()
@@ -74,11 +67,6 @@ namespace TESUnity
             Cursor.lockState = CursorLockMode.None;
 #endif
             m_XREnabled = XRManager.IsXREnabled();
-
-            RayCastTarget = m_CameraTransform;
-
-            if (m_XREnabled)
-                RayCastTarget = rightHand;
         }
 
         private void Update()
@@ -99,9 +87,6 @@ namespace TESUnity
 
                 m_Rigidbody.velocity = newVelocity;
             }
-
-            if (InputManager.GetButtonDown(MWButton.Light))
-                lantern.enabled = !lantern.enabled;
         }
 
         private void FixedUpdate()

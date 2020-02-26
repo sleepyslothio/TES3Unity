@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityStandardAssets.Water;
 using UnityEngine.XR.Interaction.Toolkit.UI;
+using TESUnity.Components.XR;
 
 namespace TESUnity
 {
@@ -31,6 +32,7 @@ namespace TESUnity
         private GameObject m_WaterObj;
         private Transform m_PlayerTransform;
         private PlayerController m_Player;
+        private PlayerCharacter m_PlayerCharacter;
         private PlayerInventory m_PlayerInventory;
         private GameObject m_PlayerCameraObj;
         private UnderwaterEffect m_UnderwaterEffect;
@@ -214,7 +216,7 @@ namespace TESUnity
         public void CastInteractRay()
         {
             // Cast a ray to see what the camera is looking at.
-            var ray = new Ray(m_Player.RayCastTarget.position, m_Player.RayCastTarget.forward);
+            var ray = new Ray(m_PlayerCharacter.RayCastTarget.position, m_PlayerCharacter.RayCastTarget.forward);
             var raycastHitCount = Physics.RaycastNonAlloc(ray, m_InteractRaycastHitBuffer, maxInteractDistance);
 
             if (raycastHitCount > 0 && !m_Player.Paused)
@@ -350,6 +352,15 @@ namespace TESUnity
 
         private GameObject CreatePlayer(GameObject playerPrefab, Vector3 position, out GameObject playerCamera)
         {
+            var xr = XRManager.IsXREnabled();
+
+            // First, create the interaction system if XR is enabled.
+            if (xr)
+            {
+                PlayerXR.CreateInteractionSystem();
+            }
+
+            // Then create the player.
             var player = GameObject.FindWithTag("Player");
             if (player == null)
             {
@@ -361,6 +372,7 @@ namespace TESUnity
 
             m_PlayerTransform = player.GetComponent<Transform>();
             playerCamera = player.GetComponentInChildren<Camera>().gameObject;
+            m_PlayerCharacter = player.GetComponent<PlayerCharacter>();
             m_Player = player.GetComponent<PlayerController>();
             m_PlayerInventory = player.GetComponent<PlayerInventory>();
             m_UnderwaterEffect = playerCamera.GetComponent<UnderwaterEffect>();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Demonixis.Toolbox.XR;
+using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,6 +31,7 @@ namespace TESUnity
 
         [Header("Prefabs")]
         public GameObject playerPrefab;
+        public GameObject playerXRPrefab;
         public GameObject waterPrefab;
 
         [Header("Debug")]
@@ -101,7 +103,9 @@ namespace TESUnity
                 }
             }
 
-            m_MorrowindEngine.SpawnPlayerOutside(playerPrefab, new Vector2i(-2, -9), new Vector3(-137.94f, 2.30f, -1037.6f));
+            // Spawn the player
+            var xr = XRManager.IsXREnabled();
+            m_MorrowindEngine.SpawnPlayerOutside(xr ? playerXRPrefab : playerPrefab, new Vector2i(-2, -9), new Vector3(-137.94f, 2.30f, -1037.6f));
         }
 
         private void OnApplicationQuit()

@@ -55,6 +55,8 @@ MonoBehaviour:
   desiredWorkTimePerFrame: 0.0005
   playerPrefab: {fileID: 1000014283173620, guid: bb4f50960e3bc08459bb6f708eb7d79f,
     type: 3}
+  playerXRPrefab: {fileID: 3995033329930737988, guid: 86b425a4a18e3a4439ec9a59595a5056,
+    type: 3}
   waterPrefab: {fileID: 1586121937244772, guid: 6de569209e643e2438dd3dbfe2d466df,
     type: 3}
   loadExtensions: 0
