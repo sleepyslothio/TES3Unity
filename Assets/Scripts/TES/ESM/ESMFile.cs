@@ -64,6 +64,26 @@ namespace TESUnity.ESM
             return null;
         }
 
+        public List<T> GetRecords<T>() where T : Record
+        {
+            var type = typeof(T);
+
+            if (!RecordsByType.ContainsKey(type))
+            {
+                return null;
+            }
+
+            var list = new List<T>();
+            var collection = RecordsByType[type];
+
+            foreach (var item in collection)
+            {
+                list.Add((T)item);
+            }
+
+            return list;
+        }
+
         public static Record CreateRecordOfType(string recordName)
         {
             switch (recordName)

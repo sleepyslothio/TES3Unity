@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace TESUnity
 {
@@ -14,6 +15,21 @@ namespace TESUnity
         public static Quaternion RotationMatrixToQuaternion(Matrix4x4 matrix)
         {
             return Quaternion.LookRotation(matrix.GetColumn(2), matrix.GetColumn(1));
+        }
+
+        public static string CharToString(char[] array)
+        {
+            var list = new List<char>();
+
+            for (var i = 0; i < array.Length; i++)
+            {
+                if (array[i] != '\0')
+                {
+                    list.Add(array[i]);
+                }
+            }
+
+            return new string(list.ToArray());
         }
     }
 }

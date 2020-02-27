@@ -19,12 +19,12 @@ namespace TESUnity.Components.Records
             _script = (SCPTRecord)record;
 
 #if UNITY_EDITOR
-            ScriptName = _script.GetName();
+            ScriptName = _script.Name;
             ScriptContent = _script.SCTX.value;
 
             if (TESManager.instance.logEnabled)
             {
-                Debug.Log($"Script: {_script.GetName()} Added!");
+                Debug.Log($"Script: {_script.Name} Added!");
             }
 #endif
         }

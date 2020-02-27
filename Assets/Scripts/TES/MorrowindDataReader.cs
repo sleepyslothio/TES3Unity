@@ -141,6 +141,11 @@ namespace TESUnity
 
         #endregion
 
+        public T[] FindRecords<T>() where T : Record
+        {
+            return MorrowindESMFile.GetRecords<T>()?.ToArray() ?? null;
+        }
+
         public LTEXRecord FindLTEXRecord(int index)
         {
             List<Record> records = MorrowindESMFile.GetRecordsOfType<LTEXRecord>();
@@ -172,7 +177,7 @@ namespace TESUnity
             foreach (var record in records)
             {
                 var script = (SCPTRecord)record;
-                var scriptName = script.GetName();
+                var scriptName = script.Name;
 
                 if (scriptName == name)
                 {

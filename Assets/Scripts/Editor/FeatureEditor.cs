@@ -22,7 +22,7 @@ namespace Demonixis.GunSpinningVR
 
         public int callbackOrder => 0;
 
-        [MenuItem("TESUnityXR/Features Manager")]
+        [MenuItem("Morrowind Unity/Features Manager")]
         public static void ShowWindow() => GetWindow(typeof(FeatureEditor));
 
         private void OnGUI()
