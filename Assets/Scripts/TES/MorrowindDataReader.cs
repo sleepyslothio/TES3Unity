@@ -165,6 +165,24 @@ namespace TESUnity
             return LAND;
         }
 
+        public SCPTRecord FindScript(string name)
+        {
+            var records = MorrowindESMFile.GetRecordsOfType<SCPTRecord>();
+
+            foreach (var record in records)
+            {
+                var script = (SCPTRecord)record;
+                var scriptName = script.GetName();
+
+                if (scriptName == name)
+                {
+                    return script;
+                }
+            }
+
+            return null;
+        }
+
         public CELLRecord FindExteriorCellRecord(Vector2i cellIndices)
         {
             MorrowindESMFile.ExteriorCELLRecordsByIndices.TryGetValue(cellIndices, out CELLRecord CELL);

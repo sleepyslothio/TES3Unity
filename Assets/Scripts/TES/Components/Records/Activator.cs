@@ -11,6 +11,8 @@ namespace TESUnity.Components.Records
             var ACTI = (ACTIRecord)record;
             objData.name = ACTI.FNAM.value;
             objData.interactionPrefix = "Use ";
+
+            TryAddScript(ACTI.SCRI?.value);
         }
     }
 }

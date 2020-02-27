@@ -12,6 +12,8 @@ namespace TESUnity.Components.Records
             objData.weight = CLOT.CTDT.weight.ToString();
             objData.value = CLOT.CTDT.value.ToString();
             objData.interactionPrefix = "Take ";
+
+            TryAddScript(CLOT.SCRI?.value);
         }
     }
 }

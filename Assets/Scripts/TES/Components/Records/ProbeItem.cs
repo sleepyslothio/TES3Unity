@@ -12,6 +12,8 @@ namespace TESUnity.Components.Records
             objData.weight = PROB.PBDT.weight.ToString();
             objData.value = PROB.PBDT.value.ToString();
             objData.interactionPrefix = "Take ";
+
+            TryAddScript(PROB.SCRI?.value);
         }
     }
 }

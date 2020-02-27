@@ -37,6 +37,8 @@ namespace TESUnity.Components.Records
             {
                 transform.GetChild(i).gameObject.isStatic = false;
             }
+
+            TryAddScript(WEAP.SCRI?.value);
         }
 
         private void Update()

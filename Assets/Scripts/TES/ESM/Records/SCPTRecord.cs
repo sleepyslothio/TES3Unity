@@ -1,4 +1,6 @@
-﻿namespace TESUnity.ESM
+﻿using System.Collections.Generic;
+
+namespace TESUnity.ESM
 {
     public class SCPTRecord : Record
     {
@@ -31,6 +33,23 @@
         public NAMESubRecord SCVR;
         public ByteArraySubRecord SCDT;
         public NAMESubRecord SCTX;
+
+        // TODO: Cache the result.
+        public string GetName()
+        {
+            var charName = SCHD.CharName;
+            var list = new List<char>();
+
+            for (var i = 0; i < charName.Length; i++)
+            {
+                if (charName[i] != '\0')
+                {
+                    list.Add(charName[i]);
+                }
+            }
+
+            return new string(list.ToArray());
+        }
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {

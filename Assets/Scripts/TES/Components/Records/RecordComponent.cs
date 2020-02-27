@@ -41,6 +41,20 @@ namespace TESUnity.Components.Records
         {
         }
 
+        protected void TryAddScript(string scriptName)
+        {
+            if (scriptName != null)
+            {
+                var scriptRecord = TESManager.MWDataReader.FindScript(scriptName);
+
+                if (scriptRecord != null)
+                {
+                    var script = gameObject.AddComponent<TESScript>();
+                    script.record = scriptRecord;
+                }
+            }
+        }
+
         public static RecordComponent Create(GameObject gameObject, Record record, string tag)
         {
             gameObject.tag = tag;

@@ -12,6 +12,8 @@ namespace TESUnity.Components.Records
             objData.weight = APPA.AADT.weight.ToString();
             objData.value = APPA.AADT.value.ToString();
             objData.interactionPrefix = "Take ";
+
+            TryAddScript(APPA.SCRI?.value);
         }
     }
 }

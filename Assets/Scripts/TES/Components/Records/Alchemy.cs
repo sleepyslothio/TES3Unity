@@ -12,6 +12,8 @@ namespace TESUnity.Components.Records
             objData.weight = ALCH.ALDT.weight.ToString();
             objData.value = ALCH.ALDT.value.ToString();
             objData.interactionPrefix = "Take ";
+
+            TryAddScript(ALCH.SCRI?.value);
         }
     }
 }

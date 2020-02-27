@@ -12,6 +12,8 @@ namespace TESUnity.Components.Records
             objData.weight = ARMO.AODT.weight.ToString();
             objData.value = ARMO.AODT.value.ToString();
             objData.interactionPrefix = "Take ";
+
+            TryAddScript(ARMO.SCRI?.value);
         }
     }
 }

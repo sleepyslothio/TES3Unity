@@ -12,6 +12,8 @@ namespace TESUnity.Components.Records
             objData.weight = INGR.IRDT.weight.ToString();
             objData.value = INGR.IRDT.value.ToString();
             objData.interactionPrefix = "Take ";
+
+            TryAddScript(INGR.SCRI?.value);
         }
     }
 }

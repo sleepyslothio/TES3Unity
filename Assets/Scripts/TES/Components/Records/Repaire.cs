@@ -12,6 +12,8 @@ namespace TESUnity.Components.Records
             objData.weight = REPA.RIDT.weight.ToString();
             objData.value = REPA.RIDT.value.ToString();
             objData.interactionPrefix = "Take ";
+
+            TryAddScript(REPA.SCRI?.value);
         }
     }
 }

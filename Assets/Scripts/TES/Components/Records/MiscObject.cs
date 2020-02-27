@@ -12,6 +12,8 @@ namespace TESUnity.Components.Records
             objData.weight = MISC.MCDT.weight.ToString();
             objData.value = MISC.MCDT.value.ToString();
             objData.interactionPrefix = "Take ";
+
+            TryAddScript(MISC.SCRI?.value);
         }
 
         public override void Interact()

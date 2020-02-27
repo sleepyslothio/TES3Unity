@@ -13,6 +13,8 @@ namespace TESUnity.Components.Records
             objData.name = LOCK.FNAM.value;
             objData.weight = LOCK.LKDT.weight.ToString();
             objData.value = LOCK.LKDT.value.ToString();
+
+            TryAddScript(LOCK.SCRI?.value);
         }
     }
 }

@@ -42,6 +42,8 @@ namespace TESUnity.Components.Records
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(BOOK.ITEX.value, "icons");
             objData.weight = BOOK.BKDT.weight.ToString();
             objData.value = BOOK.BKDT.value.ToString();
+
+            TryAddScript(BOOK.SCRI?.value);
         }
 
         public override void Interact()
