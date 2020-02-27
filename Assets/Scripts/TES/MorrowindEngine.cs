@@ -84,25 +84,38 @@ namespace TESUnity
                 m_SunObj.AddComponent<DayNightCycle>();
             }
 
-            var waterPrefab = Resources.Load<GameObject>("Prefabs/Water");
-            m_WaterObj = GameObject.Instantiate(waterPrefab);
-            m_WaterObj.SetActive(false);
-
-            var water = m_WaterObj.GetComponent<Water>();
-            var renderer = water.GetComponent<MeshRenderer>();
-            renderer.sharedMaterial.SetColor("_RefrColor", new Color(0.58f, 0.7f, 1.0f));
-
-            if (!GameSettings.Get().WaterTransparency)
+            if (config.RendererMode == RendererMode.HDRP)
             {
-                var side = m_WaterObj.transform.GetChild(0);
-                var sideMaterial = side.GetComponent<Renderer>().sharedMaterial;
-                sideMaterial.SetInt("_SrcBlend", (int)BlendMode.One);
-                sideMaterial.SetInt("_DstBlend", (int)BlendMode.Zero);
-                sideMaterial.SetInt("_ZWrite", 1);
-                sideMaterial.DisableKeyword("_ALPHATEST_ON");
-                sideMaterial.DisableKeyword("_ALPHABLEND_ON");
-                sideMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                sideMaterial.renderQueue = -1;
+                var waterPrefab = Resources.Load<GameObject>("Prefabs/WaterRP");
+                m_WaterObj = GameObject.Instantiate(waterPrefab);
+                m_WaterObj.SetActive(false);
+
+                var waterRenderer = m_WaterObj.GetComponent<Renderer>();
+                waterRenderer.sharedMaterial = Resources.Load<Material>($"{TESMaterial.GetMaterialAssetPath(true)}/HDRP-Water");
+            }
+            else
+            {
+                // We'll switch to a shadergraph shader for URP soon too.
+                var waterPrefab = Resources.Load<GameObject>("Prefabs/Water");
+                m_WaterObj = GameObject.Instantiate(waterPrefab);
+                m_WaterObj.SetActive(false);
+
+                var water = m_WaterObj.GetComponent<Water>();
+                var renderer = water.GetComponent<MeshRenderer>();
+                renderer.sharedMaterial.SetColor("_RefrColor", new Color(0.58f, 0.7f, 1.0f));
+
+                if (!GameSettings.Get().WaterTransparency)
+                {
+                    var side = m_WaterObj.transform.GetChild(0);
+                    var sideMaterial = side.GetComponent<Renderer>().sharedMaterial;
+                    sideMaterial.SetInt("_SrcBlend", (int)BlendMode.One);
+                    sideMaterial.SetInt("_DstBlend", (int)BlendMode.Zero);
+                    sideMaterial.SetInt("_ZWrite", 1);
+                    sideMaterial.DisableKeyword("_ALPHATEST_ON");
+                    sideMaterial.DisableKeyword("_ALPHABLEND_ON");
+                    sideMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                    sideMaterial.renderQueue = -1;
+                }
             }
 
 #if UNITY_STANDALONE
@@ -389,10 +402,6 @@ namespace TESUnity
             m_PlayerController = player.GetComponent<PlayerController>();
             m_PlayerInventory = player.GetComponent<PlayerInventory>();
             m_UnderwaterEffect = m_PlayerCameraObj.GetComponent<UnderwaterEffect>();
-
-            // Kinematic Rigidbody for XR.
-            var rb = player.GetComponent<Rigidbody>();
-            rb.isKinematic = xrEnabled;
 
             return player;
         }
