@@ -2,50 +2,38 @@
 {
     public class RACERecord : Record
     {
-        public class RADTSubRecord : SubRecord
-        {
-            // TODO implement RACERecord::RADT SubRecord
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-            {
-                reader.BaseStream.Position += dataSize;
-            }
-        }
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+        public string NPCs { get; private set; }
+        public string Description { get; private set; }
 
-        public NAMESubRecord NAME;
-        public NAMESubRecord FNAME;
-        public RADTSubRecord RADT;
-        public NAMESubRecord NPCS;
-        public NAMESubRecord DESC;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "NAME")
             {
-                NAME = new NAMESubRecord();
-                return NAME;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "FNAME")
             {
-                FNAME = new NAMESubRecord();
-                return FNAME;
-            }
-            else if (subRecordName == "RADT")
-            {
-                RADT = new RADTSubRecord();
-                return RADT;
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "NPCS")
             {
-                NPCS = new NAMESubRecord();
-                return NPCS;
+                NPCs = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "DESC")
             {
-                DESC = new NAMESubRecord();
-                return DESC;
+                Description = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
-
-            return null;
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

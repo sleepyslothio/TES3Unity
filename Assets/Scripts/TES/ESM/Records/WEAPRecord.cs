@@ -1,79 +1,96 @@
 ﻿namespace TESUnity.ESM
 {
-    public class WEAPRecord : Record
+    public struct WeaponData
     {
-        public class WPDTSubRecord : SubRecord
-        {
-            public float weight;
-            public int value;
-            public short type;
-            public short health;
-            public float speed;
-            public float reach;
-            public short enchantPts;
-            public byte chopMin;
-            public byte chopMax;
-            public byte slashMin;
-            public byte slashMax;
-            public byte thrustMin;
-            public byte thrustMax;
-            public int flags;
+        public float Weight;
+        public int Value;
+        public short Type;
+        public short Health;
+        public float Speed;
+        public float Reach;
+        public short EnchantPts;
+        public byte ChopMin;
+        public byte ChopMax;
+        public byte SlashMin;
+        public byte SlashMax;
+        public byte ThrustMin;
+        public byte ThrustMax;
+        public int Flags;
+    }
 
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-            {
-                weight = reader.ReadLESingle();
-                value = reader.ReadLEInt32();
-                type = reader.ReadLEInt16();
-                health = reader.ReadLEInt16();
-                speed = reader.ReadLESingle();
-                reach = reader.ReadLESingle();
-                enchantPts = reader.ReadLEInt16();
-                chopMin = reader.ReadByte();
-                chopMax = reader.ReadByte();
-                slashMin = reader.ReadByte();
-                slashMax = reader.ReadByte();
-                thrustMin = reader.ReadByte();
-                thrustMax = reader.ReadByte();
-                flags = reader.ReadLEInt32();
-            }
-        }
-
-        public NAMESubRecord NAME;
+    public class WEAPRecord : Record, IIdRecord, IModelRecord, IScriptRecord
+    {
+      /*  public NAMESubRecord NAME;
         public MODLSubRecord MODL;
         public FNAMSubRecord FNAM;
         public WPDTSubRecord WPDT;
         public ITEXSubRecord ITEX;
         public ENAMSubRecord ENAM;
-        public SCRISubRecord SCRI;
+        public SCRISubRecord SCRI;*/
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public string Id { get; private set; }
+        public string Model { get; private set; }
+        public string Name { get; private set; }
+        public WeaponData Data { get; private set; }
+        public string Icon { get; private set; }
+        public string Enchantment { get; private set; }
+        public string Script { get; private set; }
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            switch (subRecordName)
+            if (subRecordName == "NAME")
             {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "MODL":
-                    MODL = new MODLSubRecord();
-                    return MODL;
-                case "FNAM":
-                    FNAM = new FNAMSubRecord();
-                    return FNAM;
-                case "WPDT":
-                    WPDT = new WPDTSubRecord();
-                    return WPDT;
-                case "ITEX":
-                    ITEX = new ITEXSubRecord();
-                    return ITEX;
-                case "ENAM":
-                    ENAM = new ENAMSubRecord();
-                    return ENAM;
-                case "SCRI":
-                    SCRI = new SCRISubRecord();
-                    return SCRI;
-                default:
-                    return null;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "MODL")
+            {
+                Model = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "WPDT")
+            {
+                Data = new WeaponData
+                {
+                    Weight = reader.ReadLESingle(),
+                    Value = reader.ReadLEInt32(),
+                    Type = reader.ReadLEInt16(),
+                    Health = reader.ReadLEInt16(),
+                    Speed = reader.ReadLESingle(),
+                    Reach = reader.ReadLESingle(),
+                    EnchantPts = reader.ReadLEInt16(),
+                    ChopMin = reader.ReadByte(),
+                    ChopMax = reader.ReadByte(),
+                    SlashMin = reader.ReadByte(),
+                    SlashMax = reader.ReadByte(),
+                    ThrustMin = reader.ReadByte(),
+                    ThrustMax = reader.ReadByte(),
+                    Flags = reader.ReadLEInt32(),
+                };
+            }
+            else if (subRecordName == "ITEX")
+            {
+                Icon = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "ENAM")
+            {
+                Enchantment = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "SCRI")
+            {
+                Script = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

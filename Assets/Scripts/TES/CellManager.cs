@@ -153,35 +153,25 @@ namespace TESUnity
         public InRangeCellInfo StartCreatingInteriorCell(string cellName)
         {
             var CELL = dataReader.FindInteriorCellRecord(cellName);
-
-            if (CELL != null)
-            {
-                var cellInfo = StartInstantiatingCell(CELL);
-                cellObjects[Vector2i.Zero] = cellInfo;
-
-                return cellInfo;
-            }
-            else
-            {
-                return null;
-            }
+            return StartInstantiatingCell(CELL);
         }
 
         public InRangeCellInfo StartCreatingInteriorCell(Vector2i gridCoords)
         {
             var CELL = dataReader.FindInteriorCellRecord(gridCoords);
+            return StartInstantiatingCell(CELL);
+        }
 
-            if (CELL != null)
+        public InRangeCellInfo StartCreatingInteriorCell(CELLRecord record)
+        {
+            if (record != null)
             {
-                var cellInfo = StartInstantiatingCell(CELL);
+                var cellInfo = StartInstantiatingCell(record);
                 cellObjects[Vector2i.Zero] = cellInfo;
-
                 return cellInfo;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public InRangeCellInfo StartInstantiatingCell(CELLRecord CELL)

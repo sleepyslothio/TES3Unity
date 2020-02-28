@@ -268,7 +268,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is WEAPRecord)
                     {
-                        ObjectsByIDString.Add(((WEAPRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((WEAPRecord)record).Id, record);
                     }
                     else if (record is CONTRecord)
                     {

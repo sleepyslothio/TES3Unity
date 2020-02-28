@@ -25,7 +25,7 @@
             }
             else if (record is WEAPRecord)
             {
-                return ((WEAPRecord)record).MODL.value;
+                return ((WEAPRecord)record).Model;
             }
             else if (record is CONTRecord)
             {

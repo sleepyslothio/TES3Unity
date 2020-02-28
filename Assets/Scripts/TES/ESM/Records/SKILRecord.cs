@@ -1,57 +1,47 @@
 ﻿namespace TESUnity.ESM
 {
+    public enum SkillSpecification
+    {
+        Combat = 0, Magic, Stealth
+    }
+
+    public struct SkillData
+    {
+        public long Attribute;
+        public long Specification;
+        public float[] UseValue;
+    }
+
     public class SKILRecord : Record
     {
-        public enum SkillSpecification
-        {
-            Combat = 0, Magic, Stealth
-        }
+        public int SkillId { get; private set; }
+        public SkillData SKDT { get; private set; }
+        public string Description { get; private set; }
 
-        public class SKDTSubRecord : SubRecord
-        {
-            public long Attribute;
-            public long Specification;
-            public float[] UseValue;
-
-            public SkillSpecification SkillSpecification => (SkillSpecification)Specification;
-
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-            {
-                Attribute = reader.ReadLEInt32();
-                Specification = reader.ReadLEInt32();
-
-                UseValue = new float[4];
-                for (var i = 0; i < 4; i++)
-                {
-                    UseValue[i] = reader.ReadLESingle();
-                }
-            }
-        }
-
-        public Int32SubRecord INDX;
-        public SKDTSubRecord SKDT;
-        public NAMESubRecord DESC;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "INDX")
             {
-                INDX = new Int32SubRecord();
-                return INDX;
+                SkillId = (int)ReadIntRecord(reader, dataSize);
             }
             else if (subRecordName == "SKDT")
             {
-
-                SKDT = new SKDTSubRecord();
-                return SKDT;
+                SKDT = new SkillData
+                {
+                    Attribute = reader.ReadLEInt32(),
+                    Specification = reader.ReadLEInt32(),
+                    UseValue = ReadSingles(reader, 4)
+                };
             }
             else if (subRecordName == "DESC")
             {
-                DESC = new NAMESubRecord();
-                return DESC;
+                Description = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
-
-            return null;
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

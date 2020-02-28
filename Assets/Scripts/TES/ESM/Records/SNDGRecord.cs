@@ -1,50 +1,51 @@
 ﻿namespace TESUnity.ESM
 {
+    public enum SoundTypeData
+    {
+        LeftFoot = 0,
+        RightFoot = 1,
+        SwimLeft = 2,
+        SwimRight = 3,
+        Moan = 4,
+        Roar = 5,
+        Scream = 6,
+        Land = 7
+    }
+
     public class SNDGRecord : Record
     {
-        public enum SoundTypeData
-        {
-            LeftFoot = 0,
-            RightFoot = 1,
-            SwimLeft = 2,
-            SwimRight = 3,
-            Moan = 4,
-            Roar = 5,
-            Scream = 6,
-            Land = 7
-        }
+        public string Id { get; private set; }
+        public SoundTypeData SoundType { get; private set; }
+        public string Sound { get; private set; }
+        public string Creature { get; private set; }
 
-        public NAMESubRecord NAME;
-        public Int32SubRecord DATA;
-        public NAMESubRecord SNAM;
-        public NAMESubRecord CNAM;
-
-        public SoundTypeData SoundType => (SoundTypeData)DATA.value;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "NAME")
             {
-                NAME = new NAMESubRecord();
-                return NAME;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "DATA")
             {
-                DATA = new Int32SubRecord();
-                return DATA;
+                SoundType = (SoundTypeData)reader.ReadLEInt32();
             }
             else if (subRecordName == "SNAM")
             {
-                SNAM = new NAMESubRecord();
-                return SNAM;
+                Sound = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "CNAM")
             {
-                CNAM = new NAMESubRecord();
-                return CNAM;
+                Creature = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
-
-            return null;
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

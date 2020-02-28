@@ -17,9 +17,9 @@ namespace TESUnity.Components.Records
         {
             var WEAP = (WEAPRecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 
-            objData.name = WEAP.FNAM.value;
-            objData.weight = WEAP.WPDT.weight.ToString();
-            objData.value = WEAP.WPDT.value.ToString();
+            objData.name = WEAP.Name;
+            objData.weight = WEAP.Data.Weight.ToString();
+            objData.value = WEAP.Data.Value.ToString();
             objData.interactionPrefix = "Take ";
 
             _renderers = GetComponentsInChildren<Renderer>();
@@ -38,7 +38,7 @@ namespace TESUnity.Components.Records
                 transform.GetChild(i).gameObject.isStatic = false;
             }
 
-            TryAddScript(WEAP.SCRI?.value);
+            TryAddScript(WEAP.Script);
         }
 
         private void Update()

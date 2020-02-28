@@ -1,35 +1,38 @@
 ﻿namespace TESUnity.ESM
 {
+    public enum DialogueTopic
+    {
+        RegularTopic = 0,
+        Voice = 1,
+        Greeting = 2,
+        Persuasion = 3,
+        Journal = 4
+    }
+
     public class DIALRecord : Record
     {
-        public enum DialogueTopic
-        {
-            RegularTopic = 0,
-            Voice = 1,
-            Greeting = 2,
-            Persuasion = 3,
-            Journal = 4
-        }
+        public string Id { get; private set; }
+        public DialogueTopic Topic { get; private set; }
 
-        public NAMESubRecord NAME;
-        public ByteSubRecord DATA;
-
-        public DialogueTopic Topic => (DialogueTopic)DATA.value;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "NAME")
             {
-                NAME = new NAMESubRecord();
-                return NAME;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "DATA")
             {
-                DATA = new ByteSubRecord();
-                return DATA;
+                Topic = (DialogueTopic)reader.ReadByte();
             }
-
-            return null;
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

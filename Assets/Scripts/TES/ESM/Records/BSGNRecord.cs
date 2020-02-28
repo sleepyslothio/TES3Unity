@@ -2,41 +2,43 @@
 {
     public class BSGNRecord : Record
     {
-        public NAMESubRecord NAME;
-        public FNAMSubRecord FNAM;
-        public NAMESubRecord TNAM;
-        public NAMESubRecord DESC;
-        public NAMESubRecord NPCS;
+        public string Id;
+        public string Name;
+        public string Texture;
+        public string Description;
+        public string NPCs;
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "NAME")
             {
-                NAME = new NAMESubRecord();
-                return NAME;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "FNAM")
             {
-                FNAM = new FNAMSubRecord();
-                return FNAM;
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "TNAM")
             {
-                TNAM = new NAMESubRecord();
-                return TNAM;
+                Texture = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "DESC")
             {
-                DESC = new NAMESubRecord();
-                return DESC;
+                Description = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "NPCS")
             {
-                NPCS = new NAMESubRecord();
-                return NPCS;
+                NPCs = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
-
-            return null;
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

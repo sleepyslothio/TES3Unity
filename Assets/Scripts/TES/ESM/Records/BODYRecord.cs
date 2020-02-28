@@ -33,8 +33,6 @@
     {
         public BYDTSubRecord BYDT;
 
-        public override bool NewFetchMethod => true;
-
         public string Id;
         public string Name;
         public string Model;
@@ -70,16 +68,9 @@
             }
         }
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
-        {
-            switch (subRecordName)
-            {
-                case "BYDT":
-                    BYDT = new BYDTSubRecord();
-                    return BYDT;
-            }
-
-            return null;
-        }
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }
