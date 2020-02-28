@@ -56,11 +56,11 @@
 
         public ref GMDTData GMDTRef => ref GMDT;
 
-        public override bool NewFetchMethod => true;
+        //public override bool NewFetchMethod => true;
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
 
-        public override bool DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "GMDT")
             {
@@ -103,8 +103,10 @@
             {
 
             }
-
-            return true;
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
         }
     }
 }

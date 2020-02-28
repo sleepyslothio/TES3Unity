@@ -226,7 +226,7 @@ namespace TESUnity.ESM
                 }
                 else if (record is SOUNRecord)
                 {
-                    ObjectsByIDString.Add(((SOUNRecord)record).NAME.value, record);
+                    ObjectsByIDString.Add(((SOUNRecord)record).Id, record);
                 }
                 else if (record is REGNRecord)
                 {

@@ -20,6 +20,36 @@
         public FNAMSubRecord FNAM;
         public DATASubRecord DATA;
 
+        public string Id;
+        public string Name;
+        public byte Volume;
+        public byte MinRange;
+        public byte MaxRange;
+
+        public override bool NewFetchMethod => true;
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "NAME")
+            {
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "DATA")
+            {
+                Volume = reader.ReadByte();
+                MinRange = reader.ReadByte();
+                MaxRange = reader.ReadByte();
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
+        }
+
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
             switch (subRecordName)

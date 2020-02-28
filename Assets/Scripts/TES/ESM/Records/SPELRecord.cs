@@ -38,8 +38,43 @@
         public SPDTSubRecord SPDT;
         public ENAMSubRecord ENAM;
 
-        public SpellType Type => (SpellType)SPDT.Type;
-        public SpellFlags Flags => (SpellFlags)SPDT.Flags;
+        public string Id;
+        public string Name;
+        public SpellType Type;
+        public int SpellCost;
+        public SpellFlags Flags;
+        public string Data;
+
+        public override bool NewFetchMethod => true;
+
+        //public SpellType Type => (SpellType)SPDT.Type;
+        //public SpellFlags Flags => (SpellFlags)SPDT.Flags;
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "NAME")
+            {
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "SPDT")
+            {
+                Type = (SpellType)reader.ReadBEInt32();
+                SpellCost = reader.ReadLEInt32();
+                Flags = (SpellFlags)reader.ReadLEInt32();
+            }
+            else if (subRecordName == "ENAM")
+            {
+                Data = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
+        }
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {

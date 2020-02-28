@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace TESUnity.ESM
 {
@@ -38,6 +40,8 @@ namespace TESUnity.ESM
 
     public abstract class Record
     {
+        private static List<string> MissingRecordLogs = new List<string>();
+
         // A flag that indicates if we use the new method or not.
         // This flag will be removed when the new system is finished.
         public virtual bool NewFetchMethod { get; }
@@ -86,9 +90,21 @@ namespace TESUnity.ESM
 
         #region New API to deserialize SubRecords
 
-        public virtual bool DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        public virtual void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            return false;
+        }
+
+        public void ReadMissingSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            reader.BaseStream.Position += dataSize;
+
+            var log = $"{GetType()} have missing subRecord: {subRecordName}";
+
+            if (!MissingRecordLogs.Contains(log))
+            {
+                MissingRecordLogs.Add(log);
+                Debug.Log(log);
+            }
         }
 
         public void DeserializeDataNew(UnityBinaryReader reader)
@@ -100,11 +116,32 @@ namespace TESUnity.ESM
                 var subRecordName = reader.ReadASCIIString(4);
                 var dataSize = reader.ReadLEUInt32();
 
-                if (!DeserializeSubRecord(reader, subRecordName, dataSize))
-                {
-                    reader.BaseStream.Position += dataSize;
-                }
+                DeserializeSubRecord(reader, subRecordName, dataSize);
             }
+        }
+
+        public static long ReadIntRecord(UnityBinaryReader reader, uint dataSize)
+        {
+            if (dataSize == 1)
+            {
+                return reader.ReadByte();
+            }
+            else if (dataSize == 2)
+            {
+                return reader.ReadLEInt16();
+            }
+            else if (dataSize == 4)
+            {
+                return reader.ReadLEInt32();
+            }
+            else if (dataSize == 8)
+            {
+                return reader.ReadLEInt64();
+            }
+
+            reader.BaseStream.Position += dataSize;
+
+            return 0;
         }
 
         #endregion
