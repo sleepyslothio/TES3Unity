@@ -4,13 +4,20 @@
     {
         public static string GetModelFileName(Record record)
         {
+            var modelRecord = record as IModelRecord;
+            if (modelRecord != null)
+            {
+                return modelRecord.Model;
+            }
+            
+            // Will be soon deprecated.
             if (record is STATRecord)
             {
-                return ((STATRecord)record).MODL.value;
+                return ((STATRecord)record).Model;
             }
             else if (record is DOORRecord)
             {
-                return ((DOORRecord)record).MODL.value;
+                return ((DOORRecord)record).Model;
             }
             else if (record is MISCRecord)
             {

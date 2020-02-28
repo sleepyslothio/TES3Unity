@@ -1,31 +1,35 @@
 ﻿namespace TESUnity.ESM
 {
-    public class GMSTRecord : Record
+    public class GMSTRecord : Record, IIdRecord
     {
-        public NAMESubRecord NAME;
-        public STRVSubRecord STRV;
-        public INTVSubRecord INTV;
-        public FLTVSubRecord FLTV;
+        public string Id { get; private set; }
+        public string StringValue { get; private set; }
+        public int IntValue { get; private set; }
+        public float FloatValue { get; private set; }
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            switch (subRecordName)
+            if (subRecordName == "NAME")
             {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "STRV":
-                    STRV = new STRVSubRecord();
-                    return STRV;
-                case "INTV":
-                    INTV = new INTVSubRecord();
-                    return INTV;
-                case "FLTV":
-                    FLTV = new FLTVSubRecord();
-                    return FLTV;
-                default:
-                    return null;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "STRV")
+            {
+                StringValue = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "INTV")
+            {
+                IntValue = (int)ReadIntRecord(reader, dataSize);
+            }
+            else if (subRecordName == "FLTV")
+            {
+                FloatValue = reader.ReadLESingle();
             }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

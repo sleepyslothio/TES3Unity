@@ -9,4 +9,9 @@
     {
         string Model { get; }
     }
+
+    public interface IScriptRecord
+    {
+        string Script { get; }
+    }
 }

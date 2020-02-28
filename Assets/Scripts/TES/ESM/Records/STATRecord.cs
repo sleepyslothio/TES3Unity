@@ -1,14 +1,9 @@
 ﻿namespace TESUnity.ESM
 {
-    public class STATRecord : Record
+    public sealed class STATRecord : Record, IIdRecord, IModelRecord
     {
-        public NAMESubRecord NAME;
-        public MODLSubRecord MODL;
-
-        public string Id;
-        public string Model;
-
-        //public override bool NewFetchMethod => true;
+        public string Id { get; private set; }
+        public string Model { get; private set; }
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
@@ -26,19 +21,9 @@
             }
         }
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
-        {
-            switch (subRecordName)
-            {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "MODL":
-                    MODL = new MODLSubRecord();
-                    return MODL;
-                default:
-                    return null;
-            }
-        }
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

@@ -1,39 +1,49 @@
 ﻿namespace TESUnity.ESM
 {
-    public class DOORRecord : Record
+    public sealed class DOORRecord : Record, IIdRecord, IModelRecord
     {
-        public NAMESubRecord NAME; // door ID
-        public FNAMSubRecord FNAM; // door name
-        public MODLSubRecord MODL; // model filename
-                                   // public SCIPSubRecord SCIP; // script
-        public SNAMSubRecord SNAM;
-        public ANAMSubRecord ANAM;
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+        public string Model { get; private set; }
+        public string Script { get; private set; }
+        public string OpenSound { get; private set; }
+        public string CloseSound { get; private set; }
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            switch (subRecordName)
+            if (subRecordName == "NAME")
             {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "FNAM":
-                    FNAM = new FNAMSubRecord();
-                    return FNAM;
-                case "MODL":
-                    MODL = new MODLSubRecord();
-                    return MODL;
-                /*case "SCIP":
-                    SCIP = new SCIPSubRecord();
-                    return SCIP;*/
-                case "SNAM":
-                    SNAM = new SNAMSubRecord();
-                    return SNAM;
-                case "ANAM":
-                    ANAM = new ANAMSubRecord();
-                    return ANAM;
-                default:
-                    return null;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "MODL")
+            {
+                Model = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "SCIP" || subRecordName == "SCRI")
+            {
+                Script = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "SNAM")
+            {
+                OpenSound = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "ANAM")
+            {
+                CloseSound = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

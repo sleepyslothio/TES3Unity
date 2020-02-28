@@ -37,8 +37,8 @@ namespace TESUnity.Components.Records
             doorData.moving = false;
 
             var DOOR = record as DOORRecord;
-            if (DOOR.FNAM != null)
-                doorData.doorName = DOOR.FNAM.value;
+            if (DOOR.Name != null)
+                doorData.doorName = DOOR.Name;
 
             doorData.leadsToAnotherCell = (refObjDataGroup.DNAM != null) || (refObjDataGroup.DODT != null);
             doorData.leadsToInteriorCell = (refObjDataGroup.DNAM != null);
@@ -68,9 +68,10 @@ namespace TESUnity.Components.Records
 
             objData.name = doorData.leadsToAnotherCell ? doorData.doorExitName : "Use " + doorData.doorName;
 
-            // Audio
-            m_OpenSound = SoundManager.GetAudioClip(DOOR.SNAM?.value);
-            m_CloseSound = SoundManager.GetAudioClip(DOOR.ANAM?.value);
+            m_OpenSound = SoundManager.GetAudioClip(DOOR.OpenSound);
+            m_CloseSound = SoundManager.GetAudioClip(DOOR.CloseSound);
+
+            TryAddScript(DOOR.Script);
         }
 
         public override void Interact()

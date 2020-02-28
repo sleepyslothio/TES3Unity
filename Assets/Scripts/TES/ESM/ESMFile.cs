@@ -218,7 +218,17 @@ namespace TESUnity.ESM
 
                 if (nameRecord != null)
                 {
-                    ObjectsByIDString.Add(nameRecord.Id, record);
+                    // TODO
+                    // We keep that here during the transition on the new system to be sure to don't break anything.
+                    // It'll be removed just after that
+                    try
+                    {
+                        ObjectsByIDString.Add(nameRecord.Id, record);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.Log(ex.Message);
+                    }
                 }
                 else
                 {
@@ -226,7 +236,7 @@ namespace TESUnity.ESM
                     // Add the record to the object dictionary if applicable.
                     if (record is GMSTRecord)
                     {
-                        ObjectsByIDString.Add(((GMSTRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((GMSTRecord)record).Id, record);
                     }
                     else if (record is GLOBRecord)
                     {
@@ -246,11 +256,11 @@ namespace TESUnity.ESM
                     }
                     else if (record is STATRecord)
                     {
-                        ObjectsByIDString.Add(((STATRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((STATRecord)record).Id, record);
                     }
                     else if (record is DOORRecord)
                     {
-                        ObjectsByIDString.Add(((DOORRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((DOORRecord)record).Id, record);
                     }
                     else if (record is MISCRecord)
                     {
