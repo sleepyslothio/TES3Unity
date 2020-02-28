@@ -189,6 +189,8 @@ namespace TESUnity.ESM
 
         private void PostProcessRecords()
         {
+            IIdRecord nameRecord;
+
             foreach (var record in Records)
             {
                 if (record == null)
@@ -212,101 +214,108 @@ namespace TESUnity.ESM
                     RecordsByType.Add(recordType, recordsOfSameType);
                 }
 
-                var name = record.GetType().Name.Replace("Record", "");
+                nameRecord = record as IIdRecord;
 
-                // TODO: Record.FriendlyName
-                // Add the record to the object dictionary if applicable.
-                if (record is GMSTRecord)
+                if (nameRecord != null)
                 {
-                    ObjectsByIDString.Add(((GMSTRecord)record).NAME.value, record);
+                    ObjectsByIDString.Add(nameRecord.Id, record);
                 }
-                else if (record is GLOBRecord)
+                else
                 {
-                    ObjectsByIDString.Add(((GLOBRecord)record).NAME.value, record);
-                }
-                else if (record is SOUNRecord)
-                {
-                    ObjectsByIDString.Add(((SOUNRecord)record).Id, record);
-                }
-                else if (record is REGNRecord)
-                {
-                    ObjectsByIDString.Add(((REGNRecord)record).NAME.value, record);
-                }
-                else if (record is LTEXRecord)
-                {
-                    ObjectsByIDString.Add(((LTEXRecord)record).NAME.value, record);
-                }
-                else if (record is STATRecord)
-                {
-                    ObjectsByIDString.Add(((STATRecord)record).NAME.value, record);
-                }
-                else if (record is DOORRecord)
-                {
-                    ObjectsByIDString.Add(((DOORRecord)record).NAME.value, record);
-                }
-                else if (record is MISCRecord)
-                {
-                    ObjectsByIDString.Add(((MISCRecord)record).NAME.value, record);
-                }
-                else if (record is WEAPRecord)
-                {
-                    ObjectsByIDString.Add(((WEAPRecord)record).NAME.value, record);
-                }
-                else if (record is CONTRecord)
-                {
-                    ObjectsByIDString.Add(((CONTRecord)record).NAME.value, record);
-                }
-                else if (record is LIGHRecord)
-                {
-                    ObjectsByIDString.Add(((LIGHRecord)record).NAME.value, record);
-                }
-                else if (record is ARMORecord)
-                {
-                    ObjectsByIDString.Add(((ARMORecord)record).NAME.value, record);
-                }
-                else if (record is CLOTRecord)
-                {
-                    ObjectsByIDString.Add(((CLOTRecord)record).NAME.value, record);
-                }
-                else if (record is REPARecord)
-                {
-                    ObjectsByIDString.Add(((REPARecord)record).NAME.value, record);
-                }
-                else if (record is ACTIRecord)
-                {
-                    ObjectsByIDString.Add(((ACTIRecord)record).NAME.value, record);
-                }
-                else if (record is APPARecord)
-                {
-                    ObjectsByIDString.Add(((APPARecord)record).NAME.value, record);
-                }
-                else if (record is LOCKRecord)
-                {
-                    ObjectsByIDString.Add(((LOCKRecord)record).NAME.value, record);
-                }
-                else if (record is PROBRecord)
-                {
-                    ObjectsByIDString.Add(((PROBRecord)record).NAME.value, record);
-                }
-                else if (record is INGRRecord)
-                {
-                    ObjectsByIDString.Add(((INGRRecord)record).NAME.value, record);
-                }
-                else if (record is BOOKRecord)
-                {
-                    ObjectsByIDString.Add(((BOOKRecord)record).NAME.value, record);
-                }
-                else if (record is ALCHRecord)
-                {
-                    ObjectsByIDString.Add(((ALCHRecord)record).NAME.value, record);
-                }
-                else if (record is CREARecord)
-                {
-                    ObjectsByIDString.Add(((CREARecord)record).NAME.value, record);
-                }
-                else if (record is NPC_Record)
-                {
-                    ObjectsByIDString.Add(((NPC_Record)record).NAME.value, record);
+                    // TODO: Record.FriendlyName
+                    // Add the record to the object dictionary if applicable.
+                    if (record is GMSTRecord)
+                    {
+                        ObjectsByIDString.Add(((GMSTRecord)record).NAME.value, record);
+                    }
+                    else if (record is GLOBRecord)
+                    {
+                        ObjectsByIDString.Add(((GLOBRecord)record).NAME.value, record);
+                    }
+                    else if (record is SOUNRecord)
+                    {
+                        ObjectsByIDString.Add(((SOUNRecord)record).Id, record);
+                    }
+                    else if (record is REGNRecord)
+                    {
+                        ObjectsByIDString.Add(((REGNRecord)record).NAME.value, record);
+                    }
+                    else if (record is LTEXRecord)
+                    {
+                        ObjectsByIDString.Add(((LTEXRecord)record).NAME.value, record);
+                    }
+                    else if (record is STATRecord)
+                    {
+                        ObjectsByIDString.Add(((STATRecord)record).NAME.value, record);
+                    }
+                    else if (record is DOORRecord)
+                    {
+                        ObjectsByIDString.Add(((DOORRecord)record).NAME.value, record);
+                    }
+                    else if (record is MISCRecord)
+                    {
+                        ObjectsByIDString.Add(((MISCRecord)record).NAME.value, record);
+                    }
+                    else if (record is WEAPRecord)
+                    {
+                        ObjectsByIDString.Add(((WEAPRecord)record).NAME.value, record);
+                    }
+                    else if (record is CONTRecord)
+                    {
+                        ObjectsByIDString.Add(((CONTRecord)record).NAME.value, record);
+                    }
+                    else if (record is LIGHRecord)
+                    {
+                        ObjectsByIDString.Add(((LIGHRecord)record).NAME.value, record);
+                    }
+                    else if (record is ARMORecord)
+                    {
+                        ObjectsByIDString.Add(((ARMORecord)record).NAME.value, record);
+                    }
+                    else if (record is CLOTRecord)
+                    {
+                        ObjectsByIDString.Add(((CLOTRecord)record).NAME.value, record);
+                    }
+                    else if (record is REPARecord)
+                    {
+                        ObjectsByIDString.Add(((REPARecord)record).NAME.value, record);
+                    }
+                    else if (record is ACTIRecord)
+                    {
+                        ObjectsByIDString.Add(((ACTIRecord)record).NAME.value, record);
+                    }
+                    else if (record is APPARecord)
+                    {
+                        ObjectsByIDString.Add(((APPARecord)record).NAME.value, record);
+                    }
+                    else if (record is LOCKRecord)
+                    {
+                        ObjectsByIDString.Add(((LOCKRecord)record).NAME.value, record);
+                    }
+                    else if (record is PROBRecord)
+                    {
+                        ObjectsByIDString.Add(((PROBRecord)record).NAME.value, record);
+                    }
+                    else if (record is INGRRecord)
+                    {
+                        ObjectsByIDString.Add(((INGRRecord)record).NAME.value, record);
+                    }
+                    else if (record is BOOKRecord)
+                    {
+                        ObjectsByIDString.Add(((BOOKRecord)record).NAME.value, record);
+                    }
+                    else if (record is ALCHRecord)
+                    {
+                        ObjectsByIDString.Add(((ALCHRecord)record).NAME.value, record);
+                    }
+                    else if (record is CREARecord)
+                    {
+                        ObjectsByIDString.Add(((CREARecord)record).NAME.value, record);
+                    }
+                    else if (record is NPC_Record)
+                    {
+                        ObjectsByIDString.Add(((NPC_Record)record).NAME.value, record);
+                    }
                 }
 
                 // Add the record to exteriorCELLRecordsByIndices if applicable.

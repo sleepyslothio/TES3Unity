@@ -10,6 +10,7 @@ namespace TESUnity
 
     public class MorrowindDataReader : IDisposable
     {
+        private string _folderPath;
         private string _dataFilePath;
         private bool _disposing;
         public ESMFile MorrowindESMFile;
@@ -22,6 +23,19 @@ namespace TESUnity
         public MorrowindDataReader(string dataFilePath)
         {
             _dataFilePath = dataFilePath;
+            _folderPath = string.Empty;
+
+            var tmp = _dataFilePath.Split('\\');
+
+            for (var i = 0; i < tmp.Length - 1; i++)
+            {
+                _folderPath += tmp[i];
+
+                if (i < tmp.Length -2)
+                {
+                    _folderPath += "\\";
+                }
+            }
 
             MorrowindESMFile = new ESMFile(dataFilePath + "/Morrowind.esm");
             MorrowindBSAFile = new BSAFile(dataFilePath + "/Morrowind.bsa");
@@ -144,6 +158,48 @@ namespace TESUnity
         public T[] FindRecords<T>() where T : Record
         {
             return MorrowindESMFile.GetRecords<T>()?.ToArray() ?? null;
+        }
+
+        public byte[] LoadData(string path)
+        {
+            return MorrowindBSAFile.LoadFileData(path);
+        }
+
+        public string GetSound(string soundId)
+        {
+            var path = string.Empty;
+            var records = FindRecords<SOUNRecord>();
+
+            foreach (var sound in records)
+            {
+                if (sound.Id == soundId)
+                {
+                    path = sound.Name;
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                return null;
+            }
+
+            return $"{_dataFilePath}\\Sound\\{path}";
+        }
+
+        private string GetSoundPath(string id)
+        {
+            var records = FindRecords<SOUNRecord>();
+
+            foreach (var sound in records)
+            {
+                if (sound.Id == id)
+                {
+                    return sound.Name;
+                }
+            }
+
+            return null;
         }
 
         public LTEXRecord FindLTEXRecord(int index)

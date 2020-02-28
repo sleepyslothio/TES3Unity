@@ -21,6 +21,9 @@ namespace TESUnity.Components.Records
             public bool moving = false;
         }
 
+        private AudioClip m_OpenSound;
+        private AudioClip m_CloseSound;
+
         public DoorData doorData = null;
 
         void Start()
@@ -64,6 +67,10 @@ namespace TESUnity.Components.Records
             }
 
             objData.name = doorData.leadsToAnotherCell ? doorData.doorExitName : "Use " + doorData.doorName;
+
+            // Audio
+            m_OpenSound = SoundManager.GetAudioClip(DOOR.SNAM?.value);
+            m_CloseSound = SoundManager.GetAudioClip(DOOR.ANAM?.value);
         }
 
         public override void Interact()
@@ -93,6 +100,11 @@ namespace TESUnity.Components.Records
         {
             doorData.moving = true;
 
+            if (m_OpenSound != null)
+            {
+                AudioSource.PlayClipAtPoint(m_OpenSound, transform.position);
+            }
+
             while (Quaternion.Angle(transform.rotation, doorData.openRotation) > 1f)
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, doorData.openRotation, Time.deltaTime * 5f);
@@ -106,6 +118,11 @@ namespace TESUnity.Components.Records
         private IEnumerator c_Close()
         {
             doorData.moving = true;
+
+            if (m_CloseSound != null)
+            {
+                AudioSource.PlayClipAtPoint(m_CloseSound, transform.position);
+            }
 
             while (Quaternion.Angle(transform.rotation, doorData.closedRotation) > 1f)
             {

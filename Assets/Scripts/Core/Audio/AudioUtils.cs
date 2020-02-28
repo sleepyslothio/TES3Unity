@@ -61,7 +61,7 @@ public static class AudioUtils
             var chunkID = reader.ReadBytes(4);
             if (!StringUtils.Equals(chunkID, "RIFF"))
             {
-                throw new FileFormatException("Invalid chunk ID.");
+                throw new Exception("Invalid chunk ID.");
             }
 
             var chunkSize = reader.ReadLEUInt32(); // Size of the rest of the chunk after this number.
@@ -69,13 +69,13 @@ public static class AudioUtils
             var format = reader.ReadBytes(4);
             if (!StringUtils.Equals(format, "WAVE"))
             {
-                throw new FileFormatException("Invalid chunk format.");
+                throw new Exception("Invalid chunk format.");
             }
 
             var subchunk1ID = reader.ReadBytes(4);
             if (!StringUtils.Equals(subchunk1ID, "fmt "))
             {
-                throw new FileFormatException("Invalid subchunk ID.");
+                throw new Exception("Invalid subchunk ID.");
             }
 
             var subchunk1Size = reader.ReadLEUInt32(); // Size of rest of subchunk.
@@ -102,7 +102,7 @@ public static class AudioUtils
             var subchunk2ID = reader.ReadBytes(4); // "data"
             if (!StringUtils.Equals(subchunk2ID, "data"))
             {
-                throw new FileFormatException("Invalid subchunk ID.");
+                throw new Exception("Invalid subchunk ID.");
             }
 
             var subchunk2Size = reader.ReadLEUInt32(); // Size of rest of subchunk.

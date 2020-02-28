@@ -3,30 +3,6 @@
 public class OneShotAudioStreamComponent : MonoBehaviour
 {
     public MP3StreamReader audioStream;
-
-    /*private AudioSource audioSource;
-
-	private void Awake()
-	{
-		audioSource = GetComponent<AudioSource>();
-		audioSource.Play();
-	}
-	private void Update()
-	{
-		if(audioStream != null && audioStream.isDoneStreaming)
-		{
-			Debug.Log(audioStream.streamedSampleFrameCount * audioStream.channelCount);
-			audioStream = null;
-			audioSource.loop = false;
-		}
-
-		if(!audioSource.isPlaying)
-		{
-			Destroy(gameObject, 0.5f);
-			enabled = false;
-		}
-	}*/
-
     private PCMAudioBuffer streamBuffer;
     private int UnitySampleRate = -1;
 
@@ -35,6 +11,7 @@ public class OneShotAudioStreamComponent : MonoBehaviour
         streamBuffer = new PCMAudioBuffer(audioStream.channelCount, audioStream.bitDepth, audioStream.samplingRate, 8192);
         UnitySampleRate = AudioSettings.outputSampleRate;
     }
+
     private void Update()
     {
         if (audioStream.isDoneStreaming)
@@ -43,6 +20,7 @@ public class OneShotAudioStreamComponent : MonoBehaviour
             enabled = false;
         }
     }
+
     private void OnAudioFilterRead(float[] samples, int channelCount)
     {
         if (UnitySampleRate > 0)

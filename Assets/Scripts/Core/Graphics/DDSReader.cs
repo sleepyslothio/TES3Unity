@@ -67,13 +67,13 @@ namespace DDS
             dwSize = reader.ReadLEUInt32();
             if (dwSize != 124)
             {
-                throw new FileFormatException("Invalid DDS file header size: " + dwSize.ToString() + '.');
+                throw new Exception("Invalid DDS file header size: " + dwSize.ToString() + '.');
             }
 
             dwFlags = reader.ReadLEUInt32();
             if (!Utils.ContainsBitFlags(dwFlags, (uint)DDSFlags.Height, (uint)DDSFlags.Width))
             {
-                throw new FileFormatException("Invalid DDS file flags: " + dwFlags.ToString() + '.');
+                throw new Exception("Invalid DDS file flags: " + dwFlags.ToString() + '.');
             }
 
             dwHeight = reader.ReadLEUInt32();
@@ -94,7 +94,7 @@ namespace DDS
             dwCaps = reader.ReadLEUInt32();
             if (!Utils.ContainsBitFlags(dwCaps, (uint)DDSCaps.Texture))
             {
-                throw new FileFormatException("Invalid DDS file caps: " + dwCaps.ToString() + '.');
+                throw new Exception("Invalid DDS file caps: " + dwCaps.ToString() + '.');
             }
 
             dwCaps2 = reader.ReadLEUInt32();
@@ -120,7 +120,7 @@ namespace DDS
             size = reader.ReadLEUInt32();
             if (size != 32)
             {
-                throw new FileFormatException("Invalid DDS file pixel format size: " + size.ToString() + '.');
+                throw new Exception("Invalid DDS file pixel format size: " + size.ToString() + '.');
             }
 
             flags = reader.ReadLEUInt32();
@@ -154,7 +154,7 @@ namespace DDS
                 var magicString = reader.ReadBytes(4);
                 if (!StringUtils.Equals(magicString, "DDS "))
                 {
-                    throw new FileFormatException("Invalid DDS file magic string: \"" + System.Text.Encoding.ASCII.GetString(magicString) + "\".");
+                    throw new Exception("Invalid DDS file magic string: \"" + System.Text.Encoding.ASCII.GetString(magicString) + "\".");
                 }
 
                 // Deserialize the DDS file header.
@@ -495,7 +495,7 @@ namespace DDS
                     // There should be 32 bits per pixel.
                     if (header.pixelFormat.RGBBitCount != 32)
                     {
-                        throw new FileFormatException("Invalid DDS file pixel format.");
+                        throw new Exception("Invalid DDS file pixel format.");
                     }
 
                     // BGRA32
