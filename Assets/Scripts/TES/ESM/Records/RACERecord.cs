@@ -13,7 +13,7 @@
             {
                 Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
-            else if (subRecordName == "FNAME")
+            else if (subRecordName == "FNAM")
             {
                 Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }

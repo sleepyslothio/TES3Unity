@@ -1,61 +1,70 @@
 ﻿namespace TESUnity.ESM
 {
-    public class BOOKRecord : Record
+    public struct BookData
     {
-        public class BKDTSubRecord : SubRecord
-        {
-            public float weight;
-            public int value;
-            public int scroll;
-            public int skillID;
-            public int enchantPts;
+        public float Weight;
+        public int Value;
+        public int Scroll;
+        public int SkillID;
+        public int EnchantPts;
+    }
 
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+    public class BOOKRecord : Record, IIdRecord, IModelRecord
+    {
+        public string Id { get; private set; }
+        public string Model { get; private set; }
+        public string Name { get; private set; }
+        public BookData Data { get; private set; }
+        public string Icon { get; private set; }
+        public string Script { get; private set; }
+        public string Text { get; private set; }
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "NAME")
             {
-                weight = reader.ReadLESingle();
-                value = reader.ReadLEInt32();
-                scroll = reader.ReadLEInt32();
-                skillID = reader.ReadLEInt32();
-                enchantPts = reader.ReadLEInt32();
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "MODL")
+            {
+                Model = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "BKDT")
+            {
+                Data = new BookData
+                {
+                    Weight = reader.ReadLESingle(),
+                    Value = reader.ReadLEInt32(),
+                    Scroll = reader.ReadLEInt32(),
+                    SkillID = reader.ReadLEInt32(),
+                    EnchantPts = reader.ReadLEInt32()
+                };
+            }
+            else if (subRecordName == "ITEX")
+            {
+                Icon = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "SCRI")
+            {
+                Script = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "TEXT")
+            {
+                Text = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
 
-        public NAMESubRecord NAME;
-        public MODLSubRecord MODL;
-        public FNAMSubRecord FNAM;
-        public BKDTSubRecord BKDT;
-        public ITEXSubRecord ITEX;
-        public SCRISubRecord SCRI;
-        public TEXTSubRecord TEXT;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
-        {
-            switch (subRecordName)
-            {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "MODL":
-                    MODL = new MODLSubRecord();
-                    return MODL;
-                case "FNAM":
-                    FNAM = new FNAMSubRecord();
-                    return FNAM;
-                case "BKDT":
-                    BKDT = new BKDTSubRecord();
-                    return BKDT;
-                case "ITEX":
-                    ITEX = new ITEXSubRecord();
-                    return ITEX;
-                case "SCRI":
-                    SCRI = new SCRISubRecord();
-                    return SCRI;
-                case "TEXT":
-                    TEXT = new TEXTSubRecord();
-                    return TEXT;
-                default:
-                    return null;
-            }
-        }
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

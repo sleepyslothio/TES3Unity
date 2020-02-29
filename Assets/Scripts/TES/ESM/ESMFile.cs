@@ -292,7 +292,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is ACTIRecord)
                     {
-                        ObjectsByIDString.Add(((ACTIRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((ACTIRecord)record).Id, record);
                     }
                     else if (record is APPARecord)
                     {
@@ -312,7 +312,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is BOOKRecord)
                     {
-                        ObjectsByIDString.Add(((BOOKRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((BOOKRecord)record).Id, record);
                     }
                     else if (record is ALCHRecord)
                     {

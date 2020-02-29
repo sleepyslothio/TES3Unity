@@ -49,7 +49,7 @@
             }
             else if (record is ACTIRecord)
             {
-                return ((ACTIRecord)record).MODL.value;
+                return ((ACTIRecord)record).Model;
             }
             else if (record is APPARecord)
             {
@@ -69,7 +69,7 @@
             }
             else if (record is BOOKRecord)
             {
-                return ((BOOKRecord)record).MODL.value;
+                return ((BOOKRecord)record).Model;
             }
             else if (record is ALCHRecord)
             {

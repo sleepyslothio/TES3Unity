@@ -9,10 +9,10 @@ namespace TESUnity.Components.Records
             usable = true;
             pickable = false;
             var ACTI = (ACTIRecord)record;
-            objData.name = ACTI.FNAM.value;
+            objData.name = ACTI.Name;
             objData.interactionPrefix = "Use ";
 
-            TryAddScript(ACTI.SCRI?.value);
+            TryAddScript(ACTI.Script);
         }
     }
 }

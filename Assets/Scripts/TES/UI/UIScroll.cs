@@ -46,7 +46,7 @@ namespace TESUnity.UI
         {
             _bookRecord = book;
 
-            var words = _bookRecord.TEXT.value;
+            var words = _bookRecord.Text;
             words = words.Replace("\r\n", "");
             words = words.Replace("<BR><BR>", "");
             words = words.Replace("<BR>", "\n");

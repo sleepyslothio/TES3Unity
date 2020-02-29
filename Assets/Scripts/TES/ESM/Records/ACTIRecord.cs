@@ -1,31 +1,37 @@
 ﻿namespace TESUnity.ESM
 {
-    public class ACTIRecord : Record
+    public class ACTIRecord : Record, IIdRecord, IModelRecord
     {
-        public NAMESubRecord NAME; // door ID
-        public MODLSubRecord MODL; // model filename
-        public FNAMSubRecord FNAM; // item name
-        public SCRISubRecord SCRI; // script ID string
+        public string Id { get; private set; }
+        public string Model { get; private set; }
+        public string Name { get; private set; }
+        public string Script { get; private set; }
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            switch (subRecordName)
+            if (subRecordName == "NAME")
             {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "MODL":
-                    MODL = new MODLSubRecord();
-                    return MODL;
-                case "FNAM":
-                    FNAM = new FNAMSubRecord();
-                    return FNAM;
-                case "SCRI":
-                    SCRI = new SCRISubRecord();
-                    return SCRI;
-                default:
-                    return null;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "MODL")
+            {
+                Model = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "SCRI")
+            {
+                Script = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
+
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
     }
 }

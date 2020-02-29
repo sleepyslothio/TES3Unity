@@ -62,7 +62,7 @@ namespace TESUnity.UI
         {
             _bookRecord = book;
 
-            var words = _bookRecord.TEXT.value;
+            var words = _bookRecord.Text;
             words = words.Replace("<BR>", "\n");
             words = words.Replace("<BR><BR>", "\n");
             words = System.Text.RegularExpressions.Regex.Replace(words, @"<[^>]*>", string.Empty);

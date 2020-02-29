@@ -37,28 +37,28 @@ namespace TESUnity.Components.Records
 
             var BOOK = (BOOKRecord)record;
             objData.interactionPrefix = "Read ";
-            objData.name = BOOK.FNAM != null ? BOOK.FNAM.value : BOOK.NAME.value;
+            objData.name = BOOK.Name != null ? BOOK.Name : BOOK.Id;
 
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(BOOK.ITEX.value, "icons");
-            objData.weight = BOOK.BKDT.weight.ToString();
-            objData.value = BOOK.BKDT.value.ToString();
+            objData.weight = BOOK.Data.Weight.ToString();
+            objData.value = BOOK.Data.Value.ToString();
 
-            TryAddScript(BOOK.SCRI?.value);
+            TryAddScript(BOOK.Script);
         }
 
         public override void Interact()
         {
             var BOOK = (BOOKRecord)record;
 
-            if (BOOK.TEXT == null)
+            if (BOOK.Text == null)
             {
-                if (BOOK.BKDT.scroll == 1)
+                if (BOOK.Data.Scroll == 1)
                     OnTakeScroll(BOOK);
                 else
                     OnTakeBook(BOOK);
             }
 
-            if (BOOK.BKDT.scroll == 1)
+            if (BOOK.Data.Scroll == 1)
             {
                 UIManager.Scroll.Show(BOOK);
                 UIManager.Scroll.OnClosed += OnCloseScroll;
