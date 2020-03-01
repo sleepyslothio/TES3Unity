@@ -53,7 +53,7 @@
             }
             else if (record is APPARecord)
             {
-                return ((APPARecord)record).MODL.value;
+                return ((APPARecord)record).Model;
             }
             else if (record is LOCKRecord)
             {
@@ -73,7 +73,7 @@
             }
             else if (record is ALCHRecord)
             {
-                return ((ALCHRecord)record).MODL.value;
+                return ((ALCHRecord)record).Model;
             }
             else if (record is CREARecord)
             {

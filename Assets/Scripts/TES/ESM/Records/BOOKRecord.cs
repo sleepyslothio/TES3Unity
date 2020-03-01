@@ -14,6 +14,7 @@
         public string Id { get; private set; }
         public string Model { get; private set; }
         public string Name { get; private set; }
+        public string Ename { get; private set; }
         public BookData Data { get; private set; }
         public string Icon { get; private set; }
         public string Script { get; private set; }
@@ -32,6 +33,10 @@
             else if (subRecordName == "FNAM")
             {
                 Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "ENAM")
+            {
+                Ename = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "BKDT")
             {

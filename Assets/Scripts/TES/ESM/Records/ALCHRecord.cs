@@ -1,81 +1,88 @@
 ﻿namespace TESUnity.ESM
 {
-    public class ALCHRecord : Record
+    public struct AlchemyData
     {
-        public class ALDTSubRecord : SubRecord
-        {
-            public float weight;
-            public int value;
-            public int autoCalc;
+        public float Weight;
+        public int Value;
+        public int AutoCalc;
+    }
 
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+    public struct EnchantmentData
+    {
+        public short EffectID;
+        public byte SkillID;
+        public byte AttributeID;
+        public int Unknown1;
+        public int Unknown2;
+        public int Duration;
+        public int Magnitude;
+        public int Unknown4;
+    }
+
+    public class ALCHRecord : Record, IIdRecord, IModelRecord
+    {
+        public string Id { get; private set; }
+        public string Model { get; private set; }
+        public string Name { get; private set; }
+        public AlchemyData Data { get; private set; }
+        public EnchantmentData Enchantment { get; private set; }
+        public string Icon { get; private set; }
+        public string Script { get; private set; }
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "NAME")
             {
-                weight = reader.ReadLESingle();
-                value = reader.ReadLEInt32();
-                autoCalc = reader.ReadLEInt32();
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "MODL")
+            {
+                Model = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "ALDT")
+            {
+                Data = new AlchemyData
+                {
+                    Weight = reader.ReadLESingle(),
+                    Value = reader.ReadLEInt32(),
+                    AutoCalc = reader.ReadLEInt32()
+                };
+            }
+            else if (subRecordName == "ENAM")
+            {
+                Enchantment = new EnchantmentData
+                {
+                    EffectID = reader.ReadLEInt16(),
+                    SkillID = reader.ReadByte(),
+                    AttributeID = reader.ReadByte(),
+                    Unknown1 = reader.ReadLEInt32(),
+                    Unknown2 = reader.ReadLEInt32(),
+                    Duration = reader.ReadLEInt32(),
+                    Magnitude = reader.ReadLEInt32(),
+                    Unknown4 = reader.ReadLEInt32()
+                };
+            }
+            else if (subRecordName == "TEXT")
+            {
+                Icon = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "SCRI")
+            {
+                Script = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
 
-        public class ENAMSubRecord : SubRecord
-        {
-            public short effectID;
-            public byte skillID;
-            public byte attributeID;
-            public int unknown1;
-            public int unknown2;
-            public int duration;
-            public int magnitude;
-            public int unknown4;
-
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-            {
-                effectID = reader.ReadLEInt16();
-                skillID = reader.ReadByte();
-                attributeID = reader.ReadByte();
-                unknown1 = reader.ReadLEInt32();
-                unknown2 = reader.ReadLEInt32();
-                duration = reader.ReadLEInt32();
-                magnitude = reader.ReadLEInt32();
-                unknown4 = reader.ReadLEInt32();
-            }
-        }
-
-        public NAMESubRecord NAME;
-        public MODLSubRecord MODL;
-        public FNAMSubRecord FNAM;
-        public ALDTSubRecord ALDT;
-        public ENAMSubRecord ENAM;
-        public TEXTSubRecord TEXT;
-        public SCRISubRecord SCRI;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
-        {
-            switch (subRecordName)
-            {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "MODL":
-                    MODL = new MODLSubRecord();
-                    return MODL;
-                case "FNAM":
-                    FNAM = new FNAMSubRecord();
-                    return FNAM;
-                case "ALDT":
-                    ALDT = new ALDTSubRecord();
-                    return ALDT;
-                case "ENAM":
-                    ENAM = new ENAMSubRecord();
-                    return ENAM;
-                case "TEXT":
-                    TEXT = new TEXTSubRecord();
-                    return TEXT;
-                case "SCRI":
-                    SCRI = new SCRISubRecord();
-                    return SCRI;
-                default:
-                    return null;
-            }
-        }
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

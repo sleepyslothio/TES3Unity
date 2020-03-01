@@ -296,7 +296,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is APPARecord)
                     {
-                        ObjectsByIDString.Add(((APPARecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((APPARecord)record).Id, record);
                     }
                     else if (record is LOCKRecord)
                     {
@@ -316,7 +316,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is ALCHRecord)
                     {
-                        ObjectsByIDString.Add(((ALCHRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((ALCHRecord)record).Id, record);
                     }
                     else if (record is CREARecord)
                     {

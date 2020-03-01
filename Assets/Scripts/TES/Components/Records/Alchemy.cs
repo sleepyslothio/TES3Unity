@@ -8,12 +8,12 @@ namespace TESUnity.Components.Records
         {
             var ALCH = (ALCHRecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 
-            objData.name = ALCH.FNAM.value;
-            objData.weight = ALCH.ALDT.weight.ToString();
-            objData.value = ALCH.ALDT.value.ToString();
+            objData.name = ALCH.Name;
+            objData.weight = ALCH.Data.Weight.ToString();
+            objData.value = ALCH.Data.Value.ToString();
             objData.interactionPrefix = "Take ";
 
-            TryAddScript(ALCH.SCRI?.value);
+            TryAddScript(ALCH.Script);
         }
     }
 }

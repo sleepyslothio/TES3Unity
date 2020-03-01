@@ -20,14 +20,6 @@
 
     public class WEAPRecord : Record, IIdRecord, IModelRecord, IScriptRecord
     {
-      /*  public NAMESubRecord NAME;
-        public MODLSubRecord MODL;
-        public FNAMSubRecord FNAM;
-        public WPDTSubRecord WPDT;
-        public ITEXSubRecord ITEX;
-        public ENAMSubRecord ENAM;
-        public SCRISubRecord SCRI;*/
-
         public string Id { get; private set; }
         public string Model { get; private set; }
         public string Name { get; private set; }
