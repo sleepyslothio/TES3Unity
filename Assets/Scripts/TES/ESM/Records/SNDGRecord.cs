@@ -12,7 +12,7 @@
         Land = 7
     }
 
-    public class SNDGRecord : Record
+    public sealed class SNDGRecord : Record
     {
         public string Id { get; private set; }
         public SoundTypeData SoundType { get; private set; }

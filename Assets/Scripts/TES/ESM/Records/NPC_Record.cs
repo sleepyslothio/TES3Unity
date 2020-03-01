@@ -2,9 +2,117 @@
 
 namespace TESUnity.ESM
 {
-    public class NPC_Record : Record
+    public enum NPCFlags
     {
-        #region SubRecord Implementation
+        Female = 0x0001,
+        Essential = 0x0002,
+        Respawn = 0x0004,
+        None = 0x0008,
+        Autocalc = 0x0010,
+        BloodSkel = 0x0400,
+        BloodMetal = 0x0800
+    }
+
+    public struct NPCData
+    {
+
+    }
+
+    public enum NPCAIDataFlags
+    {
+        Weapon = 0x00001,
+        Armor = 0x00002,
+        Clothing = 0x00004,
+        Books = 0x00008,
+        Ingrediant = 0x00010,
+        Picks = 0x00020,
+        Probes = 0x00040,
+        Lights = 0x00080,
+        Apparatus = 0x00100,
+        Repair = 0x00200,
+        Misc = 0x00400,
+        Spells = 0x00800,
+        MagicItems = 0x01000,
+        Potions = 0x02000,
+        Training = 0x04000,
+        Spellmaking = 0x08000,
+        Enchanting = 0x10000,
+        RepairItem = 0x20000
+    }
+
+    public struct NPCAIData
+    {
+        public byte Hello;
+        public byte Unknown1;
+        public byte Fight;
+        public byte Flee;
+        public byte Alarm;
+        public byte Unknown2;
+        public byte Unknown3;
+        public byte Unknown4;
+        public NPCAIDataFlags Flags;
+    }
+
+    public struct NPC_AIW
+    {
+        public short Distance;
+        public short Duration;
+        public byte[] Idle;
+        public byte Unknow;
+    }
+
+    public struct NPC_AITravel
+    {
+        public float X;
+        public float Y;
+        public float Z;
+        public int Unknown;
+    }
+
+    public struct NPC_AIFollow
+    {
+        public float X;
+        public float Y;
+        public float Z;
+        public short Duration;
+        public string Id;
+        public short Unknown;
+    }
+
+    public struct NPC_AIActivate
+    {
+        public string Name;
+        public byte Unknown;
+    }
+
+    public struct NPC_TravelDestination
+    {
+        public float X;
+        public float Y;
+        public float Z;
+        public float RotationX;
+        public float RotationY;
+        public float RotationZ;
+    }
+
+    public sealed class NPC_Record : Record
+    {
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+        public string Model { get; private set; }
+        public string Race { get; private set; }
+        public string Faction { get; private set; }
+        public string HeadModel { get; private set; }
+        public string Class { get; private set; }
+        public string HairModel { get; private set; }
+        public NPCData Data { get; private set; }
+        public NPCFlags Flags { get; private set; }
+        // NPCO
+        public string Spell { get; private set; }
+        public NPCAIData AIData { get; private set; }
+
+
+        #region Deprecated
 
         public class RNAMSubRecord : STRVSubRecord { }
         public class KNAMSubRecord : STRVSubRecord { }
@@ -81,16 +189,7 @@ namespace TESUnity.ESM
             }
         }
 
-        public enum NPCFlags
-        {
-            Female = 0x0001,
-            Essential = 0x0002,
-            Respawn = 0x0004,
-            None = 0x0008,
-            Autocalc = 0x0010,
-            BloodSkel = 0x0400,
-            BloodMetal = 0x0800
-        }
+
 
         public class FLAGSubRecord : INTVSubRecord
         {
@@ -308,8 +407,6 @@ namespace TESUnity.ESM
 
         public class XSCLSubRecord : FLTVSubRecord { }
 
-        #endregion
-
         /// <summary>
         /// NPC ID
         /// </summary>
@@ -486,5 +583,7 @@ namespace TESUnity.ESM
 
             return null;
         }
+
+        #endregion
     }
 }

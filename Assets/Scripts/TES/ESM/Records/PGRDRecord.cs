@@ -1,6 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public class PGRDRecord : Record
+    public sealed class PGRDRecord : Record
     {
         public string Id { get; private set; }
         public byte[] PathGrid { get; private set; }

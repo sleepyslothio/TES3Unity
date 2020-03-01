@@ -8,7 +8,7 @@
         public float Quality;
     }
 
-    public class REPARecord : Record, IIdRecord, IModelRecord
+    public sealed class REPARecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
         public string Model { get; private set; }

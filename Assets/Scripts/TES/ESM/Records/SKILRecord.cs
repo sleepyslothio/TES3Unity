@@ -12,7 +12,7 @@
         public float[] UseValue;
     }
 
-    public class SKILRecord : Record
+    public sealed class SKILRecord : Record
     {
         public int SkillId { get; private set; }
         public SkillData SKDT { get; private set; }

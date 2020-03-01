@@ -164,6 +164,17 @@ namespace TESUnity.ESM
             return array;
         }
 
+        public static string ReadStringFromChar(UnityBinaryReader reader, int size)
+        {
+            var bytes = reader.ReadBytes(size);
+            var array = new char[size];
+
+            for (var i = 0; i < size; i++)
+                array[i] = System.Convert.ToChar(bytes[i]);
+
+            return Convert.CharToString(array);
+        }
+
         #endregion
     }
 }

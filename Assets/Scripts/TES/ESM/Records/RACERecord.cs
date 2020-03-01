@@ -1,6 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public class RACERecord : Record
+    public sealed class RACERecord : Record
     {
         public string Id { get; private set; }
         public string Name { get; private set; }

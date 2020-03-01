@@ -2,6 +2,62 @@
 
 namespace TESUnity.ESM
 {
+    public enum ArmorType
+    {
+        Helmet = 0,
+        Cuirass,
+        LPauldron,
+        RPauldron,
+        Greaves,
+        Boots,
+        LGauntlet,
+        RGauntlet,
+        Shield,
+        LBracer,
+        RBracer,
+    }
+
+    public enum BodyPartIndex
+    {
+        Head = 0,
+        Hair,
+        Neck,
+        Cuirass,
+        Groin,
+        Skirt,
+        RightHand,
+        LeftHand,
+        RightWrist,
+        LeftWrist,
+        Shield,
+        RightForearm,
+        LeftForearm,
+        RightUpperArm,
+        LeftUpperArm,
+        RightFoot,
+        LeftFoot,
+        RightAnkle,
+        LeftAnkle,
+        RightKnee,
+        LeftKnee,
+        RightUpperLeg,
+        LeftUpperLeg,
+        RightPauldron,
+        LeftPauldron,
+        Weapon,
+        Tail
+    }
+
+    public struct ArmorData
+    {
+        public ArmorType Type;
+        public float Weight;
+        public int Value;
+        public int Health;
+        public int EnchantPts;
+        public int Armour;
+    }
+
     public class ARMORecord : Record
     {
         public class AODTSubRecord : SubRecord

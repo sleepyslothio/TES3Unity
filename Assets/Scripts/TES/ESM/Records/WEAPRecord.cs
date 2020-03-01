@@ -18,7 +18,7 @@
         public int Flags;
     }
 
-    public class WEAPRecord : Record, IIdRecord, IModelRecord, IScriptRecord
+    public sealed class WEAPRecord : Record, IIdRecord, IModelRecord, IScriptRecord
     {
         public string Id { get; private set; }
         public string Model { get; private set; }

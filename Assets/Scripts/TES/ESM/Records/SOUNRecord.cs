@@ -1,6 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public class SOUNRecord : Record, IIdRecord
+    public sealed class SOUNRecord : Record, IIdRecord
     {
         public string Id;
         public string Name;

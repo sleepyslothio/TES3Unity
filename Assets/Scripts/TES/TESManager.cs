@@ -184,7 +184,7 @@ namespace TESUnity
             foreach (var script in scripts)
             {
                 // We use the .vb extention because it's easier to read scripts with a text editor in basic language mode.
-                File.WriteAllText($"{exportPath}/{script.Name}.vb", script.SCTX.value);
+                File.WriteAllText($"{exportPath}/{script.Header.Name}.vb", script.Text);
             }
 
             Debug.Log("Script export done.");

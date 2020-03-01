@@ -1,77 +1,53 @@
-﻿using System.Collections.Generic;
-
-namespace TESUnity.ESM
+﻿namespace TESUnity.ESM
 {
-    public class SCPTRecord : Record
+    public struct ScriptHeader
     {
-        public class SCHDSubRecord : SubRecord
-        {
-            public char[] CharName { get; private set; }
-            public uint NumShorts { get; private set; }
-            public uint NumLongs { get; private set; }
-            public uint NumFloats { get; private set; }
-            public uint ScriptDataSize { get; private set; }
-            public uint LocalVarSize { get; private set; }
+        public string Name;
+        public uint NumShorts;
+        public uint NumLongs;
+        public uint NumFloats;
+        public uint ScriptDataSize;
+        public uint LocalVarSize;
+    }
 
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-            {
-                var bytes = reader.ReadBytes(32);
-                CharName = new char[32];
+    public sealed class SCPTRecord : Record
+    {
+        public ScriptHeader Header { get; private set; }
+        public string LocalVariables { get; private set; }
+        public byte[] Binary { get; private set; }
+        public string Text { get; private set; }
 
-                for (int i = 0; i < 32; i++)
-                    CharName[i] = System.Convert.ToChar(bytes[i]);
-
-                NumShorts = reader.ReadLEUInt32();
-                NumLongs = reader.ReadLEUInt32();
-                NumFloats = reader.ReadLEUInt32();
-                ScriptDataSize = reader.ReadLEUInt32();
-                LocalVarSize = reader.ReadLEUInt32();
-            }
-        }
-
-        private string _name;
-
-        public string Name
-        {
-            get
-            {
-                if (_name == null)
-                {
-                    _name = Convert.CharToString(SCHD.CharName);
-                }
-
-                return _name;
-            }
-        }
-        public SCHDSubRecord SCHD;
-        public NAMESubRecord SCVR;
-        public ByteArraySubRecord SCDT;
-        public NAMESubRecord SCTX;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "SCHD")
             {
-                SCHD = new SCHDSubRecord();
-                return SCHD;
+                Header = new ScriptHeader
+                {
+                    Name = ReadStringFromChar(reader, 32),
+                    NumShorts = reader.ReadLEUInt32(),
+                    NumLongs = reader.ReadLEUInt32(),
+                    NumFloats = reader.ReadLEUInt32(),
+                    ScriptDataSize = reader.ReadLEUInt32(),
+                    LocalVarSize = reader.ReadLEUInt32()
+                };
             }
             else if (subRecordName == "SCVR")
             {
-                SCVR = new NAMESubRecord();
-                return SCVR;
+                LocalVariables = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "SCDT")
             {
-                SCDT = new ByteArraySubRecord();
-                return SCDT;
+                Binary = reader.ReadBytes((int)dataSize);
             }
             else if (subRecordName == "SCTX")
             {
-                SCTX = new NAMESubRecord();
-                return SCTX;
+                Text = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
-
-            return null;
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

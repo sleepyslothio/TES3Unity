@@ -2,7 +2,7 @@
 
 namespace TESUnity.ESM
 {
-    public class REGNRecord : Record
+    public sealed class REGNRecord : Record
     {
         public class WEATSubRecord : SubRecord
         {

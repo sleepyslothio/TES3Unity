@@ -233,7 +233,7 @@ namespace TESUnity
             foreach (var record in records)
             {
                 var script = (SCPTRecord)record;
-                var scriptName = script.Name;
+                var scriptName = script.Header.Name;
 
                 if (scriptName == name)
                 {

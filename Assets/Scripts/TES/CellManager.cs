@@ -413,7 +413,7 @@ namespace TESUnity
 
             // Load body parts
             var race = NPC_.RNAM.value.ToLower();
-            var gender = NPC_.FLAG.Flags == NPC_Record.NPCFlags.Female ? "f" : "m";
+            var gender = NPC_.FLAG.Flags == NPCFlags.Female ? "f" : "m";
             var ankle = $"b_n_{race}_{gender}_ankle";
             var foot = $"b_n_{race}_{gender}_foot";
             var forarm = $"b_n_{race}_{gender}_forearm";

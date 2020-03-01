@@ -8,7 +8,7 @@
         public int Uses;
     }
 
-    public class PROBRecord : Record, IIdRecord, IModelRecord
+    public sealed class PROBRecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
         public string Model { get; private set; }
