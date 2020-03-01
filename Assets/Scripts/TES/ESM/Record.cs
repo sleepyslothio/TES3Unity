@@ -144,12 +144,22 @@ namespace TESUnity.ESM
             return 0;
         }
 
-        public static float[] ReadSingles(UnityBinaryReader reader, int size)
+        public static float[] ReadDoubleArray(UnityBinaryReader reader, int size)
         {
             var array = new float[size];
             for (var i = 0; i < 4; i++)
             {
                 array[i] = reader.ReadLESingle();
+            }
+            return array;
+        }
+
+        public static int[] ReadInt32Array(UnityBinaryReader reader, int size)
+        {
+            var array = new int[size];
+            for (var i = 0; i < 4; i++)
+            {
+                array[i] = reader.ReadLEInt32();
             }
             return array;
         }

@@ -8,12 +8,12 @@ namespace TESUnity.Components.Records
         {
             var INGR = (INGRRecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(INGR.ITEX.value, "icons"); 
-            objData.name = INGR.FNAM.value;
-            objData.weight = INGR.IRDT.weight.ToString();
-            objData.value = INGR.IRDT.value.ToString();
+            objData.name = INGR.Name;
+            objData.weight = INGR.Data.Weight.ToString();
+            objData.value = INGR.Data.Value.ToString();
             objData.interactionPrefix = "Take ";
 
-            TryAddScript(INGR.SCRI?.value);
+            TryAddScript(INGR.Script);
         }
     }
 }

@@ -10,11 +10,11 @@ namespace TESUnity.Components.Records
             pickable = false;
             var LOCK = (LOCKRecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 
-            objData.name = LOCK.FNAM.value;
-            objData.weight = LOCK.LKDT.weight.ToString();
-            objData.value = LOCK.LKDT.value.ToString();
+            objData.name = LOCK.Name;
+            objData.weight = LOCK.Data.Weight.ToString();
+            objData.value = LOCK.Data.Value.ToString();
 
-            TryAddScript(LOCK.SCRI?.value);
+            TryAddScript(LOCK.Script);
         }
     }
 }

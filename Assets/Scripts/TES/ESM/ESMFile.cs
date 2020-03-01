@@ -264,7 +264,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is MISCRecord)
                     {
-                        ObjectsByIDString.Add(((MISCRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((MISCRecord)record).Id, record);
                     }
                     else if (record is WEAPRecord)
                     {
@@ -276,7 +276,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is LIGHRecord)
                     {
-                        ObjectsByIDString.Add(((LIGHRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((LIGHRecord)record).Id, record);
                     }
                     else if (record is ARMORecord)
                     {
@@ -288,7 +288,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is REPARecord)
                     {
-                        ObjectsByIDString.Add(((REPARecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((REPARecord)record).Id, record);
                     }
                     else if (record is ACTIRecord)
                     {
@@ -300,15 +300,15 @@ namespace TESUnity.ESM
                     }
                     else if (record is LOCKRecord)
                     {
-                        ObjectsByIDString.Add(((LOCKRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((LOCKRecord)record).Id, record);
                     }
                     else if (record is PROBRecord)
                     {
-                        ObjectsByIDString.Add(((PROBRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((PROBRecord)record).Id, record);
                     }
                     else if (record is INGRRecord)
                     {
-                        ObjectsByIDString.Add(((INGRRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((INGRRecord)record).Id, record);
                     }
                     else if (record is BOOKRecord)
                     {

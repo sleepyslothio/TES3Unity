@@ -8,12 +8,12 @@ namespace TESUnity.Components.Records
         {
             var PROB = (PROBRecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 
-            objData.name = PROB.FNAM.value;
-            objData.weight = PROB.PBDT.weight.ToString();
-            objData.value = PROB.PBDT.value.ToString();
+            objData.name = PROB.Name;
+            objData.weight = PROB.Data.Weight.ToString();
+            objData.value = PROB.Data.Value.ToString();
             objData.interactionPrefix = "Take ";
 
-            TryAddScript(PROB.SCRI?.value);
+            TryAddScript(PROB.Script);
         }
     }
 }

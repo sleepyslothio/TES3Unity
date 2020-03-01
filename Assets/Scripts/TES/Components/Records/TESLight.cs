@@ -35,16 +35,17 @@ namespace TESUnity.Components.Records
             lightData = new LightData();
             lightData.lightComponent = gameObject.GetComponentInChildren<UnityEngine.Light>(true);
 
-            if (lightRecord.FNAM != null)
-                objData.name = lightRecord.FNAM.value;
+            if (lightRecord.Name != null)
+                objData.name = lightRecord.Name;
 
             objData.interactionPrefix = "Take ";
 
-            TryAddScript(lightRecord.SCPT?.value);
+            TryAddScript(lightRecord.Script);
 
-            if (lightRecord.LHDT != null)
+            if (lightRecord.Data.HasValue)
             {
-                lightData.flags = lightRecord.LHDT.flags;
+                var data = lightRecord.Data.Value;
+                lightData.flags = (int)data.Flags;
 
                 if (Utils.ContainsBitFlags((uint)lightData.flags, (uint)LightData.LightFlags.CanCarry))
                 {

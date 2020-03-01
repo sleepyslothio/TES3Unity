@@ -21,7 +21,7 @@
             }
             else if (record is MISCRecord)
             {
-                return ((MISCRecord)record).MODL.value;
+                return ((MISCRecord)record).Model;
             }
             else if (record is WEAPRecord)
             {
@@ -33,7 +33,7 @@
             }
             else if (record is LIGHRecord)
             {
-                return ((LIGHRecord)record).MODL.value;
+                return ((LIGHRecord)record).Model;
             }
             else if (record is ARMORecord)
             {
@@ -45,7 +45,7 @@
             }
             else if (record is REPARecord)
             {
-                return ((REPARecord)record).MODL.value;
+                return ((REPARecord)record).Model;
             }
             else if (record is ACTIRecord)
             {
@@ -57,15 +57,15 @@
             }
             else if (record is LOCKRecord)
             {
-                return ((LOCKRecord)record).MODL.value;
+                return ((LOCKRecord)record).Model;
             }
             else if (record is PROBRecord)
             {
-                return ((PROBRecord)record).MODL.value;
+                return ((PROBRecord)record).Model;
             }
             else if (record is INGRRecord)
             {
-                return ((INGRRecord)record).MODL.value;
+                return ((INGRRecord)record).Model;
             }
             else if (record is BOOKRecord)
             {

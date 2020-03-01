@@ -30,7 +30,7 @@
                 {
                     Attribute = reader.ReadLEInt32(),
                     Specification = reader.ReadLEInt32(),
-                    UseValue = ReadSingles(reader, 4)
+                    UseValue = ReadDoubleArray(reader, 4)
                 };
             }
             else if (subRecordName == "DESC")

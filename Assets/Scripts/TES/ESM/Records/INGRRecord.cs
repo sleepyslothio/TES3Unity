@@ -1,72 +1,70 @@
 ﻿namespace TESUnity.ESM
 {
-    public class INGRRecord : Record
+    public struct IngrediantData
     {
-        public class IRDTSubRecord : SubRecord
+        public float Weight;
+        public int Value;
+        public int[] EffectID;
+        public int[] SkillID;
+        public int[] AttributeID;
+    }
+
+    public class INGRRecord : Record, IIdRecord, IModelRecord
+    {
+        public string Id { get; private set; }
+        public string Model { get; private set; }
+        public string Name { get; private set; }
+        public IngrediantData Data { get; private set; }
+        public string Icon { get; private set; }
+        public string Enchantment { get; private set; }
+        public string Script { get; private set; }
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            public float weight;
-            public int value;
-            public int[] effectID;
-            public int[] skillID;
-            public int[] attributeID;
-
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+            if (subRecordName == "NAME")
             {
-                weight = reader.ReadLESingle();
-                value = reader.ReadLEInt32();
-
-                effectID = new int[4];
-                for (int i = 0; i < effectID.Length; i++)
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "MODL")
+            {
+                Model = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "IRDT")
+            {
+                Data = new IngrediantData
                 {
-                    effectID[i] = reader.ReadLEInt32();
-                }
-
-                skillID = new int[4];
-                for (int i = 0; i < skillID.Length; i++)
-                {
-                    skillID[i] = reader.ReadLEInt32();
-                }
-
-                attributeID = new int[4];
-                for (int i = 0; i < attributeID.Length; i++)
-                {
-                    attributeID[i] = reader.ReadLEInt32();
-                }
+                    Weight = reader.ReadLESingle(),
+                    Value = reader.ReadLEInt32(),
+                    EffectID = ReadInt32Array(reader, 4),
+                    SkillID = ReadInt32Array(reader, 4),
+                    AttributeID = ReadInt32Array(reader, 4)
+                };
+            }
+            else if (subRecordName == "ITEX")
+            {
+                Icon = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "ENAM")
+            {
+                Enchantment = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "SCRI")
+            {
+                Script = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
 
-        public NAMESubRecord NAME;
-        public MODLSubRecord MODL;
-        public FNAMSubRecord FNAM;
-        public IRDTSubRecord IRDT;
-        public ITEXSubRecord ITEX;
-        public SCRISubRecord SCRI;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
-        {
-            switch (subRecordName)
-            {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "MODL":
-                    MODL = new MODLSubRecord();
-                    return MODL;
-                case "FNAM":
-                    FNAM = new FNAMSubRecord();
-                    return FNAM;
-                case "IRDT":
-                    IRDT = new IRDTSubRecord();
-                    return IRDT;
-                case "ITEX":
-                    ITEX = new ITEXSubRecord();
-                    return ITEX;
-                case "SCRI":
-                    SCRI = new SCRISubRecord();
-                    return SCRI;
-                default:
-                    return null;
-            }
-        }
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

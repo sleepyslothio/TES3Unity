@@ -8,12 +8,12 @@ namespace TESUnity.Components.Records
         {
             var REPA = (REPARecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 
-            objData.name = REPA.FNAM.value;
-            objData.weight = REPA.RIDT.weight.ToString();
-            objData.value = REPA.RIDT.value.ToString();
+            objData.name = REPA.Name;
+            objData.weight = REPA.Data.Weight.ToString();
+            objData.value = REPA.Data.Value.ToString();
             objData.interactionPrefix = "Take ";
 
-            TryAddScript(REPA.SCRI?.value);
+            TryAddScript(REPA.Script);
         }
     }
 }

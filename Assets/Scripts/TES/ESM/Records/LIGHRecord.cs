@@ -1,69 +1,91 @@
 ﻿namespace TESUnity.ESM
 {
-    public class LIGHRecord : Record
+    public enum LightFlags
     {
-        public class LHDTSubRecord : SubRecord
-        {
-            public float weight;
-            public int value;
-            public int time;
-            public int radius;
-            public byte red;
-            public byte green;
-            public byte blue;
-            public byte nullByte;
-            public int flags;
+        Dynamic = 0x0001,
+        CanCarry = 0x0002,
+        Negative = 0x0004,
+        Flicker = 0x0008,
+        Fire = 0x0010,
+        OffDefault = 0x0020,
+        FlickerSlow = 0x0040,
+        Pulse = 0x0080,
+        PulseSlow = 0x0100
+    }
 
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+    public struct LightData
+    {
+        public float Weight;
+        public int Value;
+        public int Time;
+        public int Radius;
+        public byte Red;
+        public byte Green;
+        public byte Blue;
+        public byte NullByte;
+        public LightFlags Flags;
+    }
+
+    public class LIGHRecord : Record, IIdRecord, IModelRecord
+    {
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+        public LightData? Data { get; private set; }
+        public string Script { get; private set; }
+        public string Icon { get; private set; }
+        public string Model { get; private set; }
+        public string Sound { get; private set; }
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            if (subRecordName == "NAME")
             {
-                weight = reader.ReadLESingle();
-                value = reader.ReadLEInt32();
-                time = reader.ReadLEInt32();
-                radius = reader.ReadLEInt32();
-                red = reader.ReadByte();
-                green = reader.ReadByte();
-                blue = reader.ReadByte();
-                nullByte = reader.ReadByte();
-                flags = reader.ReadLEInt32();
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "LHDT")
+            {
+                Data = new LightData
+                {
+                    Weight = reader.ReadLESingle(),
+                    Value = reader.ReadLEInt32(),
+                    Time = reader.ReadLEInt32(),
+                    Radius = reader.ReadLEInt32(),
+                    Red = reader.ReadByte(),
+                    Green = reader.ReadByte(),
+                    Blue = reader.ReadByte(),
+                    NullByte = reader.ReadByte(),
+                    Flags = (LightFlags)reader.ReadLEInt32()
+                };
+            }
+            else if (subRecordName == "SCPT" || subRecordName == "SCRI")
+            {
+                Script = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "ITEX")
+            {
+                Icon = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "MODL")
+            {
+                Model = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "SNAM")
+            {
+                Sound = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
 
-        public NAMESubRecord NAME;
-        public FNAMSubRecord FNAM;
-        public LHDTSubRecord LHDT;
-        public SCPTSubRecord SCPT;
-        public ITEXSubRecord ITEX;
-        public MODLSubRecord MODL;
-        public SNAMSubRecord SNAM;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
-        {
-            switch (subRecordName)
-            {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "FNAM":
-                    FNAM = new FNAMSubRecord();
-                    return FNAM;
-                case "LHDT":
-                    LHDT = new LHDTSubRecord();
-                    return LHDT;
-                case "SCPT":
-                    SCPT = new SCPTSubRecord();
-                    return SCPT;
-                case "ITEX":
-                    ITEX = new ITEXSubRecord();
-                    return ITEX;
-                case "MODL":
-                    MODL = new MODLSubRecord();
-                    return MODL;
-                case "SNAM":
-                    SNAM = new SNAMSubRecord();
-                    return SNAM;
-                default:
-                    return null;
-            }
-        }
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }
