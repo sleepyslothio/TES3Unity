@@ -240,7 +240,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is GLOBRecord)
                     {
-                        ObjectsByIDString.Add(((GLOBRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((GLOBRecord)record).Id, record);
                     }
                     else if (record is SOUNRecord)
                     {
@@ -252,7 +252,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is LTEXRecord)
                     {
-                        ObjectsByIDString.Add(((LTEXRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((LTEXRecord)record).Id, record);
                     }
                     else if (record is STATRecord)
                     {

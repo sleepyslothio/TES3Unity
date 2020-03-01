@@ -1,18 +1,10 @@
 ﻿namespace TESUnity.ESM
 {
-    public class LTEXRecord : Record
+    public class LTEXRecord : Record, IIdRecord
     {
-        public class DATASubRecord : STRVSubRecord { }
-
-        public NAMESubRecord NAME;
-        public INTVSubRecord INTV;
-        public DATASubRecord DATA;
-
-        public string Id;
-        public long IntV;
-        public string Data;
-
-        //public override bool NewFetchMethod => true;
+        public string Id { get; private set; }
+        public long IntValue { get; private set; }
+        public string Texture { get; private set; }
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
@@ -22,11 +14,11 @@
             }
             else if (subRecordName == "INTV")
             {
-                IntV = ReadIntRecord(reader, dataSize);
+                IntValue = ReadIntRecord(reader, dataSize);
             }
             else if (subRecordName == "DATA")
             {
-                Data = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+                Texture = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else
             {
@@ -34,22 +26,9 @@
             }
         }
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
-        {
-            switch (subRecordName)
-            {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "INTV":
-                    INTV = new INTVSubRecord();
-                    return INTV;
-                case "DATA":
-                    DATA = new DATASubRecord();
-                    return DATA;
-                default:
-                    return null;
-            }
-        }
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

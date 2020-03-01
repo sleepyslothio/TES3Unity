@@ -571,7 +571,7 @@ namespace TESUnity
                 else
                 {
                     var LTEX = dataReader.FindLTEXRecord(textureIndex);
-                    var textureFilePath = LTEX.DATA.value;
+                    var textureFilePath = LTEX.Texture;
                     textureFilePaths.Add(textureFilePath);
                 }
             }
@@ -653,7 +653,7 @@ namespace TESUnity
                     else
                     {
                         var LTEX = dataReader.FindLTEXRecord(textureIndex);
-                        textureFilePath = LTEX.DATA.value;
+                        textureFilePath = LTEX.Texture;
                     }
 
                     var texture = textureManager.LoadTexture(textureFilePath);

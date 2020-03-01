@@ -1,29 +1,34 @@
 ﻿namespace TESUnity.ESM
 {
-    public class GLOBRecord : Record
+    public class GLOBRecord : Record, IIdRecord
     {
-        public class FNAMSubRecord : ByteSubRecord { }
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+        public float FloatValue { get; private set; }
 
-        public NAMESubRecord NAME;
-        public FNAMSubRecord FNAM;
-        public FLTVSubRecord FLTV;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            switch (subRecordName)
+            if (subRecordName == "NAME")
             {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "FNAM":
-                    FNAM = new FNAMSubRecord();
-                    return FNAM;
-                case "FLTV":
-                    FLTV = new FLTVSubRecord();
-                    return FLTV;
-                default:
-                    return null;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FLTV")
+            {
+                FloatValue = reader.ReadLESingle();
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

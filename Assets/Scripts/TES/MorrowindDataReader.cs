@@ -211,7 +211,7 @@ namespace TESUnity
             {
                 LTEX = (LTEXRecord)records[i];
 
-                if (LTEX.INTV.value == index)
+                if (LTEX.IntValue == index)
                 {
                     return LTEX;
                 }
