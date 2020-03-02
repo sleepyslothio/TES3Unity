@@ -11,11 +11,11 @@ namespace TESUnity
 {
     public class TESManager : MonoBehaviour
     {
-        public const string Version = "0.10.0";
+        public const string Version = "2020.1";
         public const float NormalMapGeneratorIntensity = 0.75f;
         public static TESManager instance;
         public static MorrowindDataReader MWDataReader { get; set; }
-
+        
         private MorrowindEngine m_MorrowindEngine = null;
         private MusicPlayer m_MusicPlayer = null;
 
@@ -79,6 +79,8 @@ namespace TESUnity
             CellManager.detailRadius = config.CellDetailRadius;
             MorrowindEngine.cellRadiusOnLoad = config.CellRadiusOnLoad;
             MorrowindEngine.desiredWorkTimePerFrame = desiredWorkTimePerFrame;
+
+
 
             // When loaded from the Menu, this variable is already preloaded.
             if (MWDataReader == null)

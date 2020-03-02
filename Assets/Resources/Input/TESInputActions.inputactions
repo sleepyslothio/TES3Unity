@@ -136,7 +136,7 @@
             ]
         },
         {
-            "name": "GameActions",
+            "name": "Gameplay",
             "id": "dd349e84-d489-4e7d-a451-43d03f4c0b90",
             "actions": [
                 {
@@ -337,7 +337,7 @@
                 {
                     "name": "",
                     "id": "db1c3b16-fb7e-4de3-af64-97d5f87f69f8",
-                    "path": "",
+                    "path": "<XRController>{LeftHand}/app",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

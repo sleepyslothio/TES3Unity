@@ -143,7 +143,7 @@ MonoBehaviour:
   fastSpeed: 6
   flightSpeedMultiplier: 6
   airborneForceMultiplier: 3
-  mouseSensitivity: 2.5
+  mouseSensitivity: 0.25
   minVerticalAngle: -85
   maxVerticalAngle: 85
 --- !u!114 &114000012947587150

@@ -2,6 +2,7 @@
 using TESUnity.Inputs;
 using TESUnity.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace TESUnity
 {
@@ -12,10 +13,13 @@ namespace TESUnity
         private CapsuleCollider m_CapsuleCollider;
         private Rigidbody m_Rigidbody;
         private UICrosshair m_Crosshair;
+        private InputActionMap m_MovementActionMap;
         private bool m_Paused = false;
         private bool m_IsGrounded = false;
         private bool m_IsFlying = false;
         private bool m_XREnabled = false;
+        private Vector2 m_LeftAxis;
+        private Vector2 m_RightAxis;
 
         #region Editor Fields
 
@@ -25,7 +29,8 @@ namespace TESUnity
         public float fastSpeed = 10;
         public float flightSpeedMultiplier = 3;
         public float airborneForceMultiplier = 5;
-        public float mouseSensitivity = 3;
+        public float moveSpeed = 1.0f;
+        public float mouseSensitivity = 0.25f;
         public float minVerticalAngle = -90;
         public float maxVerticalAngle = 90;
 
@@ -67,6 +72,19 @@ namespace TESUnity
             Cursor.lockState = CursorLockMode.None;
 #endif
             m_XREnabled = XRManager.IsXREnabled();
+
+            m_MovementActionMap = InputManager2.GetActionMap("Movement");
+            m_MovementActionMap.Enable();
+            m_MovementActionMap["LeftAxis"].performed += (c) => m_LeftAxis = c.ReadValue<Vector2>();
+            m_MovementActionMap["LeftAxis"].canceled += (c) => m_LeftAxis = Vector2.zero;
+            m_MovementActionMap["RightAxis"].performed += (c) =>
+            {
+                m_RightAxis = c.ReadValue<Vector2>();
+
+                if (c.control.device is Mouse)
+                    m_RightAxis *= mouseSensitivity;
+            };
+            m_MovementActionMap["RightAxis"].canceled += (c) => m_RightAxis = Vector2.zero;
         }
 
         private void Update()
@@ -123,7 +141,7 @@ namespace TESUnity
             if (eulerAngles.x > 180)
                 eulerAngles.x = eulerAngles.x - 360;
 
-            var deltaMouse = mouseSensitivity * (new Vector2(InputManager.GetAxis(MWAxis.MouseX), InputManager.GetAxis(MWAxis.MouseY)));
+            var deltaMouse = moveSpeed * m_RightAxis;
 
             eulerAngles.x = Mathf.Clamp(eulerAngles.x - deltaMouse.y, minVerticalAngle, maxVerticalAngle);
             eulerAngles.y = Mathf.Repeat(eulerAngles.y + deltaMouse.x, 360);
@@ -162,29 +180,7 @@ namespace TESUnity
         private Vector3 CalculateLocalMovementDirection()
         {
             // Calculate the local movement direction.
-            var direction = new Vector3(InputManager.GetAxis(MWAxis.Horizontal), 0.0f, InputManager.GetAxis(MWAxis.Vertical));
-
-            // A small hack for French Keyboard...
-            if (Application.systemLanguage == SystemLanguage.French)
-            {
-                // Cancel Qwerty
-                if (Input.GetKeyDown(KeyCode.W))
-                    direction.z = 0;
-                else if (Input.GetKeyDown(KeyCode.A))
-                    direction.x = 0;
-
-                // Use Azerty
-                if (Input.GetKey(KeyCode.Z))
-                    direction.z = 1;
-                else if (Input.GetKey(KeyCode.S))
-                    direction.z = -1;
-
-                if (Input.GetKey(KeyCode.Q))
-                    direction.x = -1;
-                else if (Input.GetKey(KeyCode.D))
-                    direction.x = 1;
-            }
-
+            var direction = new Vector3(m_LeftAxis.x, 0.0f, m_LeftAxis.y);
             return direction.normalized;
         }
 
