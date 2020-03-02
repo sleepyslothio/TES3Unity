@@ -7,7 +7,7 @@
         public int AutoCalc;
     }
 
-    public struct EnchantmentData
+    /*public struct EnchantData
     {
         public short EffectID;
         public byte SkillID;
@@ -17,7 +17,7 @@
         public int Duration;
         public int Magnitude;
         public int Unknown4;
-    }
+    }*/
 
     public class ALCHRecord : Record, IIdRecord, IModelRecord
     {
@@ -25,7 +25,7 @@
         public string Model { get; private set; }
         public string Name { get; private set; }
         public AlchemyData Data { get; private set; }
-        public EnchantmentData Enchantment { get; private set; }
+        public SingleEnchantData Enchantment { get; private set; }
         public string Icon { get; private set; }
         public string Script { get; private set; }
 
@@ -54,16 +54,16 @@
             }
             else if (subRecordName == "ENAM")
             {
-                Enchantment = new EnchantmentData
+                Enchantment = new SingleEnchantData
                 {
                     EffectID = reader.ReadLEInt16(),
                     SkillID = reader.ReadByte(),
                     AttributeID = reader.ReadByte(),
-                    Unknown1 = reader.ReadLEInt32(),
-                    Unknown2 = reader.ReadLEInt32(),
+                    RangeType = (EnchantRangeType)reader.ReadLEInt32(),
+                    Area = reader.ReadLEInt32(),
                     Duration = reader.ReadLEInt32(),
-                    Magnitude = reader.ReadLEInt32(),
-                    Unknown4 = reader.ReadLEInt32()
+                    MagMin = reader.ReadLEInt32(),
+                    MagMax = reader.ReadLEInt32()
                 };
             }
             else if (subRecordName == "TEXT")

@@ -124,5 +124,10 @@ namespace TESUnity.Rendering
         {
             return $"Rendering/{(hdrp ? "HDRP" : "UniversalRP")}/Materials";
         }
+
+        public static string GetWaterMaterialPath(bool hdrp = false)
+        {
+            return $"{GetMaterialAssetPath(hdrp)}/{(hdrp ? "HDRP-Water" : "URP-Water")}";
+        }
     }
 }

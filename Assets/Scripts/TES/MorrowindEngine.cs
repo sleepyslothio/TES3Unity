@@ -7,8 +7,6 @@ using TESUnity.Inputs;
 using TESUnity.Rendering;
 using TESUnity.UI;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityStandardAssets.Water;
 using TESUnity.Components.XR;
 
 namespace TESUnity
@@ -84,39 +82,13 @@ namespace TESUnity
                 m_SunObj.AddComponent<DayNightCycle>();
             }
 
-            if (config.RendererMode == RendererMode.HDRP)
-            {
-                var waterPrefab = Resources.Load<GameObject>("Prefabs/WaterRP");
-                m_WaterObj = GameObject.Instantiate(waterPrefab);
-                m_WaterObj.SetActive(false);
+            var waterPrefab = Resources.Load<GameObject>("Prefabs/WaterRP");
+            m_WaterObj = GameObject.Instantiate(waterPrefab);
+            m_WaterObj.SetActive(false);
 
-                var waterRenderer = m_WaterObj.GetComponent<Renderer>();
-                waterRenderer.sharedMaterial = Resources.Load<Material>($"{TESMaterial.GetMaterialAssetPath(true)}/HDRP-Water");
-            }
-            else
-            {
-                // We'll switch to a shadergraph shader for URP soon too.
-                var waterPrefab = Resources.Load<GameObject>("Prefabs/Water");
-                m_WaterObj = GameObject.Instantiate(waterPrefab);
-                m_WaterObj.SetActive(false);
-
-                var water = m_WaterObj.GetComponent<Water>();
-                var renderer = water.GetComponent<MeshRenderer>();
-                renderer.sharedMaterial.SetColor("_RefrColor", new Color(0.58f, 0.7f, 1.0f));
-
-                if (!GameSettings.Get().WaterTransparency)
-                {
-                    var side = m_WaterObj.transform.GetChild(0);
-                    var sideMaterial = side.GetComponent<Renderer>().sharedMaterial;
-                    sideMaterial.SetInt("_SrcBlend", (int)BlendMode.One);
-                    sideMaterial.SetInt("_DstBlend", (int)BlendMode.Zero);
-                    sideMaterial.SetInt("_ZWrite", 1);
-                    sideMaterial.DisableKeyword("_ALPHATEST_ON");
-                    sideMaterial.DisableKeyword("_ALPHABLEND_ON");
-                    sideMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                    sideMaterial.renderQueue = -1;
-                }
-            }
+            var waterRenderer = m_WaterObj.GetComponent<Renderer>();
+            var waterMaterial = Resources.Load<Material>(TESMaterial.GetWaterMaterialPath(config.RendererMode == RendererMode.HDRP));
+            waterRenderer.sharedMaterial = waterMaterial;
 
 #if UNITY_STANDALONE
             if (!XRManager.IsXREnabled())
@@ -130,7 +102,7 @@ namespace TESUnity
             var uiCanvas = GameObject.Instantiate(uiCanvasPrefab);
 
             UIManager = uiCanvas.GetComponent<UIManager>();
-            
+
 #if UNITY_ANDROID
             RenderSettings.ambientIntensity = 4;
 #endif
@@ -264,14 +236,14 @@ namespace TESUnity
                     else
                     {
                         //deactivate text if no interactable [ DOORS ONLY - REQUIRES EXPANSION ] is found
-                        CloseInteractiveText(); 
+                        CloseInteractiveText();
                     }
                 }
             }
             else
             {
                 //deactivate text if nothing is raycasted against
-                CloseInteractiveText(); 
+                CloseInteractiveText();
             }
         }
 
@@ -374,7 +346,7 @@ namespace TESUnity
         private GameObject CreatePlayer(Vector3 position, Quaternion rotation)
         {
             var xrEnabled = XRManager.IsXREnabled();
-            var playerPrefabPath = "Prefabs/Player";           
+            var playerPrefabPath = "Prefabs/Player";
 
             // First, create the interaction system if XR is enabled.
             if (xrEnabled)

@@ -77,7 +77,7 @@
             }
             else if (record is CREARecord)
             {
-                return ((CREARecord)record).MODL.value;
+                return ((CREARecord)record).Model;
             }
 
             return null;

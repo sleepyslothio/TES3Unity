@@ -13,7 +13,7 @@ namespace TESUnity.Components.Records
 
             transform.rotation = Quaternion.Euler(-70, 0, 0);
 
-            TryAddScript(_creature.SCRI?.value);
+            TryAddScript(_creature.Script);
         }
     }
 }

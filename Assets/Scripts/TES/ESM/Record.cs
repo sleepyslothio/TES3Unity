@@ -1,10 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace TESUnity.ESM
 {
-    public class RecordHeader
+    public struct RecordHeader
+    {
+        public string Name;
+        public uint DataSize;
+        public uint Unknown0;
+        public uint Flags;
+    }
+
+    public class RecordHeaderD
     {
         public string name; // 4 bytes
         public uint dataSize;
@@ -42,17 +51,9 @@ namespace TESUnity.ESM
     {
         private static List<string> MissingRecordLogs = new List<string>();
 
-        // A flag that indicates if we use the new method or not.
-        // This flag will be removed when the new system is finished.
+        #region Deprecated
         public virtual bool NewFetchMethod { get; }
-
-        // Get ride of this when the new system is finished.
-        public RecordHeader header;
-
-        /// <summary>
-        /// Return an uninitialized subrecord to deserialize, or null to skip.
-        /// </summary>
-        /// <returns>Return an uninitialized subrecord to deserialize, or null to skip.</returns>
+        public RecordHeaderD header;
         public abstract SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize);
 
         public void DeserializeData(UnityBinaryReader reader)
@@ -88,6 +89,8 @@ namespace TESUnity.ESM
             }
         }
 
+        #endregion
+
         #region New API to deserialize SubRecords
 
         public virtual void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
@@ -103,7 +106,11 @@ namespace TESUnity.ESM
             if (!MissingRecordLogs.Contains(log))
             {
                 MissingRecordLogs.Add(log);
-                Debug.Log(log);
+
+                if (TESManager.instance?.logEnabled ?? true)
+                {
+                    Debug.Log(log);
+                }
             }
         }
 
@@ -173,6 +180,13 @@ namespace TESUnity.ESM
                 array[i] = System.Convert.ToChar(bytes[i]);
 
             return Convert.CharToString(array);
+        }
+
+        public static string ReadStringFromByte(UnityBinaryReader reader, int size)
+        {
+            var bytes = reader.ReadBytes(size);
+            var str = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+            return Convert.RemoveNullChar(str);
         }
 
         #endregion

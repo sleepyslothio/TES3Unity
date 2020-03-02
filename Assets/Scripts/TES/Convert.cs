@@ -31,5 +31,20 @@ namespace TESUnity
 
             return new string(list.ToArray());
         }
+
+        public static string RemoveNullChar(string str)
+        {
+            var list = new List<char>();
+
+            for (var i = 0; i < str.Length; i++)
+            {
+                if (str[i] != '\0')
+                {
+                    list.Add(str[i]);
+                }
+            }
+
+            return new string(list.ToArray());
+        }
     }
 }

@@ -146,7 +146,7 @@ namespace TESUnity.ESM
                 {
                     var recordStartStreamPosition = reader.BaseStream.Position;
 
-                    var recordHeader = new RecordHeader();
+                    var recordHeader = new RecordHeaderD();
                     recordHeader.Deserialize(reader);
 
                     var recordName = recordHeader.name;
@@ -248,7 +248,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is REGNRecord)
                     {
-                        ObjectsByIDString.Add(((REGNRecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((REGNRecord)record).Id, record);
                     }
                     else if (record is LTEXRecord)
                     {
@@ -320,7 +320,7 @@ namespace TESUnity.ESM
                     }
                     else if (record is CREARecord)
                     {
-                        ObjectsByIDString.Add(((CREARecord)record).NAME.value, record);
+                        ObjectsByIDString.Add(((CREARecord)record).Id, record);
                     }
                     else if (record is NPC_Record)
                     {
