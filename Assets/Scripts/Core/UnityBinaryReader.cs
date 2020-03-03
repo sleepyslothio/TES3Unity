@@ -88,6 +88,16 @@ public class UnityBinaryReader : IDisposable
         return Encoding.ASCII.GetString(_reader.ReadBytes(length));
     }
 
+    public string ReadUnicodeString (int length)
+    {
+        return Encoding.Unicode.GetString(_reader.ReadBytes(length));
+    }
+
+    public string ReadUTF8String(int length)
+    {
+        return Encoding.UTF8.GetString(_reader.ReadBytes(length));
+    }
+
     public string ReadPossiblyNullTerminatedASCIIString(int lengthIncludingPossibleNullTerminator)
     {
         Debug.Assert(lengthIncludingPossibleNullTerminator > 0);

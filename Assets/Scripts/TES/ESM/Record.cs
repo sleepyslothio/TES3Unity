@@ -93,7 +93,7 @@ namespace TESUnity.ESM
         {
             reader.BaseStream.Position += dataSize;
 
-            var log = $"{GetType()} have missing subRecord: {subRecordName}";
+            var log = $"{header.name} have missing subRecord: {subRecordName}";
 
             if (!MissingRecordLogs.Contains(log))
             {
@@ -159,6 +159,16 @@ namespace TESUnity.ESM
             for (var i = 0; i < size; i++)
             {
                 array[i] = reader.ReadLEInt32();
+            }
+            return array;
+        }
+
+        public static float[] ReadFloatArray(UnityBinaryReader reader, int size)
+        {
+            var array = new float[size];
+            for (var i = 0; i < size; i++)
+            {
+                array[i] = reader.ReadLESingle();
             }
             return array;
         }

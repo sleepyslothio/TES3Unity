@@ -70,8 +70,8 @@ namespace TESUnity.ESM
 
         private Record CreateRecordOfType(ref string name)
         {
-            if (name == "GMDT")
-                return new GMDTRecord();
+            if (name == "GAME")
+                return new GAMERecord();
 
             return new MissingRecord();
         }

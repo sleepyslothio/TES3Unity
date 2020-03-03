@@ -1,15 +1,37 @@
-﻿namespace TESUnity.ESM.ESS
+﻿using System.Collections.Generic;
+using System.Text;
+
+namespace TESUnity.ESM.ESS
 {
-    public sealed class GMDTRecord : Record
+    public sealed class GAMERecord : Record
     {
-        public float[] Unknowns { get; private set; }
         public string CellName { get; private set; }
-        public float Unknown { get; private set; }
-        public string CharacterName { get; private set; }
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            var s = "";
+            if (subRecordName == "GMDT")
+            {
+                var content = reader.ReadUTF8String((int)dataSize);
+                var list = new List<char>();
+
+                foreach (var c in content)
+                {
+                    if (c != '\0')
+                    {
+                        list.Add(c);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                CellName = Convert.CharToString(list.ToArray());
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
         }
 
         #region Deprecated
