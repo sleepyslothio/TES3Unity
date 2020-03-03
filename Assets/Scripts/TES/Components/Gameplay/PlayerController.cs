@@ -8,18 +8,24 @@ namespace TESUnity
 {
     public class PlayerController : MonoBehaviour
     {
-        private Transform m_CameraTransform;
-        private Transform m_Transform;
-        private CapsuleCollider m_CapsuleCollider;
-        private Rigidbody m_Rigidbody;
-        private UICrosshair m_Crosshair;
-        private InputActionMap m_MovementActionMap;
+        public enum MovementSpeedMode
+        {
+            Walk, Run, Slow
+        }
+
+        private Transform m_CameraTransform = null;
+        private Transform m_Transform = null;
+        private CapsuleCollider m_CapsuleCollider = null;
+        private Rigidbody m_Rigidbody = null;
+        private UICrosshair m_Crosshair = null;
+        private InputActionMap m_MovementActionMap = null;
+        private InputAction m_LeftAxisAction = null;
+        private InputAction m_RightAxisAction = null;
+        private MovementSpeedMode m_MovementSpeedMode = MovementSpeedMode.Walk;
         private bool m_Paused = false;
         private bool m_IsGrounded = false;
         private bool m_IsFlying = false;
         private bool m_XREnabled = false;
-        private Vector2 m_LeftAxis;
-        private Vector2 m_RightAxis;
 
         #region Editor Fields
 
@@ -29,7 +35,7 @@ namespace TESUnity
         public float fastSpeed = 10;
         public float flightSpeedMultiplier = 3;
         public float airborneForceMultiplier = 5;
-        public float moveSpeed = 1.0f;
+        public float lookSensitivity = 1.0f;
         public float mouseSensitivity = 0.25f;
         public float minVerticalAngle = -90;
         public float maxVerticalAngle = 90;
@@ -73,38 +79,33 @@ namespace TESUnity
 #endif
             m_XREnabled = XRManager.IsXREnabled();
 
-            m_MovementActionMap = InputManager2.GetActionMap("Movement");
+            var m_MovementActionMap = InputManager.GetActionMap("Movement");
             m_MovementActionMap.Enable();
-            m_MovementActionMap["LeftAxis"].performed += (c) => m_LeftAxis = c.ReadValue<Vector2>();
-            m_MovementActionMap["LeftAxis"].canceled += (c) => m_LeftAxis = Vector2.zero;
-            m_MovementActionMap["RightAxis"].performed += (c) =>
-            {
-                m_RightAxis = c.ReadValue<Vector2>();
 
-                if (c.control.device is Mouse)
-                    m_RightAxis *= mouseSensitivity;
-            };
-            m_MovementActionMap["RightAxis"].canceled += (c) => m_RightAxis = Vector2.zero;
+            // Run mode.
+            m_MovementActionMap["Run"].started += (c) => SetMovementType(MovementSpeedMode.Run);
+            m_MovementActionMap["Run"].canceled += (c) => SetMovementType(MovementSpeedMode.Walk);
+
+            // Fly mode.
+            m_MovementActionMap["Fly"].started += (c) => isFlying = !isFlying;
+
+            // Jump.
+            m_MovementActionMap["Jump"].started += (c) => Jump();
+
+            m_LeftAxisAction = m_MovementActionMap["LeftAxis"];
+            m_RightAxisAction = m_MovementActionMap["RightAxis"];
         }
+
+        private void OnEnable() => m_MovementActionMap?.Enable();
+        private void OnDisable() => m_MovementActionMap?.Disable();
 
         private void Update()
         {
             if (m_Paused)
                 return;
 
-            if (!m_XREnabled)
-                Rotate();
-
-            if (Input.GetKeyDown(KeyCode.Tab) || Input.touchCount == 3)
-                isFlying = !isFlying;
-
-            if (m_IsGrounded && !isFlying && InputManager.GetButtonDown(MWButton.Jump))
-            {
-                var newVelocity = m_Rigidbody.velocity;
-                newVelocity.y = 5;
-
-                m_Rigidbody.velocity = newVelocity;
-            }
+            ManageEscapeKey();
+            RotatePlayer();
         }
 
         private void FixedUpdate()
@@ -117,36 +118,71 @@ namespace TESUnity
                 ApplyAirborneForce();
         }
 
-        private void Rotate()
+        public void SetMovementType(MovementSpeedMode mode)
         {
-            if (Cursor.lockState != CursorLockMode.Locked)
+            if (mode == MovementSpeedMode.Slow && m_MovementSpeedMode == MovementSpeedMode.Slow)
             {
-                if (Input.GetMouseButtonDown(0))
-                    Cursor.lockState = CursorLockMode.Locked;
-                else
-                    return;
+                m_MovementSpeedMode = MovementSpeedMode.Walk;
+            }
+            else if (mode == MovementSpeedMode.Run && m_MovementSpeedMode != MovementSpeedMode.Slow)
+            {
+                m_MovementSpeedMode = MovementSpeedMode.Run;
             }
             else
             {
-                if (Input.GetKeyDown(KeyCode.BackQuote))
+                m_MovementSpeedMode = MovementSpeedMode.Walk;
+            }
+        }
+
+        private void Jump()
+        {
+            if (m_IsGrounded && !m_IsFlying)
+            {
+                var newVelocity = m_Rigidbody.velocity;
+                newVelocity.y = 5;
+
+                m_Rigidbody.velocity = newVelocity;
+            }
+        }
+
+        private void ManageEscapeKey()
+        {
+            if (Cursor.lockState != CursorLockMode.Locked)
+            {
+                if (Mouse.current.leftButton.ReadValue() > 0.5f)
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                }
+            }
+            else
+            {
+                if (Keyboard.current.escapeKey.ReadValue() > 0.5f)
                 {
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true;
                 }
             }
+        }
 
+        private void RotatePlayer()
+        {
             var eulerAngles = new Vector3(m_CameraTransform.localEulerAngles.x, m_Transform.localEulerAngles.y, 0);
 
             // Make eulerAngles.x range from -180 to 180 so we can clamp it between a negative and positive angle.
             if (eulerAngles.x > 180)
+            {
                 eulerAngles.x = eulerAngles.x - 360;
+            }
 
-            var deltaMouse = moveSpeed * m_RightAxis;
+            var deltaMouse = lookSensitivity * m_RightAxisAction.ReadValue<Vector2>();
 
             eulerAngles.x = Mathf.Clamp(eulerAngles.x - deltaMouse.y, minVerticalAngle, maxVerticalAngle);
             eulerAngles.y = Mathf.Repeat(eulerAngles.y + deltaMouse.x, 360);
 
-            m_CameraTransform.localEulerAngles = new Vector3(eulerAngles.x, 0, 0);
+            if (!m_XREnabled)
+            {
+                m_CameraTransform.localEulerAngles = new Vector3(eulerAngles.x, 0, 0);
+            }
 
             m_Transform.localEulerAngles = new Vector3(0, eulerAngles.y, 0);
         }
@@ -161,7 +197,9 @@ namespace TESUnity
                 velocity.y = m_Rigidbody.velocity.y;
             }
             else
+            {
                 velocity = m_CameraTransform.TransformVector(CalculateLocalVelocity());
+            }
 
             m_Rigidbody.velocity = velocity;
         }
@@ -180,7 +218,9 @@ namespace TESUnity
         private Vector3 CalculateLocalMovementDirection()
         {
             // Calculate the local movement direction.
-            var direction = new Vector3(m_LeftAxis.x, 0.0f, m_LeftAxis.y);
+            var leftAxis = m_LeftAxisAction.ReadValue<Vector2>();
+
+            var direction = new Vector3(leftAxis.x, 0.0f, leftAxis.y);
             return direction.normalized;
         }
 
@@ -188,14 +228,19 @@ namespace TESUnity
         {
             var speed = normalSpeed;
 
-            if (InputManager.GetButton(MWButton.Run))
+            if (m_MovementSpeedMode == MovementSpeedMode.Run)
+            {
                 speed = fastSpeed;
-
-            else if (InputManager.GetButton(MWButton.Slow))
+            }
+            else if (m_MovementSpeedMode == MovementSpeedMode.Slow)
+            {
                 speed = slowSpeed;
+            }
 
             if (isFlying)
+            {
                 speed *= flightSpeedMultiplier;
+            }
 
             return speed;
         }
@@ -217,7 +262,11 @@ namespace TESUnity
         public void Pause(bool pause)
         {
             m_Paused = pause;
-            m_Crosshair.SetActive(!m_Paused);
+
+            if (!m_XREnabled)
+            {
+                m_Crosshair.SetActive(!m_Paused);
+            }
 
             Time.timeScale = pause ? 0.0f : 1.0f;
 

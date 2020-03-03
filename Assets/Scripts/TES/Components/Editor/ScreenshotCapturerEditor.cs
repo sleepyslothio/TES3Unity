@@ -14,12 +14,6 @@ namespace TESUnity.Components.Utilities
 
             if (GUILayout.Button("Capture Screenshot"))
                 script.CaptureScreenshot();
-
-            if (GUILayout.Button("Capture Screenshot 360"))
-                script.Capture360Screenshot(false);
-
-            if (GUILayout.Button("Capture Screenshot 360 3D"))
-                script.Capture360Screenshot(true);
         }
     }
 }

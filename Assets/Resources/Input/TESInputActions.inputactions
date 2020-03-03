@@ -20,6 +20,30 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Fly",
+                    "type": "Button",
+                    "id": "4d62d6bd-a140-486e-84f0-f96e2010deb8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Run",
+                    "type": "Button",
+                    "id": "2d1496b4-e585-4deb-9f57-5e92c674542f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "8dfb85ae-0c90-4139-8598-8603085dd33b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -116,7 +140,7 @@
                     "id": "d01909e5-b777-492e-8924-33fdbb0fdfad",
                     "path": "<Mouse>/delta",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "ScaleVector2(x=0.05,y=0.05)",
                     "groups": "",
                     "action": "RightAxis",
                     "isComposite": false,
@@ -132,6 +156,61 @@
                     "action": "RightAxis",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "89fb8d8d-b444-4514-87d9-691095f30e95",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fly",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "663fdbc7-d699-4476-8a0b-ad664954a311",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "60c8bb7a-1cfa-4c84-ade0-363b9fd03976",
+                    "path": "<Gamepad>/leftStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aeb8f56b-d921-4972-94d9-7d261e06d858",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d7f0c0ff-d9f6-46e5-9432-e29ee844ad3e",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -139,14 +218,6 @@
             "name": "Gameplay",
             "id": "dd349e84-d489-4e7d-a451-43d03f4c0b90",
             "actions": [
-                {
-                    "name": "Jump",
-                    "type": "Button",
-                    "id": "25d25b42-ad8a-4d98-a8dc-746157eb585f",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
                 {
                     "name": "Light",
                     "type": "Button",
@@ -170,36 +241,49 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Slow",
+                    "type": "Button",
+                    "id": "ecbebfdd-8f0e-4a47-87c7-ae175e9dac9c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "9c5d5bf1-109d-42b5-9b36-bf7bd9a73755",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Inventory",
+                    "type": "Button",
+                    "id": "63b78ac3-2a91-42b6-b830-164f4233ff51",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
                 {
                     "name": "",
-                    "id": "c072404e-29ec-4058-be27-9f10bf6f8b21",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b73ac0d2-79c5-4dd9-9ae3-26ddd502eedb",
-                    "path": "<Gamepad>/buttonNorth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "c3931055-22ff-4e2b-8a59-bca35d86d990",
                     "path": "<Keyboard>/f",
                     "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Light",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "02181534-3e0a-4473-bc3c-3952530cf28a",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": "",
                     "action": "Light",
@@ -247,6 +331,72 @@
                     "processors": "",
                     "groups": "",
                     "action": "Use",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ac9b97a2-ab9a-432b-a1f7-8a267c4b7d0d",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slow",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a42d06e2-6f4f-4388-969a-40b340b29afb",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slow",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "04d2e0ea-56f8-4451-ba85-7a006295ec03",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5a7eb4c1-78e7-4f0a-bf6c-cbd53bf0a6d2",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "180cfe56-28e5-4ef4-ad82-7f77d823a390",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3025a684-a59f-402c-bb26-8b2448ee0b95",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -315,7 +465,7 @@
                 {
                     "name": "",
                     "id": "771d000e-fe00-46c1-a63c-0b1302a09964",
-                    "path": "<Keyboard>/escape",
+                    "path": "<Keyboard>/f10",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -342,6 +492,33 @@
                     "processors": "",
                     "groups": "",
                     "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Tools",
+            "id": "6808f402-fe4b-4bb2-a6ed-7a2aa6dcec87",
+            "actions": [
+                {
+                    "name": "Screenshot",
+                    "type": "Button",
+                    "id": "f40592e2-8b02-4ad7-ab08-10afc035e54a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e445162c-5ad9-4edd-86fb-c451f5bd79e4",
+                    "path": "<Keyboard>/printScreen",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Screenshot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

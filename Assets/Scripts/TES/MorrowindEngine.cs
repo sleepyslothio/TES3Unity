@@ -8,6 +8,7 @@ using TESUnity.Rendering;
 using TESUnity.UI;
 using UnityEngine;
 using TESUnity.Components.XR;
+using UnityEngine.InputSystem;
 
 namespace TESUnity
 {
@@ -35,6 +36,7 @@ namespace TESUnity
         private UnderwaterEffect m_UnderwaterEffect;
         private Color32 m_DefaultAmbientColor = new Color32(137, 140, 160, 255);
         private RaycastHit[] m_InteractRaycastHitBuffer = new RaycastHit[32];
+        private InputAction m_UseAction;
 
         #endregion
 
@@ -46,7 +48,7 @@ namespace TESUnity
         public NIFManager nifManager;
         public CellManager cellManager;
         public TemporalLoadBalancer temporalLoadBalancer;
-
+        
         public CELLRecord currentCell => m_CurrentCell;
 
         public static int markerLayer => LayerMask.NameToLayer("Marker");
@@ -106,6 +108,11 @@ namespace TESUnity
 #if UNITY_ANDROID
             RenderSettings.ambientIntensity = 4;
 #endif
+
+            var gameplayActionMap = InputManager.GetActionMap("Gameplay");
+            gameplayActionMap.Enable();
+
+            m_UseAction = gameplayActionMap["Use"];
         }
 
         #region Player Spawn
@@ -220,7 +227,7 @@ namespace TESUnity
 
                         ShowInteractiveText(component);
 
-                        if (InputManager.GetButtonDown(MWButton.Use))
+                        if (m_UseAction.phase == InputActionPhase.Started)
                         {
                             if (component is Door)
                                 OpenDoor((Door)component);

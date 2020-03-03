@@ -33,26 +33,30 @@ namespace TESUnity.Components.Records
 
             gameObject.isStatic = false;
 
-            for(var i = 0; i < transform.childCount; i++)
+            for (var i = 0; i < transform.childCount; i++)
             {
                 transform.GetChild(i).gameObject.isStatic = false;
             }
 
             TryAddScript(WEAP.Script);
-        }
 
-        private void Update()
-        {
-            if (_isEquiped)
+            var gameplayActionMap = InputManager.GetActionMap("Gameplay");
+            gameplayActionMap["Attack"].started += (c) =>
             {
-                if (InputManager.GetButtonDown(MWButton.Attack))
+                if (!_isEquiped)
                 {
-                    if (_isVisible)
-                        PlayAttackAnimation();
-                    else
-                        SetVisible(true);
+                    return;
                 }
-            }
+
+                if (_isVisible)
+                {
+                    PlayAttackAnimation();
+                }
+                else
+                {
+                    SetVisible(true);
+                }
+            };
         }
 
         public void SetVisible(bool visible)

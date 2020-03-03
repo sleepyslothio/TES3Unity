@@ -3,6 +3,7 @@ using System.Collections;
 using TESUnity.Inputs;
 using TESUnity.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace TESUnity.Components.XR
 {
@@ -17,18 +18,16 @@ namespace TESUnity.Components.XR
         private RectTransform _canvas = null;
         private Transform _pivotCanvas = null;
         private Transform m_HUD = null;
+        private InputActionMap m_XRActionMap = null;
         private bool m_FollowHead = false;
         private bool m_RoomScale = false;
 
         [SerializeField]
         private Canvas _mainCanvas = null;
 
-        /// <summary>
-        /// Intialize the VR support for the player.
-        /// - The HUD and UI will use a WorldSpace Canvas
-        /// - The HUD canvas is not recommanded, it's usefull for small informations
-        /// - The UI is for all other UIs: Menu, Life, etc.
-        /// </summary>
+        private void OnEnable() => m_XRActionMap?.Enable();
+        private void OnDisable() => m_XRActionMap?.Disable();
+
         private void Start()
         {
             if (!XRManager.IsXREnabled())
@@ -42,6 +41,10 @@ namespace TESUnity.Components.XR
 #endif
 
             StartCoroutine(DeferredStart());
+
+            m_XRActionMap = InputManager.GetActionMap("XR");
+            m_XRActionMap.Enable();
+            m_XRActionMap["Recenter"].started += (c) => RecenterOrientationAndPosition();
         }
 
         private IEnumerator DeferredStart()
@@ -91,10 +94,6 @@ namespace TESUnity.Components.XR
         {
             if (_pivotCanvas == null)
                 return;
-
-            // At any time, the user might want to reset the orientation and position.
-            if (InputManager.GetButtonDown(MWButton.Recenter))
-                RecenterOrientationAndPosition();
 
             RecenterUI();
 

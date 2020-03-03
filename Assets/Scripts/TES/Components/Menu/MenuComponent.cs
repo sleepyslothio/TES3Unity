@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using TESUnity.Inputs;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -78,11 +79,19 @@ namespace TESUnity.Components
         {
             SetPanelVisible(-1);
 
+            // Required for static initialization of the InputManager.
+            yield return null;
+
             var wait = new WaitForEndOfFrame();
+
+            var actionMap = InputManager.GetActionMap("Menu");
+            actionMap.Enable();
+
+            var backAction = actionMap["Back"];
 
             while (!CanReadStorage())
             {
-                if (InputManager.GetButtonDown(MWButton.Menu))
+                if (backAction.phase == InputActionPhase.Started)
                     Quit();
 
                 yield return wait;

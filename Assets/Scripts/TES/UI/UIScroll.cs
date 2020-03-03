@@ -29,17 +29,23 @@ namespace TESUnity.UI
             // If the book is already opened, don't change its transform.
             if (_bookRecord == null)
                 Close();
-        }
 
-        void Update()
-        {
-            if (!_container.activeSelf)
-                return;
+            var gameplayActionMap = InputManager.GetActionMap("Gameplay");
+            gameplayActionMap["Use"].started += (c) =>
+            {
+                if (_container.activeSelf)
+                {
+                    Take();
+                }
+            };
 
-            if (InputManager.GetButtonDown(MWButton.Use))
-                Take();
-            else if (InputManager.GetButtonDown(MWButton.Menu))
-                Close();
+            gameplayActionMap["Cancel"].started += (c) =>
+            {
+                if (_container.activeSelf)
+                {
+                    Close();
+                }
+            };
         }
 
         public void Show(BOOKRecord book)
@@ -59,19 +65,15 @@ namespace TESUnity.UI
 
         public void Take()
         {
-            if (OnTake != null)
-                OnTake(_bookRecord);
-
+            OnTake?.Invoke(_bookRecord);
             Close();
         }
 
         public void Close()
         {
+            OnClosed?.Invoke(_bookRecord);
+
             _container.SetActive(false);
-
-            if (OnClosed != null)
-                OnClosed(_bookRecord);
-
             _bookRecord = null;
         }
 
