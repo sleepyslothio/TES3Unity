@@ -20,6 +20,9 @@ namespace TESUnity
         public ESMFile TribunalESMFile;
         public BSAFile TribunalBSAFile;
 
+        public string DataPath => _dataFilePath;
+        public string FolderPath => _folderPath;
+
         public MorrowindDataReader(string dataFilePath)
         {
             _dataFilePath = dataFilePath;

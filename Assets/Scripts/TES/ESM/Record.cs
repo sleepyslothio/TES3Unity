@@ -5,15 +5,7 @@ using UnityEngine;
 
 namespace TESUnity.ESM
 {
-    public struct RecordHeader
-    {
-        public string Name;
-        public uint DataSize;
-        public uint Unknown0;
-        public uint Flags;
-    }
-
-    public class RecordHeaderD
+    public class RecordHeader
     {
         public string name; // 4 bytes
         public uint dataSize;
@@ -53,7 +45,7 @@ namespace TESUnity.ESM
 
         #region Deprecated
         public virtual bool NewFetchMethod { get; }
-        public RecordHeaderD header;
+        public RecordHeader header;
         public abstract SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize);
 
         public void DeserializeData(UnityBinaryReader reader)
@@ -190,5 +182,16 @@ namespace TESUnity.ESM
         }
 
         #endregion
+    }
+
+    public class MissingRecord : Record
+    {
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            ReadMissingSubRecord(reader, subRecordName, dataSize);
+        }
+
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
     }
 }

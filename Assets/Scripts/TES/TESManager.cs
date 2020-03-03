@@ -34,6 +34,7 @@ namespace TESUnity
 
         [Header("Debug")]
         public bool loadExtensions = false;
+        public string loadSaveGameFilename = string.Empty;
 #if UNITY_EDITOR
         public int CellRadius = 0;
         public int CellDetailRadius = 0;
@@ -105,6 +106,18 @@ namespace TESUnity
                     m_MusicPlayer.Play();
                 }
             }
+
+#if UNITY_EDITOR
+            if (loadSaveGameFilename != null)
+            {
+                var path = $"{MWDataReader.FolderPath}/Saves/{loadSaveGameFilename}.ess";
+
+                if (File.Exists(path))
+                {
+                    var ess = new ESSFile(path);
+                }
+            }
+#endif
 
             // Later we'll read the saved file and spawn the player at the correct location.
             m_MorrowindEngine.SpawnPlayerOutside(new Vector2i(-2, -9), new Vector3(-137.94f, 2.30f, -1037.6f), Quaternion.identity);

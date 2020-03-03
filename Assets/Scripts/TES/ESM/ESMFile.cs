@@ -146,7 +146,7 @@ namespace TESUnity.ESM
                 {
                     var recordStartStreamPosition = reader.BaseStream.Position;
 
-                    var recordHeader = new RecordHeaderD();
+                    var recordHeader = new RecordHeader();
                     recordHeader.Deserialize(reader);
 
                     var recordName = recordHeader.name;
