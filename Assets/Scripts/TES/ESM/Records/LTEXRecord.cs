@@ -1,6 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public class LTEXRecord : Record, IIdRecord
+    public sealed class LTEXRecord : Record, IIdRecord
     {
         public string Id { get; private set; }
         public long IntValue { get; private set; }

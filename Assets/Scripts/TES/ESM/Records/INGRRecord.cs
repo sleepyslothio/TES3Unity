@@ -1,15 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public struct IngrediantData
-    {
-        public float Weight;
-        public int Value;
-        public int[] EffectID;
-        public int[] SkillID;
-        public int[] AttributeID;
-    }
-
-    public class INGRRecord : Record, IIdRecord, IModelRecord
+    public sealed class INGRRecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
         public string Model { get; private set; }

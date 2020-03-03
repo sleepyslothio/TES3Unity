@@ -15,26 +15,6 @@
         Target = 2
     }
 
-    public struct EnchantData
-    {
-        public EnchantType Type;
-        public int EnchantCost;
-        public int Charge;
-        public int AutoCalc;
-    }
-
-    public struct SingleEnchantData
-    {
-        public short EffectID;
-        public byte SkillID;
-        public byte AttributeID;
-        public EnchantRangeType RangeType;
-        public int Area;
-        public int Duration;
-        public int MagMin;
-        public int MagMax;
-    }
-
     public class ENCHRecord : Record
     {
         public string Id { get; private set; }

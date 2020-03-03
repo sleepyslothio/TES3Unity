@@ -1,25 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public struct AlchemyData
-    {
-        public float Weight;
-        public int Value;
-        public int AutoCalc;
-    }
-
-    /*public struct EnchantData
-    {
-        public short EffectID;
-        public byte SkillID;
-        public byte AttributeID;
-        public int Unknown1;
-        public int Unknown2;
-        public int Duration;
-        public int Magnitude;
-        public int Unknown4;
-    }*/
-
-    public class ALCHRecord : Record, IIdRecord, IModelRecord
+    public sealed class ALCHRecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
         public string Model { get; private set; }

@@ -29,17 +29,15 @@
         Skin = 0, Clothing = 1, Armor = 2
     }
 
-    public class BODYRecord : Record
+    public sealed class BODYRecord : Record, IIdRecord, IModelRecord
     {
-        public BYDTSubRecord BYDT;
-
-        public string Id;
-        public string Name;
-        public string Model;
-        public BodyPart Part;
-        public byte Vampire;
-        public BodyFlags Flags;
-        public BodyPartType PartType;
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+        public string Model { get; private set; }
+        public BodyPart Part { get; private set; }
+        public byte Vampire { get; private set; }
+        public byte Flags { get; private set; }
+        public BodyPartType PartType { get; private set; }
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
@@ -55,7 +53,7 @@
             {
                 Part = (BodyPart)reader.ReadByte();
                 Vampire = reader.ReadByte();
-                Flags = (BodyFlags)reader.ReadByte();
+                Flags = reader.ReadByte();
                 PartType = (BodyPartType)reader.ReadByte();
             }
             else if (subRecordName == "MODL")

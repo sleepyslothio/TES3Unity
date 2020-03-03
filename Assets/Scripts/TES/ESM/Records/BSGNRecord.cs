@@ -1,12 +1,12 @@
 ﻿namespace TESUnity.ESM
 {
-    public class BSGNRecord : Record
+    public sealed class BSGNRecord : Record
     {
-        public string Id;
-        public string Name;
-        public string Texture;
-        public string Description;
-        public string NPCs;
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+        public string Texture { get; private set; }
+        public string Description { get; private set; }
+        public string NPCs { get; private set; }
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {

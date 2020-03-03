@@ -1,14 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public struct AppaData
-    {
-        public int Type;
-        public float Quality;
-        public float Weight;
-        public int Value;
-    }
-
-    public class APPARecord : Record, IIdRecord, IModelRecord
+    public sealed class APPARecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
         public string Model { get; private set; }

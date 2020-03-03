@@ -23,7 +23,7 @@
         public string Name { get; private set; }
         public SpellType Type { get; private set; }
         public int SpellCost { get; private set; }
-        public SpellFlags Flags { get; private set; }
+        public int Flags { get; private set; }
         public string Data { get; private set; }
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
@@ -40,7 +40,7 @@
             {
                 Type = (SpellType)reader.ReadBEInt32();
                 SpellCost = reader.ReadLEInt32();
-                Flags = (SpellFlags)reader.ReadLEInt32();
+                Flags = reader.ReadLEInt32();
             }
             else if (subRecordName == "ENAM")
             {

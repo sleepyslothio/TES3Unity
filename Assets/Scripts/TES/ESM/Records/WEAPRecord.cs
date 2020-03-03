@@ -1,23 +1,5 @@
 ﻿namespace TESUnity.ESM
 {
-    public struct WeaponData
-    {
-        public float Weight;
-        public int Value;
-        public short Type;
-        public short Health;
-        public float Speed;
-        public float Reach;
-        public short EnchantPts;
-        public byte ChopMin;
-        public byte ChopMax;
-        public byte SlashMin;
-        public byte SlashMax;
-        public byte ThrustMin;
-        public byte ThrustMax;
-        public int Flags;
-    }
-
     public sealed class WEAPRecord : Record, IIdRecord, IModelRecord, IScriptRecord
     {
         public string Id { get; private set; }

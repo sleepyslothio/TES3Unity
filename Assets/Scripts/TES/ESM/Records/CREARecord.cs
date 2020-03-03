@@ -15,34 +15,6 @@
         MetalBlood = 0x0800
     }
 
-    public struct CreatureData
-    {
-        public int type;
-        public int level;
-        public int strength;
-        public int intelligence;
-        public int willpower;
-        public int agility;
-        public int speed;
-        public int endurance;
-        public int personality;
-        public int luck;
-        public int health;
-        public int spellPts;
-        public int fatigue;
-        public int soul;
-        public int combat;
-        public int magic;
-        public int stealth;
-        public int attackMin1;
-        public int attackMax1;
-        public int attackMin2;
-        public int attackMax2;
-        public int attackMin3;
-        public int attackMax3;
-        public int gold;
-    }
-
     public sealed class CREARecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
@@ -71,30 +43,30 @@
             {
                 Data = new CreatureData
                 {
-                    type = reader.ReadLEInt32(),
-                    level = reader.ReadLEInt32(),
-                    strength = reader.ReadLEInt32(),
-                    intelligence = reader.ReadLEInt32(),
-                    willpower = reader.ReadLEInt32(),
-                    agility = reader.ReadLEInt32(),
-                    speed = reader.ReadLEInt32(),
-                    endurance = reader.ReadLEInt32(),
-                    personality = reader.ReadLEInt32(),
-                    luck = reader.ReadLEInt32(),
-                    health = reader.ReadLEInt32(),
-                    spellPts = reader.ReadLEInt32(),
-                    fatigue = reader.ReadLEInt32(),
-                    soul = reader.ReadLEInt32(),
-                    combat = reader.ReadLEInt32(),
-                    magic = reader.ReadLEInt32(),
-                    stealth = reader.ReadLEInt32(),
-                    attackMin1 = reader.ReadLEInt32(),
-                    attackMax1 = reader.ReadLEInt32(),
-                    attackMin2 = reader.ReadLEInt32(),
-                    attackMax2 = reader.ReadLEInt32(),
-                    attackMin3 = reader.ReadLEInt32(),
-                    attackMax3 = reader.ReadLEInt32(),
-                    gold = reader.ReadLEInt32()
+                    Type = reader.ReadLEInt32(),
+                    Level = reader.ReadLEInt32(),
+                    Strength = reader.ReadLEInt32(),
+                    Intelligence = reader.ReadLEInt32(),
+                    Willpower = reader.ReadLEInt32(),
+                    Agility = reader.ReadLEInt32(),
+                    Speed = reader.ReadLEInt32(),
+                    Endurance = reader.ReadLEInt32(),
+                    Personality = reader.ReadLEInt32(),
+                    Luck = reader.ReadLEInt32(),
+                    Health = reader.ReadLEInt32(),
+                    SpellPts = reader.ReadLEInt32(),
+                    Fatigue = reader.ReadLEInt32(),
+                    Soul = reader.ReadLEInt32(),
+                    Combat = reader.ReadLEInt32(),
+                    Magic = reader.ReadLEInt32(),
+                    Stealth = reader.ReadLEInt32(),
+                    AttackMin1 = reader.ReadLEInt32(),
+                    AttackMax1 = reader.ReadLEInt32(),
+                    AttackMin2 = reader.ReadLEInt32(),
+                    AttackMax2 = reader.ReadLEInt32(),
+                    AttackMin3 = reader.ReadLEInt32(),
+                    AttackMax3 = reader.ReadLEInt32(),
+                    Gold = reader.ReadLEInt32()
                 };
             }
             else if (subRecordName == "FLAG")

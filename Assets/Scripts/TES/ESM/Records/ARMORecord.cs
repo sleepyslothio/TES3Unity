@@ -48,16 +48,6 @@ namespace TESUnity.ESM
         Tail
     }
 
-    public struct ArmorData
-    {
-        public ArmorType Type;
-        public float Weight;
-        public int Value;
-        public int Health;
-        public int EnchantPts;
-        public int Armour;
-    }
-
     public class ARMORecord : Record
     {
         public class AODTSubRecord : SubRecord

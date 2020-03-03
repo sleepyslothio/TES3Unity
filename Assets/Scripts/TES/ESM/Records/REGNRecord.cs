@@ -2,32 +2,6 @@
 
 namespace TESUnity.ESM
 {
-    public struct WeatherData
-    {
-        public byte clear;
-        public byte cloudy;
-        public byte foggy;
-        public byte overcast;
-        public byte rain;
-        public byte thunder;
-        public byte ash;
-        public byte blight;
-    }
-
-    public struct MapColorData
-    {
-        public byte red;
-        public byte green;
-        public byte blue;
-        public byte nullByte;
-    }
-
-    public struct SoundRecordData
-    {
-        public string Sound;
-        public byte Chance;
-    }
-
     public sealed class REGNRecord : Record, IIdRecord
     {
         public string Id { get; private set; }
@@ -56,14 +30,14 @@ namespace TESUnity.ESM
             {
                 Data = new WeatherData
                 {
-                    clear = reader.ReadByte(),
-                    cloudy = reader.ReadByte(),
-                    foggy = reader.ReadByte(),
-                    overcast = reader.ReadByte(),
-                    rain = reader.ReadByte(),
-                    thunder = reader.ReadByte(),
-                    ash = reader.ReadByte(),
-                    blight = reader.ReadByte()
+                    Clear = reader.ReadByte(),
+                    Cloudy = reader.ReadByte(),
+                    Foggy = reader.ReadByte(),
+                    Overcast = reader.ReadByte(),
+                    Rain = reader.ReadByte(),
+                    Thunder = reader.ReadByte(),
+                    Ash = reader.ReadByte(),
+                    Blight = reader.ReadByte()
                 };
 
                 // v1.3 ESM files add 2 bytes to WEAT subrecords.
@@ -81,10 +55,10 @@ namespace TESUnity.ESM
             {
                 MapColor = new MapColorData
                 {
-                    red = reader.ReadByte(),
-                    green = reader.ReadByte(),
-                    blue = reader.ReadByte(),
-                    nullByte = reader.ReadByte()
+                    Red = reader.ReadByte(),
+                    Green = reader.ReadByte(),
+                    Blue = reader.ReadByte(),
+                    NullByte = reader.ReadByte()
                 };
             }
             else if (subRecordName == "SNAM")

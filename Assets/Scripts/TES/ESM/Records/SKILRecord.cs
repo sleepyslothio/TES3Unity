@@ -5,13 +5,6 @@
         Combat = 0, Magic, Stealth
     }
 
-    public struct SkillData
-    {
-        public long Attribute;
-        public long Specification;
-        public float[] UseValue;
-    }
-
     public sealed class SKILRecord : Record
     {
         public int SkillId { get; private set; }

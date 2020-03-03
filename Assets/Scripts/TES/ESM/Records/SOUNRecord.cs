@@ -2,13 +2,11 @@
 {
     public sealed class SOUNRecord : Record, IIdRecord
     {
-        public string Id;
-        public string Name;
-        public byte Volume;
-        public byte MinRange;
-        public byte MaxRange;
-
-        string IIdRecord.Id => Id;
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+        public byte Volume { get; private set; }
+        public byte MinRange { get; private set; }
+        public byte MaxRange { get; private set; }
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {

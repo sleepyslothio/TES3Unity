@@ -164,7 +164,7 @@ namespace TESUnity.ESM
         public static int[] ReadInt32Array(UnityBinaryReader reader, int size)
         {
             var array = new int[size];
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < size; i++)
             {
                 array[i] = reader.ReadLEInt32();
             }

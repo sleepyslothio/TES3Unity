@@ -1,15 +1,5 @@
 ﻿namespace TESUnity.ESM
 {
-    public struct ScriptHeader
-    {
-        public string Name;
-        public uint NumShorts;
-        public uint NumLongs;
-        public uint NumFloats;
-        public uint ScriptDataSize;
-        public uint LocalVarSize;
-    }
-
     public sealed class SCPTRecord : Record
     {
         public ScriptHeader Header { get; private set; }

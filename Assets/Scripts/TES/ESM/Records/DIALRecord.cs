@@ -9,7 +9,7 @@
         Journal = 4
     }
 
-    public class DIALRecord : Record
+    public sealed class DIALRecord : Record
     {
         public string Id { get; private set; }
         public DialogueTopic Topic { get; private set; }

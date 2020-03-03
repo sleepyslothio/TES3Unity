@@ -1,13 +1,5 @@
 ﻿namespace TESUnity.ESM
 {
-    public struct ProbData
-    {
-        public float Weight;
-        public int Value;
-        public float Quality;
-        public int Uses;
-    }
-
     public sealed class PROBRecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }

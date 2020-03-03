@@ -1,13 +1,5 @@
 ﻿namespace TESUnity.ESM
 {
-    public struct RepaData
-    {
-        public float Weight;
-        public int Value;
-        public int Uses;
-        public float Quality;
-    }
-
     public sealed class REPARecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }

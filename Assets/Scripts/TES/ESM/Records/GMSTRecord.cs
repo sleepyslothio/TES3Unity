@@ -1,6 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public class GMSTRecord : Record, IIdRecord
+    public sealed class GMSTRecord : Record, IIdRecord
     {
         public string Id { get; private set; }
         public string StringValue { get; private set; }

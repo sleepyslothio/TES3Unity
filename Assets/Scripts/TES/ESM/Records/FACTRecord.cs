@@ -1,57 +1,71 @@
 ﻿namespace TESUnity.ESM
 {
-    public class FACTRecord : Record
+    public sealed class FACTRecord : Record
     {
-        public class FADTSubRecord : SubRecord
-        {
-            // TODO implement FACTRecord::FADT SubRecord
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-            {
-                reader.BaseStream.Position += dataSize;
-            }
-        }
+        public string Id { get; private set; }
+        public string Name { get; private set; }
+        public string Rank { get; private set; }
+        public FactionData Data { get; private set; }
+        public string FactionName { get; private set; }
+        public int Reaction { get; private set; }
 
-        public NAMESubRecord NAME;
-        public FNAMSubRecord FNAME;
-        public NAMESubRecord RNAME;
-        public FADTSubRecord FADT;
-        public NAMESubRecord ANAM;
-        public INTVSubRecord INTV;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "NAME")
             {
-                NAME = new NAMESubRecord();
-                return NAME;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
-            else if (subRecordName == "FNAME")
+            else if (subRecordName == "FNAM")
             {
-                FNAME = new FNAMSubRecord();
-                return FNAME;
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
-            else if (subRecordName == "RNAME")
+            else if (subRecordName == "RNAM")
             {
-                RNAME = new NAMESubRecord();
-                return RNAME;
+                Rank = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "FADT")
             {
-                FADT = new FADTSubRecord();
-                return FADT;
+                var data = new FactionData();
+                data.AttributeID1 = reader.ReadLEInt32();
+                data.AttributeID2 = reader.ReadLEInt32();
+
+                var rankData = new FactionRankData[10];
+                for (var i = 0; i < rankData.Length; i++)
+                {
+                    rankData[i] = new FactionRankData
+                    {
+                        Attribute1 = reader.ReadLEInt32(),
+                        Attribute2 = reader.ReadLEInt32(),
+                        FirstSkill = reader.ReadLEInt32(),
+                        SecondSkill = reader.ReadLEInt32(),
+                        Faction = reader.ReadLEInt32()
+                    };
+                }
+
+                data.Data = rankData;
+                data.SkillID = ReadInt32Array(reader, 6);
+                data.Unknown1 = reader.ReadLEInt32();
+                data.Flags = reader.ReadLEInt32();
+
+                Data = data;
             }
             else if (subRecordName == "ANAM")
             {
-                ANAM = new NAMESubRecord();
-                return ANAM;
+                FactionName = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "INTV")
             {
-                INTV = new INTVSubRecord();
-                return INTV;
+                Reaction = (int)ReadIntRecord(reader, dataSize);
             }
-
-            return null;
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

@@ -13,20 +13,7 @@
         PulseSlow = 0x0100
     }
 
-    public struct LightData
-    {
-        public float Weight;
-        public int Value;
-        public int Time;
-        public int Radius;
-        public byte Red;
-        public byte Green;
-        public byte Blue;
-        public byte NullByte;
-        public LightFlags Flags;
-    }
-
-    public class LIGHRecord : Record, IIdRecord, IModelRecord
+    public sealed class LIGHRecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
         public string Name { get; private set; }
@@ -58,7 +45,7 @@
                     Green = reader.ReadByte(),
                     Blue = reader.ReadByte(),
                     NullByte = reader.ReadByte(),
-                    Flags = (LightFlags)reader.ReadLEInt32()
+                    Flags = reader.ReadLEInt32()
                 };
             }
             else if (subRecordName == "SCPT" || subRecordName == "SCRI")

@@ -1,48 +1,49 @@
 ﻿namespace TESUnity.ESM
 {
-    public class LEVIRecord : Record
+    public sealed class LEVIRecord : Record
     {
-        public NAMESubRecord NAME;
-        public Int32SubRecord DATA;
-        public ByteSubRecord NNAM;
-        public Int32SubRecord INDX;
-        public NAMESubRecord INAM;
-        public INTVSubRecord INTV;
+        public string Id { get; private set; }
+        public int Data { get; private set; }
+        public byte Chance { get; private set; }
+        public int NumberOfItems { get; private set; }
+        public string Item { get; private set; }
+        public int PCLevel { get; private set; }
 
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "NAME")
             {
-                NAME = new NAMESubRecord();
-                return NAME;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "DATA")
             {
-                DATA = new Int32SubRecord();
-                return DATA;
+                Data = (int)ReadIntRecord(reader, dataSize);
             }
             else if (subRecordName == "NNAM")
             {
-                NNAM = new ByteSubRecord();
-                return NNAM;
+                Chance = reader.ReadByte();
             }
             else if (subRecordName == "INDX")
             {
-                INDX = new Int32SubRecord();
-                return INDX;
+                NumberOfItems = (int)ReadIntRecord(reader, dataSize);
             }
             else if (subRecordName == "INAM")
             {
-                INAM = new NAMESubRecord();
-                return INAM;
+                Item = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
             else if (subRecordName == "INTV")
             {
-                INTV = new INTVSubRecord();
-                return INTV;
+                PCLevel = (int)ReadIntRecord(reader, dataSize);
             }
-
-            return null;
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

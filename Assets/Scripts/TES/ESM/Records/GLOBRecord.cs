@@ -1,6 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public class GLOBRecord : Record, IIdRecord
+    public sealed class GLOBRecord : Record, IIdRecord
     {
         public string Id { get; private set; }
         public string Name { get; private set; }

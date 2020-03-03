@@ -1,6 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public class ACTIRecord : Record, IIdRecord, IModelRecord
+    public sealed class ACTIRecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
         public string Model { get; private set; }

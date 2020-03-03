@@ -37,7 +37,5 @@ namespace TESUnity
 
             return clip;
         }
-
-        
     }
 }

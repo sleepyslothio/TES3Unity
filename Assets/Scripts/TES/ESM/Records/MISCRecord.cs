@@ -1,13 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public struct MiscData
-    {
-        public float Weight;
-        public uint Value;
-        public uint Unknown;
-    }
-
-    public class MISCRecord : Record, IIdRecord, IModelRecord
+    public sealed class MISCRecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
         public string Model { get; private set; }

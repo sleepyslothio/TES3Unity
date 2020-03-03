@@ -1,15 +1,6 @@
 ﻿namespace TESUnity.ESM
 {
-    public struct BookData
-    {
-        public float Weight;
-        public int Value;
-        public int Scroll;
-        public int SkillID;
-        public int EnchantPts;
-    }
-
-    public class BOOKRecord : Record, IIdRecord, IModelRecord
+    public sealed class BOOKRecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
         public string Model { get; private set; }

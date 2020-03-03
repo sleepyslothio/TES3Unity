@@ -1,44 +1,49 @@
 ﻿namespace TESUnity.ESM
 {
-    public class LEVCRecord : Record
+    public sealed class LEVCRecord : Record
     {
-        public class DATASubRecord : INTVSubRecord { }
-        public class NNAMSubRecord : ByteSubRecord { }
-        public class INDXSubRecord : INTVSubRecord { }
-        public class CNAMSubRecord : STRVSubRecord { }
+        public string Id { get; private set; }
+        public int Data { get; private set; }
+        public byte Chance { get; private set; }
+        public int NumberOfItems { get; private set; }
+        public string Item { get; private set; }
+        public int PCLevel { get; private set; }
 
-        public NAMESubRecord NAME;
-        public DATASubRecord DATA;
-        public NNAMSubRecord NNAM;
-        public INDXSubRecord INDX;
-        public CNAMSubRecord CNAM;
-        public INTVSubRecord INTV;
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            switch (subRecordName)
+            if (subRecordName == "NAME")
             {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "DATA":
-                    DATA = new DATASubRecord();
-                    return DATA;
-                case "NNAM":
-                    NNAM = new NNAMSubRecord();
-                    break;
-                case "INDX":
-                    INDX = new INDXSubRecord();
-                    break;
-                case "CNAM":
-                    CNAM = new CNAMSubRecord();
-                    break;
-                case "INTV":
-                    INTV = new INTVSubRecord();
-                    break;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
-
-            return null;
+            else if (subRecordName == "DATA")
+            {
+                Data = (int)ReadIntRecord(reader, dataSize);
+            }
+            else if (subRecordName == "NNAM")
+            {
+                Chance = reader.ReadByte();
+            }
+            else if (subRecordName == "INDX")
+            {
+                NumberOfItems = (int)ReadIntRecord(reader, dataSize);
+            }
+            else if (subRecordName == "CNAM")
+            {
+                Item = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "INTV")
+            {
+                PCLevel = (int)ReadIntRecord(reader, dataSize);
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
         }
+
+        #region Deprecated
+        public override bool NewFetchMethod => true;
+        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
+        #endregion
     }
 }

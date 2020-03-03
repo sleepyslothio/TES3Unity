@@ -1,13 +1,5 @@
 ﻿namespace TESUnity.ESM
 {
-    public struct LockData
-    {
-        public float Weight;
-        public int Value;
-        public float Quality;
-        public int Uses;
-    }
-
     public sealed class LOCKRecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
