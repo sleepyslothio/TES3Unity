@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace TESUnity.ESM
+namespace TESUnity.ESM.Records
 {
     // TODO: add support for strange INTV before object data?
     public class CELLRecord : Record
@@ -125,6 +125,13 @@ namespace TESUnity.ESM
         public AMBISubRecord AMBI;
 
         public List<RefObjDataGroup> refObjDataGroups = new List<RefObjDataGroup>();
+
+        public override bool NewFetchMethod => false;
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {

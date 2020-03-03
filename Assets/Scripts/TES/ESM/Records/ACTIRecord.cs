@@ -1,4 +1,4 @@
-﻿namespace TESUnity.ESM
+﻿namespace TESUnity.ESM.Records
 {
     public sealed class ACTIRecord : Record, IIdRecord, IModelRecord
     {
@@ -30,8 +30,5 @@
                 ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
-
-        public override bool NewFetchMethod => true;
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
     }
 }

@@ -44,9 +44,9 @@ namespace TESUnity.ESM
         private static List<string> MissingRecordLogs = new List<string>();
 
         #region Deprecated
-        public virtual bool NewFetchMethod { get; }
+        public virtual bool NewFetchMethod { get; } = true;
         public RecordHeader header;
-        public abstract SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize);
+        public virtual SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
 
         public void DeserializeData(UnityBinaryReader reader)
         {
@@ -85,9 +85,7 @@ namespace TESUnity.ESM
 
         #region New API to deserialize SubRecords
 
-        public virtual void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
-        {
-        }
+        public abstract void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize);
 
         public void ReadMissingSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
@@ -192,16 +190,5 @@ namespace TESUnity.ESM
         }
 
         #endregion
-    }
-
-    public class MissingRecord : Record
-    {
-        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
-        {
-            ReadMissingSubRecord(reader, subRecordName, dataSize);
-        }
-
-        public override bool NewFetchMethod => true;
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
     }
 }

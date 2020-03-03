@@ -1,4 +1,4 @@
-﻿namespace TESUnity.ESM
+﻿namespace TESUnity.ESM.Records
 {
     // TODO: implement DATA subrecord
     public class LANDRecord : Record
@@ -113,6 +113,13 @@
         public WNAMSubRecord WNAM;
         public VCLRSubRecord VCLR;
         public VTEXSubRecord VTEX;
+
+        public override bool NewFetchMethod => false;
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {

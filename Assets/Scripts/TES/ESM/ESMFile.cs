@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using TESUnity.ESM.Records;
 using UnityEngine;
 
 namespace TESUnity.ESM
@@ -8,6 +9,7 @@ namespace TESUnity.ESM
     public class ESMFile : IDisposable
     {
         private const int recordHeaderSizeInBytes = 16;
+        private static List<string> DeprecatedRecordsAPI = new List<string>();
         private bool disposed;
 
         public Record[] Records { get; private set; }
@@ -166,6 +168,12 @@ namespace TESUnity.ESM
                         else
                         {
                             record.DeserializeData(reader);
+
+                            if (!DeprecatedRecordsAPI.Contains(record.header.name))
+                            {
+                                DeprecatedRecordsAPI.Add(record.header.name);
+                                Debug.LogWarning($"The Record {record.header.name} uses the old/deprecated API.");
+                            }
                         }
 
                         if (reader.BaseStream.Position != (recordDataStreamPosition + record.header.dataSize))
@@ -234,49 +242,9 @@ namespace TESUnity.ESM
                 {
                     // TODO: Record.FriendlyName
                     // Add the record to the object dictionary if applicable.
-                    if (record is GMSTRecord)
-                    {
-                        ObjectsByIDString.Add(((GMSTRecord)record).Id, record);
-                    }
-                    else if (record is GLOBRecord)
-                    {
-                        ObjectsByIDString.Add(((GLOBRecord)record).Id, record);
-                    }
-                    else if (record is SOUNRecord)
-                    {
-                        ObjectsByIDString.Add(((SOUNRecord)record).Id, record);
-                    }
-                    else if (record is REGNRecord)
-                    {
-                        ObjectsByIDString.Add(((REGNRecord)record).Id, record);
-                    }
-                    else if (record is LTEXRecord)
-                    {
-                        ObjectsByIDString.Add(((LTEXRecord)record).Id, record);
-                    }
-                    else if (record is STATRecord)
-                    {
-                        ObjectsByIDString.Add(((STATRecord)record).Id, record);
-                    }
-                    else if (record is DOORRecord)
-                    {
-                        ObjectsByIDString.Add(((DOORRecord)record).Id, record);
-                    }
-                    else if (record is MISCRecord)
-                    {
-                        ObjectsByIDString.Add(((MISCRecord)record).Id, record);
-                    }
-                    else if (record is WEAPRecord)
-                    {
-                        ObjectsByIDString.Add(((WEAPRecord)record).Id, record);
-                    }
-                    else if (record is CONTRecord)
+                    if (record is CONTRecord)
                     {
                         ObjectsByIDString.Add(((CONTRecord)record).NAME.value, record);
-                    }
-                    else if (record is LIGHRecord)
-                    {
-                        ObjectsByIDString.Add(((LIGHRecord)record).Id, record);
                     }
                     else if (record is ARMORecord)
                     {
@@ -285,42 +253,6 @@ namespace TESUnity.ESM
                     else if (record is CLOTRecord)
                     {
                         ObjectsByIDString.Add(((CLOTRecord)record).NAME.value, record);
-                    }
-                    else if (record is REPARecord)
-                    {
-                        ObjectsByIDString.Add(((REPARecord)record).Id, record);
-                    }
-                    else if (record is ACTIRecord)
-                    {
-                        ObjectsByIDString.Add(((ACTIRecord)record).Id, record);
-                    }
-                    else if (record is APPARecord)
-                    {
-                        ObjectsByIDString.Add(((APPARecord)record).Id, record);
-                    }
-                    else if (record is LOCKRecord)
-                    {
-                        ObjectsByIDString.Add(((LOCKRecord)record).Id, record);
-                    }
-                    else if (record is PROBRecord)
-                    {
-                        ObjectsByIDString.Add(((PROBRecord)record).Id, record);
-                    }
-                    else if (record is INGRRecord)
-                    {
-                        ObjectsByIDString.Add(((INGRRecord)record).Id, record);
-                    }
-                    else if (record is BOOKRecord)
-                    {
-                        ObjectsByIDString.Add(((BOOKRecord)record).Id, record);
-                    }
-                    else if (record is ALCHRecord)
-                    {
-                        ObjectsByIDString.Add(((ALCHRecord)record).Id, record);
-                    }
-                    else if (record is CREARecord)
-                    {
-                        ObjectsByIDString.Add(((CREARecord)record).Id, record);
                     }
                     else if (record is NPC_Record)
                     {

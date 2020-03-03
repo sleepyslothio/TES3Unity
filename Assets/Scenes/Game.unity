@@ -310,6 +310,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: m_AlternativeDataPaths.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: desiredWorkTimePerFrame
       value: 0.05
       objectReference: {fileID: 0}
@@ -320,6 +324,14 @@ PrefabInstance:
     - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: logEnabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: m_AlternativeDataPaths.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: m_AlternativeDataPaths.Array.data[2]
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: RendererType

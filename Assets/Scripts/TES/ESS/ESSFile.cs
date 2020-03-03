@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using TESUnity.ESM.ESS;
+using TESUnity.ESS.Records;
+using TESUnity.ESM;
 
-namespace TESUnity.ESM
+namespace TESUnity.ESS
 {
     public class ESSFile
     {
@@ -14,6 +15,16 @@ namespace TESUnity.ESM
             m_Records = new Dictionary<string, List<Record>>();
 
             ReadRecords(filePath);
+        }
+
+        public void FindStartLocation(out string cellName, out float[] position, out float[] rotation)
+        {
+            var TES3 = (TES3Record)m_Records["TES3"][0];
+            var REFR = (REFRRecord)m_Records["REFR"][0];
+
+            cellName = TES3.CellName;
+            position = REFR.Position;
+            rotation = REFR.Rotation;
         }
 
         private void ReadRecords(string filePath)
@@ -72,8 +83,12 @@ namespace TESUnity.ESM
         {
             if (name == "GAME")
                 return new GAMERecord();
+            else if (name == "TES3")
+                return new TES3Record();
+            else if (name == "REFR")
+                return new REFRRecord();
 
-            return new MissingRecord();
+            return null;
         }
     }
 }

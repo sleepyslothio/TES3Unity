@@ -1,4 +1,4 @@
-﻿namespace TESUnity.ESM
+﻿namespace TESUnity.ESM.Records
 {
     public sealed class STATRecord : Record, IIdRecord, IModelRecord
     {
@@ -20,10 +20,5 @@
                 ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
-
-        #region Deprecated
-        public override bool NewFetchMethod => true;
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
-        #endregion
     }
 }

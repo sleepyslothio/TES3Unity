@@ -1,10 +1,10 @@
-﻿namespace TESUnity.ESM
+﻿namespace TESUnity.ESM.Records
 {
     public class INFORecord : Record
     {
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            return null;
+            ReadMissingSubRecord(reader, subRecordName, dataSize);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace TESUnity.ESM
+﻿namespace TESUnity.ESM.Records
 {
     public sealed class SOUNRecord : Record, IIdRecord
     {
@@ -29,10 +29,5 @@
                 ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
-
-        #region Deprecated / Will be Removed Soon
-        public override bool NewFetchMethod => true;
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
-        #endregion
     }
 }

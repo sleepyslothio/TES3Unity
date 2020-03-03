@@ -1,4 +1,4 @@
-﻿namespace TESUnity.ESM
+﻿namespace TESUnity.ESM.Records
 {
     public enum BodyPart
     {
@@ -65,10 +65,5 @@
                 ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
-
-        #region Deprecated
-        public override bool NewFetchMethod => true;
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
-        #endregion
     }
 }

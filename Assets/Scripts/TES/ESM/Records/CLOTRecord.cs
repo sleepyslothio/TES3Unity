@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TESUnity.ESM
+namespace TESUnity.ESM.Records
 {
     public class CLOTRecord : Record
     {
@@ -30,6 +30,13 @@ namespace TESUnity.ESM
 
         public ENAMSubRecord ENAM;
         public SCRISubRecord SCRI;
+
+        public override bool NewFetchMethod => false;
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {

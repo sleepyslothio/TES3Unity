@@ -1,4 +1,4 @@
-﻿namespace TESUnity.ESM
+﻿namespace TESUnity.ESM.Records
 {
     public sealed class SCPTRecord : Record
     {
@@ -34,10 +34,5 @@
                 Text = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
             }
         }
-
-        #region Deprecated
-        public override bool NewFetchMethod => true;
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
-        #endregion
     }
 }

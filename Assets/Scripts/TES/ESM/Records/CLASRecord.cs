@@ -1,4 +1,4 @@
-﻿namespace TESUnity.ESM
+﻿namespace TESUnity.ESM.Records
 {
     /// <summary>
     /// A record that defines a Class.
@@ -80,6 +80,13 @@
         public bool Playable => CLDT.Flags == 0x0001;
         public AutoCalcFlagsType AutoCalcFlags => (AutoCalcFlagsType)CLDT.Flags;
         public ClassSpecialization Specialization => (ClassSpecialization)CLDT.AutoCalcFlags;
+
+        public override bool NewFetchMethod => false;
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {

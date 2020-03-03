@@ -1,4 +1,4 @@
-﻿namespace TESUnity.ESM
+﻿namespace TESUnity.ESM.Records
 {
     public sealed class GMSTRecord : Record, IIdRecord
     {
@@ -26,10 +26,5 @@
                 FloatValue = reader.ReadLESingle();
             }
         }
-
-        #region Deprecated
-        public override bool NewFetchMethod => true;
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
-        #endregion
     }
 }

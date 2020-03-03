@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using TESUnity.ESM;
+using TESUnity.ESM.Records;
 using TESUnity.Inputs;
 using UnityEngine;
 

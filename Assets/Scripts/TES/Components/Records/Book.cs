@@ -1,4 +1,5 @@
 ﻿using TESUnity.ESM;
+using TESUnity.ESM.Records;
 using TESUnity.UI;
 
 namespace TESUnity.Components.Records

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TESUnity.ESM
+namespace TESUnity.ESM.Records
 {
     public enum ArmorType
     {
@@ -80,6 +80,13 @@ namespace TESUnity.ESM
 
         public SCRISubRecord SCRI;
         public ENAMSubRecord ENAM;
+
+        public override bool NewFetchMethod => false;
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {

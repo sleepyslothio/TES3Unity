@@ -1,6 +1,6 @@
-﻿namespace TESUnity.ESM
+﻿namespace TESUnity.ESM.Records
 {
-    public sealed class WEAPRecord : Record, IIdRecord, IModelRecord, IScriptRecord
+    public sealed class WEAPRecord : Record, IIdRecord, IModelRecord
     {
         public string Id { get; private set; }
         public string Model { get; private set; }
@@ -61,10 +61,5 @@
                 ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
-
-        #region Deprecated
-        public override bool NewFetchMethod => true;
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize) => null;
-        #endregion
     }
 }

@@ -5,6 +5,7 @@ using System.IO;
 namespace TESUnity
 {
     using ESM;
+    using TESUnity.ESM.Records;
     using TESUnity.NIF;
     using UnityEngine;
 
@@ -263,6 +264,24 @@ namespace TESUnity
                 CELL = (CELLRecord)records[i];
 
                 if (CELL.NAME.value == cellName)
+                {
+                    return CELL;
+                }
+            }
+
+            return null;
+        }
+
+        public CELLRecord FindCellRecordByRegion(string region)
+        {
+            List<Record> records = MorrowindESMFile.GetRecordsOfType<CELLRecord>();
+            CELLRecord CELL = null;
+
+            for (int i = 0, l = records.Count; i < l; i++)
+            {
+                CELL = (CELLRecord)records[i];
+
+                if (CELL.RGNN.value == region)
                 {
                     return CELL;
                 }

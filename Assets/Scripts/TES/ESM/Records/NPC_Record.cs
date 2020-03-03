@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TESUnity.ESM
+namespace TESUnity.ESM.Records
 {
     public enum NPCFlags
     {
@@ -511,6 +511,13 @@ namespace TESUnity.ESM
         /// Scale
         /// </summary>
         public XSCLSubRecord XSCL;
+
+        public override bool NewFetchMethod => false;
+
+        public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {

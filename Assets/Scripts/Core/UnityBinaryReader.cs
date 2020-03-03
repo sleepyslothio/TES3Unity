@@ -526,4 +526,80 @@ public class UnityBinaryReader : IDisposable
         return new Quaternion(x, y, z, w);
     }
     #endregion
+
+    #region Helpers
+
+    public static long ReadIntRecord(UnityBinaryReader reader, uint dataSize)
+    {
+        if (dataSize == 1)
+        {
+            return reader.ReadByte();
+        }
+        else if (dataSize == 2)
+        {
+            return reader.ReadLEInt16();
+        }
+        else if (dataSize == 4)
+        {
+            return reader.ReadLEInt32();
+        }
+        else if (dataSize == 8)
+        {
+            return reader.ReadLEInt64();
+        }
+
+        reader.BaseStream.Position += dataSize;
+
+        return 0;
+    }
+
+    public float[] ReadDoubleArray(int size)
+    {
+        var array = new float[size];
+        for (var i = 0; i < 4; i++)
+        {
+            array[i] = ReadLESingle();
+        }
+        return array;
+    }
+
+    public int[] ReadInt32Array(int size)
+    {
+        var array = new int[size];
+        for (var i = 0; i < size; i++)
+        {
+            array[i] = ReadLEInt32();
+        }
+        return array;
+    }
+
+    public float[] ReadFloatArray(int size)
+    {
+        var array = new float[size];
+        for (var i = 0; i < size; i++)
+        {
+            array[i] = ReadLESingle();
+        }
+        return array;
+    }
+
+    public string ReadStringFromChar(int size)
+    {
+        var bytes = ReadBytes(size);
+        var array = new char[size];
+
+        for (var i = 0; i < size; i++)
+            array[i] = System.Convert.ToChar(bytes[i]);
+
+        return TESUnity.Convert.CharToString(array);
+    }
+
+    public string ReadStringFromByte(int size)
+    {
+        var bytes = ReadBytes(size);
+        var str = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+        return TESUnity.Convert.RemoveNullChar(str);
+    }
+
+    #endregion
 }

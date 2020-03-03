@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TESUnity.Components.Records;
 using TESUnity.ESM;
+using TESUnity.ESM.Records;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 

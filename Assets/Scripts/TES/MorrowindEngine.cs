@@ -9,6 +9,7 @@ using TESUnity.UI;
 using UnityEngine;
 using TESUnity.Components.XR;
 using UnityEngine.InputSystem;
+using TESUnity.ESM.Records;
 
 namespace TESUnity
 {

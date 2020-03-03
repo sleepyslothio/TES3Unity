@@ -1,4 +1,6 @@
-﻿namespace TESUnity.ESM
+﻿using TESUnity.ESM.Records;
+
+namespace TESUnity.ESM
 {
     public struct AlchemyData
     {

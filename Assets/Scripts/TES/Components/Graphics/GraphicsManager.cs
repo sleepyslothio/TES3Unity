@@ -5,7 +5,6 @@ using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
-using TESUnity.Rendering;
 
 namespace TESUnity.Components
 {

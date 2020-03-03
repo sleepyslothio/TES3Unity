@@ -3,6 +3,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TESUnity.ESM;
+using TESUnity.ESM.Records;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -15,7 +16,7 @@ namespace TESUnity
         public const float NormalMapGeneratorIntensity = 0.75f;
         public static TESManager instance;
         public static MorrowindDataReader MWDataReader { get; set; }
-        
+
         private MorrowindEngine m_MorrowindEngine = null;
         private MusicPlayer m_MusicPlayer = null;
 
@@ -44,7 +45,10 @@ namespace TESUnity
 
         public TextureManager TextureManager => m_MorrowindEngine.textureManager;
 
-        private void Awake() => instance = this;
+        private void Awake()
+        {
+            instance = this;
+        }
 
         private void Start()
         {
@@ -81,8 +85,6 @@ namespace TESUnity
             MorrowindEngine.cellRadiusOnLoad = config.CellRadiusOnLoad;
             MorrowindEngine.desiredWorkTimePerFrame = desiredWorkTimePerFrame;
 
-
-
             // When loaded from the Menu, this variable is already preloaded.
             if (MWDataReader == null)
             {
@@ -107,20 +109,36 @@ namespace TESUnity
                 }
             }
 
-#if UNITY_EDITOR
+            // Start Position
+            var cellGridCoords = new Vector2i(-2, -9);
+            var cellIsInterior = false;
+            var playerSpawnPosition = new Vector3(-137.94f, 2.30f, -1037.6f);
+            var playerSpawnRotation = Quaternion.identity;
+
             if (loadSaveGameFilename != null)
             {
-                var path = $"{MWDataReader.FolderPath}/Saves/{loadSaveGameFilename}.ess";
+                var path = $"{MWDataReader.FolderPath}\\Saves\\{loadSaveGameFilename}.ess";
 
                 if (File.Exists(path))
                 {
-                    var ess = new ESSFile(path);
+                    var ess = new ESS.ESSFile(path);
+
+                    ess.FindStartLocation(out string location, out float[] pos, out float[] rot);
+                    /*playerSpawnPosition = new Vector3(pos[0], pos[1], pos[2]);
+                    cellGridCoords = m_MorrowindEngine.cellManager.GetExteriorCellIndices(playerSpawnPosition);
+
+                    cellIsInterior = MWDataReader.FindInteriorCellRecord(cellGridCoords) != null;*/
                 }
             }
-#endif
 
-            // Later we'll read the saved file and spawn the player at the correct location.
-            m_MorrowindEngine.SpawnPlayerOutside(new Vector2i(-2, -9), new Vector3(-137.94f, 2.30f, -1037.6f), Quaternion.identity);
+            if (!cellIsInterior)
+            {
+                m_MorrowindEngine.SpawnPlayerOutside(cellGridCoords, playerSpawnPosition, playerSpawnRotation);
+            }
+            else
+            {
+                m_MorrowindEngine.SpawnPlayerInside(cellGridCoords, playerSpawnPosition, playerSpawnRotation);
+            }
         }
 
         private void OnApplicationQuit()
@@ -209,9 +227,9 @@ namespace TESUnity
         {
             using (StreamWriter writer = new StreamWriter(resultsFilePath))
             {
-                foreach (var record in MWDataReader.MorrowindESMFile.GetRecordsOfType<ESM.CELLRecord>())
+                foreach (var record in MWDataReader.MorrowindESMFile.GetRecordsOfType<CELLRecord>())
                 {
-                    var CELL = (ESM.CELLRecord)record;
+                    var CELL = (CELLRecord)record;
 
                     try
                     {
