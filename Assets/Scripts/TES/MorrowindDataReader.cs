@@ -35,7 +35,7 @@ namespace TESUnity
             {
                 _folderPath += tmp[i];
 
-                if (i < tmp.Length -2)
+                if (i < tmp.Length - 2)
                 {
                     _folderPath += "\\";
                 }
@@ -272,19 +272,60 @@ namespace TESUnity
             return null;
         }
 
-        public CELLRecord FindCellRecordByRegion(string region)
+        public CELLRecord[] FindCellsRecordByRegion(string regionName)
         {
-            List<Record> records = MorrowindESMFile.GetRecordsOfType<CELLRecord>();
-            CELLRecord CELL = null;
+            var regions = MorrowindESMFile.GetRecords<REGNRecord>();
+            var regionId = string.Empty;
+            foreach (var region in regions)
+            {
+                if (region.Name == regionName)
+                {
+                    regionId = region.Id;
+                }
+            }
+
+            if (string.IsNullOrEmpty(regionId))
+            {
+                return null;
+            }
+
+            var cells = MorrowindESMFile.GetRecords<CELLRecord>();
+            var result = new List<CELLRecord>();
+
+            foreach (var cell in cells)
+            {
+                if (cell?.RGNN?.value == regionId)
+                {
+                    result.Add(cell);
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        public CELLRecord FindCell(Vector2i gridCoords)
+        {
+            var records = MorrowindESMFile.GetRecordsOfType<CELLRecord>();
+            var index = -1;
+            var closestDistance = float.MaxValue;
+            CELLRecord record = null;
 
             for (int i = 0, l = records.Count; i < l; i++)
             {
-                CELL = (CELLRecord)records[i];
+                record = (CELLRecord)records[i];
 
-                if (CELL.RGNN.value == region)
+                var distance = Vector2i.Distance(record.gridCoords, gridCoords);
+
+                if (distance < closestDistance)
                 {
-                    return CELL;
+                    index = i;
+                    closestDistance = distance;
                 }
+            }
+
+            if (index > -1)
+            {
+                return (CELLRecord)records[index];
             }
 
             return null;

@@ -112,9 +112,11 @@ namespace TESUnity
             // Start Position
             var cellGridCoords = new Vector2i(-2, -9);
             var cellIsInterior = false;
-            var playerSpawnPosition = new Vector3(-137.94f, 2.30f, -1037.6f);
-            var playerSpawnRotation = Quaternion.identity;
+            var spawnPosition = new Vector3(-137.94f, 2.30f, -1037.6f);
+            var spawnRotation = Quaternion.identity;
 
+#if UNITY_EDITOR
+            // Check for a previously saved game.
             if (loadSaveGameFilename != null)
             {
                 var path = $"{MWDataReader.FolderPath}\\Saves\\{loadSaveGameFilename}.ess";
@@ -123,22 +125,13 @@ namespace TESUnity
                 {
                     var ess = new ESS.ESSFile(path);
 
-                    ess.FindStartLocation(out string location, out float[] pos, out float[] rot);
-                    /*playerSpawnPosition = new Vector3(pos[0], pos[1], pos[2]);
-                    cellGridCoords = m_MorrowindEngine.cellManager.GetExteriorCellIndices(playerSpawnPosition);
-
-                    cellIsInterior = MWDataReader.FindInteriorCellRecord(cellGridCoords) != null;*/
+                    ess.FindStartLocation(out string cellName, out float[] pos, out float[] rot);
+                    // TODO: Find the correct grid/cell from these data.
                 }
             }
+#endif
 
-            if (!cellIsInterior)
-            {
-                m_MorrowindEngine.SpawnPlayerOutside(cellGridCoords, playerSpawnPosition, playerSpawnRotation);
-            }
-            else
-            {
-                m_MorrowindEngine.SpawnPlayerInside(cellGridCoords, playerSpawnPosition, playerSpawnRotation);
-            }
+            m_MorrowindEngine.SpawnPlayer(cellGridCoords, cellIsInterior, spawnPosition, spawnRotation);
         }
 
         private void OnApplicationQuit()

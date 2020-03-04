@@ -49,7 +49,7 @@ namespace TESUnity
         public NIFManager nifManager;
         public CellManager cellManager;
         public TemporalLoadBalancer temporalLoadBalancer;
-        
+
         public CELLRecord currentCell => m_CurrentCell;
 
         public static int markerLayer => LayerMask.NameToLayer("Marker");
@@ -117,6 +117,18 @@ namespace TESUnity
         }
 
         #region Player Spawn
+
+        public void SpawnPlayer(Vector2i cellGridCoords, bool interior, Vector3 position, Quaternion rotation)
+        {
+            if (interior)
+            {
+                SpawnPlayerInside(cellGridCoords, position, rotation);
+            }
+            else
+            {
+                SpawnPlayerOutside(cellGridCoords, position, rotation);
+            }
+        }
 
         /// <summary>
         /// Spawns the player inside. Be carefull, the name of the cell is not the same for each languages.

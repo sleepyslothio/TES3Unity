@@ -13,14 +13,14 @@ namespace TESUnity.ESS.Records
             {
                 Position = new float[]
                 {
-                     reader.ReadLESingle(),
+                    reader.ReadLESingle(),
                     reader.ReadLESingle(),
                     reader.ReadLESingle()
                 };
 
                 Rotation = new float[]
                 {
-                     reader.ReadLESingle(),
+                    reader.ReadLESingle(),
                     reader.ReadLESingle(),
                     reader.ReadLESingle()
                 };

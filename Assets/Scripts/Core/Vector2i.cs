@@ -29,6 +29,12 @@ public struct Vector2i : IEquatable<Vector2i>
         Y = y;
     }
 
+    public static float Distance(Vector2i value1, Vector2i value2)
+    {
+        float v1 = value1.X - value2.X, v2 = value1.Y - value2.Y;
+        return (float)Math.Sqrt((v1 * v1) + (v2 * v2));
+    }
+
     public override bool Equals(object obj) => base.Equals(obj);
     public bool Equals(Vector2i other) => (X == other.X) && (Y == other.Y);
     public override int GetHashCode() => X ^ Y;

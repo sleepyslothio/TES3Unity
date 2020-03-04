@@ -16,12 +16,7 @@ public class UnityBinaryReader : IDisposable
 
     public UnityBinaryReader(Stream input)
     {
-        _reader = new BinaryReader(input, Encoding.ASCII);
-    }
-
-    public UnityBinaryReader(Stream input, Encoding encoding)
-    {
-        _reader = new BinaryReader(input, encoding);
+        _reader = new BinaryReader(input, Encoding.UTF8);
     }
 
     void IDisposable.Dispose()
@@ -103,10 +98,19 @@ public class UnityBinaryReader : IDisposable
         Debug.Assert(lengthIncludingPossibleNullTerminator > 0);
 
         var bytes = _reader.ReadBytes(lengthIncludingPossibleNullTerminator);
+        var count = bytes.Length;
+
+        for(var i = 0; i < bytes.Length; i++)
+        {
+            if (bytes[i] == 0)
+            {
+                count = i;
+                break;
+            }
+        }
 
         // Ignore the null terminator.
-        var charCount = (ArrayUtils.Last(bytes) != 0) ? bytes.Length : (bytes.Length - 1);
-        return Encoding.Default.GetString(bytes, 0, charCount);
+        return Encoding.Default.GetString(bytes, 0, count);
     }
 
     #region Little Endian

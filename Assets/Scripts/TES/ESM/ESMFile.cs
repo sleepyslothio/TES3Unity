@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TESUnity.ESM.Records;
 using UnityEngine;
 
@@ -27,6 +28,30 @@ namespace TESUnity.ESM
 
             ReadRecords(filePath);
             PostProcessRecords();
+        }
+
+        public void Merge(ESMFile file)
+        {
+            var list = new List<Record>();
+            list.AddRange(Records);
+            list.AddRange(file.Records);
+
+            Records = list.ToArray();
+
+            ObjectsByIDString
+                .Concat(file.ObjectsByIDString)
+                .GroupBy(d => d.Key)
+                .ToDictionary(d => d.Key, d => d.First().Value);
+
+            ExteriorCELLRecordsByIndices
+                .Concat(file.ExteriorCELLRecordsByIndices)
+                .GroupBy(d => d.Key)
+                .ToDictionary(d => d.Key, d => d.First().Value);
+
+            LANDRecordsByIndices
+                .Concat(file.LANDRecordsByIndices)
+                .GroupBy(d => d.Key)
+                .ToDictionary(d => d.Key, d => d.First().Value);
         }
 
         public void Dispose()

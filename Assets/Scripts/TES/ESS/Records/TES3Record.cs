@@ -2,25 +2,40 @@
 
 namespace TESUnity.ESS.Records
 {
+    public struct GameDataInfo
+    {
+        public float Health;
+        public float MaxHealth;
+        public float Time;
+        public float Month;
+        public float Day;
+        public float Year;
+        public string Cell;
+        public float DayPassed;
+        public string CharacterName;
+    }
+
     public sealed class TES3Record : Record
     {
-        public string CellName { get; private set; }
+        public GameDataInfo GameData { get; private set; }
+        public string CellName => Convert.RemoveNullChar(GameData.Cell);
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "GMDT")
             {
-                var health = reader.ReadLESingle();
-                var maxHealth = reader.ReadLESingle();
-                var time = reader.ReadLESingle();
-                var month = reader.ReadLESingle();
-                var day = reader.ReadLESingle();
-                var year = reader.ReadLESingle();
-                var cell = reader.ReadPossiblyNullTerminatedASCIIString(64);
-                var dayPassed = reader.ReadLESingle();
-                var characterName = reader.ReadPossiblyNullTerminatedASCIIString(32);
-
-                CellName = Convert.RemoveNullChar(cell);
+                GameData = new GameDataInfo
+                {
+                    Health = reader.ReadLESingle(),
+                    MaxHealth = reader.ReadLESingle(),
+                    Time = reader.ReadLESingle(),
+                    Month = reader.ReadLESingle(),
+                    Day = reader.ReadLESingle(),
+                    Year = reader.ReadLESingle(),
+                    Cell = reader.ReadPossiblyNullTerminatedASCIIString(64),
+                    DayPassed = reader.ReadLESingle(),
+                    CharacterName = reader.ReadPossiblyNullTerminatedASCIIString(32)
+                };
             }
             else
             {
