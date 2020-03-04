@@ -46,11 +46,21 @@ namespace TESUnity
 
             if (TESManager.instance?.loadExtensions ?? false)
             {
-                BloodmoonESMFile = new ESMFile(dataFilePath + "/Bloodmoon.esm");
-                BloodmoonBSAFile = new BSAFile(dataFilePath + "/Bloodmoon.bsa");
+                if (File.Exists(dataFilePath + "/Bloodmoon.esm"))
+                {
+                    BloodmoonESMFile = new ESMFile(dataFilePath + "/Bloodmoon.esm");
+                    BloodmoonBSAFile = new BSAFile(dataFilePath + "/Bloodmoon.bsa");
 
-                TribunalESMFile = new ESMFile(dataFilePath + "/Tribunal.esm");
-                TribunalBSAFile = new BSAFile(dataFilePath + "/Tribunal.bsa");
+                    MorrowindESMFile.Merge(BloodmoonESMFile);
+                }
+
+                if (File.Exists(dataFilePath + "/Tribunal.esm"))
+                {
+                    TribunalESMFile = new ESMFile(dataFilePath + "/Tribunal.esm");
+                    TribunalBSAFile = new BSAFile(dataFilePath + "/Tribunal.bsa");
+
+                    MorrowindESMFile.Merge(TribunalESMFile);
+                }
             }
         }
 
@@ -71,13 +81,8 @@ namespace TESUnity
         public void Close()
         {
             TribunalBSAFile?.Close();
-            TribunalESMFile?.Close();
-
             BloodmoonBSAFile?.Close();
-            BloodmoonESMFile?.Close();
-
             MorrowindBSAFile.Close();
-            MorrowindESMFile.Close();
         }
 
         #region Texture Loading

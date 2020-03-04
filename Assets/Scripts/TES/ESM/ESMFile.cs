@@ -7,11 +7,10 @@ using UnityEngine;
 
 namespace TESUnity.ESM
 {
-    public class ESMFile : IDisposable
+    public class ESMFile
     {
         private const int recordHeaderSizeInBytes = 16;
         private static List<string> DeprecatedRecordsAPI = new List<string>();
-        private bool disposed;
 
         public Record[] Records { get; private set; }
         public Dictionary<Type, List<Record>> RecordsByType { get; private set; }
@@ -52,33 +51,6 @@ namespace TESUnity.ESM
                 .Concat(file.LANDRecordsByIndices)
                 .GroupBy(d => d.Key)
                 .ToDictionary(d => d.Key, d => d.First().Value);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                // Dispose managed resources.
-                Close();
-            }
-
-            disposed = true;
-        }
-
-        public void Close()
-        {
-
         }
 
         public List<Record> GetRecordsOfType<T>() where T : Record
