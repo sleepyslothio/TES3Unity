@@ -239,15 +239,7 @@ namespace TESUnity.ESM
                 {
                     // TODO: Record.FriendlyName
                     // Add the record to the object dictionary if applicable.
-                    if (record is CONTRecord)
-                    {
-                        ObjectsByIDString.Add(((CONTRecord)record).NAME.value, record);
-                    }
-                    else if (record is ARMORecord)
-                    {
-                        ObjectsByIDString.Add(((ARMORecord)record).NAME.value, record);
-                    }
-                    else if (record is CLOTRecord)
+                    if (record is CLOTRecord)
                     {
                         ObjectsByIDString.Add(((CLOTRecord)record).NAME.value, record);
                     }

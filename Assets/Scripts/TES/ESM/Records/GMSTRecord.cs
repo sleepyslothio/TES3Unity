@@ -19,7 +19,7 @@
             }
             else if (subRecordName == "INTV")
             {
-                IntValue = (int)ReadIntRecord(reader, dataSize);
+                IntValue = (int)reader.ReadIntRecord(dataSize);
             }
             else if (subRecordName == "FLTV")
             {

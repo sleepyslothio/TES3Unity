@@ -13,7 +13,7 @@
             {
                 Header = new ScriptHeader
                 {
-                    Name = ReadStringFromChar(reader, 32),
+                    Name = reader.ReadStringFromChar(32),
                     NumShorts = reader.ReadLEUInt32(),
                     NumLongs = reader.ReadLEUInt32(),
                     NumFloats = reader.ReadLEUInt32(),

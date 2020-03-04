@@ -533,26 +533,26 @@ public class UnityBinaryReader : IDisposable
 
     #region Helpers
 
-    public static long ReadIntRecord(UnityBinaryReader reader, uint dataSize)
+    public long ReadIntRecord(uint dataSize)
     {
         if (dataSize == 1)
         {
-            return reader.ReadByte();
+            return ReadByte();
         }
         else if (dataSize == 2)
         {
-            return reader.ReadLEInt16();
+            return ReadLEInt16();
         }
         else if (dataSize == 4)
         {
-            return reader.ReadLEInt32();
+            return ReadLEInt32();
         }
         else if (dataSize == 8)
         {
-            return reader.ReadLEInt64();
+            return ReadLEInt64();
         }
 
-        reader.BaseStream.Position += dataSize;
+        _reader.BaseStream.Position += dataSize;
 
         return 0;
     }

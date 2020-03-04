@@ -17,7 +17,7 @@
             }
             else if (subRecordName == "DATA")
             {
-                Data = (int)ReadIntRecord(reader, dataSize);
+                Data = (int)reader.ReadIntRecord(dataSize);
             }
             else if (subRecordName == "NNAM")
             {
@@ -25,7 +25,7 @@
             }
             else if (subRecordName == "INDX")
             {
-                NumberOfItems = (int)ReadIntRecord(reader, dataSize);
+                NumberOfItems = (int)reader.ReadIntRecord(dataSize);
             }
             else if (subRecordName == "INAM")
             {
@@ -33,7 +33,7 @@
             }
             else if (subRecordName == "INTV")
             {
-                PCLevel = (int)ReadIntRecord(reader, dataSize);
+                PCLevel = (int)reader.ReadIntRecord(dataSize);
             }
             else
             {

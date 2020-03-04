@@ -71,7 +71,7 @@
             }
             else if (subRecordName == "FLAG")
             {
-                Flags = (int)ReadIntRecord(reader, dataSize);
+                Flags = (int)reader.ReadIntRecord(dataSize);
             }
             else if (subRecordName == "SCRI")
             {

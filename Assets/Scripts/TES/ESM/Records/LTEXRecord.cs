@@ -14,7 +14,7 @@
             }
             else if (subRecordName == "INTV")
             {
-                IntValue = ReadIntRecord(reader, dataSize);
+                IntValue = reader.ReadIntRecord(dataSize);
             }
             else if (subRecordName == "DATA")
             {

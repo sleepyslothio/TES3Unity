@@ -27,6 +27,16 @@ namespace TESUnity.ESM
         public int Armour;
     }
 
+    public struct ArmorBodyPartGroup
+    {
+        public BodyPartIndex Index;
+        public string MalePartName;
+        public string FemalePartName;
+
+        public void SetMalePart(string part) => MalePartName = part;
+        public void SetFemalePart(string part) => FemalePartName = part;
+    }
+
     public struct BookData
     {
         public float Weight;
@@ -62,6 +72,31 @@ namespace TESUnity.ESM
         public int AttackMin3;
         public int AttackMax3;
         public int Gold;
+    }
+
+    public struct ContNPCOData
+    {
+        public uint Count;
+        public string Name;
+    }
+
+    public struct ClassData
+    {
+        public int AttributeID1;
+        public int AttributeID2;
+        public int Specialization;
+        public int MinorID1;
+        public int MajorID1;
+        public int MinorID2;
+        public int MajorID2;
+        public int MinorID3;
+        public int MajorID3;
+        public int MinorID4;
+        public int MajorID4;
+        public int MinorID5;
+        public int MajorID5;
+        public int Flags;
+        public int AutoCalcFlags;
     }
 
     public struct EnchantData
@@ -166,6 +201,19 @@ namespace TESUnity.ESM
         public byte Green;
         public byte Blue;
         public byte NullByte;
+    }
+
+    public struct MagicEffectData
+    {
+        public MagicSpellSchool SpellSchool;
+        public float BaseCost;
+        public int Flags;
+        public int Red;
+        public int Blue;
+        public int Green;
+        public float SpeedX;
+        public float SizeX;
+        public float SizeCap;
     }
 
     public struct SoundRecordData

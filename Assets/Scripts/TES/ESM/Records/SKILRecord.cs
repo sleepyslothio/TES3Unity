@@ -15,7 +15,7 @@
         {
             if (subRecordName == "INDX")
             {
-                SkillId = (int)ReadIntRecord(reader, dataSize);
+                SkillId = (int)reader.ReadIntRecord(dataSize);
             }
             else if (subRecordName == "SKDT")
             {
@@ -23,7 +23,7 @@
                 {
                     Attribute = reader.ReadLEInt32(),
                     Specification = reader.ReadLEInt32(),
-                    UseValue = ReadDoubleArray(reader, 4)
+                    UseValue = reader.ReadDoubleArray(4)
                 };
             }
             else if (subRecordName == "DESC")

@@ -4,61 +4,51 @@ namespace TESUnity.ESM.Records
 {
     public class CONTRecord : Record
     {
-        public class CNDTSubRecord : FLTVSubRecord { }
-        public class FLAGSubRecord : UInt32SubRecord { }
-        public class NPCOSubRecord : SubRecord
+        public string Id { get; private set; }
+        public string Model { get; private set; }
+        public string Name { get; private set; }
+        public float Data { get; private set; }
+        public int Flags { get; private set; }
+        public List<ContNPCOData> Items;
+
+        public CONTRecord()
         {
-            public uint itemCount;
-            public string itemName;
-
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-            {
-                itemCount = reader.ReadLEUInt32();
-                itemName = reader.ReadPossiblyNullTerminatedASCIIString(32);
-            }
+            Items = new List<ContNPCOData>();
         }
-
-        public NAMESubRecord NAME;
-        public MODLSubRecord MODL;
-        public FNAMSubRecord FNAM; // container name
-        public CNDTSubRecord CNDT; // weight
-        public FLAGSubRecord FLAG; // flags
-        public List<NPCOSubRecord> NPCOs = new List<NPCOSubRecord>();
-
-        public override bool NewFetchMethod => false;
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
-        {
-            switch (subRecordName)
+            if (subRecordName == "NAME")
             {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "MODL":
-                    MODL = new MODLSubRecord();
-                    return MODL;
-                case "FNAM":
-                    FNAM = new FNAMSubRecord();
-                    return FNAM;
-                case "CNDT":
-                    CNDT = new CNDTSubRecord();
-                    return CNDT;
-                case "FLAG":
-                    FLAG = new FLAGSubRecord();
-                    return FLAG;
-                case "NPCO":
-                    var NPCO = new NPCOSubRecord();
-
-                    NPCOs.Add(NPCO);
-
-                    return NPCO;
-                default:
-                    return null;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "MODL")
+            {
+                Model = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "CNDT")
+            {
+                Data = reader.ReadLESingle();
+            }
+            else if (subRecordName == "FLAG")
+            {
+                Flags = (int)reader.ReadIntRecord(dataSize);
+            }
+            else if (subRecordName == "NPCO")
+            {
+                Items.Add(new ContNPCOData
+                {
+                    Count = reader.ReadLEUInt32(),
+                    Name = reader.ReadPossiblyNullTerminatedASCIIString(32)
+                });
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
     }

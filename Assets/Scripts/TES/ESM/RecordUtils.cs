@@ -13,15 +13,7 @@ namespace TESUnity.ESM
             }
 
             // Will be soon deprecated.
-            if (record is CONTRecord)
-            {
-                return ((CONTRecord)record).MODL.value;
-            }
-            else if (record is ARMORecord)
-            {
-                return ((ARMORecord)record).MODL.value;
-            }
-            else if (record is CLOTRecord)
+            if (record is CLOTRecord)
             {
                 return ((CLOTRecord)record).MODL.value;
             }

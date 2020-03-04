@@ -43,7 +43,7 @@
                 }
 
                 data.Data = rankData;
-                data.SkillID = ReadInt32Array(reader, 6);
+                data.SkillID = reader.ReadInt32Array(6);
                 data.Unknown1 = reader.ReadLEInt32();
                 data.Flags = reader.ReadLEInt32();
 
@@ -55,7 +55,7 @@
             }
             else if (subRecordName == "INTV")
             {
-                Reaction = (int)ReadIntRecord(reader, dataSize);
+                Reaction = (int)reader.ReadIntRecord(dataSize);
             }
             else
             {

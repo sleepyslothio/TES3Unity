@@ -65,7 +65,7 @@ namespace TESUnity.ESM.Records
             {
                 var data = new SoundRecordData
                 {
-                    Sound = ReadStringFromByte(reader, 32),
+                    Sound = reader.ReadStringFromByte(32),
                     Chance = reader.ReadByte()
                 };
 

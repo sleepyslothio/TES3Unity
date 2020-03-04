@@ -9,12 +9,12 @@ namespace TESUnity.Components.Records
         {
             var ARMO = (ARMORecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 
-            objData.name = ARMO.FNAM.value;
-            objData.weight = ARMO.AODT.weight.ToString();
-            objData.value = ARMO.AODT.value.ToString();
+            objData.name = ARMO.Name;
+            objData.weight = ARMO.Data.Weight.ToString();
+            objData.value = ARMO.Data.Value.ToString();
             objData.interactionPrefix = "Take ";
 
-            TryAddScript(ARMO.SCRI?.value);
+            TryAddScript(ARMO.Script);
         }
     }
 }

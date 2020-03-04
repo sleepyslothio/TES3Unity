@@ -30,9 +30,9 @@
                 {
                     Weight = reader.ReadLESingle(),
                     Value = reader.ReadLEInt32(),
-                    EffectID = ReadInt32Array(reader, 4),
-                    SkillID = ReadInt32Array(reader, 4),
-                    AttributeID = ReadInt32Array(reader, 4)
+                    EffectID = reader.ReadInt32Array(4),
+                    SkillID = reader.ReadInt32Array(4),
+                    AttributeID = reader.ReadInt32Array(4)
                 };
             }
             else if (subRecordName == "ITEX")

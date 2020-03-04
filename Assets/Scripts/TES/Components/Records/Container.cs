@@ -8,7 +8,7 @@ namespace TESUnity.Components.Records
         {
             var CONT = (CONTRecord)record;
             pickable = false;
-            objData.name = CONT.FNAM.value;
+            objData.name = CONT.Name;
             objData.interactionPrefix = "Open ";
         }
     }
