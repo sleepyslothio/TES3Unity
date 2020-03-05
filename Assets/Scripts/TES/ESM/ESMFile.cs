@@ -239,11 +239,7 @@ namespace TESUnity.ESM
                 {
                     // TODO: Record.FriendlyName
                     // Add the record to the object dictionary if applicable.
-                    if (record is CLOTRecord)
-                    {
-                        ObjectsByIDString.Add(((CLOTRecord)record).NAME.value, record);
-                    }
-                    else if (record is NPC_Record)
+                    if (record is NPC_Record)
                     {
                         ObjectsByIDString.Add(((NPC_Record)record).NAME.value, record);
                     }

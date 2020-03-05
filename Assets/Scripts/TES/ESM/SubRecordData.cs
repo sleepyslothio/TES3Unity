@@ -99,6 +99,14 @@ namespace TESUnity.ESM
         public int AutoCalcFlags;
     }
 
+    public struct ClothData
+    {
+        public int Type;
+        public float Weight;
+        public short Value;
+        public short EnchantPts;
+    }
+
     public struct EnchantData
     {
         public EnchantType Type;

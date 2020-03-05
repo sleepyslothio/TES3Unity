@@ -2,90 +2,78 @@
 
 namespace TESUnity.ESM.Records
 {
-    public class CLOTRecord : Record
+    public class CLOTRecord : Record, IIdRecord, IModelRecord
     {
-        public class CTDTSubRecord : SubRecord
+        public string Id { get; private set; }
+        public string Model { get; private set; }
+        public string Name { get; private set; }
+        public ClothData Data { get; private set; }
+        public string Icon { get; private set; }
+        public List<ArmorBodyPartGroup> BodyPartGroup { get; private set; }
+        public string Script { get; private set; }
+        public string Enchantment { get; private set; }
+
+        public CLOTRecord()
         {
-            public int type;
-            public float weight;
-            public short value;
-            public short enchantPts;
-
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-            {
-                type = reader.ReadLEInt32();
-                weight = reader.ReadLESingle();
-                value = reader.ReadLEInt16();
-                enchantPts = reader.ReadLEInt16();
-            }
+            BodyPartGroup = new List<ArmorBodyPartGroup>();
         }
-
-        public NAMESubRecord NAME;
-        public MODLSubRecord MODL;
-        public FNAMSubRecord FNAM;
-        public CTDTSubRecord CTDT;
-        public ITEXSubRecord ITEX;
-
-        public List<INDXBNAMCNAMGroup> INDXBNAMCNAMGroups = new List<INDXBNAMCNAMGroup>();
-
-        public ENAMSubRecord ENAM;
-        public SCRISubRecord SCRI;
-
-        public override bool NewFetchMethod => false;
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
-        {
-            switch (subRecordName)
+            if (subRecordName == "NAME")
             {
-                case "NAME":
-                    NAME = new NAMESubRecord();
-                    return NAME;
-                case "MODL":
-                    MODL = new MODLSubRecord();
-                    return MODL;
-                case "FNAM":
-                    FNAM = new FNAMSubRecord();
-                    return FNAM;
-                case "CTDT":
-                    CTDT = new CTDTSubRecord();
-                    return CTDT;
-                case "ITEX":
-                    ITEX = new ITEXSubRecord();
-                    return ITEX;
-                case "INDX":
-                    var INDX = new INDXSubRecord();
-
-                    var group = new INDXBNAMCNAMGroup();
-                    group.INDX = INDX;
-
-                    INDXBNAMCNAMGroups.Add(group);
-
-                    return INDX;
-                case "BNAM":
-                    var BNAM = new BNAMSubRecord();
-
-                    ArrayUtils.Last(INDXBNAMCNAMGroups).BNAM = BNAM;
-
-                    return BNAM;
-                case "CNAM":
-                    var CNAM = new CNAMSubRecord();
-
-                    ArrayUtils.Last(INDXBNAMCNAMGroups).CNAM = CNAM;
-
-                    return CNAM;
-                case "ENAM":
-                    ENAM = new ENAMSubRecord();
-                    return ENAM;
-                case "SCRI":
-                    SCRI = new SCRISubRecord();
-                    return SCRI;
-                default:
-                    return null;
+                Id = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "MODL")
+            {
+                Model = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "FNAM")
+            {
+                Name = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "CTDT")
+            {
+                Data = new ClothData
+                {
+                    Type = reader.ReadLEInt32(),
+                    Weight = reader.ReadLESingle(),
+                    Value = reader.ReadLEInt16(),
+                    EnchantPts = reader.ReadLEInt16()
+                };
+            }
+            else if (subRecordName == "ITEX")
+            {
+                Icon = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "INDX")
+            {
+                BodyPartGroup.Add(new ArmorBodyPartGroup
+                {
+                    Index = (BodyPartIndex)reader.ReadIntRecord(dataSize)
+                });
+            }
+            else if (subRecordName == "BNAM")
+            {
+                var last = BodyPartGroup.Count - 1;
+                BodyPartGroup[last].SetMalePart(reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize));
+            }
+            else if (subRecordName == "CNAM")
+            {
+                var last = BodyPartGroup.Count - 1;
+                BodyPartGroup[last].SetFemalePart(reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize));
+            }
+            else if (subRecordName == "SCRI")
+            {
+                Script = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else if (subRecordName == "ENAM")
+            {
+                Enchantment = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
             }
         }
     }

@@ -104,7 +104,7 @@ namespace TESUnity.Components.Records
                 component = gameObject.AddComponent<Repaire>();
 
             else if (record is CLOTRecord)
-                component = gameObject.AddComponent<Cloth>();
+                component = gameObject.AddComponent<TESCloth>();
 
             else if (record is ALCHRecord)
                 component = gameObject.AddComponent<Alchemy>();

@@ -291,7 +291,13 @@ namespace TESUnity
 
                 if (refObjInfo.referencedRecord != null)
                 {
-                    var modelFileName = ESM.RecordUtils.GetModelFileName(refObjInfo.referencedRecord);
+                    var modelFileName = string.Empty;
+
+                    var modelRecord = refObjInfo.referencedRecord as IModelRecord;
+                    if (modelRecord != null)
+                    {
+                        modelFileName = modelRecord.Model;
+                    }
 
                     // If the model file name is valid, store the model file path.
                     if (!string.IsNullOrEmpty(modelFileName))
