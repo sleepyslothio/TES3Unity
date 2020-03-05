@@ -74,7 +74,7 @@ namespace TESUnity.ESM
         public int Gold;
     }
 
-    public struct ContNPCOData
+    public struct NPCOData
     {
         public uint Count;
         public string Name;
@@ -222,6 +222,98 @@ namespace TESUnity.ESM
         public float SpeedX;
         public float SizeX;
         public float SizeCap;
+    }
+
+    public struct NPC_AIData
+    {
+        public byte Hello;
+        public byte Unknown1;
+        public byte Fight;
+        public byte Flee;
+        public byte Alarm;
+        public byte Unknown2;
+        public byte Unknown3;
+        public byte Unknown4;
+        public NPCAIDataFlags Flags;
+    }
+
+    public struct NPC_Data
+    {
+        public short level;
+        public byte strength;
+        public byte intelligence;
+        public byte willpower;
+        public byte agility;
+        public byte speed;
+        public byte endurance;
+        public byte personality;
+        public byte luck;
+        public byte[] skills;
+        public byte reputation;
+        public short health;
+        public short spellPts;
+        public short fatigue;
+        public byte disposition;
+        public byte factionID;
+        public byte rank;
+        public byte unknown1;
+        public int gold;
+        public byte version;
+        // 12 byte version
+        public byte unknown2;
+        public byte unknown3;
+    }
+
+    public struct NPC_AIW
+    {
+        public short Distance;
+        public short Duration;
+        public byte[] Idle;
+        public byte Unknow;
+    }
+
+    public struct NPC_AITravel
+    {
+        public float X;
+        public float Y;
+        public float Z;
+        public int Unknown;
+    }
+
+    public struct NPC_AIFollow
+    {
+        public float X;
+        public float Y;
+        public float Z;
+        public short Duration;
+        public string Id;
+        public short Unknown;
+    }
+
+    public struct NPC_AIActivate
+    {
+        public string Name;
+        public byte Unknown;
+    }
+
+    public struct NPC_TravelDestination
+    {
+        public float X;
+        public float Y;
+        public float Z;
+        public float RotationX;
+        public float RotationY;
+        public float RotationZ;
+    }
+
+    public struct NPC_CellTravelDestination
+    {
+        public float X;
+        public float Y;
+        public float Z;
+        public float RotationX;
+        public float RotationY;
+        public float RotationZ;
     }
 
     public struct SoundRecordData

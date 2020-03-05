@@ -9,11 +9,11 @@ namespace TESUnity.ESM.Records
         public string Name { get; private set; }
         public float Data { get; private set; }
         public int Flags { get; private set; }
-        public List<ContNPCOData> Items;
+        public List<NPCOData> Items;
 
         public CONTRecord()
         {
-            Items = new List<ContNPCOData>();
+            Items = new List<NPCOData>();
         }
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
@@ -40,7 +40,7 @@ namespace TESUnity.ESM.Records
             }
             else if (subRecordName == "NPCO")
             {
-                Items.Add(new ContNPCOData
+                Items.Add(new NPCOData
                 {
                     Count = reader.ReadLEUInt32(),
                     Name = reader.ReadPossiblyNullTerminatedASCIIString(32)

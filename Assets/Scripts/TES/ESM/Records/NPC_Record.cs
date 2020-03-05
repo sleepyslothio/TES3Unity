@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace TESUnity.ESM.Records
 {
@@ -11,11 +12,6 @@ namespace TESUnity.ESM.Records
         Autocalc = 0x0010,
         BloodSkel = 0x0400,
         BloodMetal = 0x0800
-    }
-
-    public struct NPCData
-    {
-
     }
 
     public enum NPCAIDataFlags
@@ -40,61 +36,6 @@ namespace TESUnity.ESM.Records
         RepairItem = 0x20000
     }
 
-    public struct NPCAIData
-    {
-        public byte Hello;
-        public byte Unknown1;
-        public byte Fight;
-        public byte Flee;
-        public byte Alarm;
-        public byte Unknown2;
-        public byte Unknown3;
-        public byte Unknown4;
-        public NPCAIDataFlags Flags;
-    }
-
-    public struct NPC_AIW
-    {
-        public short Distance;
-        public short Duration;
-        public byte[] Idle;
-        public byte Unknow;
-    }
-
-    public struct NPC_AITravel
-    {
-        public float X;
-        public float Y;
-        public float Z;
-        public int Unknown;
-    }
-
-    public struct NPC_AIFollow
-    {
-        public float X;
-        public float Y;
-        public float Z;
-        public short Duration;
-        public string Id;
-        public short Unknown;
-    }
-
-    public struct NPC_AIActivate
-    {
-        public string Name;
-        public byte Unknown;
-    }
-
-    public struct NPC_TravelDestination
-    {
-        public float X;
-        public float Y;
-        public float Z;
-        public float RotationX;
-        public float RotationY;
-        public float RotationZ;
-    }
-
     public sealed class NPC_Record : Record
     {
         public string Id { get; private set; }
@@ -105,18 +46,32 @@ namespace TESUnity.ESM.Records
         public string HeadModel { get; private set; }
         public string Class { get; private set; }
         public string HairModel { get; private set; }
-        public NPCData Data { get; private set; }
+        public NPC_Data Data { get; private set; }
         public NPCFlags Flags { get; private set; }
-        // NPCO
-        public string Spell { get; private set; }
-        public NPCAIData AIData { get; private set; }
+        public List<NPCOData> Items { get; private set; }
+        public List<string> Spells { get; private set; }
+        public NPC_AIData AIData { get; private set; }
+        public NPC_AIW AIW { get; private set; }
+        public NPC_AITravel AITravel { get; private set; }
+        public NPC_AIFollow AIFollow { get; private set; }
+        public NPC_AIFollow AIEscort { get; private set; }
+        public string CellEscort { get; private set; }
+        public NPC_AIActivate AIActivate { get; private set; }
+        public NPC_CellTravelDestination CellTravelDestination { get; private set; }
+        public string PreviousCellDestination { get; private set; }
+        public float Scale { get; private set; }
+
+        public NPC_Record()
+        {
+            Items = new List<NPCOData>();
+            Spells = new List<string>();
+        }
 
 
         #region Deprecated
 
         public class RNAMSubRecord : STRVSubRecord { }
         public class KNAMSubRecord : STRVSubRecord { }
-
         public class NPDTSubRecord : SubRecord
         {
             public short level;
@@ -188,14 +143,10 @@ namespace TESUnity.ESM.Records
                 }
             }
         }
-
-
-
         public class FLAGSubRecord : INTVSubRecord
         {
             public NPCFlags Flags => (NPCFlags)value;
         }
-
         public class NPCOSubRecord : SubRecord
         {
             public int count;
