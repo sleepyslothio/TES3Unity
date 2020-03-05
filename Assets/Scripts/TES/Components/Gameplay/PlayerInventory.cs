@@ -31,7 +31,7 @@ namespace TESUnity.Components
                 if (rightHand.childCount > 0)
                     rightHand.GetChild(0).parent = _disabledObjects;
 
-                ((Weapon)item).Equip(rightHand);
+                ((Weapon)item).Equip(rightHand, _player.RightHandContainer);
                 return;
             }
 

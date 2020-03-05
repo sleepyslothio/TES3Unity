@@ -43,6 +43,7 @@ namespace TESUnity
 #endif
         #endregion
 
+        public MorrowindEngine Engine => m_MorrowindEngine;
         public TextureManager TextureManager => m_MorrowindEngine.textureManager;
 
         private void Awake()

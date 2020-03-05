@@ -12,6 +12,7 @@ namespace TESUnity.Components.Records
         private bool _isVisible = true;
         private bool _animating = false;
         private Transform _hand = null;
+        private Transform _container = null;
         private Renderer[] _renderers = null;
 
         void Start()
@@ -29,6 +30,7 @@ namespace TESUnity.Components.Records
             var meshColliders = GetComponentsInChildren<MeshCollider>();
             for (int i = 0; i < meshColliders.Length; i++)
             {
+                meshColliders[i].gameObject.AddComponent<BoxCollider>();
                 Destroy(meshColliders[i]);
             }
 
@@ -40,24 +42,6 @@ namespace TESUnity.Components.Records
             }
 
             TryAddScript(WEAP.Script);
-
-            var gameplayActionMap = InputManager.GetActionMap("Gameplay");
-            gameplayActionMap["Attack"].started += (c) =>
-            {
-                if (!_isEquiped)
-                {
-                    return;
-                }
-
-                if (_isVisible)
-                {
-                    PlayAttackAnimation();
-                }
-                else
-                {
-                    SetVisible(true);
-                }
-            };
         }
 
         public void SetVisible(bool visible)
@@ -71,12 +55,13 @@ namespace TESUnity.Components.Records
             _isVisible = visible;
         }
 
-        public void Equip(Transform hand)
+        public void Equip(Transform hand, Transform container)
         {
             m_transform.parent = hand;
             m_transform.localPosition = Vector3.zero;
             m_transform.localRotation = Quaternion.identity;
             _hand = hand;
+            _container = container;
             _isEquiped = true;
         }
 
@@ -85,42 +70,7 @@ namespace TESUnity.Components.Records
             m_transform.parent = disabledObjects;
             _isEquiped = false;
             _hand = null;
-        }
-
-        public void PlayAttackAnimation()
-        {
-            if (!_animating)
-                StartCoroutine(PlayAttackAnimationCoroutine());
-        }
-
-        private IEnumerator PlayAttackAnimationCoroutine()
-        {
-            _animating = true;
-
-            var originalRotation = _hand.localRotation;
-            var target = Quaternion.Euler(0.0f, 0.0f, 90.0f);
-            var time = 0.25f;
-            var elapsed = 0.0f;
-            var endOfFrame = new WaitForEndOfFrame();
-
-            while (elapsed < time)
-            {
-                _hand.localRotation = Quaternion.Slerp(_hand.localRotation, target, elapsed / time);
-                elapsed += Time.deltaTime;
-                yield return endOfFrame;
-            }
-
-            time = 0.4f;
-            elapsed = 0.0f;
-
-            while (elapsed < time)
-            {
-                _hand.localRotation = Quaternion.Slerp(_hand.localRotation, originalRotation, elapsed / time);
-                elapsed += Time.deltaTime;
-                yield return endOfFrame;
-            }
-
-            _animating = false;
+            _container = null;
         }
     }
 }
