@@ -234,31 +234,30 @@ namespace TESUnity.ESM
         public byte Unknown2;
         public byte Unknown3;
         public byte Unknown4;
-        public NPCAIDataFlags Flags;
+        public int Flags;
     }
 
     public struct NPC_Data
     {
-        public short level;
-        public byte strength;
-        public byte intelligence;
-        public byte willpower;
-        public byte agility;
-        public byte speed;
-        public byte endurance;
-        public byte personality;
-        public byte luck;
-        public byte[] skills;
-        public byte reputation;
-        public short health;
-        public short spellPts;
-        public short fatigue;
-        public byte disposition;
-        public byte factionID;
-        public byte rank;
-        public byte unknown1;
-        public int gold;
-        public byte version;
+        public short Level;
+        public byte Strength;
+        public byte Intelligence;
+        public byte Willpower;
+        public byte Agility;
+        public byte Speed;
+        public byte Endurance;
+        public byte Personality;
+        public byte Luck;
+        public byte[] Skills;
+        public byte Reputation;
+        public short Health;
+        public short SpellPts;
+        public short Fatigue;
+        public byte Disposition;
+        public byte FactionID;
+        public byte Rank;
+        public byte Unknown1;
+        public int Gold;
         // 12 byte version
         public byte unknown2;
         public byte unknown3;
@@ -268,6 +267,7 @@ namespace TESUnity.ESM
     {
         public short Distance;
         public short Duration;
+        public short TimeOfDay;
         public byte[] Idle;
         public byte Unknow;
     }

@@ -184,7 +184,7 @@ namespace TESUnity.ESM
                     {
                         // Skip the record.
                         reader.BaseStream.Position += recordHeader.dataSize;
-                        recordList.Add(null);
+                        recordList.Add(null); // Why ??
                     }
                 }
             }
@@ -233,15 +233,6 @@ namespace TESUnity.ESM
                     catch (Exception ex)
                     {
                         Debug.Log(ex.Message);
-                    }
-                }
-                else
-                {
-                    // TODO: Record.FriendlyName
-                    // Add the record to the object dictionary if applicable.
-                    if (record is NPC_Record)
-                    {
-                        ObjectsByIDString.Add(((NPC_Record)record).NAME.value, record);
                     }
                 }
 
