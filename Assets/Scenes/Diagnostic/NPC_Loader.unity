@@ -199,15 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67000ee77f862e64cb240591abe28e02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_NPCName: Ashu-Ahe
-  m_AnimFile: 
-  m_HeadModel: b_n_dark elf_m_head_08
-  m_HairModel: b_n_dark elf_m_hair_04
-  m_Race: Dark Elf
-  m_IsFemale: 0
-  m_DebugMaterial: {fileID: 2100000, guid: 17096f11d1a244441bf035047d4d8c83, type: 2}
-  m_SkeletonScale: 0.9
-  m_SkeletonDebug: 0
+  m_Index: 1000
 --- !u!114 &482211607
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TESUnity.UI
+namespace TES3Unity.UI
 {
     [RequireComponent(typeof(Canvas))]
     public class UIManager : MonoBehaviour

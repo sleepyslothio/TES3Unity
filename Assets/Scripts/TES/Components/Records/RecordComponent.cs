@@ -1,8 +1,8 @@
-﻿using TESUnity.ESM;
-using TESUnity.ESM.Records;
+﻿using TES3Unity.ESM;
+using TES3Unity.ESM.Records;
 using UnityEngine;
 
-namespace TESUnity.Components.Records
+namespace TES3Unity.Components.Records
 {
     public interface IUsableComponent
     {
@@ -46,7 +46,7 @@ namespace TESUnity.Components.Records
         {
             if (scriptName != null)
             {
-                var scriptRecord = TESManager.MWDataReader.FindScript(scriptName);
+                var scriptRecord = TES3Manager.MWDataReader.FindScript(scriptName);
 
                 if (scriptRecord != null)
                 {

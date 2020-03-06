@@ -5,7 +5,7 @@ using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.UI;
 
-namespace TESUnity.Components.XR
+namespace TES3Unity.Components.XR
 {
     using XRIController = UnityEngine.XR.Interaction.Toolkit.XRController;
 

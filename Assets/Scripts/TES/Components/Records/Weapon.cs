@@ -1,7 +1,7 @@
-﻿using TESUnity.ESM.Records;
+﻿using TES3Unity.ESM.Records;
 using UnityEngine;
 
-namespace TESUnity.Components.Records
+namespace TES3Unity.Components.Records
 {
     public class Weapon : RecordComponent
     {

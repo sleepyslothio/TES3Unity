@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using TESUnity.Rendering;
+using TES3Unity.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering;
 #if HDRP_ENABLED
@@ -7,7 +7,7 @@ using UnityEngine.Rendering.HighDefinition;
 #endif
 using UnityEngine.Rendering.Universal;
 
-namespace TESUnity.Components.Utilities
+namespace TES3Unity.Components.Utilities
 {
     [RequireComponent(typeof(Renderer))]
     public sealed class SRPMaterialChanger : MonoBehaviour
@@ -30,12 +30,12 @@ namespace TESUnity.Components.Utilities
 
                 if (GraphicsSettings.renderPipelineAsset is UniversalRenderPipelineAsset)
                 {
-                    shaderName = TESMaterial.URPLitPath;
+                    shaderName = TES3Material.URPLitPath;
                 }
 
 #if HDRP_ENABLED
                 if (GraphicsSettings.renderPipelineAsset is HDRenderPipelineAsset)
-                    shaderName = TESMaterial.HDRPLitPath;
+                    shaderName = TES3Material.HDRPLitPath;
 #endif
 
                 var shader = Shader.Find(shaderName);

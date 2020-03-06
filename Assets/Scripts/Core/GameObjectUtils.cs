@@ -1,5 +1,5 @@
-﻿using TESUnity;
-using TESUnity.Rendering;
+﻿using TES3Unity;
+using TES3Unity.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
@@ -131,7 +131,7 @@ public static class GameObjectUtils
         var terrain = terrainObject.AddComponent<Terrain>();
         var srp = GraphicsSettings.renderPipelineAsset;
 
-        terrain.materialTemplate = TESMaterial.GetTerrainMaterial(GameSettings.Get().RendererMode == RendererMode.HDRP);
+        terrain.materialTemplate = TES3Material.GetTerrainMaterial(GameSettings.Get().RendererMode == RendererMode.HDRP);
         terrain.terrainData = terrainData;
         terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;
         terrainObject.transform.position = position;

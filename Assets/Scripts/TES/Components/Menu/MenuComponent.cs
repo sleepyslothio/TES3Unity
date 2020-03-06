@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.IO;
 using System.Threading;
-using TESUnity.Inputs;
+using TES3Unity.Inputs;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace TESUnity.Components
+namespace TES3Unity.Components
 {
     public sealed class MenuComponent : MonoBehaviour
     {
@@ -142,11 +142,11 @@ namespace TESUnity.Components
         private void LoadMenu()
         {
             // Preload data if the reader is not yet initialized.
-            if (TESManager.MWDataReader == null)
+            if (TES3Manager.MWDataReader == null)
             {
                 m_PreloadThread = new Thread(new ThreadStart(() =>
                 {
-                    TESManager.MWDataReader = new MorrowindDataReader(m_GamePath);
+                    TES3Manager.MWDataReader = new TES3DataReader(m_GamePath);
                 }));
 
                 m_PreloadThread.Start();
@@ -221,7 +221,7 @@ namespace TESUnity.Components
 
         public void Quit()
         {
-            var dataReader = TESManager.MWDataReader;
+            var dataReader = TES3Manager.MWDataReader;
             dataReader?.Close();
 
 #if UNITY_EDITOR

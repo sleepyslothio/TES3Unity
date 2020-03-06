@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace TESUnity
+namespace TES3Unity
 {
     public static class Convert
     {

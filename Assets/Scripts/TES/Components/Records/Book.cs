@@ -1,8 +1,8 @@
-﻿using TESUnity.ESM;
-using TESUnity.ESM.Records;
-using TESUnity.UI;
+﻿using TES3Unity.ESM;
+using TES3Unity.ESM.Records;
+using TES3Unity.UI;
 
-namespace TESUnity.Components.Records
+namespace TES3Unity.Components.Records
 {
     public class Book : RecordComponent
     {

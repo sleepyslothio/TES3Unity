@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using UnityEngine;
 
-namespace TESUnity
+namespace TES3Unity
 {
     public enum PostProcessingQuality
     {

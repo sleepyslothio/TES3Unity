@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TESUnity.Components
+namespace TES3Unity.Components
 {
     /// <summary>
     /// This class is used in editor mode only. It allows to override the GameSettings class.

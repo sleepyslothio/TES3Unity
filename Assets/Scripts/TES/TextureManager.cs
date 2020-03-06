@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace TESUnity
+namespace TES3Unity
 {
     /// <summary>
     /// Manages loading and instantiation of Morrowind textures.
@@ -12,9 +12,9 @@ namespace TESUnity
         private static Dictionary<Color, Texture2D> MaskTextureStore = new Dictionary<Color, Texture2D>();
         private static Dictionary<Texture2D, Texture2D> NormalMapsStore = new Dictionary<Texture2D, Texture2D>();
 
-        private MorrowindDataReader _dataReader;
+        private TES3DataReader _dataReader;
 
-        public TextureManager(MorrowindDataReader reader)
+        public TextureManager(TES3DataReader reader)
         {
             _dataReader = reader;
         }
@@ -47,7 +47,7 @@ namespace TESUnity
 
         public static Texture2D CreateNormalMapTexture(Texture2D source)
         {
-            return GenerateNormalMap(source, TESManager.NormalMapGeneratorIntensity);
+            return GenerateNormalMap(source, TES3Manager.NormalMapGeneratorIntensity);
         }
 
         // https://gamedev.stackexchange.com/questions/106703/create-a-normal-map-using-a-script-unity
@@ -107,17 +107,5 @@ namespace TESUnity
 
             return texture;
         }
-
-        #region Async Texture Loading
-
-        /// <summary>
-        /// Deprecated: For compatibility reason, will be removed soon.
-        /// </summary>
-        /// <param name="texturePath"></param>
-        public void PreloadTextureFileAsync(string texturePath)
-        {
-        }
-
-        #endregion
     }
 }

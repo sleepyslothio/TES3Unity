@@ -1,7 +1,7 @@
-﻿using TESUnity.ESM;
-using TESUnity.ESM.Records;
+﻿using TES3Unity.ESM;
+using TES3Unity.ESM.Records;
 
-namespace TESUnity.Components.Records
+namespace TES3Unity.Components.Records
 {
     public class Armor : RecordComponent
     {

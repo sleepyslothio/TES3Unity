@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TESUnity.Effects
+namespace TES3Unity.Effects
 {
     public sealed class UnderwaterEffect : MonoBehaviour
     {

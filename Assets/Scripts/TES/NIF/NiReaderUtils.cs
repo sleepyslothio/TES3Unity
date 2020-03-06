@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace TESUnity.NIF
+namespace TES3Unity.NIF
 {
     public class NiReaderUtils
     {

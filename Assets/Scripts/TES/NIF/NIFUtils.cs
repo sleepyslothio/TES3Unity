@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TESUnity
+namespace TES3Unity
 {
     public static class NIFUtils
     {

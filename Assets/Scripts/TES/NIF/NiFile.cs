@@ -1,4 +1,4 @@
-﻿namespace TESUnity.NIF
+﻿namespace TES3Unity.NIF
 {
     public class NiFile
     {

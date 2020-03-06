@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using TESUnity.Components.Records;
-using TESUnity.ESM;
+using TES3Unity.Components.Records;
+using TES3Unity.ESM;
 using UnityEngine;
 
-namespace TESUnity.Components
+namespace TES3Unity.Components
 {
     public class PlayerInventory : MonoBehaviour
     {

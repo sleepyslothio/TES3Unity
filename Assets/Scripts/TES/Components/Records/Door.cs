@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using TESUnity.ESM;
-using TESUnity.ESM.Records;
+using TES3Unity.ESM;
+using TES3Unity.ESM.Records;
 using UnityEngine;
 
-namespace TESUnity.Components.Records
+namespace TES3Unity.Components.Records
 {
     public class Door : RecordComponent
     {
@@ -49,7 +49,7 @@ namespace TESUnity.Components.Records
 
             if (doorData.leadsToAnotherCell && !doorData.leadsToInteriorCell)
             {
-                var doorExitCell = MorrowindEngine.instance.dataReader.FindExteriorCellRecord(MorrowindEngine.instance.cellManager.GetExteriorCellIndices(doorData.doorExitPos));
+                var doorExitCell = TES3Engine.instance.dataReader.FindExteriorCellRecord(TES3Engine.instance.cellManager.GetExteriorCellIndices(doorData.doorExitPos));
 
                 if (doorExitCell != null)
                 {

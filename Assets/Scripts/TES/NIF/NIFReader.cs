@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TESUnity.NIF
+namespace TES3Unity.NIF
 {
     #region Enums
     // texture enums

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace TESUnity.UI
+namespace TES3Unity.UI
 {
     public class UIInteractiveText : MonoBehaviour
     {

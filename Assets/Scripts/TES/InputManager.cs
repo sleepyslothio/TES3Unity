@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace TESUnity.Inputs
+namespace TES3Unity.Inputs
 {
     public static class InputManager
     {

@@ -1,20 +1,20 @@
 ﻿using System;
 using UnityEngine;
 
-namespace TESUnity
+namespace TES3Unity
 {
     using NIF;
-    using TESUnity.Rendering;
+    using TES3Unity.Rendering;
 
     // TODO: Investigate merging meshes.
     // TODO: Investigate merging collision nodes with visual nodes.
     public sealed class NIFObjectBuilder
     {
         private NiFile _file;
-        private TESMaterial _materialManager;
+        private TES3Material _materialManager;
         private bool _isStatic;
 
-        public NIFObjectBuilder(NiFile file, TESMaterial materialManager, bool isStatic)
+        public NIFObjectBuilder(NiFile file, TES3Material materialManager, bool isStatic)
         {
             _file = file;
             _materialManager = materialManager;
@@ -92,7 +92,7 @@ namespace TESUnity
 
             if (isMarker)
             {
-                GameObjectUtils.SetLayerRecursively(gameObject, MorrowindEngine.markerLayer);
+                GameObjectUtils.SetLayerRecursively(gameObject, TES3Engine.markerLayer);
             }
 
             return gameObject;
@@ -345,7 +345,7 @@ namespace TESUnity
             return mesh;
         }
 
-        private TESMaterialProps NiAVObjectPropertiesToMWMaterialProperties(NiAVObject obj)
+        private TES3MaterialProps NiAVObjectPropertiesToMWMaterialProperties(NiAVObject obj)
         {
             // Find relevant properties.
             NiTexturingProperty texturingProperty = null;
@@ -353,7 +353,7 @@ namespace TESUnity
             NiAlphaProperty alphaProperty = null;
 
             // Create the material properties.
-            TESMaterialProps mp = new TESMaterialProps();
+            TES3MaterialProps mp = new TES3MaterialProps();
 
             foreach (var propRef in obj.properties)
             {
@@ -451,9 +451,9 @@ namespace TESUnity
             return mp;
         }
 
-        private TESMaterialTextures ConfigureTextureProperties(NiTexturingProperty ntp)
+        private TES3MaterialTextures ConfigureTextureProperties(NiTexturingProperty ntp)
         {
-            TESMaterialTextures tp = new TESMaterialTextures();
+            TES3MaterialTextures tp = new TES3MaterialTextures();
             if (ntp.textureCount < 1) return tp;
             if (ntp.hasBaseTexture)
             {

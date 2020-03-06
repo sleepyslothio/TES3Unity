@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace TESUnity.Components.Utilities
+namespace TES3Unity.Components.Utilities
 {
     [CustomEditor(typeof(ScreenshotMaker))]
     public class ScreenshotCapturerEditor : Editor

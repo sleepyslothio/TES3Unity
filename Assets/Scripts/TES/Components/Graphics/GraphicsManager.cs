@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
 
-namespace TESUnity.Components
+namespace TES3Unity.Components
 {
     public sealed class GraphicsManager : MonoBehaviour
     {

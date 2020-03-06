@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TESUnity.Components
+namespace TES3Unity.Components
 {
     public class DayNightCycle : MonoBehaviour
     {

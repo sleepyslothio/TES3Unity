@@ -1,8 +1,8 @@
-﻿using TESUnity.ESM;
-using TESUnity.ESM.Records;
+﻿using TES3Unity.ESM;
+using TES3Unity.ESM.Records;
 using UnityEngine;
 
-namespace TESUnity.Components.Records
+namespace TES3Unity.Components.Records
 {
     public class TESScript : RecordComponent
     {
@@ -23,7 +23,7 @@ namespace TESUnity.Components.Records
             ScriptName = _script.Header.Name;
             ScriptContent = _script.Text;
 
-            if (TESManager.instance.logEnabled)
+            if (TES3Manager.instance.logEnabled)
             {
                 Debug.Log($"Script: {ScriptName} Added!");
             }

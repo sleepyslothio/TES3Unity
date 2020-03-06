@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
-using TESUnity.Rendering;
+using TES3Unity.Rendering;
 using UnityEngine;
 
-namespace TESUnity
+namespace TES3Unity
 {
     /// <summary>
     /// Manages loading and instantiation of NIF models.
     /// </summary>
     public sealed class NIFManager
     {
-        private MorrowindDataReader _dataReader;
-        private TESMaterial _materialManager;
+        private TES3DataReader _dataReader;
+        private TES3Material _materialManager;
         private GameObject _prefabContainerObj;
         private Dictionary<string, GameObject> nifPrefabs = new Dictionary<string, GameObject>();
 
-        public NIFManager(MorrowindDataReader dataReader, TESMaterial materialManager)
+        public NIFManager(TES3DataReader dataReader, TES3Material materialManager)
         {
             _dataReader = dataReader;
             _materialManager = materialManager;
@@ -49,16 +49,8 @@ namespace TESUnity
             return GameObject.Instantiate(prefab);
         }
 
-        public void PreloadNifFileAsync(string filePath)
-        {
-        }
-
         private GameObject LoadNifPrefabDontAddToPrefabCache(string filePath, bool isStatic)
         {
-            Debug.Assert(!nifPrefabs.ContainsKey(filePath));
-
-            PreloadNifFileAsync(filePath);
-
             var file = _dataReader.LoadNif(filePath);
             var objBuilder = new NIFObjectBuilder(file, _materialManager, isStatic);
             var prefab = objBuilder.BuildObject();

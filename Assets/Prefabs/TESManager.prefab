@@ -50,9 +50,9 @@ MonoBehaviour:
   - D:\Jeux\Morrowind\Data Files
   logEnabled: 0
   ambientIntensity: 1.5
-  desiredWorkTimePerFrame: 0.0005
+  desiredWorkTimePerFrame: 0.05
   loadExtensions: 0
-  loadSaveGameFilename: 
+  loadSaveGameFilename: quiksave
   CellRadius: 4
   CellDetailRadius: 3
   CellRadiusOnLoad: 2
@@ -84,11 +84,11 @@ MonoBehaviour:
   Override: 1
   PlayMusic: 1
   KinematicRigidbodies: 1
-  CellRadius: 1
-  CellDetailRadius: 3
-  CellRadiusOnLoad: 1
+  CellRadius: 0
+  CellDetailRadius: 1
+  CellRadiusOnLoad: 0
   RendererType: 0
-  CameraFarClip: 500
+  CameraFarClip: 250
   SRPQuality: 2
   RenderScale: 0.95
   WaterTransparency: 0

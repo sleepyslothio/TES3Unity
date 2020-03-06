@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TESUnity.Diagnostic
+namespace TES3Unity.Diagnostic
 {
     public class ModelLoader : MonoBehaviour
     {
@@ -9,11 +9,11 @@ namespace TESUnity.Diagnostic
 
         private void Awake()
         {
-            var tes = GetComponent<TESManagerLite>();
+            var tes = GetComponent<TES3ManagerLite>();
             tes.Initialized += Tes_Initialized;
         }
 
-        private void Tes_Initialized(TESManagerLite tes)
+        private void Tes_Initialized(TES3ManagerLite tes)
         {
             if (string.IsNullOrEmpty(m_ModelToLoad))
             {

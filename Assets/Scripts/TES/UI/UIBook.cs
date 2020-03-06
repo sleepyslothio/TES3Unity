@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
-using TESUnity.ESM;
-using TESUnity.ESM.Records;
-using TESUnity.Inputs;
+using TES3Unity.ESM;
+using TES3Unity.ESM.Records;
+using TES3Unity.Inputs;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TESUnity.UI
+namespace TES3Unity.UI
 {
     public class UIBook : MonoBehaviour
     {
@@ -40,7 +40,7 @@ namespace TESUnity.UI
 
         private void Start()
         {
-            var texture = TESManager.instance.TextureManager.LoadTexture("tx_menubook", true);
+            var texture = TES3Manager.instance.TextureManager.LoadTexture("tx_menubook", true);
             _background.sprite = GUIUtils.CreateSprite(texture);
 
             // If the book is already opened, don't change its transform.

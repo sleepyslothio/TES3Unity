@@ -1,11 +1,11 @@
 ﻿using Demonixis.Toolbox.XR;
 using System.Collections;
-using TESUnity.Inputs;
-using TESUnity.UI;
+using TES3Unity.Inputs;
+using TES3Unity.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace TESUnity.Components.XR
+namespace TES3Unity.Components.XR
 {
     /// <summary>
     /// This component is responsible to enable the VR feature and deal with VR SDKs.

@@ -1,6 +1,6 @@
-﻿using TESUnity.ESM.Records;
+﻿using TES3Unity.ESM.Records;
 
-namespace TESUnity.Components.Records
+namespace TES3Unity.Components.Records
 {
     public class Activator : RecordComponent
     {

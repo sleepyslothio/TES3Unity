@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using TESUnity.ESM;
+using TES3Unity.ESM;
 using UnityEngine;
 
-namespace TESUnity
+namespace TES3Unity
 {
     /// <summary>
     /// A proof of concept sound manager.
@@ -24,7 +24,7 @@ namespace TESUnity
                 return ClipStore[id];
             }
 
-            var path = TESManager.MWDataReader.GetSound(id);
+            var path = TES3Manager.MWDataReader.GetSound(id);
             if (!File.Exists(path))
             {
                 return null;

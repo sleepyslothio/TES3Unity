@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using UnityEngine;
 
-namespace TESUnity
+namespace TES3Unity
 {
     public class NifParserGenerator
     {

@@ -1,7 +1,7 @@
 ﻿using Demonixis.Toolbox.XR;
 using UnityEngine;
 
-namespace TESUnity
+namespace TES3Unity
 {
     public class PlayerCharacter : MonoBehaviour
     {
@@ -30,7 +30,7 @@ namespace TESUnity
                 RayCastTarget = m_RightHand;
 
             // Loading hands.
-            var nifManager = TESManager.instance.Engine.nifManager; // FIXME
+            var nifManager = TES3Manager.instance.Engine.nifManager; // FIXME
 
             var race = "nord";
             var gender = "m";

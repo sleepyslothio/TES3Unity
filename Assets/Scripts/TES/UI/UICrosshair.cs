@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TESUnity.UI
+namespace TES3Unity.UI
 {
     [RequireComponent(typeof(Image))]
     public class UICrosshair : MonoBehaviour
@@ -22,7 +22,7 @@ namespace TESUnity.UI
 
         private void Start()
         {
-            var textureManager = TESManager.instance.TextureManager;
+            var textureManager = TES3Manager.instance.TextureManager;
             var crosshairTexture = textureManager.LoadTexture("target", true);
             _crosshair.sprite = GUIUtils.CreateSprite(crosshairTexture);
 

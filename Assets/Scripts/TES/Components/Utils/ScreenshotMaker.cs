@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using TESUnity.Inputs;
+using TES3Unity.Inputs;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace TESUnity
+namespace TES3Unity
 {
     public sealed class ScreenshotMaker : MonoBehaviour
     {

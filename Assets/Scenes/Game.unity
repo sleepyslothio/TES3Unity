@@ -310,60 +310,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: m_AlternativeDataPaths.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: desiredWorkTimePerFrame
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: loadSaveGameFilename
-      value: quiksave
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: logEnabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: m_AlternativeDataPaths.Array.data[1]
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: m_AlternativeDataPaths.Array.data[2]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 11464354, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: loadExtensions
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: RendererType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: CameraFarClip
-      value: 250
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: CellRadius
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: CellRadiusOnLoad
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: CellDetailRadius
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: SRPQuality
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
-      propertyPath: PostProcessingQuality
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}

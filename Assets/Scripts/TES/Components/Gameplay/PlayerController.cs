@@ -1,10 +1,10 @@
 ﻿using Demonixis.Toolbox.XR;
-using TESUnity.Inputs;
-using TESUnity.UI;
+using TES3Unity.Inputs;
+using TES3Unity.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace TESUnity
+namespace TES3Unity
 {
     public class PlayerController : MonoBehaviour
     {
