@@ -48,18 +48,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AlternativeDataPaths:
   - D:\Jeux\Morrowind\Data Files
-  - D:\Jeux\Oldies\Morrowind\Data Files
-  - /Users/yannick/Jeux/Morrowind/Data Files
   logEnabled: 0
   ambientIntensity: 1.5
   desiredWorkTimePerFrame: 0.0005
-  playerPrefab: {fileID: 1000014283173620, guid: bb4f50960e3bc08459bb6f708eb7d79f,
-    type: 3}
-  playerXRPrefab: {fileID: 3995033329930737988, guid: 86b425a4a18e3a4439ec9a59595a5056,
-    type: 3}
-  waterPrefab: {fileID: 1586121937244772, guid: 6de569209e643e2438dd3dbfe2d466df,
-    type: 3}
   loadExtensions: 0
+  loadSaveGameFilename: 
   CellRadius: 4
   CellDetailRadius: 3
   CellRadiusOnLoad: 2
@@ -75,13 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fea5e6a41913894c8a499534e6b19d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShotKey: 9
-  m_Show360ModKey: 304
-  m_Show360StereoModKey: 308
   m_ScreenshotSuperSampling: 1
-  m_StereoSeparation: 0.064
-  m_TextureSize: 2048
-  m_EditorOnly: 0
 --- !u!114 &2025599348
 MonoBehaviour:
   m_ObjectHideFlags: 0

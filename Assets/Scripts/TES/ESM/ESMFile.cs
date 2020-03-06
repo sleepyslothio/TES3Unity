@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using TESUnity.ESM.Records;
 using UnityEngine;
 
@@ -10,7 +11,6 @@ namespace TESUnity.ESM
     public class ESMFile
     {
         private const int recordHeaderSizeInBytes = 16;
-        private static List<string> DeprecatedRecordsAPI = new List<string>();
 
         public Record[] Records { get; private set; }
         public Dictionary<Type, List<Record>> RecordsByType { get; private set; }
@@ -26,7 +26,7 @@ namespace TESUnity.ESM
             LANDRecordsByIndices = new Dictionary<Vector2i, LANDRecord>();
 
             ReadRecords(filePath);
-            PostProcessRecords();
+            // PostProcessRecords();
         }
 
         public void Merge(ESMFile file)
@@ -139,17 +139,25 @@ namespace TESUnity.ESM
         {
             var recordList = new List<Record>();
 
+            RecordHeader recordHeader = null;
+            Record record = null;
+            Type type = null;
+            IIdRecord nameRecord = null;
+            CELLRecord CELL = null;
+            LANDRecord LAND = null;
+            string recordName = null;
+
             using (var reader = new UnityBinaryReader(File.Open(filePath, FileMode.Open, FileAccess.Read)))
             {
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
                     var recordStartStreamPosition = reader.BaseStream.Position;
 
-                    var recordHeader = new RecordHeader();
+                    recordHeader = new RecordHeader();
                     recordHeader.Deserialize(reader);
 
-                    var recordName = recordHeader.name;
-                    var record = CreateRecordOfType(recordName);
+                    recordName = recordHeader.name;
+                    record = CreateRecordOfType(recordName);
 
                     // Read or skip the record.
                     if (record != null)
@@ -165,12 +173,6 @@ namespace TESUnity.ESM
                         else
                         {
                             record.DeserializeData(reader);
-
-                            if (!DeprecatedRecordsAPI.Contains(record.header.name))
-                            {
-                                DeprecatedRecordsAPI.Add(record.header.name);
-                                Debug.LogWarning($"The Record {record.header.name} uses the old/deprecated API.");
-                            }
                         }
 
                         if (reader.BaseStream.Position != (recordDataStreamPosition + record.header.dataSize))
@@ -179,82 +181,44 @@ namespace TESUnity.ESM
                         }
 
                         recordList.Add(record);
+
+                        // continue;
+
+                        type = record.GetType();
+                        if (!RecordsByType.ContainsKey(type))
+                        {
+                            RecordsByType.Add(type, new List<Record>());
+                        }
+
+                        RecordsByType[type].Add(record);
+
+                        nameRecord = record as IIdRecord;
+                        if (nameRecord != null)
+                        {
+                            ObjectsByIDString.Add(nameRecord.Id, record);
+                        }
+
+                        CELL = record as CELLRecord;
+                        if (CELL != null && !CELL.isInterior)
+                        {
+                            ExteriorCELLRecordsByIndices[CELL.gridCoords] = CELL;
+                        }
+
+                        LAND = record as LANDRecord;
+                        if (LAND != null)
+                        {
+                            LANDRecordsByIndices[LAND.gridCoords] = LAND;
+                        }
                     }
                     else
                     {
                         // Skip the record.
                         reader.BaseStream.Position += recordHeader.dataSize;
-                        recordList.Add(null); // Why ??
                     }
                 }
             }
 
             Records = recordList.ToArray();
-        }
-
-        private void PostProcessRecords()
-        {
-            IIdRecord nameRecord;
-
-            foreach (var record in Records)
-            {
-                if (record == null)
-                {
-                    continue;
-                }
-
-                // Add the record to the list for it's type.
-                var recordType = record.GetType();
-                List<Record> recordsOfSameType;
-
-                if (RecordsByType.TryGetValue(recordType, out recordsOfSameType))
-                {
-                    recordsOfSameType.Add(record);
-                }
-                else
-                {
-                    recordsOfSameType = new List<Record>();
-                    recordsOfSameType.Add(record);
-
-                    RecordsByType.Add(recordType, recordsOfSameType);
-                }
-
-                nameRecord = record as IIdRecord;
-
-                if (nameRecord != null)
-                {
-                    // TODO
-                    // We keep that here during the transition on the new system to be sure to don't break anything.
-                    // It'll be removed just after that
-                    try
-                    {
-                        ObjectsByIDString.Add(nameRecord.Id, record);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.Log(ex.Message);
-                    }
-                }
-
-                // Add the record to exteriorCELLRecordsByIndices if applicable.
-                if (record is CELLRecord)
-                {
-                    var CELL = (CELLRecord)record;
-
-                    if (!CELL.isInterior)
-                    {
-                        ExteriorCELLRecordsByIndices[CELL.gridCoords] = CELL;
-                    }
-                }
-
-                // Add the record to LANDRecordsByIndices if applicable.
-                if (record is LANDRecord)
-                {
-                    var LAND = (LANDRecord)record;
-
-                    LANDRecordsByIndices[LAND.gridCoords] = LAND;
-                }
-            }
         }
     }
 }

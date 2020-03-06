@@ -1,5 +1,38 @@
 ﻿namespace TESUnity.ESM.Records
 {
+    public struct TESVector3
+    {
+        public float X;
+        public float Y;
+        public float Z;
+    }
+
+    public struct LandVertexNormalData
+    {
+        public TESVector3[] Data;
+    }
+
+    public struct LandVertexHeightFieldData
+    {
+        public float ReferenceHeight;
+        public sbyte[] HeightOffsets;
+    }
+
+    public struct LandHeightLODData
+    {
+        public byte[] Data;
+    }
+
+    public struct LandVertexColorData
+    {
+        public TESVector3[] Data;
+    }
+
+    public struct LandVertexIndiceData
+    {
+        public ushort[] TextureIndices;
+    }
+
     // TODO: implement DATA subrecord
     public class LANDRecord : Record
     {
@@ -116,9 +149,42 @@
 
         public override bool NewFetchMethod => false;
 
+        public Vector2i GridCoords { get; private set; }
+
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            throw new System.NotImplementedException();
+            if (subRecordName == "INTV")
+            {
+
+            }
+            else if (subRecordName == "DATA")
+            {
+
+            }
+            else if (subRecordName == "VNML")
+            {
+
+            }
+            else if (subRecordName == "VHGT")
+            {
+
+            }
+            else if (subRecordName == "WNAM")
+            {
+
+            }
+            else if (subRecordName == "VCLR")
+            {
+
+            }
+            else if (subRecordName == "VTEX")
+            {
+
+            }
+            else
+            {
+                ReadMissingSubRecord(reader, subRecordName, dataSize);
+            }
         }
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
