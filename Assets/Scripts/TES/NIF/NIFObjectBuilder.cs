@@ -12,11 +12,13 @@ namespace TESUnity
     {
         private NiFile _file;
         private TESMaterial _materialManager;
+        private bool _isStatic;
 
-        public NIFObjectBuilder(NiFile file, TESMaterial materialManager)
+        public NIFObjectBuilder(NiFile file, TESMaterial materialManager, bool isStatic)
         {
             _file = file;
             _materialManager = materialManager;
+            _isStatic = isStatic;
         }
 
         public GameObject BuildObject()
@@ -235,7 +237,7 @@ namespace TESUnity
                     meshRenderer.enabled = false;
                 }
 
-                obj.isStatic = true;
+                obj.isStatic = _isStatic;
             }
 
             if (collidable)
@@ -243,7 +245,7 @@ namespace TESUnity
                 var collider = obj.AddComponent<MeshCollider>();
                 collider.sharedMesh = mesh;
 
-                if (!obj.isStatic && GameSettings.Get().KinematicRigidbody)
+                if (!_isStatic && GameSettings.Get().KinematicRigidbody)
                 {
                     obj.AddComponent<Rigidbody>().isKinematic = true;
                 }

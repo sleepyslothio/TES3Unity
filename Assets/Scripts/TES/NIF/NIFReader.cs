@@ -833,6 +833,17 @@ namespace TESUnity.NIF
         }
     }
 
+    public class NiWireframeProperty : NiProperty
+    {
+        public ushort flags;
+
+        public override void Deserialize(UnityBinaryReader reader)
+        {
+            base.Deserialize(reader);
+            flags = NiReaderUtils.ReadFlags(reader);
+        }
+    }
+
     // Data
     public class NiUVData : NiObject
     {

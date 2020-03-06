@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using TESUnity.ESM;
-using TESUnity.ESM.Records;
-using TESUnity.Inputs;
+﻿using TESUnity.ESM.Records;
 using UnityEngine;
 
 namespace TESUnity.Components.Records
@@ -10,7 +7,6 @@ namespace TESUnity.Components.Records
     {
         private bool _isEquiped = false;
         private bool _isVisible = true;
-        private bool _animating = false;
         private Transform _hand = null;
         private Transform _container = null;
         private Renderer[] _renderers = null;

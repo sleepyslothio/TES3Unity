@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TESUnity.Rendering;
 using TESUnity.ESS;
-using System.Diagnostics;
 
 namespace TESUnity
 {
@@ -31,7 +30,7 @@ namespace TESUnity
 
         private void Start()
         {
-            var watch = new Stopwatch();
+            var watch = new System.Diagnostics.Stopwatch();
             var dataPath = GameSettings.GetDataPath();
 
             // Load the game from the alternative dataPath when in editor.
@@ -57,7 +56,7 @@ namespace TESUnity
             DataReader = new MorrowindDataReader(dataPath);
             watch.Stop();
             Logger.Log($"DataReader took {watch.Elapsed.Seconds} seconds to load.");
-            
+
             TextureManager = new TextureManager(DataReader);
             MaterialManager = new TESMaterial(TextureManager);
             NifManager = new NIFManager(DataReader, MaterialManager);
@@ -96,5 +95,95 @@ namespace TESUnity
         {
             DataReader?.Close();
         }
+
+#if UNITY_EDITOR
+        private static MorrowindDataReader MWDataReader = null;
+
+        [UnityEditor.MenuItem("Morrowind Unity/Export Random NPC")]
+        private static void ExportFirstNPC()
+        {
+            if (MWDataReader == null)
+            {
+                Debug.LogWarning("Morrowind Data are not yet loaded. It'll take some time to load. The editor will be freezed a bit...");
+
+                var dataPath = GameSettings.GetDataPath();
+
+                var manager = FindObjectOfType<TESManagerLite>();
+                var alternativeDataPaths = manager?.m_AlternativeDataPaths ?? null;
+
+                // Load the game from the alternative dataPath when in editor.
+                if (!GameSettings.IsValidPath(dataPath))
+                {
+                    dataPath = string.Empty;
+
+                    if (alternativeDataPaths == null)
+                    {
+                        Debug.LogError("No valid path was found. You can try to add a TESManager component on the scene with an alternative path.");
+                        return;
+                    }
+
+                    foreach (var alt in alternativeDataPaths)
+                    {
+                        if (GameSettings.IsValidPath(alt))
+                            dataPath = alt;
+                    }
+                }
+
+                MWDataReader = new MorrowindDataReader(dataPath);
+
+                Debug.Log("Morrowind Data are now loaded!");
+            }
+
+            var exportPath = $"Exports/NPCs";
+            var npcs = MWDataReader.FindRecords<ESM.Records.NPC_Record>();
+
+            if (npcs == null)
+            {
+                Debug.LogError("Can't retrieve NPCs from the ESM file. There is probably a big problem...");
+                return;
+            }
+
+            if (!Directory.Exists(exportPath))
+            {
+                Directory.CreateDirectory(exportPath);
+            }
+
+            var npc = npcs[UnityEngine.Random.Range(0, npcs.Length - 1)];
+            var sb = new System.Text.StringBuilder();
+            sb.Append("[General]\n");
+            sb.Append($"Name = {npc.Name}\n");
+            sb.Append($"Model = {npc.Model}\n");
+            sb.Append($"Head = {npc.HeadModel}\n");
+            sb.Append($"Hair = {npc.HairModel}\n");
+            sb.Append($"Faction = {npc.Faction}\n");
+            sb.Append($"Race = {npc.Race}\n");
+            sb.Append($"Gender = {(Utils.ContainsBitFlags((uint)npc.Flags, (uint)ESM.Records.NPCFlags.Female) ? "f" : "m")}\n");
+            sb.Append($"Class: {npc.Class}\n");
+            sb.Append($"Scale: {npc.Scale}\n");
+
+            if (npc.Items.Count > 0)
+            {
+                sb.Append("[Items]\n");
+                foreach (var item in npc.Items)
+                {
+                    sb.Append($"{item.Name} x{item.Count}");
+                    sb.Append("\n");
+                }
+            }
+
+            if (npc.Spells.Count > 0)
+            {
+                sb.Append("[Spells]\n");
+                foreach (var item in npc.Spells)
+                {
+                    sb.Append($"{item}\n");
+                }
+            }
+
+            File.WriteAllText($"{exportPath}/{npc.Name}.ini", sb.ToString());
+
+            Debug.Log("Export done.");
+        }
+#endif
     }
 }

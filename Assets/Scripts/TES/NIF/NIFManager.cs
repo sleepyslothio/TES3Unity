@@ -32,7 +32,7 @@ namespace TESUnity
         /// <summary>
         /// Instantiates a NIF file.
         /// </summary>
-        public GameObject InstantiateNIF(string filePath)
+        public GameObject InstantiateNIF(string filePath, bool isStatic = true)
         {
             EnsurePrefabContainerObjectExists();
 
@@ -41,7 +41,7 @@ namespace TESUnity
             if (!nifPrefabs.TryGetValue(filePath, out prefab))
             {
                 // Load & cache the NIF prefab.
-                prefab = LoadNifPrefabDontAddToPrefabCache(filePath);
+                prefab = LoadNifPrefabDontAddToPrefabCache(filePath, isStatic);
                 nifPrefabs[filePath] = prefab;
             }
 
@@ -53,14 +53,14 @@ namespace TESUnity
         {
         }
 
-        private GameObject LoadNifPrefabDontAddToPrefabCache(string filePath)
+        private GameObject LoadNifPrefabDontAddToPrefabCache(string filePath, bool isStatic)
         {
             Debug.Assert(!nifPrefabs.ContainsKey(filePath));
 
             PreloadNifFileAsync(filePath);
 
             var file = _dataReader.LoadNif(filePath);
-            var objBuilder = new NIFObjectBuilder(file, _materialManager);
+            var objBuilder = new NIFObjectBuilder(file, _materialManager, isStatic);
             var prefab = objBuilder.BuildObject();
             prefab.transform.parent = _prefabContainerObj.transform;
 

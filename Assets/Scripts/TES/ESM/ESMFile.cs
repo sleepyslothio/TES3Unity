@@ -26,7 +26,6 @@ namespace TESUnity.ESM
             LANDRecordsByIndices = new Dictionary<Vector2i, LANDRecord>();
 
             ReadRecords(filePath);
-            // PostProcessRecords();
         }
 
         public void Merge(ESMFile file)
@@ -147,7 +146,9 @@ namespace TESUnity.ESM
             LANDRecord LAND = null;
             string recordName = null;
 
-            using (var reader = new UnityBinaryReader(File.Open(filePath, FileMode.Open, FileAccess.Read)))
+            var bytes = File.ReadAllBytes(filePath);
+
+            using (var reader = new UnityBinaryReader(new MemoryStream(bytes)))
             {
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {

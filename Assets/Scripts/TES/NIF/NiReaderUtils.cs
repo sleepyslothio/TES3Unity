@@ -414,6 +414,12 @@ namespace TESUnity.NIF
 
                 return property;
             }
+            else if (StringUtils.Equals(nodeTypeBytes, "NiWireframeProperty"))
+            {
+                var wireframeProperty = new NiWireframeProperty();
+                wireframeProperty.Deserialize(reader);
+                return wireframeProperty;
+            }
             else
             {
                 Debug.Log("Tried to read an unsupported NiObject type (" + System.Text.Encoding.ASCII.GetString(nodeTypeBytes) + ").");
