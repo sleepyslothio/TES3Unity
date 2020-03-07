@@ -48,11 +48,8 @@ namespace TES3Unity.ESM.Records
         Tail
     }
 
-    public class ARMORecord : Record
+    public class ARMORecord : Record, IIdRecord, IModelRecord
     {
-        public List<INDXBNAMCNAMGroup> INDXBNAMCNAMGroups = new List<INDXBNAMCNAMGroup>();
-
-
         public string Id { get; private set; }
         public string Model { get; private set; }
         public string Name { get; private set; }

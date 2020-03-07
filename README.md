@@ -1,13 +1,13 @@
-# TESUnity
+# TES3Unity
 
-World viewers for Elder Scrolls games in the Unity game engine with VR support supporting Oculus, OSVR and OpenVR. For advanced VR support, please read the README.md located into the `Vendors` folder.
+TES3Unity is an attempt to recreate the Morrowind Engine (also known as NetImmerse) into the Unity3D game engine.
 
 ## Getting Started
 
-**TESUnity requires a valid installation of Morrowind to run!**, you can get it on Steam or Gog.com.
+**TES3Unity requires a valid installation of Morrowind to run!**, you can get it on Steam or Gog.com.
 
 To get started, go to the release tab and download the latest release for your device.
-Alternatively you can download the source code as a ZIP file, extract it, and open the TESUnity folder in Unity.
+Alternatively you can download the source code as a ZIP file, extract it, and open the TES3Unity folder in Unity.
 
 Take a look at the `README-Config.md` file to tweak parameters. If you want to enjoy VR, take a look at `README-VR.md`. Finally input mapping is located at `README-Input.md`.
 
@@ -17,6 +17,16 @@ The game will ask you where is the **Data Files** folder the first time you star
 ### Mobile
 You've to copy the content of the **Data Files** folder into a folder named `TESUnityXR` on your SDCard.
 For now, the path is hardcoded, if the game can't open the game, please open an issue.
+
+## Supported Platforms
+|Platform | Status | Graphics API |
+|---------|--------|--------------|
+| Windows | Supported | Direct3D 11 & Direct3D 12 |
+| Linux | Experimental | Vulkan |
+| Macos | Experimental | Metal |
+| Android (Flat) | Experimental | Vulkan & OpenGL ES3.1 |
+| Oculus Quest | Supported | Vulkan & OpenGL ES3.1 |
+
 
 ## Contribute
 

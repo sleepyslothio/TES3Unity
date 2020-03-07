@@ -5,6 +5,7 @@ using System.Linq;
 using TES3Unity.Components.Records;
 using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
+using TES3Unity.World;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -313,7 +314,7 @@ namespace TES3Unity
                 if (refCellObjInfo.referencedRecord is NPC_Record)
                 {
                     var NPC_ = (NPC_Record)refCellObjInfo.referencedRecord;
-                    var npcGameObject = Diagnostic.NPC_Loader.InstanciateNPC(nifManager, NPC_);
+                    var npcGameObject = NPCFactory.InstanciateNPC(nifManager, NPC_);
 
                     PostProcessInstantiatedCellObject(npcGameObject, refCellObjInfo);
                     npcGameObject.transform.parent = parent.transform;

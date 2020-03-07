@@ -53,7 +53,8 @@ namespace TES3Unity
             }
 
             watch.Start();
-            DataReader = new TES3DataReader(dataPath);
+            TES3Manager.MWDataReader = new TES3DataReader(dataPath);
+            DataReader = TES3Manager.MWDataReader;
             watch.Stop();
             Logger.Log($"DataReader took {watch.Elapsed.Seconds} seconds to load.");
 

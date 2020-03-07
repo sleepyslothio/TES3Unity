@@ -313,5 +313,17 @@ PrefabInstance:
       propertyPath: loadSaveGameFilename
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: CellRadius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: CellRadiusOnLoad
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: CellDetailRadius
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
