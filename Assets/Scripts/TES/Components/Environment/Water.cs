@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using TES3Unity.ESM.Records;
+using UnityEngine;
 
 namespace TES3Unity.Effects
 {
-    public sealed class UnderwaterEffect : MonoBehaviour
+    public sealed class Water : MonoBehaviour
     {
         private bool _defaultFog;
         private Color _defaultFogColor;
@@ -10,6 +11,8 @@ namespace TES3Unity.Effects
         private Material _defaultSkybox = null;
         private bool _isUnderwater = false;
         private Transform _transform = null;
+        private bool _enabled = false;
+        private bool _hdrp = false;
 
         [SerializeField]
         private float underwaterLevel = 0.0f;
@@ -26,35 +29,58 @@ namespace TES3Unity.Effects
             set { underwaterLevel = value; }
         }
 
+        private void Awake()
+        {
+            var tes = TES3Manager.instance;
+            tes.Engine.CurrentCellChanged += Engine_CurrentCellChanged; ;
+        }
+
         void Start()
         {
-            if (GameSettings.Get().RendererMode == RendererMode.HDRP)
-            {
-                enabled = false;
-            }
+            _hdrp = GameSettings.Get().RendererMode == RendererMode.HDRP;
 
-            _defaultFog = RenderSettings.fog;
-            _defaultFogColor = RenderSettings.fogColor;
-            _defaultFogDensity = RenderSettings.fogDensity;
-            _defaultSkybox = RenderSettings.skybox;
             _transform = GetComponent<Transform>();
         }
 
         void Update()
         {
+            if (!_enabled)
+            {
+                return;
+            }
+
             if (_transform.position.y < underwaterLevel && !_isUnderwater)
                 SetEffectEnabled(true);
             else if (_transform.position.y > underwaterLevel && _isUnderwater)
                 SetEffectEnabled(false);
         }
 
-        public void SetEffectEnabled(bool enabled)
+        public void SetEffectEnabled(bool enabled, bool force = false)
         {
+            if ((_isUnderwater == enabled && !force) && !_hdrp)
+            {
+                return;
+            }
+
             _isUnderwater = enabled;
+
+            if (enabled)
+            {
+                _defaultFog = RenderSettings.fog;
+                _defaultFogColor = RenderSettings.fogColor;
+                _defaultFogDensity = RenderSettings.fogDensity;
+                _defaultSkybox = RenderSettings.skybox;
+            }
+
             RenderSettings.fog = enabled;
             RenderSettings.fogColor = enabled ? fogColor : _defaultFogColor;
             RenderSettings.fogDensity = enabled ? fogDensity : _defaultFogDensity;
             RenderSettings.skybox = enabled ? null : _defaultSkybox;
+        }
+
+        private void Engine_CurrentCellChanged(CELLRecord cell)
+        {
+            _enabled = !cell.isInterior;
         }
     }
 }

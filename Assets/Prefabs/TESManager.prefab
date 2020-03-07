@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4663438948078211954}
   - component: {fileID: 2025599348}
   - component: {fileID: 493214117}
+  - component: {fileID: 6897451056585262396}
   m_Layer: 0
   m_Name: TESManager
   m_TagString: Untagged
@@ -52,7 +53,7 @@ MonoBehaviour:
   ambientIntensity: 1.5
   desiredWorkTimePerFrame: 0.05
   loadExtensions: 0
-  loadSaveGameFilename: quiksave
+  loadSaveGameFilename: 
   CellRadius: 4
   CellDetailRadius: 3
   CellRadiusOnLoad: 2
@@ -84,9 +85,9 @@ MonoBehaviour:
   Override: 1
   PlayMusic: 1
   KinematicRigidbodies: 1
-  CellRadius: 0
-  CellDetailRadius: 1
-  CellRadiusOnLoad: 0
+  CellRadius: 1
+  CellDetailRadius: 3
+  CellRadiusOnLoad: 1
   RendererType: 0
   CameraFarClip: 250
   SRPQuality: 2
@@ -112,5 +113,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e8e298e5c40ff74baee3e6259ce0c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6897451056585262396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb207f71837a8604c83179eff679cabb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

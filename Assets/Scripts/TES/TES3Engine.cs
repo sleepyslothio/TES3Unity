@@ -35,7 +35,7 @@ namespace TES3Unity
         private PlayerCharacter m_PlayerCharacter;
         private PlayerInventory m_PlayerInventory;
         private GameObject m_PlayerCameraObj;
-        private UnderwaterEffect m_UnderwaterEffect;
+        private Water m_UnderwaterEffect;
         private Color32 m_DefaultAmbientColor = new Color32(137, 140, 160, 255);
         private RaycastHit[] m_InteractRaycastHitBuffer = new RaycastHit[32];
         private InputAction m_UseAction;
@@ -57,7 +57,7 @@ namespace TES3Unity
 
         public UIManager UIManager { get; set; }
 
-        public event Action<CELLRecord> CellLoaded = null;
+        public event Action<CELLRecord> CurrentCellChanged = null;
 
         #endregion
 
@@ -298,8 +298,6 @@ namespace TES3Unity
             m_WaterObj.SetActive(true);
             m_UnderwaterEffect.enabled = true;
             m_UnderwaterEffect.Level = 0.0f;
-
-            CellLoaded?.Invoke(CELL);
         }
 
         private void OnInteriorCell(CELLRecord CELL)
@@ -325,8 +323,6 @@ namespace TES3Unity
             }
 
             m_UnderwaterEffect.enabled = m_WaterObj.activeSelf;
-
-            CellLoaded?.Invoke(CELL);
         }
 
         private void OpenDoor(Door component)
@@ -367,6 +363,7 @@ namespace TES3Unity
                 }
 
                 m_CurrentCell = newCell;
+                CurrentCellChanged?.Invoke(m_CurrentCell);
             }
         }
 
@@ -400,7 +397,7 @@ namespace TES3Unity
             m_PlayerCharacter = player.GetComponent<PlayerCharacter>();
             m_PlayerController = player.GetComponent<PlayerController>();
             m_PlayerInventory = player.GetComponent<PlayerInventory>();
-            m_UnderwaterEffect = m_PlayerCameraObj.GetComponent<UnderwaterEffect>();
+            m_UnderwaterEffect = m_PlayerCameraObj.GetComponent<Water>();
 
             return player;
         }
