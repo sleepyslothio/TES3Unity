@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4000012979786684}
   - component: {fileID: 33000013400215322}
   - component: {fileID: 23000010048117332}
+  - component: {fileID: 2086266868559243471}
   m_Layer: 4
   m_Name: WaterRP
   m_TagString: Untagged
@@ -79,3 +80,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &2086266868559243471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013936092580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb1b459650c67b649b95d456bd502958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  underwaterLevel: 0
+  ambientColor: {r: 1, g: 1, b: 1, a: 1}
+  fogColor: {r: 0, g: 0.4, b: 0.7, a: 0.6}
+  fogDensity: 0.04

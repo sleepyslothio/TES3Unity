@@ -147,6 +147,7 @@ namespace TES3Unity
 
         private void ManageEscapeKey()
         {
+#if UNITY_STANDALONE
             if (Cursor.lockState != CursorLockMode.Locked)
             {
                 if (Mouse.current.leftButton.ReadValue() > 0.5f)
@@ -162,6 +163,7 @@ namespace TES3Unity
                     Cursor.visible = true;
                 }
             }
+#endif
         }
 
         private void RotatePlayer()

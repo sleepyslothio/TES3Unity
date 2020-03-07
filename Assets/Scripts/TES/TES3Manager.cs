@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
+using Demonixis.Toolbox.XR;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -131,6 +132,12 @@ namespace TES3Unity
                 }
             }
 #endif
+
+            if (GameSettings.IsMobile() && !XRManager.IsXREnabled())
+            {
+                var touchPrefab = Resources.Load<GameObject>("Input/TouchJoysticks");
+                Instantiate(touchPrefab, Vector3.zero, Quaternion.identity);
+            }
 
             m_MorrowindEngine.SpawnPlayer(cellGridCoords, cellIsInterior, spawnPosition, spawnRotation);
         }
