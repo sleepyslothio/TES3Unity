@@ -97,7 +97,7 @@ namespace TES3Unity.ESM
             {
                 MissingRecordLogs.Add(log);
 
-                if (TES3Manager.instance?.logEnabled ?? false)
+                if (TES3Manager.Instance?.logEnabled ?? false)
                 {
                     Debug.Log(log);
                 }

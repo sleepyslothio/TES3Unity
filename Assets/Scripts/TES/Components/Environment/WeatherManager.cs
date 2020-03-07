@@ -1,14 +1,18 @@
-﻿using TES3Unity.ESM.Records;
+﻿using System.Collections;
+using TES3Unity.ESM.Records;
 using UnityEngine;
 
 namespace TES3Unity.Components
 {
     public class WeatherManager : MonoBehaviour
     {
-        private void Awake()
+        private IEnumerator Start()
         {
-            var tes = TES3Manager.instance;
+            yield return new WaitForEndOfFrame();
+
+            var tes = TES3Manager.Instance;
             tes.Engine.CurrentCellChanged += Engine_CellLoaded;
+            Engine_CellLoaded(tes.Engine.CurrentCell);
         }
 
         private void Engine_CellLoaded(CELLRecord cell)

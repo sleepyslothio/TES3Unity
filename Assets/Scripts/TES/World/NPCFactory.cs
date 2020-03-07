@@ -8,6 +8,7 @@ namespace TES3Unity.World
     {
         public static GameObject InstanciateNPC(NIFManager nifManager, NPC_Record npc)
         {
+            var beast = npc.Race == "Argonian" || npc.Race == "Khajiit";
             var female = Utils.ContainsBitFlags((uint)npc.Flags, (uint)NPCFlags.Female);
             var animationFile = npc.Model;
 
@@ -19,9 +20,16 @@ namespace TES3Unity.World
                 {
                     animationFile += "_female";
                 }
+
+                if (beast)
+                {
+                    animationFile = "xbase_animkna";
+                }
+
+                animationFile += ".nif";
             }
 
-            var npcObj = nifManager.InstantiateNIF($"meshes\\{animationFile}.NIF", false);
+            var npcObj = nifManager.InstantiateNIF($"meshes\\{animationFile}", false);
             var pelvis = npcObj.transform.Find("Bip01/Bip01 Pelvis");
             pelvis.localPosition = new Vector3(0, -0.268f, 0.009f);
 
@@ -58,8 +66,14 @@ namespace TES3Unity.World
             AddBodyPart(nifManager, npc.HairModel, boneMapping["Head"]);
             AddBodyPart(nifManager, ankle, boneMapping["Left Ankle"], true);
             AddBodyPart(nifManager, ankle, boneMapping["Right Ankle"]);
-            AddBodyPart(nifManager, foot, boneMapping["Left Foot"], true);
-            AddBodyPart(nifManager, foot, boneMapping["Right Foot"]);
+
+            // No foot model for that race.
+            if (!beast)
+            {
+                AddBodyPart(nifManager, foot, boneMapping["Left Foot"], true);
+                AddBodyPart(nifManager, foot, boneMapping["Right Foot"]);
+            }
+
             AddBodyPart(nifManager, forearm, boneMapping["Left Forearm"], true);
             AddBodyPart(nifManager, forearm, boneMapping["Right Forearm"]);
             AddBodyPart(nifManager, groin, boneMapping["Groin"]);
@@ -75,20 +89,45 @@ namespace TES3Unity.World
 
             // This part is hacky..
             var chest = AddBodyPart(nifManager, skins, boneMapping["Chest"]);
-            if (npc.Race?.ToLower().Contains("dark") ?? false)
-                chest.localPosition = new Vector3(0.019f, 0.091f, 0.02f); // Magic Vector3...
+            if (npc.Race == "Dark Elf")
+            {
+                if (female)
+                {
+                    chest.localPosition = new Vector3(-0, -0.03f, 0f);
+                }
+                else
+                {
+                    chest.localPosition = new Vector3(0.019f, 0.091f, 0.02f);
+                }
+            }
+            else if (npc.Race == "Wood Elf")
+            {
+                chest.localPosition = new Vector3(0.014f, 0.092f, 0.014f);
+            }
             else
+            {
                 chest.localRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+            }
 
             if (female)
+            {
                 chest.localRotation = Quaternion.Euler(0.0f, 180.0f, 90.0f);
+            }
 
-            var leftHand = chest.Find("Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Spine2/Bip01 Neck/Bip01 L Clavicle/Bip01 L UpperArm/Left Hand");
-            InvertXScale(leftHand);
-            leftHand.SetParent(boneMapping["Left Hand"], false);
+            if (beast)
+            {
+                chest.localPosition = new Vector3(-0.018f, -1.081f, 0);
+                chest.localRotation = Quaternion.Euler(0, 90, 0);
+            }
+            else
+            {
+                var leftHand = chest.Find("Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Spine2/Bip01 Neck/Bip01 L Clavicle/Bip01 L UpperArm/Left Hand");
+                InvertXScale(leftHand);
+                leftHand.SetParent(boneMapping["Left Hand"], false);
 
-            var rightHand = chest.Find("Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Spine2/Bip01 Neck/Bip01 R Clavicle/Bip01 R UpperArm/Right Hand");
-            rightHand.SetParent(boneMapping["Right Hand"], false);
+                var rightHand = chest.Find("Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Spine2/Bip01 Neck/Bip01 R Clavicle/Bip01 R UpperArm/Right Hand");
+                rightHand.SetParent(boneMapping["Right Hand"], false);
+            }
 
             return npcObj;
         }

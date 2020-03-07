@@ -11,7 +11,7 @@ namespace TES3Unity.Components.Records
 
             // Add items
             var db = TES3Manager.MWDataReader.MorrowindESMFile.ObjectsByIDString;
-            var nifManager = TES3Manager.instance.Engine.nifManager;
+            var nifManager = TES3Manager.Instance.Engine.nifManager;
 
             foreach (var npcItem in NPC_.Items)
             {

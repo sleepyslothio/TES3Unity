@@ -40,7 +40,7 @@ namespace TES3Unity.UI
 
         private void Start()
         {
-            var texture = TES3Manager.instance.TextureManager.LoadTexture("tx_menubook", true);
+            var texture = TES3Manager.Instance.TextureManager.LoadTexture("tx_menubook", true);
             _background.sprite = GUIUtils.CreateSprite(texture);
 
             // If the book is already opened, don't change its transform.

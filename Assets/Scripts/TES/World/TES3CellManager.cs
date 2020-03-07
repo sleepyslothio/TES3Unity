@@ -361,7 +361,7 @@ namespace TES3Unity
             }
             else
             {
-                if (TES3Manager.instance.logEnabled)
+                if (TES3Manager.Instance.logEnabled)
                     Debug.Log("Unknown Object: " + refCellObjInfo.refObjDataGroup.NAME.value);
             }
         }

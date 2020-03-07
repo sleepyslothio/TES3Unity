@@ -1,4 +1,5 @@
-﻿using TES3Unity.ESM.Records;
+﻿using System.Collections;
+using TES3Unity.ESM.Records;
 using UnityEngine;
 
 namespace TES3Unity.Effects
@@ -10,7 +11,7 @@ namespace TES3Unity.Effects
         private float _defaultFogDensity;
         private Material _defaultSkybox = null;
         private bool _isUnderwater = false;
-        private Transform _transform = null;
+        private Transform _cameraTransform = null;
         private bool _enabled = false;
         private bool _hdrp = false;
 
@@ -29,29 +30,37 @@ namespace TES3Unity.Effects
             set { underwaterLevel = value; }
         }
 
-        private void Awake()
-        {
-            var tes = TES3Manager.instance;
-            tes.Engine.CurrentCellChanged += Engine_CurrentCellChanged; ;
-        }
-
-        void Start()
+        private IEnumerator Start()
         {
             _hdrp = GameSettings.Get().RendererMode == RendererMode.HDRP;
 
-            _transform = GetComponent<Transform>();
+            var camera = Camera.main;
+
+            while (camera == null)
+            {
+                camera = Camera.main;
+                yield return null;
+            }
+
+            _cameraTransform = camera.transform;
+
+            yield return new WaitForEndOfFrame();
+
+            var tes = TES3Manager.Instance;
+            tes.Engine.CurrentCellChanged += Engine_CurrentCellChanged;
+            Engine_CurrentCellChanged(tes.Engine.CurrentCell);
         }
 
-        void Update()
+        private void Update()
         {
-            if (!_enabled)
+            if (!_enabled || _cameraTransform == null)
             {
                 return;
             }
 
-            if (_transform.position.y < underwaterLevel && !_isUnderwater)
+            if (_cameraTransform.position.y < underwaterLevel && !_isUnderwater)
                 SetEffectEnabled(true);
-            else if (_transform.position.y > underwaterLevel && _isUnderwater)
+            else if (_cameraTransform.position.y > underwaterLevel && _isUnderwater)
                 SetEffectEnabled(false);
         }
 

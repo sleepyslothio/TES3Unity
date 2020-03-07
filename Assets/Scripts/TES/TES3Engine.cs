@@ -51,7 +51,20 @@ namespace TES3Unity
         public TES3CellManager cellManager;
         public TemporalLoadBalancer temporalLoadBalancer;
 
-        public CELLRecord currentCell => m_CurrentCell;
+        public CELLRecord CurrentCell
+        {
+            get => m_CurrentCell;
+            private set
+            {
+                if (m_CurrentCell == value)
+                {
+                    return;
+                }
+
+                m_CurrentCell = value;
+                CurrentCellChanged?.Invoke(m_CurrentCell);
+            }
+        }
 
         public static int markerLayer => LayerMask.NameToLayer("Marker");
 
@@ -73,7 +86,7 @@ namespace TES3Unity
             temporalLoadBalancer = new TemporalLoadBalancer();
             cellManager = new TES3CellManager(dataReader, textureManager, nifManager, temporalLoadBalancer);
 
-            var tes = TES3Manager.instance;
+            var tes = TES3Manager.Instance;
             var config = GameSettings.Get();
 
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
@@ -142,7 +155,7 @@ namespace TES3Unity
         /// <param name="position">The target position of the player.</param>
         public void SpawnPlayerInside(string interiorCellName, Vector3 position, Quaternion rotation)
         {
-            m_CurrentCell = dataReader.FindInteriorCellRecord(interiorCellName);
+            CurrentCell = dataReader.FindInteriorCellRecord(interiorCellName);
 
             Debug.Assert(m_CurrentCell != null);
 
@@ -162,7 +175,7 @@ namespace TES3Unity
         /// <param name="position">The target position of the player.</param>
         public void SpawnPlayerInside(Vector2i gridCoords, Vector3 position, Quaternion rotation)
         {
-            m_CurrentCell = dataReader.FindInteriorCellRecord(gridCoords);
+            CurrentCell = dataReader.FindInteriorCellRecord(gridCoords);
 
             Debug.Assert(m_CurrentCell != null);
 
@@ -182,7 +195,7 @@ namespace TES3Unity
         /// <param name="rotation">The target rotation of the player.</param>
         public void SpawnPlayerOutside(Vector2i gridCoords, Vector3 position, Quaternion rotation)
         {
-            m_CurrentCell = dataReader.FindExteriorCellRecord(gridCoords);
+            CurrentCell = dataReader.FindExteriorCellRecord(gridCoords);
 
             Debug.Assert(m_CurrentCell != null);
 
@@ -202,7 +215,7 @@ namespace TES3Unity
         public void SpawnPlayerOutside(Vector3 position, Quaternion rotation)
         {
             var cellIndices = cellManager.GetExteriorCellIndices(position);
-            m_CurrentCell = dataReader.FindExteriorCellRecord(cellIndices);
+            CurrentCell = dataReader.FindExteriorCellRecord(cellIndices);
 
             CreatePlayer(position, rotation);
             cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, cellRadiusOnLoad);
@@ -296,8 +309,8 @@ namespace TES3Unity
 
             m_WaterObj.transform.position = Vector3.zero;
             m_WaterObj.SetActive(true);
-            m_UnderwaterEffect.enabled = true;
-            m_UnderwaterEffect.Level = 0.0f;
+            //m_UnderwaterEffect.enabled = true;
+            //m_UnderwaterEffect.Level = 0.0f;
         }
 
         private void OnInteriorCell(CELLRecord CELL)
@@ -314,7 +327,7 @@ namespace TES3Unity
                 var offset = 1.6f; // Interiors cells needs this offset to render at the correct location.
                 m_WaterObj.transform.position = new Vector3(0, (CELL.WHGT.value / Convert.MeterInMWUnits) - offset, 0);
                 m_WaterObj.SetActive(true);
-                m_UnderwaterEffect.Level = m_WaterObj.transform.position.y;
+                //m_UnderwaterEffect.Level = m_WaterObj.transform.position.y;
             }
             // FIXME: The water is disabled in interior cells for now.
             //else
@@ -322,7 +335,7 @@ namespace TES3Unity
                 m_WaterObj.SetActive(false);
             }
 
-            m_UnderwaterEffect.enabled = m_WaterObj.activeSelf;
+           // m_UnderwaterEffect.enabled = m_WaterObj.activeSelf;
         }
 
         private void OpenDoor(Door component)
@@ -362,8 +375,7 @@ namespace TES3Unity
                     OnExteriorCell(newCell);
                 }
 
-                m_CurrentCell = newCell;
-                CurrentCellChanged?.Invoke(m_CurrentCell);
+                CurrentCell = newCell;
             }
         }
 

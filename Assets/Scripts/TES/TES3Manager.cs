@@ -47,6 +47,19 @@ namespace TES3Unity
         public TES3Engine Engine => m_MorrowindEngine;
         public TextureManager TextureManager => m_MorrowindEngine.textureManager;
 
+        public static TES3Manager Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = FindObjectOfType<TES3Manager>();
+                }
+
+                return instance;
+            }
+        }
+
         private void Awake()
         {
             instance = this;

@@ -30,7 +30,7 @@ namespace TES3Unity
                 RayCastTarget = m_RightHand;
 
             // Loading hands.
-            var nifManager = TES3Manager.instance.Engine.nifManager; // FIXME
+            var nifManager = TES3Manager.Instance.Engine.nifManager; // FIXME
 
             var race = "nord";
             var gender = "m";

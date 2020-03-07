@@ -24,7 +24,7 @@ namespace TES3Unity.UI
 
         void Start()
         {
-            var texture = TES3Manager.instance.TextureManager.LoadTexture("scroll", true);
+            var texture = TES3Manager.Instance.TextureManager.LoadTexture("scroll", true);
             _background.sprite = GUIUtils.CreateSprite(texture);
 
             // If the book is already opened, don't change its transform.

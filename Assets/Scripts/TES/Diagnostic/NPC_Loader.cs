@@ -8,10 +8,26 @@ namespace TES3Unity.Diagnostic
 {
     public class NPC_Loader : MonoBehaviour
     {
+        public enum RaceType
+        {
+            Breton = 0,
+            Imperial,
+            Nord,
+            Redguard,
+            High_Elf,
+            Wood_Elf,
+            Dark_Elf,
+            Orc,
+            Argonian,
+            Khajiit
+        }
+
         private NIFManager m_NifManager = null;
 
         [SerializeField]
-        private int m_Index = 0;
+        private RaceType m_Race = RaceType.Breton;
+        [SerializeField]
+        private bool m_Female = false;
 
         private void Awake()
         {
@@ -24,18 +40,27 @@ namespace TES3Unity.Diagnostic
             m_NifManager = tes.NifManager;
 
             var npcs = tes.DataReader.MorrowindESMFile.GetRecords<NPC_Record>();
+            NPC_Record npcRecord = null;
 
-            if (m_Index < 0 || m_Index > npcs.Count - 1)
+            foreach (var npc in npcs)
             {
-                m_Index = 0;
+                if (npc.Race == m_Race.ToString().Replace("_", " "))
+                {
+                    var female = Utils.ContainsBitFlags((uint)npc.Flags, (uint)NPCFlags.Female);
+
+                    if (female && m_Female || !female && !m_Female)
+                    {
+                        npcRecord = npc;
+                        break;
+                    }
+                }
             }
 
-            var npcRecord = npcs[m_Index];
 
             // Instanciate NPC
             var npcObj = NPCFactory.InstanciateNPC(m_NifManager, npcRecord);
             var component = npcObj.AddComponent<NPC>();
-            component.record = npcRecord;   
+            component.record = npcRecord;
         }
     }
 }
