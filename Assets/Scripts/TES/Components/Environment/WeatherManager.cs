@@ -6,8 +6,14 @@ namespace TES3Unity.Components
 {
     public class WeatherManager : MonoBehaviour
     {
+        private Color m_DefaultFogColor;
+        private float m_DefaultFogDensity;
+
         private IEnumerator Start()
         {
+            m_DefaultFogColor = RenderSettings.fogColor;
+            m_DefaultFogDensity = RenderSettings.fogDensity;
+
             yield return new WaitForEndOfFrame();
 
             var tes = TES3Manager.Instance;
@@ -32,6 +38,19 @@ namespace TES3Unity.Components
                         break;
                     }
                 }
+
+                var ambientData = cell.AMBI;
+                var fogColor = m_DefaultFogColor;
+                var fogDensity = m_DefaultFogDensity;
+
+                if (ambientData != null)
+                {
+                    fogColor = ColorUtils.B8G8R8ToColor32(ambientData.fogColor);
+                    fogDensity = ambientData.fogDensity; Debug.Log(fogDensity);
+                }
+
+                RenderSettings.fogColor = fogColor;
+                RenderSettings.fogDensity = fogDensity;
             }
             else
             {

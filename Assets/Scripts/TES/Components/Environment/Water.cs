@@ -1,19 +1,23 @@
 ﻿using System.Collections;
 using TES3Unity.ESM.Records;
+using TES3Unity.Rendering;
 using UnityEngine;
 
 namespace TES3Unity.Effects
 {
     public sealed class Water : MonoBehaviour
     {
-        private bool _defaultFog;
-        private Color _defaultFogColor;
-        private float _defaultFogDensity;
-        private Material _defaultSkybox = null;
-        private bool _isUnderwater = false;
-        private Transform _cameraTransform = null;
-        private bool _enabled = false;
-        private bool _hdrp = false;
+        private MeshRenderer m_Water;
+        private Transform m_Camera = null;
+        private bool m_HDRP = false;
+
+        // Underwater (URP)
+        private Material m_DefaultSkybox = null;
+        private Color m_DefaultFogColor;
+        private bool m_DefaultFog;
+        private float m_DefaultFogDensity;
+        private bool m_IsUnderwater = false;
+        private bool m_UnderWaterEnabled = false;
 
         [SerializeField]
         private float underwaterLevel = 0.0f;
@@ -30,9 +34,18 @@ namespace TES3Unity.Effects
             set { underwaterLevel = value; }
         }
 
+        private void Awake()
+        {
+            transform.position = Vector3.zero;
+        }
+
         private IEnumerator Start()
         {
-            _hdrp = GameSettings.Get().RendererMode == RendererMode.HDRP;
+            m_HDRP = GameSettings.Get().RendererMode == RendererMode.HDRP;
+            m_Water = GetComponent<MeshRenderer>();
+
+            var waterMaterial = Resources.Load<Material>(TES3Material.GetWaterMaterialPath(m_HDRP));
+            m_Water.sharedMaterial = waterMaterial;
 
             var camera = Camera.main;
 
@@ -42,7 +55,7 @@ namespace TES3Unity.Effects
                 yield return null;
             }
 
-            _cameraTransform = camera.transform;
+            m_Camera = camera.transform;
 
             yield return new WaitForEndOfFrame();
 
@@ -53,43 +66,63 @@ namespace TES3Unity.Effects
 
         private void Update()
         {
-            if (!_enabled || _cameraTransform == null)
+            if ((!m_UnderWaterEnabled || m_Camera == null))
             {
                 return;
             }
 
-            if (_cameraTransform.position.y < underwaterLevel && !_isUnderwater)
-                SetEffectEnabled(true);
-            else if (_cameraTransform.position.y > underwaterLevel && _isUnderwater)
-                SetEffectEnabled(false);
+            if (m_Camera.position.y < underwaterLevel && !m_IsUnderwater)
+            {
+                UpdateUnderWater(true);
+            }
+            else if (m_Camera.position.y > underwaterLevel && m_IsUnderwater)
+            {
+                UpdateUnderWater(false);
+            }
         }
 
-        public void SetEffectEnabled(bool enabled, bool force = false)
+        public void UpdateUnderWater(bool enabled, bool force = false)
         {
-            if ((_isUnderwater == enabled && !force) && !_hdrp)
+            if ((m_IsUnderwater == enabled && !force) && !m_HDRP)
             {
                 return;
             }
 
-            _isUnderwater = enabled;
+            m_IsUnderwater = enabled;
 
             if (enabled)
             {
-                _defaultFog = RenderSettings.fog;
-                _defaultFogColor = RenderSettings.fogColor;
-                _defaultFogDensity = RenderSettings.fogDensity;
-                _defaultSkybox = RenderSettings.skybox;
+                m_DefaultFog = RenderSettings.fog;
+                m_DefaultFogColor = RenderSettings.fogColor;
+                m_DefaultFogDensity = RenderSettings.fogDensity;
+                m_DefaultSkybox = RenderSettings.skybox;
             }
 
             RenderSettings.fog = enabled;
-            RenderSettings.fogColor = enabled ? fogColor : _defaultFogColor;
-            RenderSettings.fogDensity = enabled ? fogDensity : _defaultFogDensity;
-            RenderSettings.skybox = enabled ? null : _defaultSkybox;
+            RenderSettings.fogColor = enabled ? fogColor : m_DefaultFogColor;
+            RenderSettings.fogDensity = enabled ? fogDensity : m_DefaultFogDensity;
+            RenderSettings.skybox = enabled ? null : m_DefaultSkybox;
         }
 
         private void Engine_CurrentCellChanged(CELLRecord cell)
         {
-            _enabled = !cell.isInterior;
+            var isInterior = cell.isInterior;
+
+            if (isInterior)
+            {
+                var whgt = cell.WHGT;
+                var offset = 1.6f; // Interiors cells needs this offset to render at the correct location.
+                m_Water.transform.position = new Vector3(0, (whgt.value / Convert.MeterInMWUnits) - offset, 0);
+                m_Water.enabled = whgt != null;
+                m_Water.enabled = false;// FIXME
+            }
+            else
+            {
+                m_Water.enabled = true;
+                m_Water.transform.position = Vector3.zero;
+            }
+
+            m_UnderWaterEnabled = m_Water.enabled;
         }
     }
 }

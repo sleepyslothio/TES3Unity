@@ -34,7 +34,7 @@ namespace TES3Unity
         public string modelFilePath;
     }
 
-    public class TES3CellManager
+    public class CellManager
     {
         public static int cellRadius = 4;
         public static int detailRadius = 3;
@@ -47,7 +47,7 @@ namespace TES3Unity
         private TemporalLoadBalancer temporalLoadBalancer;
         private Dictionary<Vector2i, InRangeCellInfo> cellObjects = new Dictionary<Vector2i, InRangeCellInfo>();
 
-        public TES3CellManager(TES3DataReader dataReader, TextureManager textureManager, NIFManager nifManager, TemporalLoadBalancer temporalLoadBalancer)
+        public CellManager(TES3DataReader dataReader, TextureManager textureManager, NIFManager nifManager, TemporalLoadBalancer temporalLoadBalancer)
         {
             this.dataReader = dataReader;
             this.textureManager = textureManager;
@@ -81,7 +81,7 @@ namespace TES3Unity
         {
             var cameraCellIndices = GetExteriorCellIndices(currentPosition);
 
-            var cellRadius = (cellRadiusOverride >= 0) ? cellRadiusOverride : TES3CellManager.cellRadius;
+            var cellRadius = (cellRadiusOverride >= 0) ? cellRadiusOverride : CellManager.cellRadius;
             var minCellX = cameraCellIndices.X - cellRadius;
             var maxCellX = cameraCellIndices.X + cellRadius;
             var minCellY = cameraCellIndices.Y - cellRadius;
@@ -253,6 +253,8 @@ namespace TES3Unity
             {
                 InstantiateCellObject(CELL, cellObjectsContainer, refCellObjInfo);
             }
+
+            InstantiateReflectionProbe(CELL, cellObj.transform);
 
             yield return null;
         }
@@ -732,6 +734,28 @@ namespace TES3Unity
             }
 
             yield return null;
+        }
+
+        private void InstantiateReflectionProbe(CELLRecord cell, Transform parent)
+        {
+            if (cell.isInterior)
+            {
+                // FIXME
+                return;
+            }
+
+            var gridCoords = cell.gridCoords;
+            var position = new Vector3(Convert.ExteriorCellSideLengthInMeters * gridCoords.X, 0, Convert.ExteriorCellSideLengthInMeters * gridCoords.Y);
+
+            var probe = new GameObject("ReflectionProbe");
+            probe.transform.parent = parent;
+            probe.transform.position = position;
+
+            var rp = probe.AddComponent<ReflectionProbe>();
+            rp.size = new Vector3(120, 120, 120);
+            rp.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
+            rp.refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.ViaScripting;
+            rp.RenderProbe();
         }
 
         private void DestroyExteriorCell(Vector2i indices)

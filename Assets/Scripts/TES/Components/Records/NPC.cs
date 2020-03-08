@@ -18,7 +18,7 @@ namespace TES3Unity.Components.Records
                 if (db.ContainsKey(npcItem.Name))
                 {
                     var item = db[npcItem.Name];
-                    Debug.Log($"Item {npcItem.Name} of type {item.header.name} found.");
+                    //Debug.Log($"Item {npcItem.Name} of type {item.header.name} found.");
 
                     var weapon = item as WEAPRecord;
                     if (weapon != null)

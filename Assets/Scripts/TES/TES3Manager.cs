@@ -95,8 +95,8 @@ namespace TES3Unity
                 return;
             }
 
-            TES3CellManager.cellRadius = config.CellRadius;
-            TES3CellManager.detailRadius = config.CellDetailRadius;
+            CellManager.cellRadius = config.CellRadius;
+            CellManager.detailRadius = config.CellDetailRadius;
             TES3Engine.cellRadiusOnLoad = config.CellRadiusOnLoad;
             TES3Engine.desiredWorkTimePerFrame = desiredWorkTimePerFrame;
 
@@ -172,8 +172,8 @@ namespace TES3Unity
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            TES3CellManager.cellRadius = CellRadius;
-            TES3CellManager.detailRadius = CellDetailRadius;
+            CellManager.cellRadius = CellRadius;
+            CellManager.detailRadius = CellDetailRadius;
             TES3Engine.cellRadiusOnLoad = CellRadiusOnLoad;
         }
 

@@ -1,8 +1,6 @@
 ﻿using Demonixis.Toolbox.XR;
 using TES3Unity.Components;
 using TES3Unity.Components.Records;
-using TES3Unity.Effects;
-using TES3Unity.ESM;
 using TES3Unity.Inputs;
 using TES3Unity.Rendering;
 using TES3Unity.UI;
@@ -22,21 +20,15 @@ namespace TES3Unity
 
         #region Private Fields
 
-        private const float playerHeight = 2;
-        private const float playerRadius = 0.4f;
         public static float desiredWorkTimePerFrame = 1.0f / 200;
         public static int cellRadiusOnLoad = 2;
 
         private CELLRecord m_CurrentCell;
-        private GameObject m_SunObj;
-        private GameObject m_WaterObj;
         private Transform m_PlayerTransform;
         private PlayerController m_PlayerController;
         private PlayerCharacter m_PlayerCharacter;
         private PlayerInventory m_PlayerInventory;
         private GameObject m_PlayerCameraObj;
-        private Water m_UnderwaterEffect;
-        private Color32 m_DefaultAmbientColor = new Color32(137, 140, 160, 255);
         private RaycastHit[] m_InteractRaycastHitBuffer = new RaycastHit[32];
         private InputAction m_UseAction;
 
@@ -48,7 +40,7 @@ namespace TES3Unity
         public TextureManager textureManager;
         public TES3Material materialManager;
         public NIFManager nifManager;
-        public TES3CellManager cellManager;
+        public CellManager cellManager;
         public TemporalLoadBalancer temporalLoadBalancer;
 
         public CELLRecord CurrentCell
@@ -84,30 +76,19 @@ namespace TES3Unity
             materialManager = new TES3Material(textureManager);
             nifManager = new NIFManager(dataReader, materialManager);
             temporalLoadBalancer = new TemporalLoadBalancer();
-            cellManager = new TES3CellManager(dataReader, textureManager, nifManager, temporalLoadBalancer);
+            cellManager = new CellManager(dataReader, textureManager, nifManager, temporalLoadBalancer);
 
             var tes = TES3Manager.Instance;
             var config = GameSettings.Get();
 
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientIntensity = tes.ambientIntensity;
+            //RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            //RenderSettings.ambientIntensity = tes.ambientIntensity;
 
-            m_SunObj = GameObjectUtils.CreateSunLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
-            m_SunObj.GetComponent<Light>().shadows = config.SunShadows ? LightShadows.Soft : LightShadows.None;
-            m_SunObj.SetActive(false);
-
-            if (config.DayNightCycle)
-            {
-                m_SunObj.AddComponent<DayNightCycle>();
-            }
+            var m_SunObj = GameObjectUtils.CreateSunLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
+            m_SunObj.AddComponent<LightingManager>();
 
             var waterPrefab = Resources.Load<GameObject>("Prefabs/WaterRP");
-            m_WaterObj = GameObject.Instantiate(waterPrefab);
-            m_WaterObj.SetActive(false);
-
-            var waterRenderer = m_WaterObj.GetComponent<Renderer>();
-            var waterMaterial = Resources.Load<Material>(TES3Material.GetWaterMaterialPath(config.RendererMode == RendererMode.HDRP));
-            waterRenderer.sharedMaterial = waterMaterial;
+            GameObject.Instantiate(waterPrefab);
 
 #if UNITY_STANDALONE
             if (!XRManager.IsXREnabled())
@@ -163,8 +144,6 @@ namespace TES3Unity
 
             var cellInfo = cellManager.StartCreatingInteriorCell(interiorCellName);
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
-
-            OnInteriorCell(m_CurrentCell);
         }
 
         /// <summary>
@@ -183,8 +162,6 @@ namespace TES3Unity
 
             var cellInfo = cellManager.StartCreatingInteriorCell(gridCoords);
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
-
-            OnInteriorCell(m_CurrentCell);
         }
 
         /// <summary>
@@ -203,8 +180,6 @@ namespace TES3Unity
 
             var cellInfo = cellManager.StartCreatingExteriorCell(gridCoords);
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
-
-            OnExteriorCell(m_CurrentCell);
         }
 
         /// <summary>
@@ -219,7 +194,6 @@ namespace TES3Unity
 
             CreatePlayer(position, rotation);
             cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, cellRadiusOnLoad);
-            OnExteriorCell(m_CurrentCell);
         }
 
         #endregion
@@ -296,48 +270,6 @@ namespace TES3Unity
 
         #region Private
 
-        private void SetAmbientLight(Color color)
-        {
-            RenderSettings.ambientLight = color;
-        }
-
-        private void OnExteriorCell(CELLRecord CELL)
-        {
-            SetAmbientLight(m_DefaultAmbientColor);
-
-            m_SunObj.SetActive(true);
-
-            m_WaterObj.transform.position = Vector3.zero;
-            m_WaterObj.SetActive(true);
-            //m_UnderwaterEffect.enabled = true;
-            //m_UnderwaterEffect.Level = 0.0f;
-        }
-
-        private void OnInteriorCell(CELLRecord CELL)
-        {
-            if (CELL.AMBI != null)
-            {
-                SetAmbientLight(ColorUtils.B8G8R8ToColor32(CELL.AMBI.ambientColor));
-            }
-
-            m_SunObj.SetActive(false);
-
-            if (CELL.WHGT != null)
-            {
-                var offset = 1.6f; // Interiors cells needs this offset to render at the correct location.
-                m_WaterObj.transform.position = new Vector3(0, (CELL.WHGT.value / Convert.MeterInMWUnits) - offset, 0);
-                m_WaterObj.SetActive(true);
-                //m_UnderwaterEffect.Level = m_WaterObj.transform.position.y;
-            }
-            // FIXME: The water is disabled in interior cells for now.
-            //else
-            {
-                m_WaterObj.SetActive(false);
-            }
-
-           // m_UnderwaterEffect.enabled = m_WaterObj.activeSelf;
-        }
-
         private void OpenDoor(Door component)
         {
             if (!component.doorData.leadsToAnotherCell)
@@ -362,8 +294,6 @@ namespace TES3Unity
                     temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
 
                     newCell = cellInfo.cellRecord;
-
-                    OnInteriorCell(cellInfo.cellRecord);
                 }
                 else
                 {
@@ -371,8 +301,6 @@ namespace TES3Unity
                     newCell = dataReader.FindExteriorCellRecord(cellIndices);
 
                     cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, cellRadiusOnLoad);
-
-                    OnExteriorCell(newCell);
                 }
 
                 CurrentCell = newCell;
@@ -409,7 +337,6 @@ namespace TES3Unity
             m_PlayerCharacter = player.GetComponent<PlayerCharacter>();
             m_PlayerController = player.GetComponent<PlayerController>();
             m_PlayerInventory = player.GetComponent<PlayerInventory>();
-            m_UnderwaterEffect = m_PlayerCameraObj.GetComponent<Water>();
 
             return player;
         }

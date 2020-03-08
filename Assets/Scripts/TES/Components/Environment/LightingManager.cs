@@ -1,0 +1,67 @@
+﻿using System.Collections;
+using TES3Unity.ESM.Records;
+using UnityEngine;
+
+namespace TES3Unity.Components
+{
+    public sealed class LightingManager : MonoBehaviour
+    {
+        private Light m_Sun = null;
+        private Transform m_Transform = null;
+        private Quaternion m_OriginalOrientation;
+        private Color m_DefaultSunLightColor;
+        private Color32 m_DefaultAmbientColor = new Color32(137, 140, 160, 255);
+        private bool m_DayNightCycle = false;
+        
+
+        [SerializeField]
+        private float m_RotationTime = 0.5f;
+
+        private IEnumerator Start()
+        {
+            var config = GameSettings.Get();
+
+            m_Sun = GetComponent<Light>();
+            m_Sun.shadows = config.SunShadows ? LightShadows.Soft : LightShadows.None;
+            m_DefaultSunLightColor = m_Sun.color;
+
+            m_Transform = transform;
+            m_OriginalOrientation = m_Transform.rotation;
+
+            RenderSettings.sun = GetComponent<Light>();
+
+            m_DayNightCycle = config.DayNightCycle;
+
+            yield return new WaitForEndOfFrame();
+
+            var tes = TES3Manager.Instance;
+            tes.Engine.CurrentCellChanged += Engine_CurrentCellChanged;
+            Engine_CurrentCellChanged(tes.Engine.CurrentCell);
+        }
+
+        private void Update()
+        {
+            if (m_DayNightCycle)
+            {
+                m_Transform.Rotate(m_RotationTime * Time.deltaTime, 0.0f, 0.0f);
+            }
+        }
+
+        private void Engine_CurrentCellChanged(CELLRecord cell)
+        {
+            var ambientColor = m_DefaultAmbientColor;
+            var sunColor = m_DefaultSunLightColor;
+            var ambientData = cell.AMBI;
+
+            if (ambientData != null)
+            {
+                ambientColor = ColorUtils.B8G8R8ToColor32(ambientData.ambientColor);
+                sunColor = ColorUtils.B8G8R8ToColor32(ambientData.sunlightColor);
+            }
+
+            RenderSettings.ambientLight = ambientColor;
+            m_Sun.enabled = !cell.isInterior;
+            m_Sun.color = sunColor;
+        }
+    }
+}
