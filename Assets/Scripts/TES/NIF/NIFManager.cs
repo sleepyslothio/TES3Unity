@@ -9,15 +9,19 @@ namespace TES3Unity
     /// </summary>
     public sealed class NIFManager
     {
+        private static NIFManager _instance;
         private TES3DataReader _dataReader;
         private TES3Material _materialManager;
         private GameObject _prefabContainerObj;
         private Dictionary<string, GameObject> nifPrefabs = new Dictionary<string, GameObject>();
 
+        public static NIFManager Instance => _instance;
+
         public NIFManager(TES3DataReader dataReader, TES3Material materialManager)
         {
             _dataReader = dataReader;
             _materialManager = materialManager;
+            _instance = this;
         }
 
         private void EnsurePrefabContainerObjectExists()

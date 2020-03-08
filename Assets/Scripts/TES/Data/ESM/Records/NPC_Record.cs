@@ -82,6 +82,8 @@ namespace TES3Unity.ESM.Records
         public string PreviousCellDestination { get; private set; }
         public float Scale { get; private set; } = 1.0f;
 
+        public bool IsFemale => Utils.ContainsBitFlags((uint)Flags, (uint)NPCFlags.Female);
+
         public NPC_Record()
         {
             Items = new List<NPCOData>();

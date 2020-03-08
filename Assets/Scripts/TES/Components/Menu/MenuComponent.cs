@@ -84,10 +84,10 @@ namespace TES3Unity.Components
 
             var wait = new WaitForEndOfFrame();
 
-            var actionMap = InputManager.GetActionMap("Menu");
+            var actionMap = InputManager.GetActionMap("UI");
             actionMap.Enable();
 
-            var backAction = actionMap["Back"];
+            var backAction = actionMap["Menu"];
 
             while (!CanReadStorage())
             {

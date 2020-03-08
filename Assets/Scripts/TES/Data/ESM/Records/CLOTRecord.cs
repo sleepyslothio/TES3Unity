@@ -56,12 +56,28 @@ namespace TES3Unity.ESM.Records
             else if (subRecordName == "BNAM")
             {
                 var last = BodyPartGroup.Count - 1;
-                BodyPartGroup[last].SetMalePart(reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize));
+                var partName = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+                var part = BodyPartGroup[last];
+
+                BodyPartGroup[last] = new ArmorBodyPartGroup
+                {
+                     FemalePartName = part.FemalePartName,
+                     Index = part.Index,
+                     MalePartName = partName
+                };
             }
             else if (subRecordName == "CNAM")
             {
                 var last = BodyPartGroup.Count - 1;
-                BodyPartGroup[last].SetFemalePart(reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize));
+                var partName = reader.ReadPossiblyNullTerminatedASCIIString((int)dataSize);
+                var part = BodyPartGroup[last];
+
+                BodyPartGroup[last] = new ArmorBodyPartGroup
+                {
+                    FemalePartName = partName,
+                    Index = part.Index,
+                    MalePartName = part.MalePartName
+                };
             }
             else if (subRecordName == "SCRI")
             {

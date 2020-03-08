@@ -92,6 +92,10 @@ namespace TES3Unity
             // Jump.
             m_MovementActionMap["Jump"].started += (c) => Jump();
 
+            // Crouch
+            m_MovementActionMap["Crouch"].started += (c) => Crouch(true);
+            m_MovementActionMap["Crouch"].canceled += (c) => Crouch(false);
+
             m_LeftAxisAction = m_MovementActionMap["LeftAxis"];
             m_RightAxisAction = m_MovementActionMap["RightAxis"];
         }
@@ -131,6 +135,18 @@ namespace TES3Unity
             else
             {
                 m_MovementSpeedMode = MovementSpeedMode.Walk;
+            }
+        }
+
+        private void Crouch(bool crouch)
+        {
+            if (crouch)
+            {
+                SetMovementType(MovementSpeedMode.Slow);
+            }
+            else
+            {
+                SetMovementType(MovementSpeedMode.Walk);
             }
         }
 

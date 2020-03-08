@@ -51,19 +51,19 @@ namespace TES3Unity.World
             // Load body parts
             var race = npc.Race;
             var gender = female ? "f" : "m";
-            var ankle = $"b_n_{race}_{gender}_ankle";
-            var foot = $"b_n_{race}_{gender}_foot";
-            var forearm = $"b_n_{race}_{gender}_forearm";
-            var groin = $"b_n_{race}_{gender}_groin";
-            var knee = $"b_n_{race}_{gender}_knee";
-            var neck = $"b_n_{race}_{gender}_neck";
-            var skins = $"b_n_{race}_{gender}_skins";
-            var upperArm = $"b_n_{race}_{gender}_upper arm";
-            var upperLeg = $"b_n_{race}_{gender}_upper leg";
-            var wrist = $"b_n_{race}_{gender}_wrist";
+            var ankle = $"b\\b_n_{race}_{gender}_ankle.nif";
+            var foot = $"b\\b_n_{race}_{gender}_foot.nif";
+            var forearm = $"b\\b_n_{race}_{gender}_forearm.nif";
+            var groin = $"b\\b_n_{race}_{gender}_groin.nif";
+            var knee = $"b\\b_n_{race}_{gender}_knee.nif";
+            var neck = $"b\\b_n_{race}_{gender}_neck.nif";
+            var skins = $"b\\b_n_{race}_{gender}_skins.nif";
+            var upperArm = $"b\\b_n_{race}_{gender}_upper arm.nif";
+            var upperLeg = $"b\\b_n_{race}_{gender}_upper leg.nif";
+            var wrist = $"b\\b_n_{race}_{gender}_wrist.nif";
 
-            AddBodyPart(nifManager, npc.HeadModel, boneMapping["Head"]);
-            AddBodyPart(nifManager, npc.HairModel, boneMapping["Head"]);
+            AddBodyPart(nifManager, $"b\\{npc.HeadModel}.nif", boneMapping["Head"]);
+            AddBodyPart(nifManager, $"b\\{npc.HairModel}.nif", boneMapping["Head"]);
             AddBodyPart(nifManager, ankle, boneMapping["Left Ankle"], true);
             AddBodyPart(nifManager, ankle, boneMapping["Right Ankle"]);
 
@@ -134,7 +134,7 @@ namespace TES3Unity.World
 
         public static Transform AddBodyPart(NIFManager nifManager, string path, Transform parent, bool invertXScale = false)
         {
-            var part = nifManager.InstantiateNIF($"meshes\\b\\{path}.NIF", false);
+            var part = nifManager.InstantiateNIF($"meshes\\{path}", false);
             var partTransform = part.transform;
 
             if (invertXScale)

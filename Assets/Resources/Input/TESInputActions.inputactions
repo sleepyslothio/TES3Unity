@@ -44,6 +44,14 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Crouch",
+                    "type": "Button",
+                    "id": "7ea44a5e-ad34-4266-a717-d0f29824c495",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -211,6 +219,28 @@
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b270947d-173f-47e3-b17c-26c7b4fc342f",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a3ea41c4-4d42-4729-b718-e64f83427429",
+                    "path": "<Gamepad>/leftStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -219,33 +249,9 @@
             "id": "dd349e84-d489-4e7d-a451-43d03f4c0b90",
             "actions": [
                 {
-                    "name": "Light",
-                    "type": "Button",
-                    "id": "5c942f72-20c8-454e-9d83-7488003d597e",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Attack",
-                    "type": "Button",
-                    "id": "3b0b2f82-8450-4092-93da-14cdb6544c59",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
                     "name": "Use",
                     "type": "Button",
                     "id": "763ec881-7f4b-4780-b96c-3182e8284acf",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Slow",
-                    "type": "Button",
-                    "id": "ecbebfdd-8f0e-4a47-87c7-ae175e9dac9c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
@@ -259,37 +265,55 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Inventory",
+                    "name": "ReadyWeapon",
                     "type": "Button",
                     "id": "63b78ac3-2a91-42b6-b830-164f4233ff51",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "3b0b2f82-8450-4092-93da-14cdb6544c59",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Journal",
+                    "type": "Button",
+                    "id": "8b526ffe-157d-4498-8da9-4ba34af9b36f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Rest",
+                    "type": "Button",
+                    "id": "c6de1a2b-b926-4b8f-973b-3c61834e109b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Camera",
+                    "type": "Button",
+                    "id": "5e45ee80-7140-4890-b8c0-896b4f3d0457",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Inventory",
+                    "type": "Button",
+                    "id": "f61b77f9-cc33-4893-bc0c-3c1b9129cd42",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "c3931055-22ff-4e2b-8a59-bca35d86d990",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Light",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "02181534-3e0a-4473-bc3c-3952530cf28a",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "Hold",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Light",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "50db29ae-7974-439a-bd5b-f359697eeb02",
@@ -314,6 +338,94 @@
                 },
                 {
                     "name": "",
+                    "id": "3c17e8a3-806b-48cf-a04b-551dd006c5e7",
+                    "path": "<Keyboard>/j",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Journal",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6ccfdd7c-192a-4284-b997-b39f240b1237",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Journal",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5953c431-3cea-4994-a49a-824054515da0",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rest",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "67302652-be67-4dad-b550-20f2fa919996",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rest",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "79d27bbd-b7a3-4ec5-b7ba-6357bf1155df",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4c3bb6a0-7199-4e53-b557-198991eff4f1",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7fd6902b-c536-4a63-bc95-bb4a19fc64e1",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "51261a3a-a4f6-424e-a0fc-cd0f9703a4ec",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "c6ac3af0-a3fa-483c-947e-ee426ec37d5c",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -331,28 +443,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Use",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ac9b97a2-ab9a-432b-a1f7-8a267c4b7d0d",
-                    "path": "<Keyboard>/leftCtrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Slow",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a42d06e2-6f4f-4388-969a-40b340b29afb",
-                    "path": "<Gamepad>/rightStickPress",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Slow",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -381,11 +471,11 @@
                 {
                     "name": "",
                     "id": "180cfe56-28e5-4ef4-ad82-7f77d823a390",
-                    "path": "<Keyboard>/i",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory",
+                    "action": "ReadyWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -396,7 +486,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory",
+                    "action": "ReadyWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -459,6 +549,22 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Back",
+                    "type": "Button",
+                    "id": "7ce98d40-c895-44ff-bab8-f747b063ee18",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Validate",
+                    "type": "Button",
+                    "id": "4d157043-1f1b-43aa-bde5-9804f33488b8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -492,6 +598,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6f603cba-2071-43b0-84be-e58a816ab21e",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Back",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "10530613-724e-498b-a087-9f0312f37639",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Back",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6f91a988-7877-493c-8528-e0c9b542650d",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Validate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bff236aa-71b9-4fb1-b6e5-f2b30ccaa1e5",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Validate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
