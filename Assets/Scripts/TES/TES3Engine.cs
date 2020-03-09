@@ -1,41 +1,29 @@
 ﻿using Demonixis.Toolbox.XR;
 using TES3Unity.Components;
 using TES3Unity.Components.Records;
-using TES3Unity.Inputs;
 using TES3Unity.Rendering;
-using TES3Unity.UI;
 using UnityEngine;
 using TES3Unity.Components.XR;
-using UnityEngine.InputSystem;
 using TES3Unity.ESM.Records;
 using System;
 
 namespace TES3Unity
 {
-    public class TES3Engine
+    public sealed class TES3Engine : MonoBehaviour
     {
-        public static TES3Engine instance;
-
-        public const float maxInteractDistance = 3;
-
-        #region Private Fields
-
+        // Static.
+        public static int markerLayer => LayerMask.NameToLayer("Marker");
         public static float desiredWorkTimePerFrame = 1.0f / 200;
         public static int cellRadiusOnLoad = 2;
+        private static TES3Engine instance = null;
 
+        // Private.
         private CELLRecord m_CurrentCell;
         private Transform m_PlayerTransform;
-        private PlayerController m_PlayerController;
-        private PlayerCharacter m_PlayerCharacter;
-        private PlayerInventory m_PlayerInventory;
         private GameObject m_PlayerCameraObj;
-        private RaycastHit[] m_InteractRaycastHitBuffer = new RaycastHit[32];
-        private InputAction m_UseAction;
-
-        #endregion
-
-        #region Public Fields
-
+        private bool m_Initialized = false;
+        
+        // Public.
         public TES3DataReader dataReader;
         public TextureManager textureManager;
         public TES3Material materialManager;
@@ -58,21 +46,35 @@ namespace TES3Unity
             }
         }
 
-        public static int markerLayer => LayerMask.NameToLayer("Marker");
+        public static TES3Engine Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = FindObjectOfType<TES3Engine>();
+                }
 
-        public UIManager UIManager { get; set; }
+                return instance;
+            }
+        }
 
         public event Action<CELLRecord> CurrentCellChanged = null;
-        public event Action<RecordComponent, bool> ShowInteractiveTextChanged = null;
-        public event Action<RecordComponent> RaycastedComponent = null;
 
-        #endregion
-
-        public TES3Engine(TES3DataReader mwDataReader)
+        private void Awake()
         {
-            Debug.Assert(instance == null);
+            if (instance != null && instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                instance = this;
+            }
+        }
 
-            instance = this;
+        public void Initialize(TES3DataReader mwDataReader)
+        {
             dataReader = mwDataReader;
             textureManager = new TextureManager(dataReader);
             materialManager = new TES3Material(textureManager);
@@ -100,12 +102,8 @@ namespace TES3Unity
             var uiCanvasPrefab = Resources.Load<GameObject>("Prefabs/GameUI");
             var uiCanvas = GameObject.Instantiate(uiCanvasPrefab);
 
-            UIManager = uiCanvas.GetComponent<UIManager>();
-
-            var gameplayActionMap = InputManager.GetActionMap("Gameplay");
-            gameplayActionMap.Enable();
-
-            m_UseAction = gameplayActionMap["Use"];
+            
+            m_Initialized = true;
         }
 
         #region Player Spawn
@@ -153,6 +151,11 @@ namespace TES3Unity
 
         public void Update()
         {
+            if (!m_Initialized)
+            {
+                return;
+            }
+
             // The current cell can be null if the player is outside of the defined game world.
             if ((m_CurrentCell == null) || !m_CurrentCell.isInterior)
             {
@@ -160,62 +163,11 @@ namespace TES3Unity
             }
 
             temporalLoadBalancer.RunTasks(desiredWorkTimePerFrame);
-            CastInteractRay();
-        }
-
-        public void CastInteractRay()
-        {
-            // Cast a ray to see what the camera is looking at.
-            var ray = new Ray(m_PlayerCharacter.RayCastTarget.position, m_PlayerCharacter.RayCastTarget.forward);
-            var raycastHitCount = Physics.RaycastNonAlloc(ray, m_InteractRaycastHitBuffer, maxInteractDistance);
-
-            if (raycastHitCount > 0 && !m_PlayerController.Paused)
-            {
-                for (int i = 0; i < raycastHitCount; i++)
-                {
-                    var hitInfo = m_InteractRaycastHitBuffer[i];
-                    var component = hitInfo.collider.GetComponentInParent<RecordComponent>();
-
-                    if (component != null)
-                    {
-                        if (string.IsNullOrEmpty(component.objData.name))
-                        {
-                            return;
-                        }
-
-                        ShowInteractiveTextChanged?.Invoke(component, true);
-                        RaycastedComponent?.Invoke(component);
-
-                        if (m_UseAction.phase == InputActionPhase.Started)
-                        {
-                            if (component is Door)
-                                OpenDoor((Door)component);
-
-                            else if (component.usable)
-                                component.Interact();
-
-                            else if (component.pickable)
-                                m_PlayerInventory.Add(component);
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        //deactivate text if no interactable [ DOORS ONLY - REQUIRES EXPANSION ] is found
-                        ShowInteractiveTextChanged?.Invoke(null, false);
-                    }
-                }
-            }
-            else
-            {
-                //deactivate text if nothing is raycasted against
-                ShowInteractiveTextChanged?.Invoke(null, false);
-            }
         }
 
         #region Private
 
-        private void OpenDoor(Door component)
+        public void OpenDoor(Door component)
         {
             if (!component.doorData.leadsToAnotherCell)
             {
@@ -278,10 +230,6 @@ namespace TES3Unity
             m_PlayerTransform.rotation = rotation;
 
             m_PlayerCameraObj = player.GetComponentInChildren<Camera>().gameObject;
-
-            m_PlayerCharacter = player.GetComponent<PlayerCharacter>();
-            m_PlayerController = player.GetComponent<PlayerController>();
-            m_PlayerInventory = player.GetComponent<PlayerInventory>();
 
             return player;
         }

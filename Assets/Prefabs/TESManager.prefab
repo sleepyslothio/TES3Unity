@@ -10,10 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 477232}
   - component: {fileID: 11464354}
+  - component: {fileID: 6628529767776134678}
   - component: {fileID: 4663438948078211954}
   - component: {fileID: 2025599348}
   - component: {fileID: 493214117}
   - component: {fileID: 6897451056585262396}
+  - component: {fileID: 1945703045182576952}
   m_Layer: 0
   m_Name: TESManager
   m_TagString: Untagged
@@ -57,6 +59,18 @@ MonoBehaviour:
   CellRadius: 4
   CellDetailRadius: 3
   CellRadiusOnLoad: 2
+--- !u!114 &6628529767776134678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb6885d49240dc24e8a4c264d91533e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4663438948078211954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88,8 +102,7 @@ MonoBehaviour:
   CellRadius: 1
   CellDetailRadius: 3
   CellRadiusOnLoad: 1
-  RendererType: 0
-  CameraFarClip: 250
+  CameraFarClip: 500
   SRPQuality: 2
   RenderScale: 0.95
   WaterTransparency: 0
@@ -125,5 +138,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb207f71837a8604c83179eff679cabb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1945703045182576952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdaa02a519fa3e14d81b7452c3c53fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

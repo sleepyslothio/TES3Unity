@@ -7,6 +7,19 @@
         public NiObject[] blocks;
         public NiFooter footer;
 
+        public bool IsSkinnedMesh()
+        {
+            foreach (var b in blocks)
+            {
+                if (b is NiSkinInstance)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public NiFile(string filename)
         {
             name = filename;
@@ -26,14 +39,7 @@
             footer = new NiFooter();
             footer.Deserialize(reader);
 
-            foreach (var b in blocks)
-            {
-                if (b is NiSkinInstance)
-                {
-                    UnityEngine.Debug.Log($"{name} as a NiSkinInstance");
-                    return;
-                }
-            }
+
         }
     }
 }

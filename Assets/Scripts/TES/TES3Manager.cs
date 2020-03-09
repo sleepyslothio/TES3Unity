@@ -2,7 +2,6 @@
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
 using Demonixis.Toolbox.XR;
 #if UNITY_EDITOR
@@ -11,6 +10,7 @@ using UnityEditor;
 
 namespace TES3Unity
 {
+    [RequireComponent(typeof(TES3Engine))]
     public class TES3Manager : MonoBehaviour
     {
         public const string Version = "2020.1";
@@ -105,7 +105,8 @@ namespace TES3Unity
                 MWDataReader = new TES3DataReader(dataPath);
             }
 
-            m_MorrowindEngine = new TES3Engine(MWDataReader);
+            m_MorrowindEngine = GetComponent<TES3Engine>();
+            m_MorrowindEngine.Initialize(MWDataReader);
 
             var soundManager = FindObjectOfType<SoundManager>();
             soundManager?.Initialize(dataPath);
@@ -128,6 +129,7 @@ namespace TES3Unity
 
                     ess.FindStartLocation(out string cellName, out float[] pos, out float[] rot);
                     // TODO: Find the correct grid/cell from these data.
+                    //TES3Manager.MWDataReader.FindExteriorCellRecord(TES3Engine.Instance.cellManager.GetExteriorCellIndices(doorData.doorExitPos));
                 }
             }
 #endif
@@ -146,15 +148,12 @@ namespace TES3Unity
             MWDataReader?.Close();
         }
 
+#if UNITY_EDITOR
         private void Update()
         {
-#if UNITY_EDITOR
             TES3Engine.desiredWorkTimePerFrame = desiredWorkTimePerFrame;
-#endif
-            m_MorrowindEngine.Update();
         }
 
-#if UNITY_EDITOR
         private void OnValidate()
         {
             CellManager.cellRadius = CellRadius;

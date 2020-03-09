@@ -1,4 +1,5 @@
-﻿using TES3Unity.Components.Records;
+﻿using System.Collections;
+using TES3Unity.Components.Records;
 using UnityEngine;
 
 namespace TES3Unity.UI
@@ -23,18 +24,21 @@ namespace TES3Unity.UI
         public UIScroll Scroll => _scroll;
         public UICrosshair Crosshair => _crosshair;
 
-        public void Start()
+        public IEnumerator Start()
         {
-            var engine = TES3Manager.Instance.Engine;
-            if (engine == null)
+            var player = GameObject.FindWithTag("Player");
+
+            while (player == null)
             {
-                return;
+                player = GameObject.FindWithTag("Player");
+                yield return null;
             }
 
-            engine.ShowInteractiveTextChanged += Engine_ShowInteractiveTextChanged;
+            var playerCharacter = player.GetComponent<PlayerCharacter>();
+            playerCharacter.InteractiveTextChanged += OnInteractiveTextChanged;
         }
 
-        private void Engine_ShowInteractiveTextChanged(RecordComponent component, bool visible)
+        private void OnInteractiveTextChanged(RecordComponent component, bool visible)
         {
             if (visible)
             {
@@ -42,7 +46,9 @@ namespace TES3Unity.UI
                 _interactiveText.Show(GUIUtils.CreateSprite(data.icon), data.interactionPrefix, data.name, data.value, data.weight);
             }
             else
+            {
                 _interactiveText.Close();
+            }
         }
     }
 }

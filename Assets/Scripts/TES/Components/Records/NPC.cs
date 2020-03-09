@@ -24,7 +24,6 @@ namespace TES3Unity.Components.Records
                 var item = db[npcItem.Name];
                 //Debug.Log($"Item {npcItem.Name} of type {item.header.name} found.");
 
-                
                 if (item is WEAPRecord)
                 {
                     var weapon = (WEAPRecord)item;
@@ -44,7 +43,7 @@ namespace TES3Unity.Components.Records
 
                         if (part.Index == BodyPartIndex.Cuirass)
                         {
-                            boneName = "Chest";
+                            //boneName = "Chest";
                         }
                         else if (part.Index == BodyPartIndex.Skirt)
                         {

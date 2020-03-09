@@ -1,10 +1,20 @@
 ﻿using Demonixis.Toolbox.XR;
+using System;
+using TES3Unity.Components;
+using TES3Unity.Components.Records;
+using TES3Unity.Inputs;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace TES3Unity
 {
     public class PlayerCharacter : MonoBehaviour
     {
+        public const float maxInteractDistance = 3;
+
+        private PlayerInventory m_PlayerInventory = null;
+        private RaycastHit[] m_InteractRaycastHitBuffer = new RaycastHit[32];
+        private InputAction m_UseAction;
         private Transform m_LeftHandAnchor = null;
         private Transform m_RightHandAnchor = null;
 
@@ -18,6 +28,9 @@ namespace TES3Unity
         public Transform LeftHand => m_LeftHandAnchor;
         public Transform RightHand => m_RightHandAnchor;
         public Transform RayCastTarget { get; private set; }
+
+        public event Action<RecordComponent, bool> InteractiveTextChanged = null;
+        public event Action<RecordComponent> RaycastedComponent = null;
 
         private void Start()
         {
@@ -56,6 +69,13 @@ namespace TES3Unity
             }
 
             Destroy(hands.gameObject);
+
+            m_PlayerInventory = GetComponent<PlayerInventory>();
+
+            var gameplayActionMap = InputManager.GetActionMap("Gameplay");
+            gameplayActionMap.Enable();
+
+            m_UseAction = gameplayActionMap["Use"];
         }
 
         private Transform CreateHand(GameObject hands, bool left)
@@ -75,6 +95,66 @@ namespace TES3Unity
             anchorTransform.localRotation = Quaternion.Euler(0, left ? 180 : -180, 0);
 
             return anchorTransform;
+        }
+
+        private void Update()
+        {
+            CastInteractRay();
+        }
+
+        public void CastInteractRay()
+        {
+            // Cast a ray to see what the camera is looking at.
+            var ray = new Ray(RayCastTarget.position, RayCastTarget.forward);
+            var raycastHitCount = Physics.RaycastNonAlloc(ray, m_InteractRaycastHitBuffer, maxInteractDistance);
+
+            if (raycastHitCount > 0)
+            {
+                for (int i = 0; i < raycastHitCount; i++)
+                {
+                    var hitInfo = m_InteractRaycastHitBuffer[i];
+                    var component = hitInfo.collider.GetComponentInParent<RecordComponent>();
+
+                    if (component != null)
+                    {
+                        if (string.IsNullOrEmpty(component.objData.name))
+                        {
+                            return;
+                        }
+
+                        InteractiveTextChanged?.Invoke(component, true);
+                        RaycastedComponent?.Invoke(component);
+
+                        if (m_UseAction.phase == InputActionPhase.Started)
+                        {
+                            if (component is Door)
+                            {
+                                TES3Engine.Instance.OpenDoor((Door)component);
+                            }
+                            else if (component.usable)
+                            {
+                                component.Interact();
+                            }
+                            else if (component.pickable)
+                            {
+                                m_PlayerInventory.Add(component);
+                            }
+                        }
+
+                        break;
+                    }
+                    else
+                    {
+                        //deactivate text if no interactable [ DOORS ONLY - REQUIRES EXPANSION ] is found
+                        InteractiveTextChanged?.Invoke(null, false);
+                    }
+                }
+            }
+            else
+            {
+                //deactivate text if nothing is raycasted against
+                InteractiveTextChanged?.Invoke(null, false);
+            }
         }
     }
 }
