@@ -87,7 +87,7 @@ namespace TES3Unity
             // Add colliders to the object if it doesn't already contain one.
             if (shouldAddMissingColliders && (gameObject.GetComponentInChildren<Collider>() == null))
             {
-                GameObjectUtils.AddMissingMeshCollidersRecursively(gameObject);
+                GameObjectUtils.AddMissingMeshCollidersRecursively(gameObject, _isStatic);
             }
 
             if (isMarker)
@@ -242,12 +242,16 @@ namespace TES3Unity
 
             if (collidable)
             {
-                var collider = obj.AddComponent<MeshCollider>();
-                collider.sharedMesh = mesh;
-
-                if (!_isStatic && GameSettings.Get().KinematicRigidbody)
+                if (!_isStatic)
                 {
-                    obj.AddComponent<Rigidbody>().isKinematic = true;
+                    var collider = obj.AddComponent<BoxCollider>();
+                    var rb = obj.AddComponent<Rigidbody>();
+                    rb.isKinematic = GameSettings.Get().KinematicRigidbody;
+                }
+                else
+                {
+                    var collider = obj.AddComponent<MeshCollider>();
+                    collider.sharedMesh = mesh;
                 }
             }
 

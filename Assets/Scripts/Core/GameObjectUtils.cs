@@ -257,8 +257,13 @@ public static class GameObjectUtils
     /// <summary>
     /// Adds mesh colliders to every descandant object with a mesh filter but no mesh collider, including the object itself.
     /// </summary>
-    public static void AddMissingMeshCollidersRecursively(GameObject gameObject)
+    public static void AddMissingMeshCollidersRecursively(GameObject gameObject, bool isStatic = true)
     {
+        if (!isStatic)
+        {
+            return;
+        }
+
         // If gameObject has a MeshFilter but no Collider, add a MeshCollider.
         if (gameObject.GetComponent<Collider>() == null)
         {

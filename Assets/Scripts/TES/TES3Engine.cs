@@ -29,7 +29,7 @@ namespace TES3Unity
         public TES3Material materialManager;
         public NIFManager nifManager;
         public CellManager cellManager;
-        public TemporalLoadBalancer temporalLoadBalancer;
+        public TemporalLoadBalancer m_TemporalLoadBalancer;
 
         public CELLRecord CurrentCell
         {
@@ -79,8 +79,8 @@ namespace TES3Unity
             textureManager = new TextureManager(dataReader);
             materialManager = new TES3Material(textureManager);
             nifManager = new NIFManager(dataReader, materialManager);
-            temporalLoadBalancer = new TemporalLoadBalancer();
-            cellManager = new CellManager(dataReader, textureManager, nifManager, temporalLoadBalancer);
+            m_TemporalLoadBalancer = new TemporalLoadBalancer();
+            cellManager = new CellManager(dataReader, textureManager, nifManager, m_TemporalLoadBalancer);
 
             var tes = TES3Manager.Instance;
             var config = GameSettings.Get();
@@ -102,7 +102,6 @@ namespace TES3Unity
             var uiCanvasPrefab = Resources.Load<GameObject>("Prefabs/GameUI");
             var uiCanvas = GameObject.Instantiate(uiCanvasPrefab);
 
-            
             m_Initialized = true;
         }
 
@@ -124,7 +123,7 @@ namespace TES3Unity
             CreatePlayer(position, rotation);
 
             var cellInfo = cellManager.StartCreatingInteriorCell(interiorCellName);
-            temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
+            m_TemporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
         }
 
         public void SpawnPlayer(Vector2i gridCoords, bool outside, Vector3 position, Quaternion rotation)
@@ -144,12 +143,12 @@ namespace TES3Unity
 
             CreatePlayer(position, rotation);
 
-            temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
+            m_TemporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
         }
 
         #endregion
 
-        public void Update()
+        public void LateUpdate()
         {
             if (!m_Initialized)
             {
@@ -162,7 +161,7 @@ namespace TES3Unity
                 cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position);
             }
 
-            temporalLoadBalancer.RunTasks(desiredWorkTimePerFrame);
+            m_TemporalLoadBalancer.RunTasks(desiredWorkTimePerFrame);
         }
 
         #region Private
@@ -188,7 +187,7 @@ namespace TES3Unity
                 if (component.doorData.leadsToInteriorCell)
                 {
                     var cellInfo = cellManager.StartCreatingInteriorCell(component.doorData.doorExitName);
-                    temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
+                    m_TemporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
 
                     newCell = cellInfo.cellRecord;
                 }

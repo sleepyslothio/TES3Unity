@@ -232,7 +232,7 @@ namespace TES3Unity
                     try
                     {
                         var cellInfo = m_MorrowindEngine.cellManager.StartInstantiatingCell(CELL);
-                        m_MorrowindEngine.temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
+                        m_MorrowindEngine.m_TemporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
 
                         DestroyImmediate(cellInfo.gameObject);
 
