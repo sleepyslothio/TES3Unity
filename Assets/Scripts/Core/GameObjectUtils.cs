@@ -24,7 +24,7 @@ public static class GameObjectUtils
         return cameraObject;
     }
 
-    public static GameObject CreateSunLight(Vector3 position, Quaternion orientation)
+    public static Light CreateSunLight(Vector3 position, Quaternion orientation)
     {
         var light = new GameObject("Directional Light");
 
@@ -34,7 +34,7 @@ public static class GameObjectUtils
         light.transform.position = position;
         light.transform.rotation = orientation;
 
-        return light;
+        return lightComponent;
     }
 
     public static GameObject CreateEventSystem<T>() where T : BaseInputModule

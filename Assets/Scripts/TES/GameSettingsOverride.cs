@@ -23,7 +23,6 @@ namespace TES3Unity.Components
         public float CameraFarClip = 500.0f;
         public SRPQuality SRPQuality = SRPQuality.High;
         public float RenderScale = 1.0f;
-        public bool WaterTransparency = false;
 
         [Header("Lighting")]
         public bool SunShadows = true;

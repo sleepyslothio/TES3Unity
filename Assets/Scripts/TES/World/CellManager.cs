@@ -363,8 +363,10 @@ namespace TES3Unity
             }
             else
             {
-                if (TES3Manager.Instance.logEnabled)
+                if (TES3Engine.Instance?.logEnabled ?? false)
+                {
                     Debug.Log("Unknown Object: " + refCellObjInfo.refObjDataGroup.NAME.value);
+                }
             }
         }
 
@@ -664,14 +666,16 @@ namespace TES3Unity
             }
 
             var gridCoords = cell.gridCoords;
-            var position = new Vector3(Convert.ExteriorCellSideLengthInMeters * gridCoords.X, 0, Convert.ExteriorCellSideLengthInMeters * gridCoords.Y);
+            var bounds = GameObjectUtils.CalcVisualBoundsRecursive(parent.gameObject);
+            //var position = new Vector3(Convert.ExteriorCellSideLengthInMeters * gridCoords.X, 0, Convert.ExteriorCellSideLengthInMeters * gridCoords.Y);
+            var position = bounds.center;
 
             var probe = new GameObject("ReflectionProbe");
             probe.transform.parent = parent;
             probe.transform.position = position;
 
             var rp = probe.AddComponent<ReflectionProbe>();
-            rp.size = new Vector3(120, 120, 120);
+            rp.size = bounds.size;
             rp.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
             rp.refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.ViaScripting;
             rp.RenderProbe();

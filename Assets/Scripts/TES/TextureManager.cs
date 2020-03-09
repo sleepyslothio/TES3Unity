@@ -47,7 +47,7 @@ namespace TES3Unity
 
         public static Texture2D CreateNormalMapTexture(Texture2D source)
         {
-            return GenerateNormalMap(source, TES3Manager.NormalMapGeneratorIntensity);
+            return GenerateNormalMap(source, TES3Engine.NormalMapGeneratorIntensity);
         }
 
         // https://gamedev.stackexchange.com/questions/106703/create-a-normal-map-using-a-script-unity

@@ -31,15 +31,15 @@ namespace TES3Unity.Diagnostic
 
         private void Awake()
         {
-            var tes = GetComponent<TES3ManagerLite>();
+            var tes = GetComponent<TES3Loader>();
             tes.Initialized += Tes_Initialized;
         }
 
-        private void Tes_Initialized(TES3ManagerLite tes)
+        private void Tes_Initialized(TES3Loader tes)
         {
             m_NifManager = tes.NifManager;
 
-            var npcs = tes.DataReader.MorrowindESMFile.GetRecords<NPC_Record>();
+            var npcs = TES3Engine.MWDataReader.MorrowindESMFile.GetRecords<NPC_Record>();
             NPC_Record npcRecord = null;
 
             foreach (var npc in npcs)

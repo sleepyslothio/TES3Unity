@@ -49,7 +49,7 @@ namespace TES3Unity.Components.Records
 
             if (doorData.leadsToAnotherCell && !doorData.leadsToInteriorCell)
             {
-                var doorExitCell = TES3Manager.MWDataReader.FindExteriorCellRecord(TES3Engine.Instance.cellManager.GetExteriorCellIndices(doorData.doorExitPos));
+                var doorExitCell = TES3Engine.MWDataReader.FindExteriorCellRecord(TES3Engine.Instance.cellManager.GetExteriorCellIndices(doorData.doorExitPos));
 
                 if (doorExitCell != null)
                 {

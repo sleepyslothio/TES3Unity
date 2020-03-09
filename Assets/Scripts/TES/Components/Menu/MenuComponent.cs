@@ -142,11 +142,11 @@ namespace TES3Unity.Components
         private void LoadMenu()
         {
             // Preload data if the reader is not yet initialized.
-            if (TES3Manager.MWDataReader == null)
+            if (TES3Engine.MWDataReader == null)
             {
                 m_PreloadThread = new Thread(new ThreadStart(() =>
                 {
-                    TES3Manager.MWDataReader = new TES3DataReader(m_GamePath);
+                    TES3Engine.MWDataReader = new TES3DataReader(m_GamePath);
                 }));
 
                 m_PreloadThread.Start();
@@ -221,7 +221,7 @@ namespace TES3Unity.Components
 
         public void Quit()
         {
-            var dataReader = TES3Manager.MWDataReader;
+            var dataReader = TES3Engine.MWDataReader;
             dataReader?.Close();
 
 #if UNITY_EDITOR

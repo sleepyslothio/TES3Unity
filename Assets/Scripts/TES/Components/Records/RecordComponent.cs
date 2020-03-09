@@ -46,7 +46,7 @@ namespace TES3Unity.Components.Records
         {
             if (scriptName != null)
             {
-                var scriptRecord = TES3Manager.MWDataReader.FindScript(scriptName);
+                var scriptRecord = TES3Engine.MWDataReader.FindScript(scriptName);
 
                 if (scriptRecord != null)
                 {

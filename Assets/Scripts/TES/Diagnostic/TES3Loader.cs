@@ -9,9 +9,8 @@ namespace TES3Unity
 {
     using Logger = UnityEngine.Debug;
 
-    public class TES3ManagerLite : MonoBehaviour
+    public class TES3Loader : MonoBehaviour
     {
-        public TES3DataReader DataReader { get; private set; }
         public TextureManager TextureManager { get; private set; }
         public TES3Material MaterialManager { get; private set; }
         public NIFManager NifManager { get; private set; }
@@ -26,7 +25,7 @@ namespace TES3Unity
         public string m_LoadSaveGameFilename = string.Empty;
 
         public event Action<ESSFile> SaveFileLoaded = null;
-        public event Action<TES3ManagerLite> Initialized = null;
+        public event Action<TES3Loader> Initialized = null;
 
         private void Start()
         {
@@ -53,14 +52,18 @@ namespace TES3Unity
             }
 
             watch.Start();
-            TES3Manager.MWDataReader = new TES3DataReader(dataPath);
-            DataReader = TES3Manager.MWDataReader;
+
+            if (TES3Engine.MWDataReader == null)
+            {
+                TES3Engine.MWDataReader = new TES3DataReader(dataPath);
+            }
+
             watch.Stop();
             Logger.Log($"DataReader took {watch.Elapsed.Seconds} seconds to load.");
 
-            TextureManager = new TextureManager(DataReader);
+            TextureManager = new TextureManager(TES3Engine.MWDataReader);
             MaterialManager = new TES3Material(TextureManager);
-            NifManager = new NIFManager(DataReader, MaterialManager);
+            NifManager = new NIFManager(TES3Engine.MWDataReader, MaterialManager);
 
             // Mod loading
             if (m_LoadMods != null && m_LoadMods.Length > 0)
@@ -80,7 +83,7 @@ namespace TES3Unity
             // Check for a previously saved game.
             if (m_LoadSaveGameFilename != null)
             {
-                var path = $"{DataReader.FolderPath}\\Saves\\{m_LoadSaveGameFilename}.ess";
+                var path = $"{TES3Engine.MWDataReader.FolderPath}\\Saves\\{m_LoadSaveGameFilename}.ess";
 
                 if (File.Exists(path))
                 {
@@ -94,7 +97,7 @@ namespace TES3Unity
 
         private void OnApplicationQuit()
         {
-            DataReader?.Close();
+            TES3Engine.MWDataReader?.Close();
         }
 
 #if UNITY_EDITOR
@@ -109,7 +112,7 @@ namespace TES3Unity
 
                 var dataPath = GameSettings.GetDataPath();
 
-                var manager = FindObjectOfType<TES3ManagerLite>();
+                var manager = FindObjectOfType<TES3Loader>();
                 var alternativeDataPaths = manager?.m_AlternativeDataPaths ?? null;
 
                 // Load the game from the alternative dataPath when in editor.

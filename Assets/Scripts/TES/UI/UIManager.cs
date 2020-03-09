@@ -1,12 +1,20 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TES3Unity.Components.Records;
 using UnityEngine;
 
 namespace TES3Unity.UI
 {
+    public enum UIWindowType
+    {
+        None = 0, Book, Scroll, Inventory, Menu, Rest
+    }
+
     [RequireComponent(typeof(Canvas))]
     public class UIManager : MonoBehaviour
     {
+        private UIWindow m_CurrentWindow = null;
+
         [Header("HUD Elements")]
         [SerializeField]
         private UICrosshair _crosshair = null;
@@ -23,6 +31,8 @@ namespace TES3Unity.UI
         public UIInteractiveText InteractiveText => _interactiveText;
         public UIScroll Scroll => _scroll;
         public UICrosshair Crosshair => _crosshair;
+
+        public event Action<UIWindow, bool> WindowOpenChanged = null;
 
         public IEnumerator Start()
         {
@@ -49,6 +59,44 @@ namespace TES3Unity.UI
             {
                 _interactiveText.Close();
             }
+        }
+
+        public UIWindow OpenWindow(UIWindowType type)
+        {
+            if (m_CurrentWindow != null)
+            {
+                m_CurrentWindow.SetVisible(false);
+                WindowOpenChanged?.Invoke(m_CurrentWindow, false);
+            }
+
+            if (type == UIWindowType.Book)
+            {
+
+            }
+            else if (type == UIWindowType.Scroll)
+            {
+
+            }
+            else if (type == UIWindowType.Inventory)
+            {
+
+            }
+            else if (type == UIWindowType.Menu)
+            {
+
+            }
+            else if (type == UIWindowType.Rest)
+            {
+
+            }
+
+            if (m_CurrentWindow != null)
+            {
+                m_CurrentWindow.SetVisible(true);
+                WindowOpenChanged?.Invoke(m_CurrentWindow, true);
+            }
+
+            return m_CurrentWindow;
         }
     }
 }

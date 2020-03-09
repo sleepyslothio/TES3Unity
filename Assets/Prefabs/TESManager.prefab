@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 477232}
-  - component: {fileID: 11464354}
   - component: {fileID: 6628529767776134678}
   - component: {fileID: 4663438948078211954}
   - component: {fileID: 2025599348}
@@ -37,28 +36,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &11464354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 156636}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f45c2eae24c43174a92eeaa8e8613dd6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AlternativeDataPaths:
-  - D:\Jeux\Morrowind\Data Files
-  logEnabled: 0
-  ambientIntensity: 1.5
-  desiredWorkTimePerFrame: 0.001
-  loadExtensions: 0
-  loadSaveGameFilename: quiksave
-  CellRadius: 4
-  CellDetailRadius: 3
-  CellRadiusOnLoad: 2
 --- !u!114 &6628529767776134678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,6 +48,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb6885d49240dc24e8a4c264d91533e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logEnabled: 0
+  ambientIntensity: 1.5
+  desiredWorkTimePerFrame: 0.0005
+  loadExtensions: 0
+  loadSaveGameFilename: 
+  AlternativeDataPaths:
+  - D:\Jeux\Morrowind\Data Files
+  CellRadius: 1
+  CellDetailRadius: 1
 --- !u!114 &4663438948078211954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,7 +91,6 @@ MonoBehaviour:
   CameraFarClip: 500
   SRPQuality: 2
   RenderScale: 0.95
-  WaterTransparency: 0
   SunShadows: 1
   LightShadows: 1
   ExteriorCellLights: 1
@@ -140,6 +125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb207f71837a8604c83179eff679cabb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TimeInSeconds: 34000
+  m_TimeScale: 1
 --- !u!114 &1945703045182576952
 MonoBehaviour:
   m_ObjectHideFlags: 0

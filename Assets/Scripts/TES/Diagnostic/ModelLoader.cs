@@ -9,11 +9,11 @@ namespace TES3Unity.Diagnostic
 
         private void Awake()
         {
-            var tes = GetComponent<TES3ManagerLite>();
+            var tes = GetComponent<TES3Loader>();
             tes.Initialized += Tes_Initialized;
         }
 
-        private void Tes_Initialized(TES3ManagerLite tes)
+        private void Tes_Initialized(TES3Loader tes)
         {
             if (string.IsNullOrEmpty(m_ModelToLoad))
             {
