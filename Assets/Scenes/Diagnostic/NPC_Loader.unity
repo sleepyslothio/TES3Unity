@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67000ee77f862e64cb240591abe28e02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Race: 3
+  m_Race: 0
   m_Female: 1
 --- !u!114 &482211607
 MonoBehaviour:

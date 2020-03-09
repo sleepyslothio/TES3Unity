@@ -30,8 +30,6 @@ namespace TES3Unity.World
             }
 
             var npcObj = nifManager.InstantiateNIF($"meshes\\{animationFile}", false);
-            var pelvis = npcObj.transform.Find("Bip01/Bip01 Pelvis");
-            pelvis.localPosition = new Vector3(0, -0.268f, 0.009f);
 
             var boneMapping = new Dictionary<string, Transform>();
             var renderers = npcObj.GetComponentsInChildren<MeshRenderer>(true);
@@ -43,9 +41,9 @@ namespace TES3Unity.World
                 {
                     continue;
                 }
-
+                
                 bone = renderer.transform.parent;
-                boneMapping.Add(bone.name, bone);
+                boneMapping.Add(bone.name, bone); Debug.Log(bone.name);
             }
 
             // Load body parts
