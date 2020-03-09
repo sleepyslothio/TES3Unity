@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TES3Unity.ESM.Records;
@@ -13,14 +12,11 @@ namespace TES3Unity
     [RequireComponent(typeof(TES3Engine))]
     public class TES3Manager : MonoBehaviour
     {
+        private static TES3Manager instance = null;
+
         public const string Version = "2020.1";
         public const float NormalMapGeneratorIntensity = 0.75f;
-        public static TES3Manager instance;
         public static TES3DataReader MWDataReader { get; set; }
-
-        private TES3Engine m_MorrowindEngine = null;
-
-        #region Inspector Members
 
 #if UNITY_EDITOR
         [Header("Editor Only")]
@@ -41,10 +37,6 @@ namespace TES3Unity
         public int CellDetailRadius = 0;
         public int CellRadiusOnLoad = 0;
 #endif
-        #endregion
-
-        public TES3Engine Engine => m_MorrowindEngine;
-        public TextureManager TextureManager => m_MorrowindEngine.textureManager;
 
         public static TES3Manager Instance
         {
@@ -105,8 +97,8 @@ namespace TES3Unity
                 MWDataReader = new TES3DataReader(dataPath);
             }
 
-            m_MorrowindEngine = GetComponent<TES3Engine>();
-            m_MorrowindEngine.Initialize(MWDataReader);
+            var engine = GetComponent<TES3Engine>();
+            engine.Initialize(MWDataReader);
 
             var soundManager = FindObjectOfType<SoundManager>();
             soundManager?.Initialize(dataPath);
@@ -129,7 +121,10 @@ namespace TES3Unity
 
                     ess.FindStartLocation(out string cellName, out float[] pos, out float[] rot);
                     // TODO: Find the correct grid/cell from these data.
-                    //TES3Manager.MWDataReader.FindExteriorCellRecord(TES3Engine.Instance.cellManager.GetExteriorCellIndices(doorData.doorExitPos));
+
+                    var grid = TES3Engine.Instance.cellManager.GetExteriorCellIndices(new Vector3(pos[0], pos[1], pos[2]));
+                    var exterior = MWDataReader.FindExteriorCellRecord(grid);
+                    var interior = MWDataReader.FindInteriorCellRecord(cellName);
                 }
             }
 #endif
@@ -140,13 +135,15 @@ namespace TES3Unity
                 Instantiate(touchPrefab, Vector3.zero, Quaternion.identity);
             }
 
-            m_MorrowindEngine.SpawnPlayer(cellGridCoords, cellIsInterior, spawnPosition, spawnRotation);
+            engine.SpawnPlayer(cellGridCoords, cellIsInterior, spawnPosition, spawnRotation);
         }
 
         private void OnApplicationQuit()
         {
             MWDataReader?.Close();
         }
+
+        #region Editor Things
 
 #if UNITY_EDITOR
         private void Update()
@@ -220,42 +217,8 @@ namespace TES3Unity
 
             Debug.Log("Script export done.");
         }
-
-        private void TestAllCells(string resultsFilePath)
-        {
-            using (StreamWriter writer = new StreamWriter(resultsFilePath))
-            {
-                foreach (var record in MWDataReader.MorrowindESMFile.GetRecordsOfType<CELLRecord>())
-                {
-                    var CELL = (CELLRecord)record;
-
-                    try
-                    {
-                        var cellInfo = m_MorrowindEngine.cellManager.StartInstantiatingCell(CELL);
-                        m_MorrowindEngine.m_TemporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
-
-                        DestroyImmediate(cellInfo.gameObject);
-
-                        writer.Write("Pass: ");
-                    }
-                    catch (Exception)
-                    {
-                        writer.Write("Fail: ");
-                    }
-
-                    if (!CELL.isInterior)
-                    {
-                        writer.WriteLine(CELL.gridCoords.ToString());
-                    }
-                    else
-                    {
-                        writer.WriteLine(CELL.NAME.value);
-                    }
-
-                    writer.Flush();
-                }
-            }
-        }
 #endif
+
+        #endregion
     }
 }

@@ -30,6 +30,8 @@ namespace TES3Unity.World
             }
 
             var npcObj = nifManager.InstantiateNIF($"meshes\\{animationFile}", false);
+            var bone01 = npcObj.transform.Find("Bip01");
+            bone01.localPosition = new Vector3(0, 0.6f, 0);
 
             var boneMapping = new Dictionary<string, Transform>();
             var renderers = npcObj.GetComponentsInChildren<MeshRenderer>(true);

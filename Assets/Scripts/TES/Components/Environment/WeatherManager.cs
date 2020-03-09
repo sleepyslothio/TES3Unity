@@ -9,20 +9,23 @@ namespace TES3Unity.Components
         private Color m_DefaultFogColor;
         private float m_DefaultFogDensity;
 
-        private IEnumerator Start()
+        private void Start()
         {
             m_DefaultFogColor = RenderSettings.fogColor;
             m_DefaultFogDensity = RenderSettings.fogDensity;
 
-            yield return new WaitForEndOfFrame();
-
-            var tes = TES3Manager.Instance;
-            tes.Engine.CurrentCellChanged += Engine_CellLoaded;
-            Engine_CellLoaded(tes.Engine.CurrentCell);
+            var engine = TES3Engine.Instance;
+            engine.CurrentCellChanged += OnCurrentCellChanged;
+            OnCurrentCellChanged(engine.CurrentCell);
         }
 
-        private void Engine_CellLoaded(CELLRecord cell)
+        private void OnCurrentCellChanged(CELLRecord cell)
         {
+            if (cell == null)
+            {
+                return;
+            }
+
             RenderSettings.fog = !cell.isInterior;
             
             if (!cell.isInterior)

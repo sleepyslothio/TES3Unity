@@ -36,10 +36,6 @@ namespace TES3Unity.Components.XR
                 return;
             }
 
-#if UNITY_ANDROID || UNITY_IOS
-            QualitySettings.SetQualityLevel(1, false);
-#endif
-
             StartCoroutine(DeferredStart());
 
             m_XRActionMap = InputManager.GetActionMap("XR");

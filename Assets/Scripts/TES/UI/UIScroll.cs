@@ -24,12 +24,15 @@ namespace TES3Unity.UI
 
         void Start()
         {
-            var texture = TES3Manager.Instance.TextureManager.LoadTexture("scroll", true);
+            var textureManager = TES3Engine.Instance.textureManager;
+            var texture = textureManager.LoadTexture("scroll", true);
             _background.sprite = GUIUtils.CreateSprite(texture);
 
             // If the book is already opened, don't change its transform.
             if (_bookRecord == null)
+            {
                 Close();
+            }
 
             var gameplayActionMap = InputManager.GetActionMap("Gameplay");
             gameplayActionMap["Use"].started += (c) =>

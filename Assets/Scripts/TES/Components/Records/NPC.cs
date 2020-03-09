@@ -114,6 +114,19 @@ namespace TES3Unity.Components.Records
                     }
                 }
             }
+
+            var topLevelLod = GetComponent<LODGroup>();
+            var lods = GetComponentsInChildren<LODGroup>();
+
+            foreach (var lod in lods)
+            {
+                if (lod == topLevelLod)
+                {
+                    continue;
+                }
+
+                Destroy(lod);
+            }
         }
 
         /// <summary>

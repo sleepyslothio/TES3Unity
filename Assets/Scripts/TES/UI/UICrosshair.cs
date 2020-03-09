@@ -22,10 +22,10 @@ namespace TES3Unity.UI
 
         private void Start()
         {
-            var textureManager = TES3Manager.Instance.TextureManager;
+            var textureManager = TES3Engine.Instance.textureManager;
             var crosshairTexture = textureManager.LoadTexture("target", true);
-            _crosshair.sprite = GUIUtils.CreateSprite(crosshairTexture);
 
+            _crosshair.sprite = GUIUtils.CreateSprite(crosshairTexture);
             _crosshair.enabled = !XRManager.IsXREnabled();
         }
 

@@ -53,9 +53,9 @@ MonoBehaviour:
   - D:\Jeux\Morrowind\Data Files
   logEnabled: 0
   ambientIntensity: 1.5
-  desiredWorkTimePerFrame: 0.05
+  desiredWorkTimePerFrame: 0.001
   loadExtensions: 0
-  loadSaveGameFilename: 
+  loadSaveGameFilename: quiksave
   CellRadius: 4
   CellDetailRadius: 3
   CellRadiusOnLoad: 2

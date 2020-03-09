@@ -18,7 +18,7 @@ namespace TES3Unity.Components
         [SerializeField]
         private float m_RotationTime = 0.5f;
 
-        private IEnumerator Start()
+        private void Start()
         {
             var config = GameSettings.Get();
 
@@ -33,11 +33,9 @@ namespace TES3Unity.Components
 
             m_DayNightCycle = config.DayNightCycle;
 
-            yield return new WaitForEndOfFrame();
-
-            var tes = TES3Manager.Instance;
-            tes.Engine.CurrentCellChanged += Engine_CurrentCellChanged;
-            Engine_CurrentCellChanged(tes.Engine.CurrentCell);
+            var engine = TES3Engine.Instance;
+            engine.CurrentCellChanged += OnCurrentCellChanged;
+            OnCurrentCellChanged(engine.CurrentCell);
 
 #if UNITY_ANDROID
             RenderSettings.ambientIntensity = 4;
@@ -52,8 +50,13 @@ namespace TES3Unity.Components
             }
         }
 
-        private void Engine_CurrentCellChanged(CELLRecord cell)
+        private void OnCurrentCellChanged(CELLRecord cell)
         {
+            if (cell == null)
+            {
+                return;
+            }
+
             var ambientColor = m_DefaultAmbientColor;
             var sunColor = m_DefaultSunLightColor;
             var ambientData = cell.AMBI;
@@ -65,11 +68,11 @@ namespace TES3Unity.Components
             }
 
             RenderSettings.ambientLight = ambientColor;
-            m_Sun.enabled = !cell.isInterior;
-            m_Sun.color = sunColor;
-
             RenderSettings.ambientMode = cell.isInterior ? AmbientMode.Flat : AmbientMode.Skybox;
             RenderSettings.ambientIntensity = TES3Manager.Instance.ambientIntensity;
+
+            m_Sun.enabled = !cell.isInterior;
+            m_Sun.color = sunColor;
         }
     }
 }

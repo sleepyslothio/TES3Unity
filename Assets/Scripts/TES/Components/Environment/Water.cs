@@ -57,9 +57,9 @@ namespace TES3Unity.Effects
 
             yield return new WaitForEndOfFrame();
 
-            var tes = TES3Manager.Instance;
-            tes.Engine.CurrentCellChanged += Engine_CurrentCellChanged;
-            Engine_CurrentCellChanged(tes.Engine.CurrentCell);
+            var engine = TES3Engine.Instance;
+            engine.CurrentCellChanged += OnCurrentCellChanged;
+            OnCurrentCellChanged(engine.CurrentCell);
         }
 
         private void Update()
@@ -102,8 +102,13 @@ namespace TES3Unity.Effects
             RenderSettings.skybox = enabled ? null : m_DefaultSkybox;
         }
 
-        private void Engine_CurrentCellChanged(CELLRecord cell)
+        private void OnCurrentCellChanged(CELLRecord cell)
         {
+            if (cell == null)
+            {
+                return;
+            }
+
             var isInterior = cell.isInterior;
 
             if (isInterior)
