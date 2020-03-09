@@ -2,11 +2,7 @@
 using TES3Unity.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.UI;
 using UnityEngine.Rendering;
-#if HDRP_ENABLED
-using UnityEngine.Rendering.HighDefinition;
-#endif
 
 public static class GameObjectUtils
 {
@@ -37,19 +33,6 @@ public static class GameObjectUtils
 
         light.transform.position = position;
         light.transform.rotation = orientation;
-
-#if HDRP_ENABLED
-        if (GameSettings.Get().RendererMode == RendererMode.HDRP)
-        {
-            var lightData = light.GetComponent<HDAdditionalLightData>();
-            if (lightData == null)
-            {
-                lightData = light.AddComponent<HDAdditionalLightData>();
-            }
-
-            lightData.SetIntensity(3.141593f, LightUnit.Lux);
-        }
-#endif
 
         return light;
     }
@@ -131,7 +114,7 @@ public static class GameObjectUtils
         var terrain = terrainObject.AddComponent<Terrain>();
         var srp = GraphicsSettings.renderPipelineAsset;
 
-        terrain.materialTemplate = TES3Material.GetTerrainMaterial(GameSettings.Get().RendererMode == RendererMode.HDRP);
+        terrain.materialTemplate = TES3Material.GetTerrainMaterial();
         terrain.terrainData = terrainData;
         terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;
         terrainObject.transform.position = position;

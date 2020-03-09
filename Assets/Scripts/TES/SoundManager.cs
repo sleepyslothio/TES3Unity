@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using TES3Unity.ESM;
 using UnityEngine;
 
 namespace TES3Unity
@@ -8,9 +7,41 @@ namespace TES3Unity
     /// <summary>
     /// A proof of concept sound manager.
     /// </summary>
-    public static class SoundManager
+    public sealed class SoundManager : MonoBehaviour
     {
-        private static Dictionary<string, AudioClip> ClipStore = new Dictionary<string, AudioClip>();
+        private MusicPlayer m_MusicPlayer = null;
+
+        private static Dictionary<string, AudioClip> AudioClipStore = new Dictionary<string, AudioClip>();
+
+        private void Start()
+        {
+            m_MusicPlayer = new MusicPlayer();
+        }
+
+        private void Update()
+        {
+            m_MusicPlayer.Update();
+        }
+
+        public void Initialize(string dataPath)
+        {
+            if (!GameSettings.Get().MusicEnabled)
+            {
+                return;
+            }
+
+            var songs = Directory.GetFiles(dataPath + "/Music/Explore");
+            if (songs.Length > 0)
+            {
+                foreach (var songFilePath in songs)
+                {
+                    if (!songFilePath.Contains("Morrowind Title"))
+                        m_MusicPlayer.AddSong(songFilePath);
+                }
+
+                m_MusicPlayer.Play();
+            }
+        }
 
         public static AudioClip GetAudioClip(string id)
         {
@@ -19,9 +50,9 @@ namespace TES3Unity
                 return null;
             }
 
-            if (ClipStore.ContainsKey(id))
+            if (AudioClipStore.ContainsKey(id))
             {
-                return ClipStore[id];
+                return AudioClipStore[id];
             }
 
             var path = TES3Manager.MWDataReader.GetSound(id);
@@ -33,7 +64,7 @@ namespace TES3Unity
             var pcm = AudioUtils.ReadWAV(path);
             var clip = AudioUtils.CreateAudioClip(id, pcm);
 
-            ClipStore.Add(id, clip);
+            AudioClipStore.Add(id, clip);
 
             return clip;
         }

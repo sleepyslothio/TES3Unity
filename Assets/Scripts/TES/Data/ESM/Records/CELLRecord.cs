@@ -3,144 +3,128 @@ using UnityEngine;
 
 namespace TES3Unity.ESM.Records
 {
+    #region SubRecords 
+
+    public class CELLDATASubRecord : SubRecord
+    {
+        public uint flags;
+        public int gridX;
+        public int gridY;
+
+        public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+        {
+            flags = reader.ReadLEUInt32();
+            gridX = reader.ReadLEInt32();
+            gridY = reader.ReadLEInt32();
+        }
+    }
+    public class RGNNSubRecord : NAMESubRecord { }
+    public class NAM0SubRecord : UInt32SubRecord { }
+    public class NAM5SubRecord : Int32SubRecord { } // map color (COLORREF)
+    public class WHGTSubRecord : FLTVSubRecord { }
+    public class AMBISubRecord : SubRecord
+    {
+        public uint ambientColor;
+        public uint sunlightColor;
+        public uint fogColor;
+        public float fogDensity;
+
+        public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+        {
+            ambientColor = reader.ReadLEUInt32();
+            sunlightColor = reader.ReadLEUInt32();
+            fogColor = reader.ReadLEUInt32();
+            fogDensity = reader.ReadLESingle();
+        }
+    }
+    public class RefObjDataGroup
+    {
+        public class FRMRSubRecord : UInt32SubRecord { }
+        public class XSCLSubRecord : FLTVSubRecord { }
+        public class DODTSubRecord : SubRecord
+        {
+            public Vector3 position;
+            public Vector3 eulerAngles;
+
+            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+            {
+                position = reader.ReadLEVector3();
+                eulerAngles = reader.ReadLEVector3();
+            }
+        }
+        public class DNAMSubRecord : NAMESubRecord { }
+        public class KNAMSubRecord : NAMESubRecord { }
+        public class TNAMSubRecord : NAMESubRecord { }
+        public class UNAMSubRecord : ByteSubRecord { }
+        public class ANAMSubRecord : NAMESubRecord { }
+        public class BNAMSubRecord : NAMESubRecord { }
+        public class NAM9SubRecord : UInt32SubRecord { }
+        public class XSOLSubRecord : NAMESubRecord { }
+        public class DATASubRecord : SubRecord
+        {
+            public Vector3 position;
+            public Vector3 eulerAngles;
+
+            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
+            {
+                position = reader.ReadLEVector3();
+                eulerAngles = reader.ReadLEVector3();
+            }
+        }
+
+        public FRMRSubRecord FRMR;
+        public NAMESubRecord NAME;
+        public XSCLSubRecord XSCL;
+        public DODTSubRecord DODT;
+        public DNAMSubRecord DNAM;
+        public FLTVSubRecord FLTV;
+        public KNAMSubRecord KNAM;
+        public TNAMSubRecord TNAM;
+        public UNAMSubRecord UNAM;
+        public ANAMSubRecord ANAM;
+        public BNAMSubRecord BNAM;
+        public INTVSubRecord INTV;
+        public NAM9SubRecord NAM9;
+        public XSOLSubRecord XSOL;
+        public DATASubRecord DATA;
+    }
+
+    #endregion
+
     // TODO: add support for strange INTV before object data?
     public class CELLRecord : Record
     {
-        public class CELLDATASubRecord : SubRecord
-        {
-            public uint flags;
-            public int gridX;
-            public int gridY;
-
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-            {
-                flags = reader.ReadLEUInt32();
-                gridX = reader.ReadLEInt32();
-                gridY = reader.ReadLEInt32();
-            }
-        }
-
-        public class RGNNSubRecord : NAMESubRecord { }
-        public class NAM0SubRecord : UInt32SubRecord { }
-        public class NAM5SubRecord : Int32SubRecord { } // map color (COLORREF)
-        public class WHGTSubRecord : FLTVSubRecord { }
-
-        public class AMBISubRecord : SubRecord
-        {
-            public uint ambientColor;
-            public uint sunlightColor;
-            public uint fogColor;
-            public float fogDensity;
-
-            public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-            {
-                ambientColor = reader.ReadLEUInt32();
-                sunlightColor = reader.ReadLEUInt32();
-                fogColor = reader.ReadLEUInt32();
-                fogDensity = reader.ReadLESingle();
-            }
-        }
-
-        public class RefObjDataGroup
-        {
-            public class FRMRSubRecord : UInt32SubRecord { }
-            public class XSCLSubRecord : FLTVSubRecord { }
-            public class DODTSubRecord : SubRecord
-            {
-                public Vector3 position;
-                public Vector3 eulerAngles;
-
-                public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-                {
-                    position = reader.ReadLEVector3();
-                    eulerAngles = reader.ReadLEVector3();
-                }
-            }
-            public class DNAMSubRecord : NAMESubRecord { }
-            public class KNAMSubRecord : NAMESubRecord { }
-            public class TNAMSubRecord : NAMESubRecord { }
-            public class UNAMSubRecord : ByteSubRecord { }
-            public class ANAMSubRecord : NAMESubRecord { }
-            public class BNAMSubRecord : NAMESubRecord { }
-            public class NAM9SubRecord : UInt32SubRecord { }
-            public class XSOLSubRecord : NAMESubRecord { }
-            public class DATASubRecord : SubRecord
-            {
-                public Vector3 position;
-                public Vector3 eulerAngles;
-
-                public override void DeserializeData(UnityBinaryReader reader, uint dataSize)
-                {
-                    position = reader.ReadLEVector3();
-                    eulerAngles = reader.ReadLEVector3();
-                }
-            }
-
-            public FRMRSubRecord FRMR;
-            public NAMESubRecord NAME;
-            public XSCLSubRecord XSCL;
-            public DODTSubRecord DODT;
-            public DNAMSubRecord DNAM;
-            public FLTVSubRecord FLTV;
-            public KNAMSubRecord KNAM;
-            public TNAMSubRecord TNAM;
-            public UNAMSubRecord UNAM;
-            public ANAMSubRecord ANAM;
-            public BNAMSubRecord BNAM;
-            public INTVSubRecord INTV;
-            public NAM9SubRecord NAM9;
-            public XSOLSubRecord XSOL;
-            public DATASubRecord DATA;
-        }
-
-        public bool isInterior
-        {
-            get
-            {
-                return Utils.ContainsBitFlags(DATA.flags, 0x01);
-            }
-        }
-
-        public Vector2i gridCoords
-        {
-            get
-            {
-                return new Vector2i(DATA.gridX, DATA.gridY);
-            }
-        }
+        private bool _isReadingObjectDataGroups = false;
 
         public NAMESubRecord NAME;
-
-        public bool isReadingObjectDataGroups = false;
         public CELLDATASubRecord DATA;
-
         public RGNNSubRecord RGNN;
         public NAM0SubRecord NAM0;
-
         // Exterior Cells
         public NAM5SubRecord NAM5;
-
         // Interior Cells
         public WHGTSubRecord WHGT;
         public AMBISubRecord AMBI;
-
         public List<RefObjDataGroup> refObjDataGroups = new List<RefObjDataGroup>();
+
+        public bool isInterior => Utils.ContainsBitFlags(DATA.flags, 0x01);
+
+        public Vector2i gridCoords => new Vector2i(DATA.gridX, DATA.gridY);
 
         public override bool NewFetchMethod => false;
 
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
-            throw new System.NotImplementedException();
         }
 
         public override SubRecord CreateUninitializedSubRecord(string subRecordName, uint dataSize)
         {
-            if (!isReadingObjectDataGroups && subRecordName == "FRMR")
+            if (!_isReadingObjectDataGroups && subRecordName == "FRMR")
             {
-                isReadingObjectDataGroups = true;
+                _isReadingObjectDataGroups = true;
             }
 
-            if (!isReadingObjectDataGroups)
+            if (!_isReadingObjectDataGroups)
             {
                 switch (subRecordName)
                 {

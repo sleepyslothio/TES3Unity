@@ -29,7 +29,7 @@ namespace TES3Unity
 
     public class RefCellObjInfo
     {
-        public CELLRecord.RefObjDataGroup refObjDataGroup;
+        public RefObjDataGroup refObjDataGroup;
         public Record referencedRecord;
         public string modelFilePath;
     }
@@ -366,87 +366,6 @@ namespace TES3Unity
                 if (TES3Manager.Instance.logEnabled)
                     Debug.Log("Unknown Object: " + refCellObjInfo.refObjDataGroup.NAME.value);
             }
-        }
-
-        private GameObject InstantiateNPC(NPC_Record NPC_)
-        {
-            var npc = new GameObject($"NPC_{NPC_.Name}");
-            var npcTransform = npc.transform;
-
-            // Load animation file.
-            if (NPC_.Model != null)
-            {
-                var anim = nifManager.InstantiateNIF($"meshes\\{NPC_.Model}");
-                //anim.name = "NPC_Anim";
-                //anim.transform.parent = npcTransform;
-            }
-
-            var head = new GameObject("Head");
-            head.transform.parent = npcTransform;
-            head.transform.localPosition = new Vector3(0, 1.2f, 0); // FIXME
-
-            // Load head model
-            if (NPC_.HeadModel != null)
-            {
-                var headModel = nifManager.InstantiateNIF($"meshes\\b\\{NPC_.HeadModel}.NIF");
-                headModel.transform.parent = head.transform;
-                headModel.transform.localPosition = Vector3.zero;
-            }
-
-            // Load hair model
-            if (NPC_.HairModel != null)
-            {
-                var hairModel = nifManager.InstantiateNIF($"meshes\\b\\{NPC_.HairModel}.NIF");
-                hairModel.transform.parent = head.transform;
-                hairModel.transform.localPosition = Vector3.zero;
-            }
-
-            // Load body parts
-            var race = NPC_.Race;
-            var gender = Utils.ContainsBitFlags((uint)NPC_.Flags, (uint)NPCFlags.Female) ? "f" : "m";
-            var ankle = $"b_n_{race}_{gender}_ankle";
-            var foot = $"b_n_{race}_{gender}_foot";
-            var forarm = $"b_n_{race}_{gender}_forearm";
-            var groin = $"b_n_{race}_{gender}_groin";
-            var hands1st = $"b_n_{race}_{gender}_hands.1st";
-            var knee = $"b_n_{race}_{gender}_knee";
-            var neck = $"b_n_{race}_{gender}_neck";
-            var skins = $"b_n_{race}_{gender}_skins";
-            var upperArm = $"b_n_{race}_{gender}_upper arm";
-            var upperLeg = $"b_n_{race}_{gender}_upper leg";
-            var wrist = $"b_n_{race}_{gender}_wrist";
-
-            // Add a fake body: FIXME
-            var body = new GameObject("Body");
-            var bodyTransform = body.transform;
-            bodyTransform.parent = npcTransform;
-            bodyTransform.localPosition = Vector3.zero;
-
-            /*CreateBodyPart(ankle, bodyTransform);
-            CreateBodyPart(foot, bodyTransform);
-            CreateBodyPart(forarm, bodyTransform);
-            CreateBodyPart(groin, bodyTransform);
-            CreateBodyPart(hands1st, bodyTransform);
-            CreateBodyPart(knee, bodyTransform);
-            CreateBodyPart(neck, bodyTransform);
-            CreateBodyPart(skins, bodyTransform);
-            CreateBodyPart(upperArm, bodyTransform);
-            CreateBodyPart(upperLeg, bodyTransform);
-            CreateBodyPart(wrist, bodyTransform);*/
-
-            var capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            capsule.transform.parent = body.transform;
-            capsule.transform.localPosition = new Vector3(0, 0.5f, 0);
-            capsule.transform.localScale = new Vector3(0.25f, 0.6f, 0.25f);
-
-            GameObject CreateBodyPart(string path, Transform parent)
-            {
-                var part = nifManager.InstantiateNIF($"meshes\\b\\{path}.NIF");
-                part.transform.parent = parent;
-                return part;
-            }
-
-            return npc;
         }
 
         private GameObject InstantiateLight(LIGHRecord LIGH, bool indoors)

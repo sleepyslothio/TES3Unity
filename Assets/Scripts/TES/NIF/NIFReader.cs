@@ -557,6 +557,7 @@ namespace TES3Unity.NIF
             skinInstance = NiReaderUtils.ReadRef<NiSkinInstance>(reader);
         }
     }
+
     public abstract class NiGeometryData : NiObject
     {
         public ushort numVertices;
@@ -631,6 +632,7 @@ namespace TES3Unity.NIF
             }
         }
     }
+
     public abstract class NiTriBasedGeom : NiGeometry
     {
         public override void Deserialize(UnityBinaryReader reader)
@@ -638,6 +640,7 @@ namespace TES3Unity.NIF
             base.Deserialize(reader);
         }
     }
+
     public abstract class NiTriBasedGeomData : NiGeometryData
     {
         public ushort numTriangles;
@@ -649,6 +652,7 @@ namespace TES3Unity.NIF
             numTriangles = reader.ReadLEUInt16();
         }
     }
+
     public class NiTriShape : NiTriBasedGeom
     {
         public override void Deserialize(UnityBinaryReader reader)
@@ -656,6 +660,7 @@ namespace TES3Unity.NIF
             base.Deserialize(reader);
         }
     }
+
     public class NiTriShapeData : NiTriBasedGeomData
     {
         public uint numTrianglePoints;
@@ -695,6 +700,7 @@ namespace TES3Unity.NIF
             base.Deserialize(reader);
         }
     }
+
     public class NiTexturingProperty : NiProperty
     {
         public ushort flags;
@@ -782,6 +788,7 @@ namespace TES3Unity.NIF
             }
         }
     }
+
     public class NiAlphaProperty : NiProperty
     {
         public ushort flags;
@@ -795,6 +802,7 @@ namespace TES3Unity.NIF
             threshold = reader.ReadByte();
         }
     }
+
     public class NiZBufferProperty : NiProperty
     {
         public ushort flags;
@@ -806,6 +814,7 @@ namespace TES3Unity.NIF
             flags = reader.ReadLEUInt16();
         }
     }
+
     public class NiVertexColorProperty : NiProperty
     {
         public ushort flags;
@@ -821,6 +830,7 @@ namespace TES3Unity.NIF
             lightingMode = (LightMode)reader.ReadLEUInt32();
         }
     }
+
     public class NiShadeProperty : NiProperty
     {
         public ushort flags;
@@ -862,6 +872,7 @@ namespace TES3Unity.NIF
             }
         }
     }
+
     public class NiKeyframeData : NiObject
     {
         public uint numRotationKeys;
@@ -911,6 +922,7 @@ namespace TES3Unity.NIF
             scales.Deserialize(reader);
         }
     }
+
     public class NiColorData : NiObject
     {
         public KeyGroup<Color4> data;
@@ -923,6 +935,7 @@ namespace TES3Unity.NIF
             data.Deserialize(reader);
         }
     }
+
     public class NiMorphData : NiObject
     {
         public uint numMorphs;
@@ -946,6 +959,7 @@ namespace TES3Unity.NIF
             }
         }
     }
+
     public class NiVisData : NiObject
     {
         public uint numKeys;
@@ -965,6 +979,7 @@ namespace TES3Unity.NIF
             }
         }
     }
+
     public class NiFloatData : NiObject
     {
         public KeyGroup<float> data;
@@ -977,6 +992,7 @@ namespace TES3Unity.NIF
             data.Deserialize(reader);
         }
     }
+
     public class NiPosData : NiObject
     {
         public KeyGroup<Vector3> data;
@@ -1001,6 +1017,7 @@ namespace TES3Unity.NIF
             nextExtraData = NiReaderUtils.ReadRef<NiExtraData>(reader);
         }
     }
+
     public class NiStringExtraData : NiExtraData
     {
         public uint bytesRemaining;
@@ -1014,6 +1031,7 @@ namespace TES3Unity.NIF
             str = reader.ReadLELength32PrefixedASCIIString();
         }
     }
+
     public class NiTextKeyExtraData : NiExtraData
     {
         public uint unknownInt1;
@@ -1035,6 +1053,7 @@ namespace TES3Unity.NIF
             }
         }
     }
+
     public class NiVertWeightsExtraData : NiExtraData
     {
         public uint numBytes;
@@ -1417,6 +1436,7 @@ namespace TES3Unity.NIF
             }
         }
     }
+
     public class NiSkinData : NiObject
     {
         public SkinTransform skinTransform;

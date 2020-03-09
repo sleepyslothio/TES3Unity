@@ -43,7 +43,7 @@ namespace TES3Unity.World
                 }
                 
                 bone = renderer.transform.parent;
-                boneMapping.Add(bone.name, bone); Debug.Log(bone.name);
+                boneMapping.Add(bone.name, bone);
             }
 
             // Load body parts

@@ -19,8 +19,6 @@ namespace TES3Unity.Components
         [SerializeField]
         private UISelectorWidget m_PostProcessDd = null;
         [SerializeField]
-        private UISelectorWidget m_RenderPath = null;
-        [SerializeField]
         private UISelectorWidget m_SRPQuality = null;
         [SerializeField]
         private Toggle m_GenerateNormalMapsToggle = null;
@@ -56,7 +54,6 @@ namespace TES3Unity.Components
             m_CellRadiusLoad.Setup(ref values, m_Settings.CellRadiusOnLoad.ToString(), SetCellRadiusLoad);
 
             m_PostProcessDd.Setup<PostProcessingQuality>((int)m_Settings.PostProcessingQuality, SetPostProcessing);
-            m_RenderPath.Setup<RendererMode>((int)m_Settings.RendererMode, SetRenderType);
             m_SRPQuality.Setup<SRPQuality>((int)m_Settings.SRPQuality, SetSRPQuality);
 
             m_GenerateNormalMapsToggle.isOn = m_Settings.GenerateNormalMaps;
@@ -141,11 +138,6 @@ namespace TES3Unity.Components
         public void SetPostProcessing(int index)
         {
             m_Settings.PostProcessingQuality = (PostProcessingQuality)index;
-        }
-
-        public void SetRenderType(int index)
-        {
-            m_Settings.RendererMode = (RendererMode)index;
         }
 
         public void SetSRPQuality(int index)

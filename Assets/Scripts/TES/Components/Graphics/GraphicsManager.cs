@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
-#if HDRP_ENABLED
-using UnityEngine.Rendering.HighDefinition;
-#endif
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
@@ -10,8 +7,6 @@ namespace TES3Unity.Components
 {
     public sealed class GraphicsManager : MonoBehaviour
     {
-        private bool m_UniversalRP = true;
-
         private void Awake()
         {
 #if UNITY_EDITOR
@@ -23,55 +18,34 @@ namespace TES3Unity.Components
             var config = GameSettings.Get();
             var target = config.SRPQuality.ToString();
 
-            m_UniversalRP = config.RendererMode == RendererMode.UniversalRP;
+            var assetPath = $"Rendering/UniversalRP/PipelineAssets";
+            var volumePath = $"Rendering/UniversalRP/Volumes";
 
-#if !HDRP_ENABLED || UNITY_ANDROID
-            m_UniversalRP = true; // Double check
-#endif
-            var assetPath = GetPipelineAssetPath(m_UniversalRP);
-            var volumePath = GetVolumePath(m_UniversalRP);
-
-            if (m_UniversalRP)
-            {
 #if UNITY_ANDROID
-                target = "Mobile";
+            target = "Mobile";
 #endif
-                // Setup the UniversalRP Asset.
-                var lwrpAsset = Resources.Load<UniversalRenderPipelineAsset>($"{assetPath}/URPAsset-{target}");
-                lwrpAsset.renderScale = config.RenderScale;
-                GraphicsSettings.renderPipelineAsset = lwrpAsset;
+            // Setup the UniversalRP Asset.
+            var lwrpAsset = Resources.Load<UniversalRenderPipelineAsset>($"{assetPath}/URPAsset-{target}");
+            lwrpAsset.renderScale = config.RenderScale;
+            GraphicsSettings.renderPipelineAsset = lwrpAsset;
 
-                // Instantiate URP Volume
-                var profile = Resources.Load<VolumeProfile>($"{volumePath}/PostProcess-Profile");
-                CreateVolume(profile);
+            // Instantiate URP Volume
+            var profile = Resources.Load<VolumeProfile>($"{volumePath}/PostProcess-Profile");
+            CreateVolume(profile);
 
-                var skyboxMaterial = new Material(Shader.Find("Skybox/Procedural"));
-                var lowQualitySkybox = config.SRPQuality != SRPQuality.Low;
+            var skyboxMaterial = new Material(Shader.Find("Skybox/Procedural"));
+            var lowQualitySkybox = config.SRPQuality != SRPQuality.Low;
 #if UNITY_ANDROID
-                lowQualitySkybox = true;
+            lowQualitySkybox = true;
 #endif
 
-                if (lowQualitySkybox)
-                {
-                    skyboxMaterial.DisableKeyword("_SUNDISK_HIGH_QUALITY");
-                    skyboxMaterial.EnableKeyword("_SUNDISK_SIMPLE");
-                }
-
-                RenderSettings.skybox = skyboxMaterial;
-            }
-#if HDRP_ENABLED
-            else
+            if (lowQualitySkybox)
             {
-                // Setup the HDRP Asset.
-                var hdrpAsset = Resources.Load<HDRenderPipelineAsset>($"{assetPath}/HDRPAsset-{target}");
-                GraphicsSettings.renderPipelineAsset = hdrpAsset;
-
-                // Instantiate HDRP Volume (Post Processing + Environment)
-                var postProcessingProfile = Resources.Load<VolumeProfile>($"{volumePath}/PostProcess-Profile");
-                var environmentProfile = Resources.Load<VolumeProfile>($"{volumePath}/Environment-Profile");
-                CreateVolume(postProcessingProfile, environmentProfile);
+                skyboxMaterial.DisableKeyword("_SUNDISK_HIGH_QUALITY");
+                skyboxMaterial.EnableKeyword("_SUNDISK_SIMPLE");
             }
-#endif
+
+            RenderSettings.skybox = skyboxMaterial;
         }
 
         private IEnumerator Start()
@@ -89,67 +63,36 @@ namespace TES3Unity.Components
             // 1. Setup Camera
             camera.farClipPlane = config.CameraFarClip;
 
-            if (m_UniversalRP)
+            var additionalData = camera.GetComponent<UniversalAdditionalCameraData>();
+            if (additionalData == null)
             {
-                var additionalData = camera.GetComponent<UniversalAdditionalCameraData>();
-                if (additionalData == null)
-                {
-                    additionalData = camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
-                }
+                additionalData = camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
+            }
 
-                additionalData.renderPostProcessing = config.PostProcessingQuality != PostProcessingQuality.None;
+            additionalData.renderPostProcessing = config.PostProcessingQuality != PostProcessingQuality.None;
 
-                switch (config.AntiAliasingMode)
-                {
-                    case AntiAliasingMode.None:
-                    case AntiAliasingMode.MSAA:
-                        additionalData.antialiasing = AntialiasingMode.None;
-                        break;
-                    case AntiAliasingMode.FXAA:
-                    case AntiAliasingMode.TAA:
-                        additionalData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
-                        break;
-                    case AntiAliasingMode.SMAA:
-                        additionalData.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
-                        break;
-                }
+            switch (config.AntiAliasingMode)
+            {
+                case AntiAliasingMode.None:
+                case AntiAliasingMode.MSAA:
+                    additionalData.antialiasing = AntialiasingMode.None;
+                    break;
+                case AntiAliasingMode.FXAA:
+                    additionalData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+                    break;
+                case AntiAliasingMode.SMAA:
+                    additionalData.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+                    break;
+            }
 
-                var urpAsset = GraphicsSettings.renderPipelineAsset as UniversalRenderPipelineAsset;
-                if (urpAsset != null)
+            var urpAsset = GraphicsSettings.renderPipelineAsset as UniversalRenderPipelineAsset;
+            if (urpAsset != null)
+            {
+                if (config.AntiAliasingMode != AntiAliasingMode.MSAA)
                 {
-                    if (config.AntiAliasingMode != AntiAliasingMode.MSAA)
-                    {
-                        urpAsset.msaaSampleCount = 0;
-                    }
+                    urpAsset.msaaSampleCount = 0;
                 }
             }
-#if HDRP_ENABLED
-            else
-            {
-                var additionalData = camera.GetComponent<HDAdditionalCameraData>();
-                if (additionalData == null)
-                {
-                    additionalData = camera.gameObject.AddComponent<HDAdditionalCameraData>();
-                }
-
-                switch (config.AntiAliasingMode)
-                {
-                    case AntiAliasingMode.None:
-                    case AntiAliasingMode.MSAA:
-                        additionalData.antialiasing = HDAdditionalCameraData.AntialiasingMode.None;
-                        break;
-                    case AntiAliasingMode.FXAA:
-                        additionalData.antialiasing = HDAdditionalCameraData.AntialiasingMode.FastApproximateAntialiasing;
-                        break;
-                    case AntiAliasingMode.TAA:
-                        additionalData.antialiasing = HDAdditionalCameraData.AntialiasingMode.TemporalAntialiasing;
-                        break;
-                    case AntiAliasingMode.SMAA:
-                        additionalData.antialiasing = HDAdditionalCameraData.AntialiasingMode.SubpixelMorphologicalAntiAliasing;
-                        break;
-                }
-            }
-#endif
         }
 
         private static void CreateVolume(params VolumeProfile[] profiles)
@@ -166,16 +109,6 @@ namespace TES3Unity.Components
                 volume.isGlobal = true;
                 volume.sharedProfile = profile;
             }
-        }
-
-        public static string GetPipelineAssetPath(bool universalRP)
-        {
-            return $"Rendering/{(universalRP ? "UniversalRP" : "HDRP")}/PipelineAssets";
-        }
-
-        public static string GetVolumePath(bool universalRP)
-        {
-            return $"Rendering/{(universalRP ? "UniversalRP" : "HDRP")}/Volumes";
         }
     }
 }

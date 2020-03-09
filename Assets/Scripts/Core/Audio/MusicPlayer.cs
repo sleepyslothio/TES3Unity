@@ -13,6 +13,9 @@ public class MusicPlayer
 
     public void Play()
     {
+        if (songFilePaths.Count == 0)
+            return;
+
         currentSongIndex = GetNextSongIndex();
 
         if (currentSongIndex >= 0)

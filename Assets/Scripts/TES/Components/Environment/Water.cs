@@ -9,7 +9,6 @@ namespace TES3Unity.Effects
     {
         private MeshRenderer m_Water;
         private Transform m_Camera = null;
-        private bool m_HDRP = false;
 
         // Underwater (URP)
         private Material m_DefaultSkybox = null;
@@ -41,10 +40,9 @@ namespace TES3Unity.Effects
 
         private IEnumerator Start()
         {
-            m_HDRP = GameSettings.Get().RendererMode == RendererMode.HDRP;
             m_Water = GetComponent<MeshRenderer>();
 
-            var waterMaterial = Resources.Load<Material>(TES3Material.GetWaterMaterialPath(m_HDRP));
+            var waterMaterial = Resources.Load<Material>(TES3Material.GetWaterMaterialPath());
             m_Water.sharedMaterial = waterMaterial;
 
             var camera = Camera.main;
@@ -83,7 +81,7 @@ namespace TES3Unity.Effects
 
         public void UpdateUnderWater(bool enabled, bool force = false)
         {
-            if ((m_IsUnderwater == enabled && !force) && !m_HDRP)
+            if ((m_IsUnderwater == enabled && !force))
             {
                 return;
             }

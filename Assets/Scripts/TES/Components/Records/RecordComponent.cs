@@ -27,7 +27,7 @@ namespace TES3Unity.Components.Records
 
         protected Transform m_transform = null;
 
-        public CELLRecord.RefObjDataGroup refObjDataGroup = null;
+        public RefObjDataGroup refObjDataGroup = null;
         public Record record;
         public ObjectData objData = new ObjectData();
         public bool usable = false;

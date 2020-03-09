@@ -5,7 +5,6 @@ namespace TES3Unity.Components.Records
 {
     public class Weapon : RecordComponent
     {
-        private bool _isEquiped = false;
         private bool _isVisible = true;
         private Transform _hand = null;
         private Transform _container = null;
@@ -58,13 +57,11 @@ namespace TES3Unity.Components.Records
             m_transform.localRotation = Quaternion.identity;
             _hand = hand;
             _container = container;
-            _isEquiped = true;
         }
 
         public void Unequip(Transform disabledObjects)
         {
             m_transform.parent = disabledObjects;
-            _isEquiped = false;
             _hand = null;
             _container = null;
         }

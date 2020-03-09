@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using TES3Unity.ESM.Records;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace TES3Unity.Components
 {
@@ -37,6 +38,10 @@ namespace TES3Unity.Components
             var tes = TES3Manager.Instance;
             tes.Engine.CurrentCellChanged += Engine_CurrentCellChanged;
             Engine_CurrentCellChanged(tes.Engine.CurrentCell);
+
+#if UNITY_ANDROID
+            RenderSettings.ambientIntensity = 4;
+#endif
         }
 
         private void Update()
@@ -62,6 +67,9 @@ namespace TES3Unity.Components
             RenderSettings.ambientLight = ambientColor;
             m_Sun.enabled = !cell.isInterior;
             m_Sun.color = sunColor;
+
+            RenderSettings.ambientMode = cell.isInterior ? AmbientMode.Flat : AmbientMode.Skybox;
+            RenderSettings.ambientIntensity = TES3Manager.Instance.ambientIntensity;
         }
     }
 }

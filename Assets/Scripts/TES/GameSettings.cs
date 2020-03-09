@@ -15,14 +15,9 @@ namespace TES3Unity
         Low = 0, Medium, High
     }
 
-    public enum RendererMode
-    {
-        UniversalRP, HDRP
-    }
-
     public enum AntiAliasingMode
     {
-        None = 0, MSAA, FXAA, SMAA, TAA
+        None = 0, MSAA, FXAA, SMAA
     }
 
     [Serializable]
@@ -35,9 +30,8 @@ namespace TES3Unity
 
         public bool MusicEnabled = true;
         public PostProcessingQuality PostProcessingQuality = PostProcessingQuality.High;
-        public RendererMode RendererMode = RendererMode.UniversalRP;
         public SRPQuality SRPQuality = SRPQuality.High;
-        public AntiAliasingMode AntiAliasingMode = AntiAliasingMode.TAA;
+        public AntiAliasingMode AntiAliasingMode = AntiAliasingMode.SMAA;
         public bool GenerateNormalMaps = true;
         public bool AnimateLights = true;
         public bool SunShadows = true;
@@ -47,7 +41,6 @@ namespace TES3Unity
         public int CellRadius = 2;
         public int CellDetailRadius = 2;
         public int CellRadiusOnLoad = 2;
-        public bool WaterTransparency = false;
         public bool KinematicRigidbody = true;
         public bool DayNightCycle = false;
         public bool FollowHead = true;
@@ -57,38 +50,9 @@ namespace TES3Unity
         public static void Save()
         {
             var instance = Get();
-            instance.CheckSettings();
-
             var json = JsonUtility.ToJson(instance);
             PlayerPrefs.SetString(StorageKey, json);
             PlayerPrefs.Save();
-        }
-
-        public void CheckSettings()
-        {
-#if !HDRP_ENABLED
-            if (RendererMode == RendererMode.HDRP)
-                RendererMode = RendererMode.UniversalRP;
-#endif
-
-#if UNITY_ANDROID || UNITY_IOS
-            // Avoid HDRP or Deferred Rendering on mobile
-            if (RendererMode == RendererMode.HDRP)
-                RendererMode = RendererMode.UniversalRP;
-#endif
-
-            // SMAA is not supported in VR.
-            var xrEnabled = XRManager.IsXREnabled();
-            if (xrEnabled && AntiAliasingMode == AntiAliasingMode.SMAA)
-                AntiAliasingMode = AntiAliasingMode.TAA;
-
-            // MSAA 4X max on mobile.
-            if (AntiAliasingMode == AntiAliasingMode.MSAA && IsMobile())
-                AntiAliasingMode = AntiAliasingMode.MSAA;
-
-            // FXAA post process on mobile.
-            if ((AntiAliasingMode == AntiAliasingMode.SMAA || AntiAliasingMode == AntiAliasingMode.TAA) && IsMobile())
-                AntiAliasingMode = AntiAliasingMode.FXAA;
         }
 
         public static GameSettings Get()
@@ -101,17 +65,15 @@ namespace TES3Unity
                 Instance.GenerateNormalMaps = false;
                 Instance.SunShadows = false;
                 Instance.RenderScale = 0.9f;
-                Instance.MaterialType = MWMaterialType.Standard;
                 Instance.PostProcessingQuality = PostProcessingQuality.None;
                 Instance.LightShadows = false;
                 Instance.ExteriorLights = false;
                 Instance.CameraFarClip = 200;
                 Instance.DayNightCycle = false;
-                Instance.AntiAliasingMode = AntiAliasingMode.MSAA2X;
+                Instance.AntiAliasingMode = AntiAliasingMode.MSAA;
                 Instance.RoomScale = false;
                 Instance.CellDetailRadius = 2;
                 Instance.CellRadius = 1;
-                Instance.WaterTransparency = false;
 
                 if (XRManager.IsXREnabled())
                 {

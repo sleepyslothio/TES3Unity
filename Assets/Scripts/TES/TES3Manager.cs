@@ -19,7 +19,6 @@ namespace TES3Unity
         public static TES3DataReader MWDataReader { get; set; }
 
         private TES3Engine m_MorrowindEngine = null;
-        private MusicPlayer m_MusicPlayer = null;
 
         #region Inspector Members
 
@@ -107,22 +106,9 @@ namespace TES3Unity
             }
 
             m_MorrowindEngine = new TES3Engine(MWDataReader);
-            m_MusicPlayer = new MusicPlayer();
 
-            if (config.MusicEnabled)
-            {
-                var songs = Directory.GetFiles(dataPath + "/Music/Explore");
-                if (songs.Length > 0)
-                {
-                    foreach (var songFilePath in songs)
-                    {
-                        if (!songFilePath.Contains("Morrowind Title"))
-                            m_MusicPlayer.AddSong(songFilePath);
-                    }
-
-                    m_MusicPlayer.Play();
-                }
-            }
+            var soundManager = FindObjectOfType<SoundManager>();
+            soundManager?.Initialize(dataPath);
 
             // Start Position
             var cellGridCoords = new Vector2i(-2, -9);
@@ -166,7 +152,6 @@ namespace TES3Unity
             TES3Engine.desiredWorkTimePerFrame = desiredWorkTimePerFrame;
 #endif
             m_MorrowindEngine.Update();
-            m_MusicPlayer.Update();
         }
 
 #if UNITY_EDITOR

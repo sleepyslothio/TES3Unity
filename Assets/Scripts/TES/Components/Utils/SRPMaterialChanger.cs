@@ -2,9 +2,6 @@
 using TES3Unity.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering;
-#if HDRP_ENABLED
-using UnityEngine.Rendering.HighDefinition;
-#endif
 using UnityEngine.Rendering.Universal;
 
 namespace TES3Unity.Components.Utilities
@@ -21,21 +18,11 @@ namespace TES3Unity.Components.Utilities
             {
                 var renderer = GetComponent<Renderer>();
                 var material = renderer.sharedMaterial;
-                var shaderName = string.Empty;
+                var shaderName = TES3Material.URPLitPath;
 
 #if UNITY_EDITOR
                 // To prevent the script to change the material in the editor.
                 material = renderer.material;
-#endif
-
-                if (GraphicsSettings.renderPipelineAsset is UniversalRenderPipelineAsset)
-                {
-                    shaderName = TES3Material.URPLitPath;
-                }
-
-#if HDRP_ENABLED
-                if (GraphicsSettings.renderPipelineAsset is HDRenderPipelineAsset)
-                    shaderName = TES3Material.HDRPLitPath;
 #endif
 
                 var shader = Shader.Find(shaderName);

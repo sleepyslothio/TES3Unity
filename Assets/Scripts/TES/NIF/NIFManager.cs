@@ -53,6 +53,12 @@ namespace TES3Unity
             return GameObject.Instantiate(prefab);
         }
 
+        public GameObject InstantiateSkinnedNIF(string filePath)
+        {
+            Debug.LogWarning($"Skinned Mesh Loading not yet implemented. Fallback to Instanciate Static NIF");
+            return InstantiateNIF(filePath, false);
+        }
+
         private GameObject LoadNifPrefabDontAddToPrefabCache(string filePath, bool isStatic)
         {
             var file = _dataReader.LoadNif(filePath);

@@ -20,7 +20,6 @@ namespace TES3Unity.Components
         public int CellRadiusOnLoad = 2;
 
         [Header("Rendering")]
-        public RendererMode RendererType = RendererMode.UniversalRP;
         public float CameraFarClip = 500.0f;
         public SRPQuality SRPQuality = SRPQuality.High;
         public float RenderScale = 1.0f;
@@ -36,7 +35,7 @@ namespace TES3Unity.Components
 
         [Header("Effects")]
         public PostProcessingQuality PostProcessingQuality = PostProcessingQuality.High;
-        public AntiAliasingMode AntiAliasing = AntiAliasingMode.TAA;
+        public AntiAliasingMode AntiAliasing = AntiAliasingMode.SMAA;
 
         [Header("VR")]
         public bool FollowHead = true;
@@ -66,14 +65,11 @@ namespace TES3Unity.Components
             settings.GenerateNormalMaps = GenerateNormalMap;
             settings.LightShadows = LightShadows;
             settings.PostProcessingQuality = PostProcessingQuality;
-            settings.RendererMode = RendererType;
             settings.RenderScale = RenderScale;
             settings.RoomScale = RoomScale;
             settings.SRPQuality = SRPQuality;
             settings.SunShadows = SunShadows;
-            settings.WaterTransparency = WaterTransparency;
             settings.KinematicRigidbody = KinematicRigidbodies;
-            settings.CheckSettings();
 #endif
         }
     }

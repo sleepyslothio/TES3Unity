@@ -63,6 +63,8 @@ namespace TES3Unity
         public UIManager UIManager { get; set; }
 
         public event Action<CELLRecord> CurrentCellChanged = null;
+        public event Action<RecordComponent, bool> ShowInteractiveTextChanged = null;
+        public event Action<RecordComponent> RaycastedComponent = null;
 
         #endregion
 
@@ -81,11 +83,8 @@ namespace TES3Unity
             var tes = TES3Manager.Instance;
             var config = GameSettings.Get();
 
-            //RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            //RenderSettings.ambientIntensity = tes.ambientIntensity;
-
-            var m_SunObj = GameObjectUtils.CreateSunLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
-            m_SunObj.AddComponent<LightingManager>();
+            var sunLight = GameObjectUtils.CreateSunLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
+            sunLight.AddComponent<LightingManager>();
 
             var waterPrefab = Resources.Load<GameObject>("Prefabs/WaterRP");
             GameObject.Instantiate(waterPrefab);
@@ -103,10 +102,6 @@ namespace TES3Unity
 
             UIManager = uiCanvas.GetComponent<UIManager>();
 
-#if UNITY_ANDROID
-            RenderSettings.ambientIntensity = 4;
-#endif
-
             var gameplayActionMap = InputManager.GetActionMap("Gameplay");
             gameplayActionMap.Enable();
 
@@ -114,18 +109,6 @@ namespace TES3Unity
         }
 
         #region Player Spawn
-
-        public void SpawnPlayer(Vector2i cellGridCoords, bool interior, Vector3 position, Quaternion rotation)
-        {
-            if (interior)
-            {
-                SpawnPlayerInside(cellGridCoords, position, rotation);
-            }
-            else
-            {
-                SpawnPlayerOutside(cellGridCoords, position, rotation);
-            }
-        }
 
         /// <summary>
         /// Spawns the player inside. Be carefull, the name of the cell is not the same for each languages.
@@ -146,54 +129,24 @@ namespace TES3Unity
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
         }
 
-        /// <summary>
-        /// Spawns the player inside using the cell's grid coordinates.
-        /// </summary>
-        /// <param name="playerPrefab">The player prefab.</param>
-        /// <param name="gridCoords">The grid coordinates.</param>
-        /// <param name="position">The target position of the player.</param>
-        public void SpawnPlayerInside(Vector2i gridCoords, Vector3 position, Quaternion rotation)
+        public void SpawnPlayer(Vector2i gridCoords, bool outside, Vector3 position, Quaternion rotation)
         {
-            CurrentCell = dataReader.FindInteriorCellRecord(gridCoords);
+            InRangeCellInfo cellInfo = null;
 
-            Debug.Assert(m_CurrentCell != null);
+            if (outside)
+            {
+                CurrentCell = dataReader.FindExteriorCellRecord(gridCoords);
+                cellInfo = cellManager.StartCreatingExteriorCell(gridCoords);
+            }
+            else
+            {
+                CurrentCell = dataReader.FindInteriorCellRecord(gridCoords);
+                cellInfo = cellManager.StartCreatingInteriorCell(gridCoords);
+            }
 
             CreatePlayer(position, rotation);
 
-            var cellInfo = cellManager.StartCreatingInteriorCell(gridCoords);
             temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
-        }
-
-        /// <summary>
-        /// Spawns the player outside using the cell's grid coordinates.
-        /// </summary>
-        /// <param name="gridCoords">The grid coordinates.</param>
-        /// <param name="position">The target position of the player.</param>
-        /// <param name="rotation">The target rotation of the player.</param>
-        public void SpawnPlayerOutside(Vector2i gridCoords, Vector3 position, Quaternion rotation)
-        {
-            CurrentCell = dataReader.FindExteriorCellRecord(gridCoords);
-
-            Debug.Assert(m_CurrentCell != null);
-
-            CreatePlayer(position, rotation);
-
-            var cellInfo = cellManager.StartCreatingExteriorCell(gridCoords);
-            temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
-        }
-
-        /// <summary>
-        /// Spawns the player outside using the position of the player.
-        /// </summary>
-        /// <param name="position">The target position of the player.</param>
-        /// <param name="rotation">The target rotation of the player.</param>
-        public void SpawnPlayerOutside(Vector3 position, Quaternion rotation)
-        {
-            var cellIndices = cellManager.GetExteriorCellIndices(position);
-            CurrentCell = dataReader.FindExteriorCellRecord(cellIndices);
-
-            CreatePlayer(position, rotation);
-            cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, cellRadiusOnLoad);
         }
 
         #endregion
@@ -226,9 +179,12 @@ namespace TES3Unity
                     if (component != null)
                     {
                         if (string.IsNullOrEmpty(component.objData.name))
+                        {
                             return;
+                        }
 
-                        ShowInteractiveText(component);
+                        ShowInteractiveTextChanged?.Invoke(component, true);
+                        RaycastedComponent?.Invoke(component);
 
                         if (m_UseAction.phase == InputActionPhase.Started)
                         {
@@ -246,26 +202,15 @@ namespace TES3Unity
                     else
                     {
                         //deactivate text if no interactable [ DOORS ONLY - REQUIRES EXPANSION ] is found
-                        CloseInteractiveText();
+                        ShowInteractiveTextChanged?.Invoke(null, false);
                     }
                 }
             }
             else
             {
                 //deactivate text if nothing is raycasted against
-                CloseInteractiveText();
+                ShowInteractiveTextChanged?.Invoke(null, false);
             }
-        }
-
-        public void ShowInteractiveText(RecordComponent component)
-        {
-            var data = component.objData;
-            UIManager.InteractiveText.Show(GUIUtils.CreateSprite(data.icon), data.interactionPrefix, data.name, data.value, data.weight);
-        }
-
-        public void CloseInteractiveText()
-        {
-            UIManager.InteractiveText.Close();
         }
 
         #region Private

@@ -51,29 +51,23 @@ namespace TES3Unity.Rendering
         public const string URPLitPath = "TESUnity/URP-Lit";
         public const string URPLitCutoffPath = "TESUnity/URP-Lit-Cutoff";
         public const string URPTerrainPath = "Universal Render Pipeline/Terrain/Lit";
-        public const string HDRPLitPath = "TESUnity/HDRP-Lit";
-        public const string HDRPLitCutoffPath = "TESUnity/HDRP-Lit-Cutoff";
-        public const string HDRPTerrainPath = "HDRP/TerrainLit";
         public const string DiffuseParameterName = "_Albedo";
         public const string m_SrcBlendParameter = "_SrcBlend";
         public const string m_DstBlendParameter = "_DstBlend";
         public const string m_CutoutParameter = "_Cutout";
         // Static variables
         private static Material TerrainMaterial = null;
-        private static Material HDRPCutoffMaterial = null;
         private static Dictionary<TES3MaterialProps, Material> MaterialStore = new Dictionary<TES3MaterialProps, Material>();
         // Private variables
         private TextureManager m_textureManager;
         private Shader m_Shader = null;
         private Shader m_CutoutShader = null;
-        private bool m_HDRP;
 
         public TES3Material(TextureManager textureManager)
         {
             m_textureManager = textureManager;
-            m_HDRP = GameSettings.Get().RendererMode == RendererMode.HDRP;
-            m_Shader = Shader.Find(m_HDRP ? HDRPLitPath : URPLitPath);
-            m_CutoutShader = Shader.Find(m_HDRP ? HDRPLitCutoffPath : URPLitCutoffPath);
+            m_Shader = Shader.Find(URPLitPath);
+            m_CutoutShader = Shader.Find(URPLitCutoffPath);
         }
 
         public Material BuildMaterialFromProperties(TES3MaterialProps mp)
@@ -86,18 +80,7 @@ namespace TES3Unity.Rendering
             var material = new Material(mp.alphaBlended ? m_CutoutShader : m_Shader);
 
             if (mp.alphaBlended)
-            {
-                if (m_HDRP)
-                {
-                    if (HDRPCutoffMaterial == null)
-                    {
-                        var materialPath = $"{GetMaterialAssetPath(true)}/HDRP-Cutoff";
-                        HDRPCutoffMaterial = Resources.Load<Material>(materialPath);
-                    }
-
-                    material.CopyPropertiesFromMaterial(HDRPCutoffMaterial);
-                }
-                
+            {                
                 material.SetFloat(m_CutoutParameter, 0.5f);
             }
 
@@ -112,22 +95,24 @@ namespace TES3Unity.Rendering
             return material;
         }
 
-        public static Material GetTerrainMaterial(bool hdrp = false)
+        public static Material GetTerrainMaterial()
         {
             if (TerrainMaterial == null)
-                TerrainMaterial = new Material(Shader.Find(hdrp ? HDRPTerrainPath : URPTerrainPath));
+            {
+                TerrainMaterial = new Material(Shader.Find(URPTerrainPath));
+            }
 
             return TerrainMaterial;
         }
 
-        public static string GetMaterialAssetPath(bool hdrp = false)
+        public static string GetMaterialAssetPath()
         {
-            return $"Rendering/{(hdrp ? "HDRP" : "UniversalRP")}/Materials";
+            return $"Rendering/UniversalRP/Materials";
         }
 
-        public static string GetWaterMaterialPath(bool hdrp = false)
+        public static string GetWaterMaterialPath()
         {
-            return $"{GetMaterialAssetPath(hdrp)}/{(hdrp ? "HDRP-Water" : "URP-Water")}";
+            return $"{GetMaterialAssetPath()}/URP-Water";
         }
     }
 }

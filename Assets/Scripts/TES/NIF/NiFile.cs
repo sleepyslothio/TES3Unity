@@ -25,6 +25,15 @@
 
             footer = new NiFooter();
             footer.Deserialize(reader);
+
+            foreach (var b in blocks)
+            {
+                if (b is NiSkinInstance)
+                {
+                    UnityEngine.Debug.Log($"{name} as a NiSkinInstance");
+                    return;
+                }
+            }
         }
     }
 }
