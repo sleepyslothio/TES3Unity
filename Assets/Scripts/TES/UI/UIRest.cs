@@ -3,10 +3,8 @@ using UnityEngine.UI;
 
 namespace TES3Unity.UI
 {
-    public class UIRest : MonoBehaviour
+    public class UIRest : UIWindow
     {
-        [SerializeField]
-        private GameObject m_Container = null;
         [SerializeField]
         private Slider m_RestTime = null;
         [SerializeField]

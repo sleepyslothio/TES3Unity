@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
 using TES3Unity.Inputs;
 using UnityEngine;
@@ -8,7 +7,7 @@ using UnityEngine.UI;
 
 namespace TES3Unity.UI
 {
-    public class UIBook : MonoBehaviour
+    public class UIBook : UIWindow
     {
         private int _numberOfPages;
         private int _cursor;

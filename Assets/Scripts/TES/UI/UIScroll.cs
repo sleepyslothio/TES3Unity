@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace TES3Unity.UI
 {
-    public class UIScroll : MonoBehaviour
+    public class UIScroll : UIWindow
     {
         private BOOKRecord _bookRecord;
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using TES3Unity.Components.Records;
+using TES3Unity.Inputs;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace TES3Unity.UI
 {
@@ -13,6 +15,7 @@ namespace TES3Unity.UI
     [RequireComponent(typeof(Canvas))]
     public class UIManager : MonoBehaviour
     {
+        private InputActionMap m_UIActionMap = null;
         private UIWindow m_CurrentWindow = null;
 
         [Header("HUD Elements")]
@@ -26,6 +29,12 @@ namespace TES3Unity.UI
         private UIBook _book = null;
         [SerializeField]
         private UIScroll _scroll = null;
+        [SerializeField]
+        private UIInventory m_Inventory = null;
+        [SerializeField]
+        private UIMenu m_Menu = null;
+        [SerializeField]
+        private UIRest m_Rest = null;
 
         public UIBook Book => _book;
         public UIInteractiveText InteractiveText => _interactiveText;
@@ -36,11 +45,23 @@ namespace TES3Unity.UI
 
         public IEnumerator Start()
         {
-            var player = GameObject.FindWithTag("Player");
+            var playerTag = "Player";
+            var player = GameObject.FindWithTag(playerTag);
+
+            m_UIActionMap = InputManager.GetActionMap("UI");
+            m_UIActionMap["Validate"].started += (c) =>
+            {
+                m_CurrentWindow?.OnValidateClicked();
+            };
+
+            m_UIActionMap["Back"].started += (c) =>
+            {
+                m_CurrentWindow?.OnBackClicked();
+            };
 
             while (player == null)
             {
-                player = GameObject.FindWithTag("Player");
+                player = GameObject.FindWithTag(playerTag);
                 yield return null;
             }
 
@@ -61,42 +82,50 @@ namespace TES3Unity.UI
             }
         }
 
-        public UIWindow OpenWindow(UIWindowType type)
+        public bool OpenWindow(UIWindowType type, out UIWindow window)
         {
+            window = null;
+
             if (m_CurrentWindow != null)
             {
+                m_CurrentWindow.OnCloseRequest();
                 m_CurrentWindow.SetVisible(false);
                 WindowOpenChanged?.Invoke(m_CurrentWindow, false);
             }
 
             if (type == UIWindowType.Book)
             {
-
+                m_CurrentWindow = _book;
             }
             else if (type == UIWindowType.Scroll)
             {
-
+                m_CurrentWindow = _scroll;
             }
             else if (type == UIWindowType.Inventory)
             {
-
+                m_CurrentWindow = m_Inventory;
             }
             else if (type == UIWindowType.Menu)
             {
-
+                m_CurrentWindow = m_Menu;
             }
             else if (type == UIWindowType.Rest)
             {
-
+                m_CurrentWindow = m_Rest;
             }
 
             if (m_CurrentWindow != null)
             {
+                m_UIActionMap.Enable();
                 m_CurrentWindow.SetVisible(true);
+                window = m_CurrentWindow;
                 WindowOpenChanged?.Invoke(m_CurrentWindow, true);
+                return true;
             }
 
-            return m_CurrentWindow;
+            m_UIActionMap.Disable();
+
+            return false;
         }
     }
 }
