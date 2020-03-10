@@ -383,7 +383,7 @@ namespace TES3Unity
             lightComponent.color = new Color32(data.Red, data.Green, data.Blue, 255);
             lightComponent.intensity = 1.5f;
             lightComponent.bounceIntensity = 0f;
-            lightComponent.shadows = config.LightShadows ? LightShadows.Soft : LightShadows.None;
+            lightComponent.shadows = config.PonctualLightShadows ? LightShadows.Soft : LightShadows.None;
 
 #if UNITY_ANDROID || UNITY_IOS
             lightComponent.renderMode = LightRenderMode.ForceVertex;

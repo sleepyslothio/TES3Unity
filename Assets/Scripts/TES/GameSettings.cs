@@ -1,6 +1,7 @@
 ﻿using Demonixis.Toolbox.XR;
 using System;
 using System.IO;
+using TES3Unity.ESM.Records;
 using UnityEngine;
 
 namespace TES3Unity
@@ -12,12 +13,22 @@ namespace TES3Unity
 
     public enum SRPQuality
     {
-        Low = 0, Medium, High
+        Low = 0, Medium, High, Ultra
     }
 
     public enum AntiAliasingMode
     {
         None = 0, MSAA, FXAA, SMAA
+    }
+
+    [Serializable]
+    public struct PlayerData
+    {
+        public string Name;
+        public bool Woman;
+        public RaceType Race;
+        public string ClassName;
+        public string Faction;
     }
 
     [Serializable]
@@ -35,7 +46,7 @@ namespace TES3Unity
         public bool GenerateNormalMaps = true;
         public bool AnimateLights = true;
         public bool SunShadows = true;
-        public bool LightShadows = true;
+        public bool PonctualLightShadows = true;
         public bool ExteriorLights = true;
         public float CameraFarClip = 500.0f;
         public int CellRadius = 2;
@@ -46,6 +57,7 @@ namespace TES3Unity
         public bool FollowHead = true;
         public bool RoomScale = false;
         public float RenderScale = 1.0f;
+        public PlayerData Player;
 
         public static void Save()
         {
@@ -60,6 +72,13 @@ namespace TES3Unity
             if (Instance == null)
             {
                 Instance = new GameSettings();
+
+                Instance.Player = new PlayerData
+                {
+                    Name = "Player",
+                    Woman = false,
+                    Race = RaceType.Imperial
+                };
 
 #if UNITY_ANDROID || UNITY_IOS
                 Instance.GenerateNormalMaps = false;
@@ -102,6 +121,22 @@ namespace TES3Unity
 #else
             return false;
 #endif
+        }
+
+        public static LightShadows GetRecommandedShadows()
+        {
+            var config = Get();
+
+            if (!config.PonctualLightShadows || !config.SunShadows)
+            {
+                return LightShadows.None;
+            }
+            else if (IsMobile() || config.SRPQuality == SRPQuality.Medium || config.SRPQuality == SRPQuality.Low)
+            {
+                return LightShadows.Hard;
+            }
+
+            return LightShadows.Soft;
         }
 
         public static bool IsValidPath(string path)

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using TES3Unity.Components.Records;
+﻿using TES3Unity.Components.Records;
 using TES3Unity.ESM.Records;
 using TES3Unity.World;
 using UnityEngine;
@@ -8,20 +7,6 @@ namespace TES3Unity.Diagnostic
 {
     public class NPC_Loader : MonoBehaviour
     {
-        public enum RaceType
-        {
-            Breton = 0,
-            Imperial,
-            Nord,
-            Redguard,
-            High_Elf,
-            Wood_Elf,
-            Dark_Elf,
-            Orc,
-            Argonian,
-            Khajiit
-        }
-
         private NIFManager m_NifManager = null;
 
         [SerializeField]

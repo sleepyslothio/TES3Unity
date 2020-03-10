@@ -1,5 +1,22 @@
-﻿namespace TES3Unity.ESM.Records
+﻿using System;
+
+namespace TES3Unity.ESM.Records
 {
+    [Serializable]
+    public enum RaceType
+    {
+        Breton = 0,
+        Imperial,
+        Nord,
+        Redguard,
+        High_Elf,
+        Wood_Elf,
+        Dark_Elf,
+        Orc,
+        Argonian,
+        Khajiit
+    }
+
     public sealed class RACERecord : Record
     {
         public string Id { get; private set; }

@@ -10,6 +10,9 @@ namespace TES3Unity.Components
     {
         public bool Override = false;
 
+        [Header("Player")]
+        public PlayerData Player;
+
         [Header("Global")]
         public bool PlayMusic = false;
         public bool KinematicRigidbodies = true;
@@ -62,7 +65,7 @@ namespace TES3Unity.Components
             settings.ExteriorLights = ExteriorCellLights;
             settings.FollowHead = FollowHead;
             settings.GenerateNormalMaps = GenerateNormalMap;
-            settings.LightShadows = LightShadows;
+            settings.PonctualLightShadows = LightShadows;
             settings.PostProcessingQuality = PostProcessingQuality;
             settings.RenderScale = RenderScale;
             settings.RoomScale = RoomScale;

@@ -90,6 +90,22 @@ namespace TES3Unity.ESM.Records
             Spells = new List<string>();
         }
 
+        public static NPC_Record CreateRaw(string name, string race, string faction, string className, string head, string hair, int flags, List<NPCOData> items)
+        {
+            return new NPC_Record
+            {
+                Id = name,
+                Name = name,
+                Race = race,
+                Faction = faction,
+                Class = className,
+                HeadModel = head,
+                HairModel = hair,
+                Flags = flags,
+                Items = items
+            };
+        }
+
         public override void DeserializeSubRecord(UnityBinaryReader reader, string subRecordName, uint dataSize)
         {
             if (subRecordName == "NAME")

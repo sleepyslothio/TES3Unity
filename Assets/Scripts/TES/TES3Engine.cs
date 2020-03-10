@@ -132,8 +132,7 @@ namespace TES3Unity
                 MWDataReader = new TES3DataReader(dataPath);
             }
 
-            var engine = GetComponent<TES3Engine>();
-            engine.Initialize(MWDataReader);
+            Initialize(MWDataReader);
 
             var soundManager = FindObjectOfType<SoundManager>();
             soundManager?.Initialize(dataPath);

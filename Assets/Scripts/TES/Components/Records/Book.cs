@@ -78,7 +78,7 @@ namespace TES3Unity.Components.Records
         private void OnTakeScroll(BOOKRecord obj)
         {
             var inventory = FindObjectOfType<PlayerInventory>();
-            inventory.Add(this);
+            inventory.AddItem(this);
         }
 
         private void OnCloseScroll(BOOKRecord obj)
@@ -91,7 +91,7 @@ namespace TES3Unity.Components.Records
         private void OnTakeBook(BOOKRecord obj)
         {
             var inventory = FindObjectOfType<PlayerInventory>();
-            inventory.Add(this);
+            inventory.AddItem(this);
         }
 
         private void OnCloseBook(BOOKRecord obj)

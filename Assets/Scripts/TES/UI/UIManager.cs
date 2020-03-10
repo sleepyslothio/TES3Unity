@@ -49,20 +49,21 @@ namespace TES3Unity.UI
             var player = GameObject.FindWithTag(playerTag);
 
             m_UIActionMap = InputManager.GetActionMap("UI");
-            m_UIActionMap["Validate"].started += (c) =>
-            {
-                m_CurrentWindow?.OnValidateClicked();
-            };
-
-            m_UIActionMap["Back"].started += (c) =>
-            {
-                m_CurrentWindow?.OnBackClicked();
-            };
+            m_UIActionMap["Validate"].started += (c) => m_CurrentWindow?.OnValidateClicked();
+            m_UIActionMap["Back"].started += (c) => m_CurrentWindow?.OnBackClicked();
+            m_UIActionMap["Next"].started += (c) => m_CurrentWindow?.OnNextClicked();
+            m_UIActionMap["Previous"].started += (c) => m_CurrentWindow?.OnPreviousClicked();
 
             while (player == null)
             {
                 player = GameObject.FindWithTag(playerTag);
                 yield return null;
+            }
+
+            var windows = GetComponentsInChildren<UIWindow>();
+            foreach (var window in windows)
+            {
+                window.CloseRequest += OnWindowCloseRequest;
             }
 
             var playerCharacter = player.GetComponent<PlayerCharacter>();
@@ -86,12 +87,8 @@ namespace TES3Unity.UI
         {
             window = null;
 
-            if (m_CurrentWindow != null)
-            {
-                m_CurrentWindow.OnCloseRequest();
-                m_CurrentWindow.SetVisible(false);
-                WindowOpenChanged?.Invoke(m_CurrentWindow, false);
-            }
+            // One window at a time.
+            CloseWindow();
 
             if (type == UIWindowType.Book)
             {
@@ -126,6 +123,31 @@ namespace TES3Unity.UI
             m_UIActionMap.Disable();
 
             return false;
+        }
+
+        public void CloseWindow()
+        {
+            if (m_CurrentWindow == null)
+            {
+                return;
+            }
+
+            m_CurrentWindow.OnCloseRequest();
+            m_CurrentWindow.SetVisible(false);
+            WindowOpenChanged?.Invoke(m_CurrentWindow, false);
+        }
+
+        private void OnWindowCloseRequest(UIWindow window)
+        {
+            if (m_CurrentWindow != window)
+            {
+                Debug.Log($"The current windows {m_CurrentWindow?.name ?? "NULL"} is different than {window.name}");
+                window.OnCloseRequest();
+            }
+            else
+            {
+                CloseWindow();
+            }
         }
     }
 }

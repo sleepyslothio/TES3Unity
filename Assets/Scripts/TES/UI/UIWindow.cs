@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace TES3Unity.UI
 {
@@ -6,6 +7,8 @@ namespace TES3Unity.UI
     {
         [SerializeField]
         protected GameObject m_Container = null;
+
+        public event Action<UIWindow> CloseRequest = null;
 
         public virtual void SetVisible(bool visible)
         {
@@ -21,6 +24,14 @@ namespace TES3Unity.UI
         }
 
         public virtual void OnCloseRequest()
+        {
+        }
+
+        public virtual void OnNextClicked()
+        {
+        }
+
+        public virtual void OnPreviousClicked()
         {
         }
     }

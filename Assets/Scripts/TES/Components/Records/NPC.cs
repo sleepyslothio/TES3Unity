@@ -53,7 +53,7 @@ namespace TES3Unity.Components.Records
                         var bone = transform.FindChildRecursiveExact(boneName);
                         if (bone == null)
                         {
-                            Debug.Log($"Can't find bone {boneName}");
+                            //Debug.Log($"Can't find bone {boneName}");
                             continue;
                         }
 

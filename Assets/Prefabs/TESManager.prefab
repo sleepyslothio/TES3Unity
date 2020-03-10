@@ -83,6 +83,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Override: 1
+  Player:
+    Name: Yann
+    Woman: 0
+    Race: 2
+    ClassName: 
+    Faction: 
   PlayMusic: 1
   KinematicRigidbodies: 1
   CellRadius: 1
@@ -90,15 +96,15 @@ MonoBehaviour:
   CellRadiusOnLoad: 1
   CameraFarClip: 500
   SRPQuality: 2
-  RenderScale: 0.95
+  RenderScale: 2
   SunShadows: 1
   LightShadows: 1
   ExteriorCellLights: 1
   AnimateLights: 1
-  DayNightCycle: 0
+  DayNightCycle: 1
   GenerateNormalMap: 1
   PostProcessingQuality: 3
-  AntiAliasing: 4
+  AntiAliasing: 3
   FollowHead: 1
   RoomScale: 1
 --- !u!114 &493214117
@@ -126,7 +132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TimeInSeconds: 34000
-  m_TimeScale: 1
+  m_TimeScale: 25
 --- !u!114 &1945703045182576952
 MonoBehaviour:
   m_ObjectHideFlags: 0

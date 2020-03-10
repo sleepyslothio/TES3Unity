@@ -1,10 +1,8 @@
 ﻿using Demonixis.Toolbox.XR;
 using System;
-using System.Collections;
 using TES3Unity.Components;
 using TES3Unity.Components.Records;
 using TES3Unity.Inputs;
-using TES3Unity.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -52,11 +50,6 @@ namespace TES3Unity
             var gameplayActionMap = InputManager.GetActionMap("Gameplay");
             gameplayActionMap.Enable();
 
-            gameplayActionMap["Rest"].started += (c) =>
-            {
-
-            };
-
             m_UseAction = gameplayActionMap["Use"];
         }
 
@@ -100,7 +93,7 @@ namespace TES3Unity
                             }
                             else if (component.pickable)
                             {
-                                m_PlayerInventory.Add(component);
+                                m_PlayerInventory.AddItem(component);
                             }
                         }
 

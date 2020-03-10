@@ -6,7 +6,7 @@ namespace TES3Unity.World
 {
     public static class NPCFactory
     {
-        public static GameObject InstanciateNPC(NIFManager nifManager, NPC_Record npc)
+        public static GameObject InstanciateNPC(NIFManager nifManager, NPC_Record npc, bool firstPerson = false, bool fixPosition = true)
         {
             var beast = npc.Race == "Argonian" || npc.Race == "Khajiit";
             var female = Utils.ContainsBitFlags((uint)npc.Flags, (uint)NPCFlags.Female);
@@ -26,12 +26,21 @@ namespace TES3Unity.World
                     animationFile = "xbase_animkna";
                 }
 
+                if (firstPerson)
+                {
+                    animationFile += ".1st";
+                }
+
                 animationFile += ".nif";
             }
 
             var npcObj = nifManager.InstantiateNIF($"meshes\\{animationFile}", false);
             var bone01 = npcObj.transform.Find("Bip01");
-            bone01.localPosition = new Vector3(0, 0.6f, 0);
+
+            if (fixPosition)
+            {
+                bone01.localPosition = new Vector3(0, 0.6f, 0);
+            }
 
             var boneMapping = new Dictionary<string, Transform>();
             var renderers = npcObj.GetComponentsInChildren<MeshRenderer>(true);
@@ -119,7 +128,7 @@ namespace TES3Unity.World
                 chest.localPosition = new Vector3(-0.018f, -1.081f, 0);
                 chest.localRotation = Quaternion.Euler(0, 90, 0);
             }
-            else
+            else if (!firstPerson)
             {
                 var leftHand = chest.Find("Bip01 Pelvis/Bip01 Spine/Bip01 Spine1/Bip01 Spine2/Bip01 Neck/Bip01 L Clavicle/Bip01 L UpperArm/Left Hand");
                 InvertXScale(leftHand);

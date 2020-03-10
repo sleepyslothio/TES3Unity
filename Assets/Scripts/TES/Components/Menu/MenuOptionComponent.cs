@@ -65,7 +65,7 @@ namespace TES3Unity.Components
             m_SunShadowsToggle.isOn = m_Settings.SunShadows;
             m_SunShadowsToggle.onValueChanged.AddListener(SetSunShadow);
 
-            m_LightShadowsToggle.isOn = m_Settings.LightShadows;
+            m_LightShadowsToggle.isOn = m_Settings.PonctualLightShadows;
             m_LightShadowsToggle.onValueChanged.AddListener(SetLightShadows);
 
             m_ExteriorLightsToggle.isOn = m_Settings.ExteriorLights;
@@ -204,7 +204,7 @@ namespace TES3Unity.Components
 
         private void SetLightShadows(bool isOn)
         {
-            m_Settings.LightShadows = isOn;
+            m_Settings.PonctualLightShadows = isOn;
         }
 
         private void SetExteriorLights(bool isOn)

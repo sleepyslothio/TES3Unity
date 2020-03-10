@@ -445,6 +445,7 @@ namespace TES3Unity
                 mp.alpha = materialProperty.alpha;
                 mp.diffuseColor = materialProperty.diffuseColor.ToColor();
                 mp.emissiveColor = materialProperty.emissiveColor.ToColor();
+                mp.specularColor = materialProperty.specularColor.ToColor();
                 mp.glossiness = materialProperty.glossiness;
             }
 

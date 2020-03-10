@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Demonixis.Toolbox.XR;
+using System;
 using System.Collections;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,13 @@ namespace TES3Unity.UI
 
         private IEnumerator Start()
         {
+            // For obvious reasons, the minimap is disabled in VR.
+            if (XRManager.IsXREnabled())
+            {
+                gameObject.SetActive(false);
+                yield break;
+            }
+
             var playerTag = "Player";
             var player = GameObject.FindWithTag(playerTag);
 
