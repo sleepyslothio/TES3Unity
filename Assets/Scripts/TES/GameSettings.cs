@@ -57,6 +57,8 @@ namespace TES3Unity
         public bool FollowHead = true;
         public bool RoomScale = false;
         public float RenderScale = 1.0f;
+        public bool LogEnabled = false;
+        public bool LoadExtensions = false;
         public PlayerData Player;
 
         public static void Save()

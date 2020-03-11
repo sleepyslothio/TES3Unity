@@ -16,6 +16,7 @@ namespace TES3Unity.Components
         [Header("Global")]
         public bool PlayMusic = false;
         public bool KinematicRigidbodies = true;
+        public bool LogEnabled = false;
 
         [Header("Optimizations")]
         public int CellRadius = 4;
@@ -72,6 +73,7 @@ namespace TES3Unity.Components
             settings.SRPQuality = SRPQuality;
             settings.SunShadows = SunShadows;
             settings.KinematicRigidbody = KinematicRigidbodies;
+            settings.LogEnabled = LogEnabled;
 #endif
         }
     }

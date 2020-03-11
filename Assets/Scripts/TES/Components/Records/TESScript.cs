@@ -23,7 +23,7 @@ namespace TES3Unity.Components.Records
             ScriptName = _script.Header.Name;
             ScriptContent = _script.Text;
 
-            if (TES3Engine.Instance.logEnabled)
+            if (GameSettings.Get().LogEnabled)
             {
                 Debug.Log($"Script: {ScriptName} Added!");
             }

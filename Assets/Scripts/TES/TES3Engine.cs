@@ -22,12 +22,10 @@ namespace TES3Unity
         public static TES3DataReader MWDataReader { get; set; }
 
         [Header("Global")]
-        public bool logEnabled = false;
         public float ambientIntensity = 1.5f;
         public float desiredWorkTimePerFrame = 0.0005f;
 
         [Header("Debug")]
-        public bool loadExtensions = false;
         public string loadSaveGameFilename = string.Empty;
 
 #if UNITY_EDITOR

@@ -8149,7 +8149,6 @@ MonoBehaviour:
   m_CellDistanceDd: {fileID: 841153494}
   m_CellRadiusLoad: {fileID: 1207242687}
   m_PostProcessDd: {fileID: 2111464769}
-  m_RenderPath: {fileID: 71000968}
   m_SRPQuality: {fileID: 1314305141}
   m_GenerateNormalMapsToggle: {fileID: 37595800}
   m_AnimateLightsToggle: {fileID: 164047742}
@@ -9991,8 +9990,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RepeatDelay: 0.5
-  m_RepeatRate: 0.1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018,
+    type: 3}
   m_PointAction: {fileID: 1054132383583890850, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
   m_MoveAction: {fileID: 3710738434707379630, guid: ca9f5fa95ffab41fb9a615ab714db018,
@@ -10013,11 +10014,8 @@ MonoBehaviour:
     type: 3}
   m_TrackedDeviceOrientationAction: {fileID: 1025543830046995696, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
-  m_TrackedDeviceSelectAction: {fileID: 2559092417903258184, guid: ca9f5fa95ffab41fb9a615ab714db018,
-    type: 3}
-  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018,
-    type: 3}
   m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
 --- !u!114 &1491308563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10411,7 +10409,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1555374988}
-  - component: {fileID: 1555374987}
   m_Layer: 0
   m_Name: StaticLightingSky
   m_TagString: Untagged
@@ -10419,22 +10416,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1555374987
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1555374986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 441482e8936e35048a1dffac814e3ef8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Profile: {fileID: 0}
-  m_StaticLightingSkyUniqueID: 0
-  m_SkySettings: {fileID: 0}
-  m_SkySettingsFromProfile: {fileID: 0}
 --- !u!4 &1555374988
 Transform:
   m_ObjectHideFlags: 1
@@ -14004,7 +13985,7 @@ RectTransform:
   m_AnchoredPosition: {x: 285, y: -295}
   m_SizeDelta: {x: 180, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1001 &5404486011002598579
+--- !u!1001 &4905091155039115729
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -14059,15 +14040,5 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7363728909889156522, guid: 05215c92a43574f4a884ac60658dc925,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 01ac879f6ce09924e9c26663f798beaf, type: 2}
-    - target: {fileID: 7967853370116025227, guid: 05215c92a43574f4a884ac60658dc925,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 01ac879f6ce09924e9c26663f798beaf, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05215c92a43574f4a884ac60658dc925, type: 3}

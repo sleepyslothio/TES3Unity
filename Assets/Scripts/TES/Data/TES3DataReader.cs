@@ -44,7 +44,7 @@ namespace TES3Unity
             MorrowindESMFile = new ESMFile(dataFilePath + "/Morrowind.esm");
             MorrowindBSAFile = new BSAFile(dataFilePath + "/Morrowind.bsa");
 
-            if (TES3Engine.Instance?.loadExtensions ?? false)
+            if (GameSettings.Get().LoadExtensions)
             {
                 if (File.Exists(dataFilePath + "/Bloodmoon.esm"))
                 {
