@@ -12,7 +12,7 @@ namespace TES3Unity.UI
 
         public virtual void SetVisible(bool visible)
         {
-            m_Container.SetActive(visible);
+            m_Container?.SetActive(visible);
         }
 
         public virtual void OnValidateClicked()

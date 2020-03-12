@@ -415,6 +415,7 @@ GameObject:
   - component: {fileID: 2899208367977282242}
   - component: {fileID: 4384174080327482}
   - component: {fileID: 2988379192847265322}
+  - component: {fileID: 3528273558999084562}
   m_Layer: 0
   m_Name: PlayerXR
   m_TagString: Untagged
@@ -546,6 +547,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LeftHand: {fileID: 7377406664591558558}
   m_RightHand: {fileID: 2747324979037896302}
+--- !u!114 &3528273558999084562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3995033329930737988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecdde418692823d47968dac8f6933f8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4571893443906932779
 GameObject:
   m_ObjectHideFlags: 0

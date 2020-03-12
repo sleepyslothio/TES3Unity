@@ -10,6 +10,21 @@ namespace TES3Unity.Components.Records
         {
             var NPC_ = (NPC_Record)record;
 
+            usable = true;
+            pickable = false;
+            objData.name = NPC_.Name;
+            objData.interactionPrefix = "Talk ";
+
+            // Collider
+            var collider = gameObject.AddComponent<CapsuleCollider>();
+            collider.radius = 0.3f;
+            collider.height = 1.8f;
+            collider.center = new Vector3(0, 0.5f, 0);
+
+            var rb = gameObject.AddComponent<Rigidbody>();
+            rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            rb.isKinematic = true; // FIXME
+
             // Add items
             var db = TES3Engine.MWDataReader.MorrowindESMFile.ObjectsByIDString;
             var nifManager = NIFManager.Instance;

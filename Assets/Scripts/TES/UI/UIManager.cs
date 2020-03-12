@@ -9,14 +9,16 @@ namespace TES3Unity.UI
 {
     public enum UIWindowType
     {
-        None = 0, Book, Scroll, Inventory, Menu, Rest
+        None = 0, Book, Scroll, Inventory, Menu, Rest, Journal
     }
 
     [RequireComponent(typeof(Canvas))]
     public class UIManager : MonoBehaviour
     {
         private InputActionMap m_UIActionMap = null;
+        private InputActionMap m_GameplayActionMap = null;
         private UIWindow m_CurrentWindow = null;
+        private UIWindowType m_CurrentWindowType = UIWindowType.None;
 
         [Header("HUD Elements")]
         [SerializeField]
@@ -26,19 +28,21 @@ namespace TES3Unity.UI
 
         [Header("UI Elements")]
         [SerializeField]
-        private UIBook _book = null;
+        private UIBook m_Book = null;
         [SerializeField]
-        private UIScroll _scroll = null;
+        private UIScroll m_Scroll = null;
         [SerializeField]
         private UIInventory m_Inventory = null;
         [SerializeField]
         private UIMenu m_Menu = null;
         [SerializeField]
         private UIRest m_Rest = null;
+        [SerializeField]
+        private UIJournal m_Journal = null;
 
-        public UIBook Book => _book;
+        public UIBook Book => m_Book;
         public UIInteractiveText InteractiveText => _interactiveText;
-        public UIScroll Scroll => _scroll;
+        public UIScroll Scroll => m_Scroll;
         public UICrosshair Crosshair => _crosshair;
 
         public event Action<UIWindow, bool> WindowOpenChanged = null;
@@ -63,11 +67,17 @@ namespace TES3Unity.UI
             var windows = GetComponentsInChildren<UIWindow>();
             foreach (var window in windows)
             {
-                window.CloseRequest += OnWindowCloseRequest;
+                window.CloseRequest += (c) => CloseWindow();
             }
 
             var playerCharacter = player.GetComponent<PlayerCharacter>();
             playerCharacter.InteractiveTextChanged += OnInteractiveTextChanged;
+
+            m_GameplayActionMap = InputManager.GetActionMap("Gameplay");
+            m_GameplayActionMap["Rest"].started += (c) => OpenWindow(UIWindowType.Rest);
+            m_GameplayActionMap["Journal"].started += (c) => OpenWindow(UIWindowType.Journal);
+            m_GameplayActionMap["Inventory"].started += (c) => OpenWindow(UIWindowType.Inventory);
+            m_GameplayActionMap["Menu"].started += (c) => OpenWindow(UIWindowType.Menu);
         }
 
         private void OnInteractiveTextChanged(RecordComponent component, bool visible)
@@ -83,20 +93,26 @@ namespace TES3Unity.UI
             }
         }
 
-        public bool OpenWindow(UIWindowType type, out UIWindow window)
+        public UIWindow OpenWindow(UIWindowType type)
         {
-            window = null;
+            // Toggle
+            if (type != UIWindowType.None && type == m_CurrentWindowType)
+            {
+                CloseWindow();
+                SetActionMapEnabled(false);
+                return null;
+            }
 
             // One window at a time.
             CloseWindow();
 
             if (type == UIWindowType.Book)
             {
-                m_CurrentWindow = _book;
+                m_CurrentWindow = m_Book;
             }
             else if (type == UIWindowType.Scroll)
             {
-                m_CurrentWindow = _scroll;
+                m_CurrentWindow = m_Scroll;
             }
             else if (type == UIWindowType.Inventory)
             {
@@ -110,19 +126,25 @@ namespace TES3Unity.UI
             {
                 m_CurrentWindow = m_Rest;
             }
+            else if (type == UIWindowType.Journal)
+            {
+                m_CurrentWindow = m_Journal;
+            }
 
             if (m_CurrentWindow != null)
             {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+
                 m_UIActionMap.Enable();
                 m_CurrentWindow.SetVisible(true);
-                window = m_CurrentWindow;
+                m_CurrentWindowType = type;
                 WindowOpenChanged?.Invoke(m_CurrentWindow, true);
-                return true;
             }
 
-            m_UIActionMap.Disable();
+            SetActionMapEnabled(m_CurrentWindow != null);
 
-            return false;
+            return m_CurrentWindow;
         }
 
         public void CloseWindow()
@@ -132,21 +154,26 @@ namespace TES3Unity.UI
                 return;
             }
 
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
             m_CurrentWindow.OnCloseRequest();
             m_CurrentWindow.SetVisible(false);
+            m_CurrentWindowType = UIWindowType.None;
             WindowOpenChanged?.Invoke(m_CurrentWindow, false);
         }
 
-        private void OnWindowCloseRequest(UIWindow window)
+        private void SetActionMapEnabled(bool ui)
         {
-            if (m_CurrentWindow != window)
+            if (ui)
             {
-                Debug.Log($"The current windows {m_CurrentWindow?.name ?? "NULL"} is different than {window.name}");
-                window.OnCloseRequest();
+                InputManager.Disable("Movement");
+                m_UIActionMap.Enable();
             }
             else
             {
-                CloseWindow();
+                InputManager.Enable("Movement");
+                m_UIActionMap.Disable();
             }
         }
     }

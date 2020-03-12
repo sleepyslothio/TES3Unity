@@ -8,6 +8,11 @@ using UnityEngine.InputSystem;
 
 namespace TES3Unity
 {
+    public enum HandMode
+    {
+        Hidden = 0, Attack, Magic
+    }
+
     public class PlayerCharacter : MonoBehaviour
     {
         public const float maxInteractDistance = 3;
@@ -15,8 +20,9 @@ namespace TES3Unity
         private PlayerInventory m_PlayerInventory = null;
         private RaycastHit[] m_InteractRaycastHitBuffer = new RaycastHit[32];
         private InputAction m_UseAction;
-        private Transform m_LeftHandAnchor = null;
-        private Transform m_RightHandAnchor = null;
+        private Transform m_LeftHandSocket = null;
+        private Transform m_RightHandSocket = null;
+        private HandMode m_HandMode = HandMode.Hidden;
 
         [SerializeField]
         private Transform m_LeftHand = null;
@@ -25,8 +31,8 @@ namespace TES3Unity
 
         public Transform LeftHandContainer => m_LeftHand;
         public Transform RightHandContainer => m_RightHand;
-        public Transform LeftHand => m_LeftHandAnchor;
-        public Transform RightHand => m_RightHandAnchor;
+        public Transform LeftHand => m_LeftHandSocket;
+        public Transform RightHand => m_RightHandSocket;
         public Transform RayCastTarget { get; private set; }
 
         public event Action<RecordComponent, bool> InteractiveTextChanged = null;
@@ -43,12 +49,27 @@ namespace TES3Unity
                 RayCastTarget = m_RightHand;
 
             // TODO: use the NPCFactory and add a 1.st person skin
-            AddHands(xrEnabled);
+            var hands = PlayerSkin.AddHands(m_LeftHand, m_RightHand, xrEnabled);
+            m_LeftHandSocket = hands.Item1;
+            m_RightHandSocket = hands.Item2;
+            ToggleHands(); // Disabled by default
 
             m_PlayerInventory = GetComponent<PlayerInventory>();
 
             var gameplayActionMap = InputManager.GetActionMap("Gameplay");
             gameplayActionMap.Enable();
+
+            gameplayActionMap["ReadyWeapon"].started += (c) =>
+            {
+                var status = ToggleHands();
+                m_HandMode = status ? HandMode.Attack : HandMode.Hidden;
+            };
+
+            gameplayActionMap["ReadyMagic"].started += (c) =>
+            {
+                var status = ToggleHands();
+                m_HandMode = status ? HandMode.Magic : HandMode.Hidden;
+            };
 
             m_UseAction = gameplayActionMap["Use"];
         }
@@ -56,6 +77,14 @@ namespace TES3Unity
         private void Update()
         {
             CastInteractRay();
+        }
+
+        private bool ToggleHands()
+        {
+            var active = !m_LeftHand.gameObject.activeSelf;
+            m_LeftHand.gameObject.SetActive(active);
+            m_RightHand.gameObject.SetActive(active);
+            return active;
         }
 
         public void CastInteractRay()
@@ -111,54 +140,6 @@ namespace TES3Unity
                 //deactivate text if nothing is raycasted against
                 InteractiveTextChanged?.Invoke(null, false);
             }
-        }
-
-        private void AddHands(bool xrEnabled)
-        {
-            // Loading hands.
-            var nifManager = NIFManager.Instance;
-
-            var race = "nord";
-            var gender = "m";
-            var hands1st = $"b_n_{race}_{gender}_hands.1st";
-
-            var hands = nifManager.InstantiateNIF($"meshes\\b\\{hands1st}.NIF");
-
-            var meshColliders = hands.GetComponentsInChildren<MeshCollider>(true);
-            foreach (var collider in meshColliders)
-            {
-                Destroy(collider);
-            }
-
-            m_LeftHandAnchor = CreateHand(hands, true);
-            m_RightHandAnchor = CreateHand(hands, false);
-
-            if (!xrEnabled)
-            {
-                m_LeftHand.localPosition = new Vector3(-0.2f, -0.2f, 0.4f);
-                m_LeftHand.localRotation = Quaternion.Euler(0, 0, -75);
-                m_RightHand.localPosition = new Vector3(0.2f, -0.2f, 0.4f);
-                m_RightHand.localRotation = Quaternion.Euler(0, 0, 75);
-            }
-
-            Destroy(hands.gameObject);
-        }
-
-        private Transform CreateHand(GameObject hands, bool left)
-        {
-            var hand = hands.transform.FindChildRecursiveExact($"{(left ? "Left" : "Right")} Hand");
-            hand.gameObject.isStatic = false;
-            hand.parent = left ? m_LeftHand : m_RightHand;
-            hand.localPosition = Vector3.zero;
-            hand.localRotation = Quaternion.Euler(left ? -180.0f : 180.0f, 90.0f, 0.0f);
-
-            var anchor = new GameObject($"{(left ? "Left" : "Right")}HandAnchor");
-            var anchorTransform = anchor.transform;
-            anchorTransform.parent = hand;
-            anchorTransform.localPosition = new Vector3(left ? 0.03f : -0.03f, 0, 0);
-            anchorTransform.localRotation = Quaternion.Euler(0, left ? 180 : -180, 0);
-
-            return anchorTransform;
         }
     }
 }

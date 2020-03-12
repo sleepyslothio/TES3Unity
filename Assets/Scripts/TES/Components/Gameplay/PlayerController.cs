@@ -108,7 +108,6 @@ namespace TES3Unity
             if (m_Paused)
                 return;
 
-            ManageEscapeKey();
             RotatePlayer();
         }
 
@@ -159,27 +158,6 @@ namespace TES3Unity
 
                 m_Rigidbody.velocity = newVelocity;
             }
-        }
-
-        private void ManageEscapeKey()
-        {
-#if UNITY_STANDALONE
-            if (Cursor.lockState != CursorLockMode.Locked)
-            {
-                if (Mouse.current.leftButton.ReadValue() > 0.5f)
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                }
-            }
-            else
-            {
-                if (Keyboard.current.escapeKey.ReadValue() > 0.5f)
-                {
-                    Cursor.lockState = CursorLockMode.None;
-                    Cursor.visible = true;
-                }
-            }
-#endif
         }
 
         private void RotatePlayer()

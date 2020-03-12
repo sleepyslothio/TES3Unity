@@ -13,8 +13,6 @@ namespace TES3Unity.UI
         private BOOKRecord _bookRecord;
 
         [SerializeField]
-        private GameObject _container = null;
-        [SerializeField]
         private Image _background = null;
         [SerializeField]
         private Text _content = null;
@@ -37,7 +35,7 @@ namespace TES3Unity.UI
             var gameplayActionMap = InputManager.GetActionMap("Gameplay");
             gameplayActionMap["Use"].started += (c) =>
             {
-                if (_container.activeSelf)
+                if (m_Container.activeSelf)
                 {
                     Take();
                 }
@@ -45,7 +43,7 @@ namespace TES3Unity.UI
 
             gameplayActionMap["Cancel"].started += (c) =>
             {
-                if (_container.activeSelf)
+                if (m_Container.activeSelf)
                 {
                     Close();
                 }
@@ -77,7 +75,7 @@ namespace TES3Unity.UI
         {
             OnClosed?.Invoke(_bookRecord);
 
-            _container.SetActive(false);
+            m_Container.SetActive(false);
             _bookRecord = null;
         }
 
@@ -85,7 +83,7 @@ namespace TES3Unity.UI
         {
             yield return new WaitForEndOfFrame();
 
-            _container.SetActive(active);
+            m_Container.SetActive(active);
         }
     }
 }
