@@ -34,5 +34,7 @@ namespace TES3Unity.UI
         public virtual void OnPreviousClicked()
         {
         }
+
+        protected void NotifyCloseRequest() => CloseRequest?.Invoke(this);
     }
 }

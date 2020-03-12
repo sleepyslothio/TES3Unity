@@ -6,11 +6,11 @@ namespace TES3Unity.UI
     public class UIRest : UIWindow
     {
         [SerializeField]
-        private Slider m_RestTime = null;
+        private Text m_Date = null;
         [SerializeField]
         private Text m_RestText = null;
         [SerializeField]
-        private Text m_Date = null;
+        private Slider m_RestTime = null;
 
         public void SetVisible(bool visible, string date)
         {
@@ -28,5 +28,12 @@ namespace TES3Unity.UI
             m_RestText.text = $"{hours} hour{(hours > 1 ? "s" : "")}";
             m_Date.text = date;
         }
+
+        public void WaitForHours()
+        {
+
+        }
+
+        public void Cancel() => NotifyCloseRequest();
     }
 }
