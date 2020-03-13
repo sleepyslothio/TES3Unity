@@ -213,6 +213,29 @@ namespace TES3Unity
             return obj;
         }
 
+        private void AddMeshRenderer(GameObject obj, Mesh mesh, Material material, bool enabled)
+        {
+            obj.AddComponent<MeshFilter>().mesh = mesh;
+
+            var meshRenderer = obj.AddComponent<MeshRenderer>();
+            meshRenderer.sharedMaterial = material;
+            meshRenderer.enabled = enabled;
+
+            obj.isStatic = _isStatic;
+        }
+
+        private void AddSkinnedMeshRenderer(GameObject obj, Mesh mesh, Material material, bool enabled)
+        {
+            var skin = obj.AddComponent<SkinnedMeshRenderer>();
+            skin.sharedMesh = mesh;
+            skin.bones = null;
+            skin.rootBone = null;
+            skin.sharedMaterial = material;
+            skin.enabled = enabled;
+
+            obj.isStatic = _isStatic;
+        }
+
         private GameObject InstantiateNiTriShape(NiTriShape triShape, bool visual, bool collidable)
         {
             Debug.Assert(visual || collidable);

@@ -66,12 +66,22 @@ namespace TES3Unity.Components.XR
 
         public static void CreateInteractionSystem()
         {
+            if (FindObjectOfType<XRInteractionManager>() != null)
+            {
+                return;
+            }
+
             var interactionManager = new GameObject("Interaction Manager");
             interactionManager.AddComponent<XRInteractionManager>();
         }
 
         public static void CreateLocomotionSystem(GameObject player)
         {
+            if (FindObjectOfType<LocomotionSystem>() != null)
+            {
+                return;
+            }
+
             var settings = GameSettings.Get();
             var trackingSpaceType = settings.RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
             var xrRig = player.GetComponent<XRRig>();
