@@ -420,6 +420,12 @@ namespace TES3Unity.NIF
                 wireframeProperty.Deserialize(reader);
                 return wireframeProperty;
             }
+            else if (StringUtils.Equals(nodeTypeBytes, "NiCamera"))
+            {
+                var camera = new NiCameraProperty();
+                camera.Deserialize(reader);
+                return camera;
+            }
             else
             {
                 Debug.Log("Tried to read an unsupported NiObject type (" + System.Text.Encoding.ASCII.GetString(nodeTypeBytes) + ").");

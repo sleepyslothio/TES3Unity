@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: def31adb71296f1458ee8b3d2051ff77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ModelToLoad: raindrop.nif
+  m_ModelToLoad: base_anim_female.1st.nif
 --- !u!114 &482211607
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -66,13 +66,7 @@ namespace TES3Unity.Components.XR
 
         public static void CreateInteractionSystem()
         {
-            if (FindObjectOfType<XRInteractionManager>() != null)
-            {
-                return;
-            }
-
-            var interactionManager = new GameObject("Interaction Manager");
-            interactionManager.AddComponent<XRInteractionManager>();
+            GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/XR Interaction Manager"));
         }
 
         public static void CreateLocomotionSystem(GameObject player)

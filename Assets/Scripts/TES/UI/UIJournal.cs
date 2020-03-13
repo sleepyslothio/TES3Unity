@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TES3Unity.UI
+﻿namespace TES3Unity.UI
 {
     public class UIJournal : UIBook
     {
+        protected override void Start()
+        {
+            base.Start();
 
+            _page1.text = "A journey begins...";
+            _page2.text = "";
+        }
     }
 }

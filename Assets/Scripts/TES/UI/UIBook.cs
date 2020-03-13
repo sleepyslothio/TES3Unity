@@ -1,73 +1,38 @@
 ﻿using System;
-using System.Collections;
 using TES3Unity.ESM.Records;
-using TES3Unity.Inputs;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace TES3Unity.UI
 {
-    public class UIBook : UIWindow
+    public class UIBook : UIReadable
     {
         private int _numberOfPages;
         private int _cursor;
         private string[] _pages;
-        private BOOKRecord _bookRecord;
 
         [SerializeField]
         private int _numCharPerPage = 565;
         [SerializeField]
-        private Image _background = null;
+        protected Text _page1 = null;
         [SerializeField]
-        private Text _page1 = null;
+        protected Text _page2 = null;
         [SerializeField]
-        private Text _page2 = null;
+        protected Text _numPage1 = null;
         [SerializeField]
-        private Text _numPage1 = null;
-        [SerializeField]
-        private Text _numPage2 = null;
+        protected Text _numPage2 = null;
         [SerializeField]
         private Button _nextButton = null;
         [SerializeField]
         private Button _previousButton = null;
 
-        public event Action<BOOKRecord> OnTake = null;
-        public event Action<BOOKRecord> OnClosed = null;
+        public override string BackgroundImageName => "tx_menubook";
 
-        private void Start()
+        public override void Show(BOOKRecord book)
         {
-            var textureManager = TES3Engine.Instance.textureManager;
-            var texture = textureManager.LoadTexture("tx_menubook", true);
+            m_BookRecord = book;
 
-            _background.sprite = GUIUtils.CreateSprite(texture);
-
-            // If the book is already opened, don't change its transform.
-            if (_bookRecord == null)
-                Close();
-
-            var gameplayActionMap = InputManager.GetActionMap("Gameplay");
-            gameplayActionMap["Use"].started += (c) =>
-            {
-                if (m_Container.activeSelf)
-                {
-                    Take();
-                }
-            };
-
-            gameplayActionMap["Cancel"].started += (c) =>
-            {
-                if (m_Container.activeSelf)
-                {
-                    Close();
-                }
-            };
-        }
-
-        public void Show(BOOKRecord book)
-        {
-            _bookRecord = book;
-
-            var words = _bookRecord.Text;
+            var words = m_BookRecord.Text;
             words = words.Replace("<BR><BR>", "\n");
             words = words.Replace("<BR>", "\n");
             words = System.Text.RegularExpressions.Regex.Replace(words, @"<[^>]*>", string.Empty);
@@ -101,7 +66,7 @@ namespace TES3Unity.UI
 
             UpdateBook();
 
-            StartCoroutine(SetBookActive(true));
+            StartCoroutine(SetReadableActive(true));
         }
 
         private void UpdateBook()
@@ -127,12 +92,6 @@ namespace TES3Unity.UI
             _numPage2.text = (_cursor + 2).ToString();
         }
 
-        public void Take()
-        {
-            OnTake?.Invoke(_bookRecord);
-            Close();
-        }
-
         public void Next()
         {
             if (_cursor + 2 >= _numberOfPages)
@@ -154,21 +113,6 @@ namespace TES3Unity.UI
             _cursor -= 2;
 
             UpdateBook();
-        }
-
-        public void Close()
-        {
-            OnClosed?.Invoke(_bookRecord);
-
-            m_Container.SetActive(false);
-            _bookRecord = null;
-        }
-
-        private IEnumerator SetBookActive(bool active)
-        {
-            yield return new WaitForEndOfFrame();
-
-            m_Container.SetActive(active);
         }
     }
 }
