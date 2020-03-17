@@ -4,7 +4,7 @@ namespace TES3Unity.Components.Records
 {
     public class Ingredient : RecordComponent
     {
-        void Start()
+        private void Start()
         {
             var INGR = (INGRRecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(INGR.ITEX.value, "icons"); 

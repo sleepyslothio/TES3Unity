@@ -52,7 +52,9 @@ namespace TES3Unity.Components
         {
 #if UNITY_EDITOR
             if (!Override)
+            {
                 return;
+            }
 
             var settings = GameSettings.Get();
             settings.AnimateLights = AnimateLights;

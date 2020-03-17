@@ -92,15 +92,25 @@ namespace TES3Unity.Components
             var value = (int)(m_Settings.RenderScale * 10.0f);
 
             if (value == 10)
+            {
                 return 0;
+            }
             else if (value == 9)
+            {
                 return 1;
+            }
             else if (value == 8)
+            {
                 return 2;
+            }
             else if (value == 7)
+            {
                 return 3;
+            }
             else if (value == 6)
+            {
                 return 4;
+            }
 
             return 5;
         }
@@ -110,15 +120,25 @@ namespace TES3Unity.Components
             var value = m_Settings.CameraFarClip;
 
             if (value == 1000)
+            {
                 return 0;
+            }
             else if (value == 500)
+            {
                 return 1;
+            }
             else if (value == 250)
+            {
                 return 2;
+            }
             else if (value == 150)
+            {
                 return 3;
+            }
             else if (value == 100)
+            {
                 return 4;
+            }
 
             return 5;
         }
@@ -173,33 +193,49 @@ namespace TES3Unity.Components
         public void SetRenderScale(string value)
         {
             if (float.TryParse(value, out float result))
+            {
                 m_Settings.RenderScale = result;
+            }
             else
+            {
                 Debug.LogWarning($"Can't parse the value {value}");
+            }
         }
 
         public void SetCellRadius(string value)
         {
             if (int.TryParse(value, out int result))
+            {
                 m_Settings.CellRadius = result;
+            }
             else
+            {
                 Debug.LogWarning($"Can't parse the value {value}");
+            }
         }
 
         public void SetCellDistance(string value)
         {
             if (int.TryParse(value, out int result))
+            {
                 m_Settings.CellDetailRadius = result;
+            }
             else
+            {
                 Debug.LogWarning($"Can't parse the value {value}");
+            }
         }
 
         public void SetCellRadiusLoad(string value)
         {
             if (int.TryParse(value, out int result))
+            {
                 m_Settings.CellRadiusOnLoad = result;
+            }
             else
+            {
                 Debug.LogWarning($"Can't parse the value {value}");
+            }
         }
 
         private void SetLightShadows(bool isOn)
@@ -215,9 +251,13 @@ namespace TES3Unity.Components
         private void SetCameraFarClip(string value)
         {
             if (float.TryParse(value, out float result))
+            {
                 m_Settings.CameraFarClip = result;
+            }
             else
+            {
                 Debug.LogWarning($"Can't parse the value {value}");
+            }
         }
 
         private void SetRoomScale(bool isOn)

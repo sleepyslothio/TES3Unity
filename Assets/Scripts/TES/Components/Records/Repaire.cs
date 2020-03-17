@@ -1,11 +1,10 @@
-﻿using TES3Unity.ESM;
-using TES3Unity.ESM.Records;
+﻿using TES3Unity.ESM.Records;
 
 namespace TES3Unity.Components.Records
 {
     public class Repaire : RecordComponent
     {
-        void Start()
+        private void Start()
         {
             var REPA = (REPARecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 

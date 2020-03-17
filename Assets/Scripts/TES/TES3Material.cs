@@ -80,7 +80,7 @@ namespace TES3Unity.Rendering
             var material = new Material(mp.alphaBlended ? m_CutoutShader : m_Shader);
 
             if (mp.alphaBlended)
-            {                
+            {
                 material.SetFloat(m_CutoutParameter, 0.5f);
             }
 

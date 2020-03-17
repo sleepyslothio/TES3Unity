@@ -1,6 +1,4 @@
-﻿using Unity.XR.Oculus;
-using UnityEngine;
-using UnityEngine.XR;
+﻿using UnityEngine.XR;
 using UnityEngine.XR.Management;
 
 namespace Demonixis.Toolbox.XR
@@ -18,6 +16,8 @@ namespace Demonixis.Toolbox.XR
     public static class XRManager
     {
         private static bool? XREnabled;
+
+        public static bool Enabled => IsXREnabled(false);
 
         public static XRLoader GetXRLoader()
         {

@@ -2,7 +2,6 @@
 using TES3Unity.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
 namespace TES3Unity.Components.Utilities
 {
@@ -28,7 +27,9 @@ namespace TES3Unity.Components.Utilities
                 var shader = Shader.Find(shaderName);
 
                 if (material.shader != shader)
+                {
                     material.shader = shader;
+                }
             }
         }
 #endif

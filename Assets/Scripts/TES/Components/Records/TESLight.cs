@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
 using UnityEngine;
 
@@ -29,7 +28,7 @@ namespace TES3Unity.Components.Records
 
         public LightData lightData = null;
 
-        void Start()
+        private void Start()
         {
             LIGHRecord lightRecord = (LIGHRecord)record;
 
@@ -37,7 +36,9 @@ namespace TES3Unity.Components.Records
             lightData.lightComponent = gameObject.GetComponentInChildren<UnityEngine.Light>(true);
 
             if (lightRecord.Name != null)
+            {
                 objData.name = lightRecord.Name;
+            }
 
             objData.interactionPrefix = "Take ";
 
@@ -46,7 +47,7 @@ namespace TES3Unity.Components.Records
             if (lightRecord.Data.HasValue)
             {
                 var data = lightRecord.Data.Value;
-                lightData.flags = (int)data.Flags;
+                lightData.flags = data.Flags;
 
                 if (Utils.ContainsBitFlags((uint)lightData.flags, (uint)LightData.LightFlags.CanCarry))
                 {
@@ -76,7 +77,9 @@ namespace TES3Unity.Components.Records
             {
                 // Only disable the light based on flags if the light component hasn't already been disabled due to settings.
                 if (lightData.lightComponent.enabled)
+                {
                     lightData.lightComponent.enabled = !Utils.ContainsBitFlags((uint)lightData.flags, (uint)LightData.LightFlags.OffDefault);
+                }
 
                 var flicker = Utils.ContainsBitFlags((uint)lightData.flags, (uint)LightData.LightFlags.Flicker);
                 var flickerSlow = Utils.ContainsBitFlags((uint)lightData.flags, (uint)LightData.LightFlags.FlickerSlow);
@@ -89,23 +92,35 @@ namespace TES3Unity.Components.Records
                 {
                     var lightAnim = lightData.lightComponent.gameObject.AddComponent<LightAnim>();
                     if (flicker)
+                    {
                         lightAnim.Mode = LightAnimMode.Flicker;
+                    }
 
                     if (flickerSlow)
+                    {
                         lightAnim.Mode = LightAnimMode.FlickerSlow;
+                    }
 
                     if (pulse)
+                    {
                         lightAnim.Mode = LightAnimMode.Pulse;
+                    }
 
                     if (pulseSlow)
+                    {
                         lightAnim.Mode = LightAnimMode.PulseSlow;
+                    }
 
                     if (fire)
+                    {
                         lightAnim.Mode = LightAnimMode.Fire;
+                    }
                 }
             }
             else
+            {
                 Debug.Log("Light Record Object Created Without Light Component. Search Timed Out.");
+            }
         }
     }
 }

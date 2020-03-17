@@ -36,7 +36,9 @@ namespace TES3Unity
                 foreach (var songFilePath in songs)
                 {
                     if (!songFilePath.Contains("Morrowind Title"))
+                    {
                         m_MusicPlayer.AddSong(songFilePath);
+                    }
                 }
 
                 m_MusicPlayer.Play();

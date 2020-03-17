@@ -4,7 +4,7 @@ namespace TES3Unity.Components.Records
 {
     public class Activator : RecordComponent
     {
-        void Start()
+        private void Start()
         {
             usable = true;
             pickable = false;

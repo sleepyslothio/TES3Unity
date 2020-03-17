@@ -1,26 +1,28 @@
 ﻿using Demonixis.Toolbox.XR;
+using System.Collections;
+using TES3Unity.Inputs;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.XR;
-using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.XR.Interaction.Toolkit.UI;
+using Wacki;
 
 namespace TES3Unity.Components.XR
 {
-    using XRIController = UnityEngine.XR.Interaction.Toolkit.XRController;
-
     public class PlayerXRBase : MonoBehaviour
     {
         [SerializeField]
         private bool m_Spectator = false;
+        [SerializeField]
+        private GameObject m_RayInteractionPrefab = null;
 
         public Transform CameraTransform { get; protected set; }
 
-        protected virtual void Awake()
+        protected virtual IEnumerator Start()
         {
             if (!XRManager.IsXREnabled())
             {
-                return;
+                enabled = false;
+                yield break;
             }
 
             var cameras = GetComponentsInChildren<Camera>();
@@ -32,16 +34,6 @@ namespace TES3Unity.Components.XR
                 }
             }
 
-            Debug.Assert(CameraTransform != null);
-
-            var settings = GameSettings.Get();
-  
-            // RenderScale
-            var renderScale = settings.RenderScale;
-
-            if (renderScale > 0 && renderScale <= 2)
-                XRSettings.renderViewportScale = renderScale;
-
             // Using the correct EventSystem
             var eventSystem = FindObjectOfType<EventSystem>();
             if (eventSystem != null)
@@ -49,60 +41,44 @@ namespace TES3Unity.Components.XR
                 Destroy(eventSystem.gameObject);
             }
 
-            GameObjectUtils.CreateEventSystem<XRUIInputModule>();
+            var rayGo = Instantiate(m_RayInteractionPrefab);
+            rayGo.transform.parent = GetXRAttachNode(false);
+            rayGo.transform.localPosition = Vector3.zero;
+            rayGo.transform.localRotation = Quaternion.identity;
 
-            // Allow to interact with the UI
-            var mainUI = GUIUtils.MainCanvas;
-            mainUI.AddComponent<TrackedDeviceGraphicRaycaster>();
+            var ray = rayGo.GetComponent<IUILaserPointer>();
+            ray.PressAction = InputManager.GetAction("UI", "Validate");
+
+            GameObjectUtils.CreateEventSystem<LaserPointerInputModule>();
 
             if (m_Spectator)
             {
+                var mainUI = GUIUtils.MainCanvas;
                 var canvas = mainUI.GetComponent<Canvas>();
                 GUIUtils.SetCanvasToWorldSpace(canvas, null, 2.5f, 0.015f, 1.7f);
             }
 
-            CreateLocomotionSystem(gameObject);
-        }
+            // Wait that everything is initialized.
+            yield return new WaitForEndOfFrame();
 
-        public static void CreateInteractionSystem()
-        {
-            GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/XR Interaction Manager"));
-        }
-
-        public static void CreateLocomotionSystem(GameObject player)
-        {
-            if (FindObjectOfType<LocomotionSystem>() != null)
-            {
-                return;
-            }
-
+            // Tracking Space Type
             var settings = GameSettings.Get();
-            var trackingSpaceType = settings.RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
-            var xrRig = player.GetComponent<XRRig>();
-            xrRig.TrackingOriginMode = trackingSpaceType;
+            var mode = settings.RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
 
-            var xrControllers = player.GetComponentsInChildren<XRIController>();
-            XRIController rightController = null;
+            XRManager.SetTrackingOriginMode(mode, true);
 
-            foreach (var controller in xrControllers)
+            // RenderScale
+            var renderScale = settings.RenderScale;
+            if (renderScale > 0 && renderScale <= 2)
             {
-                if (controller.name.ToLower().Contains("right"))
-                {
-                    rightController = controller;
-                }
+                XRSettings.renderViewportScale = renderScale;
             }
+        }
 
-            var gameObject = new GameObject("Locomotion System");
-
-            var locomotionSystem = gameObject.AddComponent<LocomotionSystem>();
-            locomotionSystem.xrRig = xrRig;
-
-            var teleportion = gameObject.AddComponent<TeleportationProvider>();
-            teleportion.system = locomotionSystem;
-
-            var snapTurn = gameObject.AddComponent<SnapTurnProvider>();
-            snapTurn.system = locomotionSystem;
-            snapTurn.controllers.AddRange(xrControllers);
+        public Transform GetXRAttachNode(bool left)
+        {
+            var hand = transform.FindChildRecursiveExact($"{(left ? "Left" : "Right")}HandAnchor");
+            return hand.Find("XR");
         }
     }
 }

@@ -28,10 +28,14 @@ namespace TES3Unity
             var path = string.Format("{0}/..", Application.dataPath);
 
             if (folder != string.Empty)
+            {
                 path = string.Format("{0}/{1}", path, folder);
+            }
 
             if (!Directory.Exists(path))
+            {
                 Directory.CreateDirectory(path);
+            }
 
             return path;
         }
@@ -42,7 +46,9 @@ namespace TES3Unity
             var folder = GetSavePath("Screenshots");
 
             if (!Directory.Exists(folder))
+            {
                 Directory.CreateDirectory(folder);
+            }
 
             ScreenCapture.CaptureScreenshot(Path.Combine(folder, name), m_ScreenshotSuperSampling);
         }

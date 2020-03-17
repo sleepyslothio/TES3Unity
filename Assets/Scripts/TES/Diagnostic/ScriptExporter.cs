@@ -16,7 +16,7 @@ namespace TES3Unity.Diagnostic
 
                 var dataPath = GameSettings.GetDataPath();
 
-                
+
 
                 // Load the game from the alternative dataPath when in editor.
                 if (!GameSettings.IsValidPath(dataPath))
@@ -36,7 +36,9 @@ namespace TES3Unity.Diagnostic
                     foreach (var alt in alternativeDataPaths)
                     {
                         if (GameSettings.IsValidPath(alt))
+                        {
                             dataPath = alt;
+                        }
                     }
 #endif
                 }

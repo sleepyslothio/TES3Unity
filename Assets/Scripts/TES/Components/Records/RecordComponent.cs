@@ -63,63 +63,84 @@ namespace TES3Unity.Components.Records
             var transform = gameObject.GetComponent<Transform>();
 
             for (int i = 0, l = transform.childCount; i < l; i++)
+            {
                 transform.GetChild(i).tag = tag;
+            }
 
             RecordComponent component = null;
 
             if (record is DOORRecord)
+            {
                 component = gameObject.AddComponent<Door>();
-
+            }
             else if (record is LIGHRecord)
+            {
                 component = gameObject.AddComponent<TESLight>();
-
+            }
             else if (record is BOOKRecord)
+            {
                 component = gameObject.AddComponent<Book>();
-
+            }
             else if (record is CONTRecord)
+            {
                 component = gameObject.AddComponent<Container>();
-
+            }
             else if (record is MISCRecord)
+            {
                 component = gameObject.AddComponent<MiscObject>();
-
+            }
             else if (record is WEAPRecord)
+            {
                 component = gameObject.AddComponent<Weapon>();
-
+            }
             else if (record is ARMORecord)
+            {
                 component = gameObject.AddComponent<Armor>();
-
+            }
             else if (record is INGRRecord)
+            {
                 component = gameObject.AddComponent<Ingredient>();
-
+            }
             else if (record is ACTIRecord)
+            {
                 component = gameObject.AddComponent<Activator>();
-
+            }
             else if (record is LOCKRecord)
+            {
                 component = gameObject.AddComponent<Lock>();
-
+            }
             else if (record is PROBRecord)
+            {
                 component = gameObject.AddComponent<ProbeItem>();
-
+            }
             else if (record is REPARecord)
+            {
                 component = gameObject.AddComponent<Repaire>();
-
+            }
             else if (record is CLOTRecord)
+            {
                 component = gameObject.AddComponent<TESCloth>();
-
+            }
             else if (record is ALCHRecord)
+            {
                 component = gameObject.AddComponent<Alchemy>();
-
+            }
             else if (record is APPARecord)
+            {
                 component = gameObject.AddComponent<AlchemyApparatus>();
-
+            }
             else if (record is CREARecord)
+            {
                 component = gameObject.AddComponent<Creature>();
-
+            }
             else if (record is NPC_Record)
+            {
                 component = gameObject.AddComponent<NPC>();
-
+            }
             else
+            {
                 component = gameObject.AddComponent<RecordComponent>();
+            }
 
             component.record = record;
 

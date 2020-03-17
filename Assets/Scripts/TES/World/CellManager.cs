@@ -1,5 +1,4 @@
-﻿using Demonixis.Toolbox.XR;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TES3Unity.Components.Records;
@@ -7,7 +6,6 @@ using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
 using TES3Unity.World;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 
 namespace TES3Unity
 {
@@ -142,12 +140,16 @@ namespace TES3Unity
                 if (cellDistance <= detailRadius)
                 {
                     if (!cellInfo.objectsContainerGameObject.activeSelf)
+                    {
                         cellInfo.objectsContainerGameObject.SetActive(true);
+                    }
                 }
                 else
                 {
                     if (cellInfo.objectsContainerGameObject.activeSelf)
+                    {
                         cellInfo.objectsContainerGameObject.SetActive(false);
+                    }
                 }
             }
         }
@@ -222,7 +224,9 @@ namespace TES3Unity
         private IEnumerator InstantiateCellObjectsCoroutine(CELLRecord CELL, LANDRecord LAND, GameObject cellObj, GameObject cellObjectsContainer)
         {
             if (CELL == null && LAND == null)
+            {
                 yield break;
+            }
 
             // Start pre-loading all required textures for the terrain.
             if (LAND != null)
@@ -649,11 +653,6 @@ namespace TES3Unity
             var terrainGameObject = GameObjectUtils.CreateTerrain(heights, heightRange / Convert.MeterInMWUnits, heightSampleDistance, splatPrototypes, alphaMap, terrainPosition);
             terrainGameObject.transform.parent = parent.transform;
 
-            if (XRManager.IsXREnabled())
-            {
-                terrainGameObject.AddComponent<TeleportationArea>();
-            }
-
             yield return null;
         }
 
@@ -666,16 +665,16 @@ namespace TES3Unity
             }
 
             var gridCoords = cell.gridCoords;
-            var bounds = GameObjectUtils.CalcVisualBoundsRecursive(parent.gameObject);
-            //var position = new Vector3(Convert.ExteriorCellSideLengthInMeters * gridCoords.X, 0, Convert.ExteriorCellSideLengthInMeters * gridCoords.Y);
-            var position = bounds.center;
+            //var bounds = GameObjectUtils.CalcVisualBoundsRecursive(parent.gameObject);
+            var position = new Vector3(Convert.ExteriorCellSideLengthInMeters * gridCoords.X, 0, Convert.ExteriorCellSideLengthInMeters * gridCoords.Y);
+            //var position = bounds.center;
 
             var probe = new GameObject("ReflectionProbe");
             probe.transform.parent = parent;
             probe.transform.position = position;
 
             var rp = probe.AddComponent<ReflectionProbe>();
-            rp.size = bounds.size;
+            rp.size = new Vector3(120, 120, 120);
             rp.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
             rp.refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.ViaScripting;
             rp.RenderProbe();

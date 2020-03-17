@@ -253,7 +253,9 @@ namespace TES3Unity
                 meshRenderer.material = _materialManager.BuildMaterialFromProperties(materialProps);
 
                 if (materialProps.textures.mainFilePath == null)
+                {
                     meshRenderer.enabled = false;
+                }
 
                 if (Utils.ContainsBitFlags(triShape.flags, (uint)NiAVObject.Flags.Hidden))
                 {
@@ -474,7 +476,9 @@ namespace TES3Unity
 
             // Apply textures.
             if (texturingProperty != null)
+            {
                 mp.textures = ConfigureTextureProperties(texturingProperty);
+            }
 
             return mp;
         }
@@ -482,7 +486,11 @@ namespace TES3Unity
         private TES3MaterialTextures ConfigureTextureProperties(NiTexturingProperty ntp)
         {
             TES3MaterialTextures tp = new TES3MaterialTextures();
-            if (ntp.textureCount < 1) return tp;
+            if (ntp.textureCount < 1)
+            {
+                return tp;
+            }
+
             if (ntp.hasBaseTexture)
             {
                 NiSourceTexture src = (NiSourceTexture)_file.blocks[ntp.baseTexture.source.value];

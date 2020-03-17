@@ -108,7 +108,7 @@ public static class AudioUtils
             var subchunk2Size = reader.ReadLEUInt32(); // Size of rest of subchunk.
             byte[] audioData = reader.ReadBytes((int)subchunk2Size);
 
-            return new PCMAudioBuffer((int)numChannels, (int)bitsPerSample, (int)samplingRate, audioData);
+            return new PCMAudioBuffer(numChannels, bitsPerSample, (int)samplingRate, audioData);
         }
     }
 

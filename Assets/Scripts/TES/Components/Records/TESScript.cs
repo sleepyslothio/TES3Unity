@@ -1,5 +1,4 @@
-﻿using TES3Unity.ESM;
-using TES3Unity.ESM.Records;
+﻿using TES3Unity.ESM.Records;
 using UnityEngine;
 
 namespace TES3Unity.Components.Records

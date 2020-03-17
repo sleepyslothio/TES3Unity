@@ -24,7 +24,7 @@ namespace TES3Unity.UI
         [SerializeField]
         private Text _value = null;
 
-        void Start()
+        private void Start()
         {
             _opened = false;
             _container.SetActive(false);
@@ -34,7 +34,9 @@ namespace TES3Unity.UI
         {
             _icon.enabled = icon != null;
             if (_icon.enabled)
+            {
                 _icon.sprite = icon;
+            }
 
             _title.text = string.IsNullOrEmpty(prefixTitle) ? title : prefixTitle + title;
 

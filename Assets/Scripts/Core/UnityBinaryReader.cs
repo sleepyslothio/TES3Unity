@@ -11,6 +11,7 @@ public class UnityBinaryReader : IDisposable
     private BinaryReader _reader;
     // A buffer for read bytes the size of a decimal variable. Created to minimize allocations. 
     private byte[] _readBuffer = new byte[16];
+    private byte[] _emptyArray = new byte[0];
 
     public Stream BaseStream => _reader.BaseStream;
 
@@ -83,7 +84,7 @@ public class UnityBinaryReader : IDisposable
         return Encoding.ASCII.GetString(_reader.ReadBytes(length));
     }
 
-    public string ReadUnicodeString (int length)
+    public string ReadUnicodeString(int length)
     {
         return Encoding.Unicode.GetString(_reader.ReadBytes(length));
     }
@@ -100,7 +101,7 @@ public class UnityBinaryReader : IDisposable
         var bytes = _reader.ReadBytes(lengthIncludingPossibleNullTerminator);
         var count = bytes.Length;
 
-        for(var i = 0; i < bytes.Length; i++)
+        for (var i = 0; i < bytes.Length; i++)
         {
             if (bytes[i] == 0)
             {
@@ -177,7 +178,13 @@ public class UnityBinaryReader : IDisposable
     public byte[] ReadLELength32PrefixedBytes()
     {
         var length = ReadLEInt32();
-        var count = (int)length;
+
+        if (length <= 0)
+        {
+            return _emptyArray;
+        }
+
+        var count = length;
         return _reader.ReadBytes(count);
     }
 
@@ -379,7 +386,9 @@ public class UnityBinaryReader : IDisposable
         var array = new char[size];
 
         for (var i = 0; i < size; i++)
+        {
             array[i] = System.Convert.ToChar(bytes[i]);
+        }
 
         return TES3Unity.Convert.CharToString(array);
     }

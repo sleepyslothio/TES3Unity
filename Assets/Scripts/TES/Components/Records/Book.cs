@@ -1,5 +1,4 @@
-﻿using TES3Unity.ESM;
-using TES3Unity.ESM.Records;
+﻿using TES3Unity.ESM.Records;
 using TES3Unity.UI;
 
 namespace TES3Unity.Components.Records
@@ -14,7 +13,9 @@ namespace TES3Unity.Components.Records
             get
             {
                 if (_player == null)
+                {
                     _player = FindObjectOfType<PlayerController>();
+                }
 
                 return _player;
             }
@@ -25,13 +26,15 @@ namespace TES3Unity.Components.Records
             get
             {
                 if (_uiManager == null)
+                {
                     _uiManager = FindObjectOfType<UIManager>();
+                }
 
                 return _uiManager;
             }
         }
 
-        void Start()
+        private void Start()
         {
             usable = true;
             pickable = false;
@@ -54,9 +57,13 @@ namespace TES3Unity.Components.Records
             if (BOOK.Text == null)
             {
                 if (BOOK.Data.Scroll == 1)
+                {
                     OnTakeScroll(BOOK);
+                }
                 else
+                {
                     OnTakeBook(BOOK);
+                }
             }
 
             if (BOOK.Data.Scroll == 1)

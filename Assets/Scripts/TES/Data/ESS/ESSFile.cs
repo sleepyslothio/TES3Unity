@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using TES3Unity.ESS.Records;
 using TES3Unity.ESM;
+using TES3Unity.ESS.Records;
 
 namespace TES3Unity.ESS
 {
@@ -82,11 +82,17 @@ namespace TES3Unity.ESS
         private Record CreateRecordOfType(ref string name)
         {
             if (name == "GAME")
+            {
                 return new GAMERecord();
+            }
             else if (name == "TES3")
+            {
                 return new TES3Record();
+            }
             else if (name == "REFR")
+            {
                 return new REFRRecord();
+            }
 
             return null;
         }

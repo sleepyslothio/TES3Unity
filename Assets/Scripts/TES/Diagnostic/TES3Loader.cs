@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using TES3Unity.ESS;
+using TES3Unity.Rendering;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TES3Unity.Rendering;
-using TES3Unity.ESS;
 
 namespace TES3Unity
 {
@@ -40,7 +40,9 @@ namespace TES3Unity
                 foreach (var alt in m_AlternativeDataPaths)
                 {
                     if (GameSettings.IsValidPath(alt))
+                    {
                         dataPath = alt;
+                    }
                 }
             }
 
@@ -129,7 +131,9 @@ namespace TES3Unity
                     foreach (var alt in alternativeDataPaths)
                     {
                         if (GameSettings.IsValidPath(alt))
+                        {
                             dataPath = alt;
+                        }
                     }
                 }
 

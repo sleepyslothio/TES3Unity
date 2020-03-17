@@ -1,5 +1,4 @@
-﻿using TES3Unity;
-using TES3Unity.Rendering;
+﻿using TES3Unity.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
@@ -230,12 +229,18 @@ public static class GameObjectUtils
     public static GameObject FindTopLevelObject(GameObject baseObject)
     {
         if (baseObject.transform.parent == null)
+        {
             return baseObject;
+        }
+
         var p = baseObject.transform;
         while (p.parent != null)
         {
             if (p.parent.gameObject.name == "objects")
+            {
                 break;
+            }
+
             p = p.parent;
         }
         return p.gameObject;

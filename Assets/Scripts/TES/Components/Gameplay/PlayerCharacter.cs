@@ -46,7 +46,9 @@ namespace TES3Unity
             RayCastTarget = camera.transform;
 
             if (xrEnabled)
+            {
                 RayCastTarget = m_RightHand;
+            }
 
             // TODO: use the NPCFactory and add a 1.st person skin
             var hands = PlayerSkin.AddHands(m_LeftHand, m_RightHand, xrEnabled);

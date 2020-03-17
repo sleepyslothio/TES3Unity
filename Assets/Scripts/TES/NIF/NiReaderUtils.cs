@@ -426,11 +426,10 @@ namespace TES3Unity.NIF
                 camera.Deserialize(reader);
                 return camera;
             }
-            else
-            {
-                Debug.Log("Tried to read an unsupported NiObject type (" + System.Text.Encoding.ASCII.GetString(nodeTypeBytes) + ").");
-                return null;
-            }
+
+            Debug.Log("Tried to read an unsupported NiObject type (" + System.Text.Encoding.ASCII.GetString(nodeTypeBytes) + ").");
+
+            return null;
         }
 
         public static Matrix4x4 Read3x3RotationMatrix(UnityBinaryReader reader)

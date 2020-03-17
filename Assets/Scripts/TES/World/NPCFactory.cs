@@ -52,7 +52,7 @@ namespace TES3Unity.World
                 {
                     continue;
                 }
-                
+
                 bone = renderer.transform.parent;
                 boneMapping.Add(bone.name, bone);
             }

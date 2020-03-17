@@ -859,24 +859,6 @@ namespace TES3Unity.NIF
         public override void Deserialize(UnityBinaryReader reader)
         {
             base.Deserialize(reader);
-
-            var camFlags = NiReaderUtils.ReadFlags(reader);
-            var frustrumLeft = reader.ReadLESingle();
-            var frustrumRight = reader.ReadLESingle();
-            var frustrumTop = reader.ReadLESingle();
-            var frustrumBottom = reader.ReadLESingle();
-            var frustrumNear = reader.ReadLESingle();
-            var frustrumFar = reader.ReadLESingle();
-            var ortho = reader.ReadLEBool32();
-            var viewportLeft = reader.ReadLESingle();
-            var viewportRight = reader.ReadLESingle();
-            var viewportTop = reader.ReadLESingle();
-            var viewportBottom = reader.ReadLESingle();
-            var lodAdjust = reader.ReadLESingle();
-            var scene = NiReaderUtils.ReadRef<NiAVObject>(reader);
-            var numScreenPoly = reader.ReadLEUInt16();
-            var numScreenTextures = reader.ReadLEUInt16();
-            var unknownInt3 = reader.ReadLEUInt16();
         }
     }
 
@@ -1571,8 +1553,8 @@ namespace TES3Unity.NIF
 
     public abstract class NiDynamicEffect : NiAVObject
     {
-        uint numAffectedNodeListPointers;
-        uint[] affectedNodeListPointers;
+        private uint numAffectedNodeListPointers;
+        private uint[] affectedNodeListPointers;
 
         public override void Deserialize(UnityBinaryReader reader)
         {

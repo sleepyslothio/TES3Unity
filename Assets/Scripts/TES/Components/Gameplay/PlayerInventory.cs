@@ -41,9 +41,9 @@ namespace TES3Unity.Components
             {
                 var rightHand = m_Player.RightHand;
                 if (rightHand.childCount > 0)
+                {
                     rightHand.GetChild(0).parent = m_DisabledObjects;
-
-                ((Weapon)item).Equip(rightHand, m_Player.RightHandContainer);
+                } ((Weapon)item).Equip(rightHand, m_Player.RightHandContainer);
                 return;
             }
 

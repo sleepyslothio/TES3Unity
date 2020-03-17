@@ -52,9 +52,13 @@ namespace TES3Unity
                 m_IsFlying = value;
 
                 if (!m_IsFlying)
+                {
                     m_Rigidbody.useGravity = true;
+                }
                 else
+                {
                     m_Rigidbody.useGravity = false;
+                }
             }
         }
 
@@ -69,15 +73,11 @@ namespace TES3Unity
             m_CapsuleCollider = GetComponent<CapsuleCollider>();
             m_Rigidbody = GetComponent<Rigidbody>();
 
-            // Setup the camera
-            var config = GameSettings.Get();
-
             m_Crosshair = FindObjectOfType<UICrosshair>();
 
 #if !UNITY_STANDALONE && !UNITY_EDITOR
             Cursor.lockState = CursorLockMode.None;
 #endif
-            m_XREnabled = XRManager.IsXREnabled();
 
             var m_MovementActionMap = InputManager.GetActionMap("Movement");
             m_MovementActionMap.Enable();
@@ -98,6 +98,16 @@ namespace TES3Unity
 
             m_LeftAxisAction = m_MovementActionMap["LeftAxis"];
             m_RightAxisAction = m_MovementActionMap["RightAxis"];
+
+            // Setup the camera
+            var config = GameSettings.Get();
+            m_XREnabled = XRManager.IsXREnabled();
+
+            if (m_XREnabled && config.Teleportation)
+            {
+                enabled = false;
+                return;
+            }
         }
 
         private void OnEnable() => m_MovementActionMap?.Enable();
@@ -106,7 +116,9 @@ namespace TES3Unity
         private void Update()
         {
             if (m_Paused)
+            {
                 return;
+            }
 
             RotatePlayer();
         }
@@ -116,9 +128,13 @@ namespace TES3Unity
             m_IsGrounded = CalculateIsGrounded();
 
             if (m_IsGrounded || isFlying)
+            {
                 SetVelocity();
+            }
             else if (!m_IsGrounded || !isFlying)
+            {
                 ApplyAirborneForce();
+            }
         }
 
         public void SetMovementType(MovementSpeedMode mode)

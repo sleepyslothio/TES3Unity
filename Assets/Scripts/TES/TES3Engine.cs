@@ -1,13 +1,12 @@
 ﻿using Demonixis.Toolbox.XR;
+using System;
+using System.IO;
 using TES3Unity.Components;
 using TES3Unity.Components.Records;
+using TES3Unity.ESM.Records;
 using TES3Unity.Rendering;
 using UnityEngine;
-using TES3Unity.Components.XR;
-using TES3Unity.ESM.Records;
-using System;
 using UnityEngine.SceneManagement;
-using System.IO;
 
 namespace TES3Unity
 {
@@ -108,7 +107,9 @@ namespace TES3Unity
                 foreach (var alt in AlternativeDataPaths)
                 {
                     if (GameSettings.IsValidPath(alt))
+                    {
                         dataPath = alt;
+                    }
                 }
             }
 #endif
@@ -305,20 +306,10 @@ namespace TES3Unity
 
         private GameObject CreatePlayer(Vector3 position, Quaternion rotation)
         {
-            var xrEnabled = XRManager.IsXREnabled();
-            var playerPrefabPath = "Prefabs/Player";
-
-            // First, create the interaction system if XR is enabled.
-            if (xrEnabled)
-            {
-                PlayerXR.CreateInteractionSystem();
-                playerPrefabPath += "XR";
-            }
-
-            // Then create the player.
             var player = GameObject.FindWithTag("Player");
             if (player == null)
             {
+                var playerPrefabPath = "Prefabs/Player";
                 var playerPrefab = Resources.Load<GameObject>(playerPrefabPath);
                 player = GameObject.Instantiate(playerPrefab);
                 player.name = "Player";

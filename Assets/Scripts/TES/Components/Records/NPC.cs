@@ -64,7 +64,7 @@ namespace TES3Unity.Components.Records
                         {
                             //boneName = "Groin";
                         }
-                        
+
                         var bone = transform.FindChildRecursiveExact(boneName);
                         if (bone == null)
                         {

@@ -41,8 +41,12 @@ namespace TES3Unity.UI
             var j = 0;
 
             for (var i = 0; i < words.Length; i++)
+            {
                 if (words[i] != '\n')
+                {
                     countChar++;
+                }
+            }
 
             // Ceil returns the bad value... 16.6 returns 16..
             _numberOfPages = Mathf.CeilToInt(countChar / _numCharPerPage) + 1;
@@ -57,7 +61,9 @@ namespace TES3Unity.UI
                 }
 
                 if (_pages[j] == null)
+                {
                     _pages[j] = String.Empty;
+                }
 
                 _pages[j] += words[i];
             }
@@ -86,7 +92,9 @@ namespace TES3Unity.UI
             _previousButton.interactable = _cursor - 2 >= 0;
 
             if (_cursor + 2 < _numberOfPages && _pages[_cursor + 2] == string.Empty)
+            {
                 _nextButton.interactable = false;
+            }
 
             _numPage1.text = (_cursor + 1).ToString();
             _numPage2.text = (_cursor + 2).ToString();
@@ -95,10 +103,14 @@ namespace TES3Unity.UI
         public void Next()
         {
             if (_cursor + 2 >= _numberOfPages)
+            {
                 return;
+            }
 
             if (_pages[_cursor + 2] == string.Empty)
+            {
                 return;
+            }
 
             _cursor += 2;
 
@@ -108,7 +120,9 @@ namespace TES3Unity.UI
         public void Previous()
         {
             if (_cursor - 2 < 0)
+            {
                 return;
+            }
 
             _cursor -= 2;
 

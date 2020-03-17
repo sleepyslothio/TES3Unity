@@ -4,7 +4,7 @@ namespace TES3Unity.Components.Records
 {
     public class MiscObject : RecordComponent
     {
-        void Start()
+        private void Start()
         {
             var MISC = (MISCRecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(MISC.ITEX.value, "icons"); 

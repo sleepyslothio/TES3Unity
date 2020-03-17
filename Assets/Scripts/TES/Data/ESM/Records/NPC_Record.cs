@@ -214,7 +214,7 @@ namespace TES3Unity.ESM.Records
                     Unknown2 = reader.ReadByte(),
                     Unknown3 = reader.ReadByte(),
                     Unknown4 = reader.ReadByte(),
-                    Flags = (int)reader.ReadLEInt32()
+                    Flags = reader.ReadLEInt32()
                 };
             }
             else if (subRecordName == "AI_W")

@@ -565,9 +565,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Teleport",
+                    "name": "Teleport-Left",
                     "type": "Button",
                     "id": "e14999c7-1905-4e39-a199-9bbd08df5fe5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Teleport-Right",
+                    "type": "Button",
+                    "id": "ecf4e76c-759e-4077-92ed-03394ed87ab0",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
@@ -588,11 +596,22 @@
                 {
                     "name": "",
                     "id": "289e944e-aa2c-46b7-beaa-4447d72ecf49",
-                    "path": "",
+                    "path": "<XRController>{LeftHand}/joystickClicked",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Teleport",
+                    "action": "Teleport-Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b29dc1de-480a-43c8-ba69-c9ac6efffbf1",
+                    "path": "<XRController>{RightHand}/joystickClicked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Teleport-Right",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -668,8 +687,8 @@
                 },
                 {
                     "name": "",
-                    "id": "db1c3b16-fb7e-4de3-af64-97d5f87f69f8",
-                    "path": "<XRController>{LeftHand}/app",
+                    "id": "0dc5fa06-cc7b-49ca-b17f-6cb42be6026e",
+                    "path": "<XRController>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -701,6 +720,17 @@
                 },
                 {
                     "name": "",
+                    "id": "e1e14462-10d8-4b9c-821f-6a6fd9fe37e8",
+                    "path": "<XRController>/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Back",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "6f91a988-7877-493c-8528-e0c9b542650d",
                     "path": "<Keyboard>/enter",
                     "interactions": "",
@@ -714,6 +744,17 @@
                     "name": "",
                     "id": "bff236aa-71b9-4fb1-b6e5-f2b30ccaa1e5",
                     "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Validate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2c7812e4-2106-4f10-8e44-f885fbfb2e37",
+                    "path": "<XRController>/triggerPressed",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

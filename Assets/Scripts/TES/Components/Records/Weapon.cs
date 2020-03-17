@@ -10,7 +10,7 @@ namespace TES3Unity.Components.Records
         private Transform _container = null;
         private Renderer[] _renderers = null;
 
-        void Start()
+        private void Start()
         {
             var WEAP = (WEAPRecord)record;
             //objData.icon = TESUnity.instance.Engine.textureManager.LoadTexture(WPDT.ITEX.value, "icons"); 
@@ -42,10 +42,14 @@ namespace TES3Unity.Components.Records
         public void SetVisible(bool visible)
         {
             if (visible == _isVisible)
+            {
                 return;
+            }
 
             for (int i = 0; i < _renderers.Length; i++)
+            {
                 _renderers[i].enabled = visible;
+            }
 
             _isVisible = visible;
         }

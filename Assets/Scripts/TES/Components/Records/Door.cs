@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
 using UnityEngine;
 
@@ -27,7 +26,7 @@ namespace TES3Unity.Components.Records
 
         public DoorData doorData = null;
 
-        void Start()
+        private void Start()
         {
             usable = true;
             pickable = false;
@@ -39,13 +38,17 @@ namespace TES3Unity.Components.Records
 
             var DOOR = record as DOORRecord;
             if (DOOR.Name != null)
+            {
                 doorData.doorName = DOOR.Name;
+            }
 
             doorData.leadsToAnotherCell = (refObjDataGroup.DNAM != null) || (refObjDataGroup.DODT != null);
             doorData.leadsToInteriorCell = (refObjDataGroup.DNAM != null);
 
             if (doorData.leadsToInteriorCell)
+            {
                 doorData.doorExitName = refObjDataGroup.DNAM.value;
+            }
 
             if (doorData.leadsToAnotherCell && !doorData.leadsToInteriorCell)
             {
@@ -80,22 +83,30 @@ namespace TES3Unity.Components.Records
             if (doorData != null)
             {
                 if (doorData.isOpen)
+                {
                     Close();
+                }
                 else
+                {
                     Open();
+                }
             }
         }
 
         private void Open()
         {
             if (!doorData.moving)
+            {
                 StartCoroutine(c_Open());
+            }
         }
 
         private void Close()
         {
             if (!doorData.moving)
+            {
                 StartCoroutine(c_Close());
+            }
         }
 
         private IEnumerator c_Open()

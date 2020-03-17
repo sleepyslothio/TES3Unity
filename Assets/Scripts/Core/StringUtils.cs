@@ -20,4 +20,22 @@
 
         return true;
     }
+
+    public static bool StartWith(byte[] ASCIIBytes, string str)
+    {
+        if (ASCIIBytes.Length < str.Length)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < str.Length; i++)
+        {
+            if (ASCIIBytes[i] != str[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

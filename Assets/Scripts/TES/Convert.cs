@@ -12,7 +12,7 @@ namespace TES3Unity
         public const float MeterInMWUnits = MeterInYards * YardInMWUnits;
 
         public const int ExteriorCellSideLengthInMWUnits = 8192;
-        public const float ExteriorCellSideLengthInMeters = (float)ExteriorCellSideLengthInMWUnits / MeterInMWUnits;
+        public const float ExteriorCellSideLengthInMeters = ExteriorCellSideLengthInMWUnits / MeterInMWUnits;
 
         private static StringBuilder WordsBuilder = new StringBuilder();
         private static string[] Temp = null;
@@ -73,7 +73,9 @@ namespace TES3Unity
                     WordsBuilder.Append(Temp[i]);
 
                     if (i < length - 1 && Temp[i + 1].Length > 1)
+                    {
                         WordsBuilder.Append(" ");
+                    }
                 }
             }
 

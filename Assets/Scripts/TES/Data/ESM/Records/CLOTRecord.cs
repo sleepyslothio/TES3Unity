@@ -61,9 +61,9 @@ namespace TES3Unity.ESM.Records
 
                 BodyPartGroup[last] = new ArmorBodyPartGroup
                 {
-                     FemalePartName = part.FemalePartName,
-                     Index = part.Index,
-                     MalePartName = partName
+                    FemalePartName = part.FemalePartName,
+                    Index = part.Index,
+                    MalePartName = partName
                 };
             }
             else if (subRecordName == "CNAM")

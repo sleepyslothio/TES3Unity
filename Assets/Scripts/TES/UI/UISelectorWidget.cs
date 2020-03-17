@@ -34,9 +34,13 @@ namespace Demonixis.Toolbox.UI
             {
                 _index = value;
                 if (_index >= _size)
+                {
                     _index = 0;
+                }
                 else if (_index < 0)
+                {
                     _index = _size - 1;
+                }
 
                 UpdateText();
             }
@@ -54,7 +58,9 @@ namespace Demonixis.Toolbox.UI
         private void Awake()
         {
             if (_size == 0 && options != null)
+            {
                 _size = options.Length;
+            }
         }
 
         private void Start()
@@ -66,7 +72,9 @@ namespace Demonixis.Toolbox.UI
         {
             var type = typeof(T);
             if (!type.IsEnum)
+            {
                 throw new UnityException("This is not an Enum");
+            }
 
             var values = Enum.GetNames(type);
             Options = values;
@@ -78,7 +86,9 @@ namespace Demonixis.Toolbox.UI
         {
             var type = typeof(T);
             if (!type.IsEnum)
+            {
                 throw new UnityException("This is not an Enum");
+            }
 
             var values = Enum.GetNames(type);
             Options = values;
@@ -97,7 +107,9 @@ namespace Demonixis.Toolbox.UI
         {
             var buttons = GetComponentsInChildren<Button>();
             for (int i = 0, l = buttons.Length; i < l; i++)
+            {
                 buttons[i].interactable = isInteractable;
+            }
 
             interactable = isInteractable;
             enabled = interactable;
@@ -106,29 +118,41 @@ namespace Demonixis.Toolbox.UI
         public void ChangeValue(bool inc)
         {
             if (interactable)
+            {
                 Index += inc ? 1 : -1;
+            }
         }
 
         public void SetValueActive(string value)
         {
             var index = Array.IndexOf(options, value);
             if (index > -1)
+            {
                 Index = index;
+            }
         }
 
         public void UpdateText(bool notify = true)
         {
             if (text != null)
+            {
                 text.text = options[_index];
+            }
 
             if (!notify)
+            {
                 return;
+            }
 
             if (ValueChanged != null && notify)
+            {
                 ValueChanged(options[_index]);
+            }
 
             if (IndexChanged != null)
+            {
                 IndexChanged.Invoke(_index);
+            }
         }
     }
 }

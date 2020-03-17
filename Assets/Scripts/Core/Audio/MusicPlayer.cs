@@ -14,7 +14,9 @@ public class MusicPlayer
     public void Play()
     {
         if (songFilePaths.Count == 0)
+        {
             return;
+        }
 
         currentSongIndex = GetNextSongIndex();
 
@@ -28,7 +30,9 @@ public class MusicPlayer
     public void Update()
     {
         if (songFilePaths.Count == 0)
+        {
             return;
+        }
 
         if (currentAudioSourceObj == null)
         {
@@ -45,12 +49,20 @@ public class MusicPlayer
     private int GetNextSongIndex()
     {
         if (songFilePaths.Count == 0)
+        {
             return -1;
+        }
         else if (songFilePaths.Count == 1)
+        {
             return 0;
+        }
         else if (currentSongIndex < 0)
+        {
             return Random.Range(0, songFilePaths.Count);
+        }
         else
+        {
             return (currentSongIndex + Random.Range(1, songFilePaths.Count - 1)) % songFilePaths.Count;
+        }
     }
 }

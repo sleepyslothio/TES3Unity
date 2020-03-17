@@ -1,5 +1,4 @@
-﻿using Demonixis.Toolbox.XR;
-using System;
+﻿using System;
 using System.IO;
 using TES3Unity.ESM.Records;
 using UnityEngine;
@@ -55,6 +54,7 @@ namespace TES3Unity
         public bool KinematicRigidbody = true;
         public bool DayNightCycle = false;
         public bool FollowHead = true;
+        public bool Teleportation = false;
         public bool RoomScale = false;
         public float RenderScale = 1.0f;
         public bool LogEnabled = false;
@@ -107,7 +107,9 @@ namespace TES3Unity
                 {
                     var json = PlayerPrefs.GetString(StorageKey);
                     if (!string.IsNullOrEmpty(json) && json != "{}")
+                    {
                         Instance = JsonUtility.FromJson<GameSettings>(json);
+                    }
                 }
             }
 
@@ -156,7 +158,9 @@ namespace TES3Unity
             var path = PlayerPrefs.GetString(MorrowindPathKey);
 
             if (!string.IsNullOrEmpty(path))
+            {
                 return path;
+            }
 
 #if UNITY_ANDROID
             return $"/sdcard/{AndroidFolderName}";

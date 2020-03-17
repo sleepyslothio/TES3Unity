@@ -25,7 +25,7 @@ namespace TES3Unity.Diagnostic
 
             Debug.Log($"Loading model {path}");
 
-            var model = tes.NifManager.InstantiateNIF(path, false);
+            GameObject model = tes.NifManager.InstantiateNIF(path, false);
 
             var colliders = model.GetComponentsInChildren<Collider>();
             var maxY = 0.0f;

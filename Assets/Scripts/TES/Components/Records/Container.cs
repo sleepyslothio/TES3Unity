@@ -4,7 +4,7 @@ namespace TES3Unity.Components.Records
 {
     public class Container : RecordComponent
     {
-        void Start()
+        private void Start()
         {
             var CONT = (CONTRecord)record;
             pickable = false;

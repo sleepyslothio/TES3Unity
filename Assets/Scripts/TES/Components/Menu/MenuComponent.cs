@@ -1,5 +1,4 @@
-﻿using Demonixis.Toolbox.XR;
-using System.Collections;
+﻿using System.Collections;
 using System.IO;
 using System.Threading;
 using TES3Unity.Inputs;
@@ -63,7 +62,9 @@ namespace TES3Unity.Components
                 StartCoroutine(DeferredLoad());
             }
             else
+            {
                 Initialize();
+            }
         }
 
         private void Initialize()
@@ -71,9 +72,13 @@ namespace TES3Unity.Components
             m_GamePath = GameSettings.GetDataPath();
 
             if (GameSettings.IsValidPath(m_GamePath))
+            {
                 LoadMenu();
+            }
             else
+            {
                 LoadPreloader();
+            }
         }
 
         private IEnumerator DeferredLoad()
@@ -93,7 +98,9 @@ namespace TES3Unity.Components
             while (!CanReadStorage())
             {
                 if (backAction.phase == InputActionPhase.Started)
+                {
                     Quit();
+                }
 
                 yield return wait;
             }
@@ -133,7 +140,9 @@ namespace TES3Unity.Components
                 LoadMenu();
             }
             else
+            {
                 m_PathValidationText.enabled = true;
+            }
         }
 
         #endregion
@@ -196,7 +205,9 @@ namespace TES3Unity.Components
             m_LoadButton.interactable = false;
 
             while (m_PreloadThread.IsAlive)
+            {
                 yield return wait;
+            }
 
             m_LoadButton.interactable = true;
             m_InfoMessage.enabled = false;
@@ -239,9 +250,13 @@ namespace TES3Unity.Components
         public void ShowOptions(bool visible)
         {
             if (visible)
+            {
                 SetPanelVisible(2);
+            }
             else
+            {
                 SetPanelVisible(1);
+            }
         }
 
         #endregion
