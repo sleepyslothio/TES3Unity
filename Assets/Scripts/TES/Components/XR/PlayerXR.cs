@@ -39,11 +39,13 @@ namespace TES3Unity.Components.XR
 
             StartCoroutine(base.Start());
 
+            m_Transform = transform;
+
             var trackingSpace = m_Transform.FindChildRecursiveExact("TrackingSpace");
-            var leftHand = m_Transform.FindChildRecursiveExact("LeftHandAnchor");
+            var leftHand = m_Transform.FindChildRecursiveExact("LeftHand");
             leftHand.parent = trackingSpace;
 
-            var rightHand = m_Transform.FindChildRecursiveExact("RightHandAnchor");
+            var rightHand = m_Transform.FindChildRecursiveExact("RightHand");
             rightHand.parent = trackingSpace;
 
             m_XRActionMap = InputManager.GetActionMap("XR");
@@ -85,9 +87,6 @@ namespace TES3Unity.Components.XR
             m_Canvas = m_MainCanvas.GetComponent<RectTransform>();
             m_PivotCanvas = m_Canvas.parent;
             m_HUD = m_Canvas.Find("HUD");
-
-            // Put the Canvas in WorldSpace and Attach it to the camera.
-            m_Transform = transform;
 
             // Add a pivot to the UI. It'll help to rotate it in the inverse direction of the camera.
             var uiPivot = new GameObject("UI Pivot");

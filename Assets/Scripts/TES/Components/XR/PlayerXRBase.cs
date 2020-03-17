@@ -12,8 +12,6 @@ namespace TES3Unity.Components.XR
     {
         [SerializeField]
         private bool m_Spectator = false;
-        [SerializeField]
-        private GameObject m_RayInteractionPrefab = null;
 
         public Transform CameraTransform { get; protected set; }
 
@@ -41,13 +39,11 @@ namespace TES3Unity.Components.XR
                 Destroy(eventSystem.gameObject);
             }
 
-            var rayGo = Instantiate(m_RayInteractionPrefab);
-            rayGo.transform.parent = GetXRAttachNode(false);
-            rayGo.transform.localPosition = Vector3.zero;
-            rayGo.transform.localRotation = Quaternion.identity;
-
-            var ray = rayGo.GetComponent<IUILaserPointer>();
-            ray.PressAction = InputManager.GetAction("UI", "Validate");
+            var uiActionMap = InputManager.Enable("UI");
+            var handNode = GetXRAttachNode(false);
+            var laserPointer = GameObjectUtils.Create("LaserPointer", handNode);
+            var ray = laserPointer.AddComponent<IUILaserPointer>();
+            ray.PressAction = uiActionMap["Validate"];
 
             GameObjectUtils.CreateEventSystem<LaserPointerInputModule>();
 
@@ -77,8 +73,9 @@ namespace TES3Unity.Components.XR
 
         public Transform GetXRAttachNode(bool left)
         {
-            var hand = transform.FindChildRecursiveExact($"{(left ? "Left" : "Right")}HandAnchor");
-            return hand.Find("XR");
+            var hand = transform.FindChildRecursiveExact($"{(left ? "Left" : "Right")}Hand");
+            var xr = hand.Find("XR");
+            return xr ?? hand;
         }
     }
 }

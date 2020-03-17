@@ -39,11 +39,12 @@ namespace TES3Unity.Components
             var weapon = item as Weapon;
             if (weapon != null)
             {
-                var rightHand = m_Player.RightHand;
+                var rightHand = m_Player.RightHandSocket;
                 if (rightHand.childCount > 0)
                 {
                     rightHand.GetChild(0).parent = m_DisabledObjects;
-                } ((Weapon)item).Equip(rightHand, m_Player.RightHandContainer);
+                }
+                weapon.Equip(rightHand, m_Player.RightHandContainer);
                 return;
             }
 

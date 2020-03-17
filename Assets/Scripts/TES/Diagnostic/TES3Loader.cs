@@ -27,7 +27,7 @@ namespace TES3Unity
         public event Action<ESSFile> SaveFileLoaded = null;
         public event Action<TES3Loader> Initialized = null;
 
-        private void Start()
+        private void Awake()
         {
             var watch = new System.Diagnostics.Stopwatch();
             var dataPath = GameSettings.GetDataPath();

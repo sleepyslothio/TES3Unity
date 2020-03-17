@@ -27,19 +27,21 @@ namespace TES3Unity.Inputs
         public static InputAction GetAction(string actionMap, string actionName)
         {
             var map = GetActionMap(actionMap);
-            return map?[actionMap];
+            return map?[actionName];
         }
 
-        public static void Enable(string actionMap)
+        public static InputActionMap Enable(string actionMap)
         {
             var map = GetActionMap(actionMap);
             map?.Enable();
+            return map;
         }
 
-        public static void Disable(string actionMap)
+        public static InputActionMap Disable(string actionMap)
         {
             var map = GetActionMap(actionMap);
             map?.Disable();
+            return map;
         }
     }
 }

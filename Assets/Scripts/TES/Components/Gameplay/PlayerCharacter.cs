@@ -10,7 +10,7 @@ namespace TES3Unity
 {
     public enum HandMode
     {
-        Hidden = 0, Attack, Magic
+        Hidden = 0, Attack, Magic, XR
     }
 
     public class PlayerCharacter : MonoBehaviour
@@ -20,19 +20,15 @@ namespace TES3Unity
         private PlayerInventory m_PlayerInventory = null;
         private RaycastHit[] m_InteractRaycastHitBuffer = new RaycastHit[32];
         private InputAction m_UseAction;
-        private Transform m_LeftHandSocket = null;
-        private Transform m_RightHandSocket = null;
         private HandMode m_HandMode = HandMode.Hidden;
+        private bool m_XREnabled = false;
 
-        [SerializeField]
-        private Transform m_LeftHand = null;
-        [SerializeField]
-        private Transform m_RightHand = null;
-
-        public Transform LeftHandContainer => m_LeftHand;
-        public Transform RightHandContainer => m_RightHand;
-        public Transform LeftHand => m_LeftHandSocket;
-        public Transform RightHand => m_RightHandSocket;
+        public Transform LeftHandContainer { get; private set; }
+        public Transform RightHandContainer { get; private set; }
+        public Transform LeftHandModel { get; private set; }
+        public Transform RightHandModel { get; private set; }
+        public Transform LeftHandSocket { get; private set; }
+        public Transform RightHandSocket { get; private set; }
         public Transform RayCastTarget { get; private set; }
 
         public event Action<RecordComponent, bool> InteractiveTextChanged = null;
@@ -40,37 +36,50 @@ namespace TES3Unity
 
         private void Start()
         {
-            var xrEnabled = XRManager.IsXREnabled();
+            m_XREnabled = XRManager.IsXREnabled();
             var camera = GetComponentInChildren<Camera>();
 
             RayCastTarget = camera.transform;
 
-            if (xrEnabled)
+            LeftHandContainer = transform.FindChildRecursiveExact("LeftHand");
+            LeftHandModel = LeftHandContainer.Find("HandModel");
+            RightHandContainer = transform.FindChildRecursiveExact("RightHand");
+            RightHandModel = RightHandContainer.Find("HandModel");
+
+            if (m_XREnabled)
             {
-                RayCastTarget = m_RightHand;
+                RayCastTarget = RightHandContainer;
             }
 
             // TODO: use the NPCFactory and add a 1.st person skin
-            var hands = PlayerSkin.AddHands(m_LeftHand, m_RightHand, xrEnabled);
-            m_LeftHandSocket = hands.Item1;
-            m_RightHandSocket = hands.Item2;
+            var hands = PlayerSkin.AddHands(LeftHandModel, RightHandModel, m_XREnabled);
+            LeftHandSocket = hands.Item1;
+            RightHandSocket = hands.Item2;
             ToggleHands(); // Disabled by default
 
             m_PlayerInventory = GetComponent<PlayerInventory>();
 
-            var gameplayActionMap = InputManager.GetActionMap("Gameplay");
-            gameplayActionMap.Enable();
-
+            var gameplayActionMap = InputManager.Enable("Gameplay");
             gameplayActionMap["ReadyWeapon"].started += (c) =>
             {
                 var status = ToggleHands();
                 m_HandMode = status ? HandMode.Attack : HandMode.Hidden;
+
+                if (m_XREnabled)
+                {
+                    m_HandMode = HandMode.XR;
+                }
             };
 
             gameplayActionMap["ReadyMagic"].started += (c) =>
             {
                 var status = ToggleHands();
                 m_HandMode = status ? HandMode.Magic : HandMode.Hidden;
+
+                if (m_XREnabled)
+                {
+                    m_HandMode = HandMode.XR;
+                }
             };
 
             m_UseAction = gameplayActionMap["Use"];
@@ -83,9 +92,14 @@ namespace TES3Unity
 
         private bool ToggleHands()
         {
-            var active = !m_LeftHand.gameObject.activeSelf;
-            m_LeftHand.gameObject.SetActive(active);
-            m_RightHand.gameObject.SetActive(active);
+            if (m_XREnabled)
+            {
+                return true;
+            }
+
+            var active = !LeftHandModel.gameObject.activeSelf;
+            LeftHandModel.gameObject.SetActive(active);
+            RightHandModel.gameObject.SetActive(active);
             return active;
         }
 

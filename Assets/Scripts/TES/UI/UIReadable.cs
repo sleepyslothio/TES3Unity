@@ -21,9 +21,13 @@ namespace TES3Unity.UI
 
         protected virtual void Start()
         {
-            var textureManager = TES3Engine.Instance.textureManager;
-            var texture = textureManager.LoadTexture(BackgroundImageName, true);
-            _background.sprite = GUIUtils.CreateSprite(texture);
+            var textureManager = TES3Engine.Instance?.textureManager;
+
+            if (textureManager != null)
+            {
+                var texture = textureManager.LoadTexture(BackgroundImageName, true);
+                _background.sprite = GUIUtils.CreateSprite(texture);
+            }
 
             // If the book is already opened, don't change its transform.
             if (m_BookRecord == null)

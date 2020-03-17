@@ -23,6 +23,15 @@ public static class GameObjectUtils
         return cameraObject;
     }
 
+    public static GameObject Create(string name, Transform parent)
+    {
+        var go = new GameObject(name);
+        go.transform.parent = parent;
+        go.transform.localPosition = Vector3.zero;
+        go.transform.localRotation = Quaternion.identity;
+        return go;
+    }
+
     public static Light CreateSunLight(Vector3 position, Quaternion orientation)
     {
         var light = new GameObject("Directional Light");

@@ -17,11 +17,11 @@ namespace TES3Unity
             var gender = playerData.Woman ? "f" : "m";
             var player = NPC_Record.CreateRaw(playerData.Name, playerData.Race.ToString(), playerData.Faction, playerData.ClassName, $"b_n_{race}_{gender}_head_01", $"b_n_{race}_{gender}_hair_00", playerData.Woman ? 1 : 0, items);
 
-            var obj = NPCFactory.InstanciateNPC(nifManager, player, false, false);
+            /*var obj = NPCFactory.InstanciateNPC(nifManager, player, false, false);
             obj.transform.parent = transform;
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localRotation = Quaternion.identity;
-            obj.SetActive(false); // For now
+            obj.SetActive(false); // For now*/
         }
 
         public static (Transform, Transform) AddHands(Transform leftHand, Transform rightHand, bool xrEnabled)
@@ -63,7 +63,7 @@ namespace TES3Unity
             hand.gameObject.isStatic = false;
             hand.parent = left ? leftHand : rightHand;
             hand.localPosition = Vector3.zero;
-            hand.localRotation = Quaternion.Euler(left ? -180.0f : 180.0f, 90.0f, 0.0f);
+            hand.localRotation = Quaternion.Euler(left ? -90.0f : 90.0f, 90.0f, 0.0f);
 
             var anchor = new GameObject($"{(left ? "Left" : "Right")} Hand Socket");
             var anchorTransform = anchor.transform;
