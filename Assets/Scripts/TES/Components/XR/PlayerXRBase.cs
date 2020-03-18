@@ -48,8 +48,6 @@ namespace TES3Unity.Components.XR
             LaserPointer.PressAction = uiActionMap["Validate"];
             LaserPointer.IsActive = m_Spectator;
 
-            GameObjectUtils.CreateEventSystem<LaserPointerInputModule>();
-
             if (m_Spectator)
             {
                 var mainUI = GUIUtils.MainCanvas;

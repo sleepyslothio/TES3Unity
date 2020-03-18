@@ -57,7 +57,8 @@ namespace Wacki
             if (_instance != null && _instance != this)
             {
                 Debug.LogWarning("Trying to instantiate multiple LaserPointerInputModule.");
-                DestroyImmediate(this.gameObject);
+                Destroy(gameObject);
+                return;
             }
 
             _instance = this;
