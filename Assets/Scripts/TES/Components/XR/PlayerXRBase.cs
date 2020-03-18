@@ -14,6 +14,7 @@ namespace TES3Unity.Components.XR
         private bool m_Spectator = false;
 
         public Transform CameraTransform { get; protected set; }
+        public IUILaserPointer LaserPointer { get; protected set; }
 
         protected virtual IEnumerator Start()
         {
@@ -42,8 +43,10 @@ namespace TES3Unity.Components.XR
             var uiActionMap = InputManager.Enable("UI");
             var handNode = GetXRAttachNode(false);
             var laserPointer = GameObjectUtils.Create("LaserPointer", handNode);
-            var ray = laserPointer.AddComponent<IUILaserPointer>();
-            ray.PressAction = uiActionMap["Validate"];
+            
+            LaserPointer = laserPointer.AddComponent<IUILaserPointer>();
+            LaserPointer.PressAction = uiActionMap["Validate"];
+            LaserPointer.IsActive = m_Spectator;
 
             GameObjectUtils.CreateEventSystem<LaserPointerInputModule>();
 
@@ -59,7 +62,14 @@ namespace TES3Unity.Components.XR
 
             // Tracking Space Type
             var settings = GameSettings.Get();
-            var mode = settings.RoomScale ? TrackingOriginModeFlags.Floor : TrackingOriginModeFlags.Device;
+            var mode = TrackingOriginModeFlags.Device;
+
+            if (settings.RoomScale)
+            {
+                mode = TrackingOriginModeFlags.Floor;
+                var trackingSpace = transform.FindChildRecursiveExact("TrackingSpace");
+                trackingSpace.localPosition = Vector3.zero;
+            }
 
             XRManager.SetTrackingOriginMode(mode, true);
 

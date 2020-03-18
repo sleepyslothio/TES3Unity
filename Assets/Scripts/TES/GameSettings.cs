@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
 using UnityEngine;
 
@@ -60,6 +62,24 @@ namespace TES3Unity
         public bool LogEnabled = false;
         public bool LoadExtensions = false;
         public PlayerData Player;
+
+        public static NPC_Record GetPlayerRecord()
+        {
+            var playerData = Get().Player;
+            var items = new List<NPCOData>();
+            var race = playerData.Race.ToString().ToLower().Replace("_", " ");
+            var gender = playerData.Woman ? "f" : "m";
+
+            return NPC_Record.CreateRaw(
+                playerData.Name, 
+                playerData.Race.ToString(), 
+                playerData.Faction, 
+                playerData.ClassName, 
+                $"b_n_{race}_{gender}_head_01", 
+                $"b_n_{race}_{gender}_hair_00", 
+                playerData.Woman ? 1 : 0, 
+                items);
+        }
 
         public static void Save()
         {

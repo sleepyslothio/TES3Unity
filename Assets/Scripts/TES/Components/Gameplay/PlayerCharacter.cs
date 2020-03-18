@@ -46,15 +46,29 @@ namespace TES3Unity
             RightHandContainer = transform.FindChildRecursiveExact("RightHand");
             RightHandModel = RightHandContainer.Find("HandModel");
 
-            if (m_XREnabled)
+            
+
+            // TODO: use the NPCFactory and add a 1.st person skin
+            var hands = PlayerSkin.AddHands(LeftHandModel, RightHandModel);
+            LeftHandSocket = hands.Item1;
+            RightHandSocket = hands.Item2;
+
+            if (!m_XREnabled)
+            {
+                var cameraTransform = camera.transform;
+                LeftHandContainer.parent = cameraTransform;
+                RightHandContainer.parent = cameraTransform;
+
+                LeftHandContainer.localPosition = new Vector3(-0.2f, -0.2f, 0.4f);
+                LeftHandContainer.localRotation = Quaternion.identity;
+                RightHandContainer.localPosition = new Vector3(0.2f, -0.2f, 0.4f);
+                RightHandContainer.localRotation = Quaternion.identity;
+            }
+            else
             {
                 RayCastTarget = RightHandContainer;
             }
 
-            // TODO: use the NPCFactory and add a 1.st person skin
-            var hands = PlayerSkin.AddHands(LeftHandModel, RightHandModel, m_XREnabled);
-            LeftHandSocket = hands.Item1;
-            RightHandSocket = hands.Item2;
             ToggleHands(); // Disabled by default
 
             m_PlayerInventory = GetComponent<PlayerInventory>();

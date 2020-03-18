@@ -50,11 +50,18 @@ namespace Demonixis.Toolbox.XR
         public void SetHand(bool left)
         {
             m_TeleportAction = InputManager.GetAction("XR", $"Teleport-{(left ? "Left" : "Right")}");
-            m_TeleportAction.started += (c) => m_Pressed = true;
+            m_TeleportAction.started += (c) =>
+            {
+                var value = c.ReadValue<Vector2>();
+                m_Pressed = value.y < 0.25f;
+            };
             m_TeleportAction.canceled += (c) =>
             {
-                m_Pressed = false;
-                InputWasJustReleased();
+                if (m_Pressed)
+                {
+                    m_Pressed = false;
+                    InputWasJustReleased();
+                }
             };
         }
 

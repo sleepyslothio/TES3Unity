@@ -88,53 +88,58 @@ namespace TES3Unity
             {
                 instance = this;
             }
+
+            // When loaded from the Menu, this variable is already preloaded.
+            if (MWDataReader == null)
+            {
+                var dataPath = GameSettings.GetDataPath();
+
+#if UNITY_EDITOR
+                // Load the game from the alternative dataPath when in editor.
+                if (!GameSettings.IsValidPath(dataPath))
+                {
+                    dataPath = string.Empty;
+
+                    foreach (var alt in AlternativeDataPaths)
+                    {
+                        if (GameSettings.IsValidPath(alt))
+                        {
+                            dataPath = alt;
+                            GameSettings.SetDataPath(dataPath);
+                            break;
+                        }
+                    }
+                }
+#endif
+
+                if (string.IsNullOrEmpty(dataPath))
+                {
+                    SceneManager.LoadScene("Menu");
+                    enabled = false;
+                    return;
+                }
+
+                MWDataReader = new TES3DataReader(dataPath);
+            }
         }
 
         private void Start()
         {
             var config = GameSettings.Get();
-            var dataPath = GameSettings.GetDataPath();
 
 #if UNITY_EDITOR
             CellRadius = config.CellRadius;
             CellDetailRadius = config.CellDetailRadius;
-
-            // Load the game from the alternative dataPath when in editor.
-            if (!GameSettings.IsValidPath(dataPath))
-            {
-                dataPath = string.Empty;
-
-                foreach (var alt in AlternativeDataPaths)
-                {
-                    if (GameSettings.IsValidPath(alt))
-                    {
-                        dataPath = alt;
-                    }
-                }
-            }
 #endif
-
-            if (string.IsNullOrEmpty(dataPath))
-            {
-                SceneManager.LoadScene("Menu");
-                enabled = false;
-                return;
-            }
 
             CellManager.cellRadius = config.CellRadius;
             CellManager.detailRadius = config.CellDetailRadius;
             cellRadiusOnLoad = config.CellRadiusOnLoad;
 
-            // When loaded from the Menu, this variable is already preloaded.
-            if (MWDataReader == null)
-            {
-                MWDataReader = new TES3DataReader(dataPath);
-            }
-
             Initialize(MWDataReader);
 
             var soundManager = FindObjectOfType<SoundManager>();
-            soundManager?.Initialize(dataPath);
+            soundManager?.Initialize(GameSettings.GetDataPath());
 
             // Start Position
             var cellGridCoords = new Vector2i(-2, -9);

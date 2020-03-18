@@ -4,6 +4,7 @@ using TES3Unity.Inputs;
 using TES3Unity.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 
 namespace TES3Unity.Components.XR
 {
@@ -41,12 +42,11 @@ namespace TES3Unity.Components.XR
 
             m_Transform = transform;
 
-            var trackingSpace = m_Transform.FindChildRecursiveExact("TrackingSpace");
-            var leftHand = m_Transform.FindChildRecursiveExact("LeftHand");
-            leftHand.parent = trackingSpace;
-
-            var rightHand = m_Transform.FindChildRecursiveExact("RightHand");
-            rightHand.parent = trackingSpace;
+            var trackedPoseDriversNew = GetComponentsInChildren<TrackedPoseDriver>(true);
+            foreach (var driver in trackedPoseDriversNew)
+            {
+                driver.enabled = true;
+            }
 
             m_XRActionMap = InputManager.GetActionMap("XR");
             m_XRActionMap.Enable();
@@ -59,7 +59,7 @@ namespace TES3Unity.Components.XR
             if (settings.Teleportation)
             {
                 var tpGo = Instantiate(m_TeleportationPrefab);
-                tpGo.transform.parent = rightHand;
+                tpGo.transform.parent = GetXRAttachNode(false);
                 tpGo.transform.localPosition = Vector3.zero;
                 tpGo.transform.localRotation = Quaternion.identity;
 
@@ -84,6 +84,8 @@ namespace TES3Unity.Components.XR
                 uiManager.Crosshair.Enabled = false;
             }
 
+            uiManager.WindowOpenChanged += OnUIWindowsOpened;
+
             m_Canvas = m_MainCanvas.GetComponent<RectTransform>();
             m_PivotCanvas = m_Canvas.parent;
             m_HUD = m_Canvas.Find("HUD");
@@ -101,6 +103,11 @@ namespace TES3Unity.Components.XR
             Camera.main.nearClipPlane = 0.1f;
 
             RecenterOrientationAndPosition();
+        }
+
+        private void OnUIWindowsOpened(UIWindow window, bool open)
+        {
+            LaserPointer.IsActive = open;
         }
 
         private void Update()

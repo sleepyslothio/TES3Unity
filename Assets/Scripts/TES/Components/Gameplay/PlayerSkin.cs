@@ -10,12 +10,7 @@ namespace TES3Unity
     {
         private void Start()
         {
-            var playerData = GameSettings.Get().Player;
-            var nifManager = NIFManager.Instance;
-            var items = new List<NPCOData>();
-            var race = playerData.Race.ToString().ToLower().Replace("_", " ");
-            var gender = playerData.Woman ? "f" : "m";
-            var player = NPC_Record.CreateRaw(playerData.Name, playerData.Race.ToString(), playerData.Faction, playerData.ClassName, $"b_n_{race}_{gender}_head_01", $"b_n_{race}_{gender}_hair_00", playerData.Woman ? 1 : 0, items);
+            var player = GameSettings.GetPlayerRecord();
 
             /*var obj = NPCFactory.InstanciateNPC(nifManager, player, false, false);
             obj.transform.parent = transform;
@@ -24,16 +19,24 @@ namespace TES3Unity
             obj.SetActive(false); // For now*/
         }
 
-        public static (Transform, Transform) AddHands(Transform leftHand, Transform rightHand, bool xrEnabled)
+        public static (Transform, Transform) AddHands(Transform leftHand, Transform rightHand)
         {
             // Loading hands.
             var nifManager = NIFManager.Instance;
 
-            var race = "nord";
-            var gender = "m";
+            if (nifManager == null)
+            {
+                Debug.LogError("The NIFManager is not ready.");
+                return (null, null);
+            }
+
+            var player = GameSettings.GetPlayerRecord();
+
+            var race = player.Race;
+            var gender = player.IsFemale ? "f" : "m";
             var hands1st = $"b_n_{race}_{gender}_hands.1st";
 
-            var hands = nifManager.InstantiateNIF($"meshes\\b\\{hands1st}.NIF");
+            var hands = nifManager.InstantiateNIF($"meshes\\b\\{hands1st}.NIF", false);
 
             var meshColliders = hands.GetComponentsInChildren<MeshCollider>(true);
             foreach (var collider in meshColliders)
@@ -43,14 +46,6 @@ namespace TES3Unity
 
             var leftHandObject = CreateHand(hands, leftHand, rightHand, true);
             var rightHandObject = CreateHand(hands, leftHand, rightHand, false);
-
-            if (!xrEnabled)
-            {
-                leftHand.localPosition = new Vector3(-0.2f, -0.2f, 0.4f);
-                leftHand.localRotation = Quaternion.Euler(0, 0, -75);
-                rightHand.localPosition = new Vector3(0.2f, -0.2f, 0.4f);
-                rightHand.localRotation = Quaternion.Euler(0, 0, 75);
-            }
 
             Destroy(hands.gameObject);
 
@@ -63,7 +58,7 @@ namespace TES3Unity
             hand.gameObject.isStatic = false;
             hand.parent = left ? leftHand : rightHand;
             hand.localPosition = Vector3.zero;
-            hand.localRotation = Quaternion.Euler(left ? -90.0f : 90.0f, 90.0f, 0.0f);
+            hand.localRotation = Quaternion.Euler(left ? -90.0f : 90.0f, 0.0f, left ? 90.0f : -90.0f);
 
             var anchor = new GameObject($"{(left ? "Left" : "Right")} Hand Socket");
             var anchorTransform = anchor.transform;

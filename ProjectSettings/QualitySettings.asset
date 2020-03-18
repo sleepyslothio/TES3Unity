@@ -157,4 +157,5 @@ QualitySettings:
   m_PerPlatformDefaultQuality:
     Android: 0
     Standalone: 3
+    WebGL: 0
     Windows Store Apps: 3
