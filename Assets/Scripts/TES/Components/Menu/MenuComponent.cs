@@ -3,6 +3,9 @@ using System.IO;
 using System.Threading;
 using TES3Unity.Inputs;
 using UnityEngine;
+#if UNITY_ANDROID
+using UnityEngine.Android;
+#endif
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;

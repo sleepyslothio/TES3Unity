@@ -52,7 +52,7 @@ namespace Demonixis.Toolbox.XR
                 if (vendor == XRVendor.Oculus)
                 {
 #if UNITY_ANDROID
-                    var oculusLoader =(OculusLoader)GetXRLoader();
+                    var oculusLoader =(Unity.XR.Oculus.OculusLoader)GetXRLoader();
                     if (oculusLoader.GetSettings().V2Signing)
                     {
                         return XRHeadset.OculusQuest;

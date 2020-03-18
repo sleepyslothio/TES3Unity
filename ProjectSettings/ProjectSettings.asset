@@ -121,10 +121,10 @@ PlayerSettings:
     Others: 1
   bundleVersion: 1.0
   preloadedAssets:
-  - {fileID: 1993207792715637267, guid: b9ddd1d616f8081429e9560933ef2a9b, type: 2}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 7c2d3c4276a20274fbbaa45e5d59954f, type: 2}
   - {fileID: 2921757118770814113, guid: c87b23b67faf4c548bf79e1a23e7b4f9, type: 2}
   - {fileID: 11400000, guid: 2f65fafb809228440a6e56ecf1dded39, type: 2}
-  - {fileID: 11400000, guid: 7c2d3c4276a20274fbbaa45e5d59954f, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -167,7 +167,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: net.demonixis.tesunityxr
+    Android: net.demonixis.tes3unity
     Standalone: net.demonixis.tes3unity
     Tizen: com.Company.ProductName
     iPhone: com.Company.ProductName
@@ -175,7 +175,7 @@ PlayerSettings:
   buildNumber:
     iPhone: 0
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 19
+  AndroidMinSdkVersion: 23
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 0
   aotOptions: 
@@ -412,7 +412,7 @@ PlayerSettings:
   - m_BuildTarget: LuminSupport
     m_GraphicsJobs: 0
   - m_BuildTarget: AndroidPlayer
-    m_GraphicsJobs: 0
+    m_GraphicsJobs: 1
   - m_BuildTarget: WebGLSupport
     m_GraphicsJobs: 0
   m_BuildTargetGraphicsJobMode:
@@ -422,7 +422,7 @@ PlayerSettings:
     m_GraphicsJobMode: 0
   m_BuildTargetGraphicsAPIs:
   - m_BuildTarget: AndroidPlayer
-    m_APIs: 0b00000015000000
+    m_APIs: 150000000b000000
     m_Automatic: 0
   - m_BuildTarget: WindowsStandaloneSupport
     m_APIs: 02000000
@@ -495,8 +495,8 @@ PlayerSettings:
   - m_BuildTarget: tvOS
     m_Enabled: 0
     m_Devices: []
-  openGLRequireES31: 0
-  openGLRequireES31AEP: 0
+  openGLRequireES31: 1
+  openGLRequireES31AEP: 1
   openGLRequireES32: 1
   m_TemplateCustomTags: {}
   mobileMTRendering:
@@ -750,7 +750,7 @@ PlayerSettings:
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
     1: HDRP_ENABLED
-    7: UNITY_POST_PROCESSING_STACK_V2;LEGACY_ENABLED;OCULUS_SDK
+    7: 
     13: UNITY_POST_PROCESSING_STACK_V2
     14: UNITY_POST_PROCESSING_STACK_V2
     17: UNITY_POST_PROCESSING_STACK_V2
@@ -864,5 +864,5 @@ PlayerSettings:
   organizationId: 
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 1
-  disableOldInputManagerSupport: 0
+  disableOldInputManagerSupport: 1
   legacyClampBlendShapeWeights: 0

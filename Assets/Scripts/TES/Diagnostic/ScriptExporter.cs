@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace TES3Unity.Diagnostic
 {
+#if UNITY_EDITOR 
     public class ScriptExporter : MonoBehaviour
     {
         [MenuItem("Morrowind Unity/Export Scripts")]
@@ -16,14 +17,11 @@ namespace TES3Unity.Diagnostic
 
                 var dataPath = GameSettings.GetDataPath();
 
-
-
                 // Load the game from the alternative dataPath when in editor.
                 if (!GameSettings.IsValidPath(dataPath))
                 {
                     dataPath = string.Empty;
 
-#if UNITY_EDITOR
                     var manager = FindObjectOfType<TES3Engine>();
                     var alternativeDataPaths = manager?.AlternativeDataPaths ?? null;
 
@@ -40,7 +38,6 @@ namespace TES3Unity.Diagnostic
                             dataPath = alt;
                         }
                     }
-#endif
                 }
 
                 TES3Engine.MWDataReader = new TES3DataReader(dataPath);
@@ -73,4 +70,5 @@ namespace TES3Unity.Diagnostic
             Debug.Log("Script export done.");
         }
     }
+#endif
 }

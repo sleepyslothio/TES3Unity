@@ -107,21 +107,12 @@ namespace TES3Unity
                 Instance.SunShadows = false;
                 Instance.RenderScale = 0.9f;
                 Instance.PostProcessingQuality = PostProcessingQuality.None;
-                Instance.LightShadows = false;
                 Instance.ExteriorLights = false;
                 Instance.CameraFarClip = 200;
                 Instance.DayNightCycle = false;
                 Instance.AntiAliasingMode = AntiAliasingMode.MSAA;
-                Instance.RoomScale = false;
                 Instance.CellDetailRadius = 2;
                 Instance.CellRadius = 1;
-
-                if (XRManager.IsXREnabled())
-                {
-                    Instance.CellDetailRadius = 2;
-                    Instance.CameraFarClip = 150;
-                    Instance.RoomScale = true;
-                }
 #endif
                 if (PlayerPrefs.HasKey(StorageKey))
                 {
