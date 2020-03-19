@@ -7048,6 +7048,7 @@ MonoBehaviour:
   m_LoadButton: {fileID: 1422570399}
   m_InfoMessage: {fileID: 765607347}
   m_ButtonsContainer: {fileID: 1345659265}
+  m_DisplayDesktopPathOnAndroid: 1
 --- !u!114 &1214623309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7144,9 +7145,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "* You need a <b>valid</b> installation of Morrowind\n* Then copy the <b>content</b>
-    of the <b>Data Files</b> folder into a folder named <b>TESUnityXR</b> on your
-    SDCard. \n* Restart the game"
+  m_Text: "* You need a <b>valid</b> installation of Morrowind\n* Then copy the <b>Data
+    Files</b> folder into a folder named <b>TES3Unity</b> on your SDCard. \n* Restart
+    the game"
 --- !u!222 &1235576230
 CanvasRenderer:
   m_ObjectHideFlags: 0
