@@ -43,7 +43,7 @@ namespace TES3Unity.Components.XR
             var uiActionMap = InputManager.Enable("UI");
             var handNode = GetXRAttachNode(false);
             var laserPointer = GameObjectUtils.Create("LaserPointer", handNode);
-            
+
             LaserPointer = laserPointer.AddComponent<IUILaserPointer>();
             LaserPointer.PressAction = uiActionMap["Validate"];
             LaserPointer.IsActive = m_Spectator;

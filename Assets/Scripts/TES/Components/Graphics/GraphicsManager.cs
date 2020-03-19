@@ -22,9 +22,29 @@ namespace TES3Unity.Components
             var assetPath = $"Rendering/UniversalRP/PipelineAssets";
             var volumePath = $"Rendering/UniversalRP/Volumes";
 
-#if UNITY_ANDROID
-            target = "Mobile";
-#endif
+            if (GameSettings.IsMobile())
+            {
+                target = "Mobile";
+            }
+
+            // Setup the Quality level
+            var qualityIndex = 3; // High
+
+            if (target == "Mobile")
+            {
+                qualityIndex = 0;
+            }
+            else if (config.SRPQuality == SRPQuality.Low)
+            {
+                qualityIndex = 1;
+            }
+            else if (config.SRPQuality == SRPQuality.Medium)
+            {
+                qualityIndex = 2;
+            }
+
+            QualitySettings.SetQualityLevel(qualityIndex);
+
             // Setup the UniversalRP Asset.
             var lwrpAsset = Resources.Load<UniversalRenderPipelineAsset>($"{assetPath}/URPAsset-{target}");
             var instanceAsset = Instantiate(lwrpAsset);

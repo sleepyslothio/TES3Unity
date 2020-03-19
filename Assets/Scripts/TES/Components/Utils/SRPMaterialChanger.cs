@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using TES3Unity.Rendering;
-using UnityEngine;
-using UnityEngine.Rendering;
+﻿using UnityEngine;
 
 namespace TES3Unity.Components.Utilities
 {

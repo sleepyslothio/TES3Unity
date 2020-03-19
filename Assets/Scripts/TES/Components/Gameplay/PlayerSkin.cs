@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using TES3Unity.ESM;
-using TES3Unity.ESM.Records;
-using TES3Unity.World;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TES3Unity
 {

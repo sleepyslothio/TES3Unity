@@ -122,7 +122,9 @@ namespace TES3Unity.Components
 
 #if UNITY_EDITOR
             if (m_DisplayDesktopPathOnAndroid)
+            {
                 mobile = false;
+            }
 #endif
 #endif
 

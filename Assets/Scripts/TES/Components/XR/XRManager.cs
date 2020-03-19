@@ -5,21 +5,21 @@ namespace Demonixis.Toolbox.XR
 {
     public enum XRVendor
     {
-        None = 0, 
-        Oculus, 
-        WindowsMR, 
-        SteamVR, 
+        None = 0,
+        Oculus,
+        WindowsMR,
+        SteamVR,
         Unknown
     }
 
     public enum XRHeadset
     {
-        None = 0, 
-        OculusGo, 
-        OculusQuest, 
-        OculusRift, 
-        WindowsMR, 
-        HTCVive, 
+        None = 0,
+        OculusGo,
+        OculusQuest,
+        OculusRift,
+        WindowsMR,
+        HTCVive,
         Unknown
     }
 
@@ -68,7 +68,7 @@ namespace Demonixis.Toolbox.XR
                 if (vendor == XRVendor.Oculus)
                 {
 #if UNITY_ANDROID
-                    var oculusLoader =(Unity.XR.Oculus.OculusLoader)GetXRLoader();
+                    var oculusLoader = (Unity.XR.Oculus.OculusLoader)GetXRLoader();
                     if (oculusLoader.GetSettings().V2Signing)
                     {
                         return XRHeadset.OculusQuest;
@@ -139,7 +139,7 @@ namespace Demonixis.Toolbox.XR
 
         public static void SetRenderScale(float scale)
         {
-            
+
         }
     }
 }

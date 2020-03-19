@@ -46,7 +46,7 @@ namespace TES3Unity
             RightHandContainer = transform.FindChildRecursiveExact("RightHand");
             RightHandModel = RightHandContainer.Find("HandModel");
 
-            
+
 
             // TODO: use the NPCFactory and add a 1.st person skin
             var hands = PlayerSkin.AddHands(LeftHandModel, RightHandModel);

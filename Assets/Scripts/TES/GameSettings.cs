@@ -35,9 +35,9 @@ namespace TES3Unity
     [Serializable]
     public sealed class GameSettings
     {
-        private const string MorrowindPathKey = "tesunity.path";
-        private const string StorageKey = "tesunity.settings";
-        private const string AndroidFolderName = "TESUnityXR";
+        private const string MorrowindPathKey = "tes3unity.path";
+        private const string StorageKey = "tes3unity.settings";
+        private const string AndroidFolderName = "TES3Unity";
         private static GameSettings Instance = null;
 
         public bool MusicEnabled = true;
@@ -71,13 +71,13 @@ namespace TES3Unity
             var gender = playerData.Woman ? "f" : "m";
 
             return NPC_Record.CreateRaw(
-                playerData.Name, 
-                playerData.Race.ToString(), 
-                playerData.Faction, 
-                playerData.ClassName, 
-                $"b_n_{race}_{gender}_head_01", 
-                $"b_n_{race}_{gender}_hair_00", 
-                playerData.Woman ? 1 : 0, 
+                playerData.Name,
+                playerData.Race.ToString(),
+                playerData.Faction,
+                playerData.ClassName,
+                $"b_n_{race}_{gender}_head_01",
+                $"b_n_{race}_{gender}_hair_00",
+                playerData.Woman ? 1 : 0,
                 items);
         }
 
@@ -174,7 +174,7 @@ namespace TES3Unity
             }
 
 #if UNITY_ANDROID
-            return $"/sdcard/{AndroidFolderName}";
+            return $"/sdcard/{AndroidFolderName}/Data Files";
 #else
             return string.Empty;
 #endif
