@@ -53,9 +53,14 @@ namespace TES3Unity.Components
         public void SetSun(Light light)
         {
             m_Sun = light;
-            m_Sun.shadows = GameSettings.GetRecommandedShadows();
+            m_Sun.shadows = GameSettings.GetRecommandedShadows(false);
             m_SunTransform = light.transform;
             RenderSettings.sun = light;
+
+            if (!GameSettings.Get().DayNightCycle)
+            {
+                return;
+            }
 
             // The Moon Light is a subtile directional light at the opposite of the sun light
             // It's used to light a bit the scene when the sun light is in night mode.
@@ -68,7 +73,7 @@ namespace TES3Unity.Components
             moonLight.type = LightType.Directional;
             moonLight.intensity = 0.32f;
             moonLight.color = new Color32(136, 163, 255, 255);
-            moonLight.shadows = GameSettings.GetRecommandedShadows();
+            moonLight.shadows = GameSettings.GetRecommandedShadows(true);
         }
 
         private void Update()

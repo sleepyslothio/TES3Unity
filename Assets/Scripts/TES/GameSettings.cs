@@ -138,11 +138,11 @@ namespace TES3Unity
 #endif
         }
 
-        public static LightShadows GetRecommandedShadows()
+        public static LightShadows GetRecommandedShadows(bool ponctual)
         {
             var config = Get();
 
-            if (!config.PonctualLightShadows || !config.SunShadows)
+            if (!config.PonctualLightShadows && ponctual || !config.SunShadows && !ponctual)
             {
                 return LightShadows.None;
             }
