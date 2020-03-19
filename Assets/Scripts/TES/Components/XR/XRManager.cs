@@ -5,12 +5,22 @@ namespace Demonixis.Toolbox.XR
 {
     public enum XRVendor
     {
-        None = 0, Oculus, WindowsMR, SteamVR
+        None = 0, 
+        Oculus, 
+        WindowsMR, 
+        SteamVR, 
+        Unknown
     }
 
     public enum XRHeadset
     {
-        None = 0, OculusGo, OculusQuest, OculusRift, WindowsMR, HTCVive
+        None = 0, 
+        OculusGo, 
+        OculusQuest, 
+        OculusRift, 
+        WindowsMR, 
+        HTCVive, 
+        Unknown
     }
 
     public static class XRManager
@@ -28,6 +38,12 @@ namespace Demonixis.Toolbox.XR
         {
             var xrLoader = GetXRLoader();
             return xrLoader?.GetLoadedSubsystem<XRInputSubsystem>();
+        }
+
+        public static XRDisplaySubsystem GetDisplay()
+        {
+            var xrLoader = GetXRLoader();
+            return xrLoader?.GetLoadedSubsystem<XRDisplaySubsystem>();
         }
 
         public static bool IsXREnabled(bool force = false)
@@ -71,6 +87,8 @@ namespace Demonixis.Toolbox.XR
                 {
                     return XRHeadset.WindowsMR;
                 }
+
+                return XRHeadset.Unknown;
             }
 
             return XRHeadset.None;
@@ -81,17 +99,22 @@ namespace Demonixis.Toolbox.XR
             var xrLoader = GetXRLoader();
             var name = xrLoader?.name.ToLower() ?? string.Empty;
 
-            if (name.Contains("oculus"))
+            if (xrLoader != null)
             {
-                return XRVendor.Oculus;
-            }
-            else if (name.Contains("windows"))
-            {
-                return XRVendor.WindowsMR;
-            }
-            else if (name.Contains("steamvr") || name.Contains("openvr"))
-            {
-                return XRVendor.SteamVR;
+                if (name.Contains("oculus"))
+                {
+                    return XRVendor.Oculus;
+                }
+                else if (name.Contains("windows"))
+                {
+                    return XRVendor.WindowsMR;
+                }
+                else if (name.Contains("steamvr") || name.Contains("openvr"))
+                {
+                    return XRVendor.SteamVR;
+                }
+
+                return XRVendor.Unknown;
             }
 
             return XRVendor.None;
@@ -112,6 +135,11 @@ namespace Demonixis.Toolbox.XR
         {
             var xrInput = GetXRInput();
             xrInput?.TryRecenter();
+        }
+
+        public static void SetRenderScale(float scale)
+        {
+            
         }
     }
 }

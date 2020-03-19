@@ -306,11 +306,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: SRPQuality
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: RenderScale
-      value: 0.85
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: CellDetailRadius
@@ -318,11 +318,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: CellRadius
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: CellRadiusOnLoad
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: AntiAliasing
@@ -334,7 +334,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: PostProcessingQuality
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: GenerateNormalMap
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: DayNightCycle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: AnimateLights
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: ExteriorCellLights
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: LightShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: SunShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
+      propertyPath: RoomScale
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}

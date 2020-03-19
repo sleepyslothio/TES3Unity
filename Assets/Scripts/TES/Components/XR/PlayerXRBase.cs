@@ -75,7 +75,7 @@ namespace TES3Unity.Components.XR
             var renderScale = settings.RenderScale;
             if (renderScale > 0 && renderScale <= 2)
             {
-                XRSettings.renderViewportScale = renderScale;
+                //XRSettings.renderViewportScale = renderScale;
             }
         }
 

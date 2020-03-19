@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Demonixis.Toolbox.XR;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -26,12 +27,54 @@ namespace TES3Unity.Components
 #endif
             // Setup the UniversalRP Asset.
             var lwrpAsset = Resources.Load<UniversalRenderPipelineAsset>($"{assetPath}/URPAsset-{target}");
-            lwrpAsset.renderScale = config.RenderScale;
-            GraphicsSettings.renderPipelineAsset = lwrpAsset;
+            var instanceAsset = Instantiate(lwrpAsset);
+            instanceAsset.renderScale = config.RenderScale;
+
+            if (config.AntiAliasingMode != AntiAliasingMode.MSAA)
+            {
+                instanceAsset.msaaSampleCount = 0;
+            }
+
+            GraphicsSettings.renderPipelineAsset = instanceAsset;
 
             // Instantiate URP Volume
             var profile = Resources.Load<VolumeProfile>($"{volumePath}/PostProcess-Profile");
-            CreateVolume(profile);
+            var volumeGo = new GameObject($"{(profile.name.Replace("-Profile", "-Volume"))}");
+            volumeGo.transform.localPosition = Vector3.zero;
+
+            var instanceProfile = Instantiate(profile);
+
+            if (XRManager.Enabled || config.PostProcessingQuality == PostProcessingQuality.Medium)
+            {
+                instanceProfile.UpdateEffect<Bloom>((b) =>
+                {
+                    b.dirtIntensity.overrideState = true;
+                    b.dirtIntensity.Override(0);
+                    b.highQualityFiltering.overrideState = true;
+                    b.highQualityFiltering.Override(false);
+                });
+
+                instanceProfile.DisableEffect<MotionBlur>();
+                instanceProfile.DisableEffect<Vignette>();
+
+#if !UNITY_ANDROID
+                // Apply Fixed Foveated Rendering on Qo/Quest
+                var tes3 = TES3Engine.Instance;
+                if (tes3 != null && XRManager.GetXRVendor() == XRVendor.Oculus)
+                {
+                    tes3.CurrentCellChanged += Instance_CurrentCellChanged;
+                }
+#endif
+            }
+
+            if (config.PostProcessingQuality == PostProcessingQuality.Low)
+            {
+                instanceProfile.DisableEffect<Bloom>();
+            }
+
+            var volume = volumeGo.AddComponent<Volume>();
+            volume.isGlobal = true;
+            volume.sharedProfile = instanceProfile;
 
             var skyboxMaterial = new Material(Shader.Find("Skybox/Procedural"));
             var lowQualitySkybox = config.SRPQuality != SRPQuality.Low;
@@ -63,52 +106,30 @@ namespace TES3Unity.Components
             // 1. Setup Camera
             camera.farClipPlane = config.CameraFarClip;
 
-            var additionalData = camera.GetComponent<UniversalAdditionalCameraData>();
-            if (additionalData == null)
-            {
-                additionalData = camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
-            }
-
-            additionalData.renderPostProcessing = config.PostProcessingQuality != PostProcessingQuality.None;
+            var data = camera.GetComponent<UniversalAdditionalCameraData>();
+            data.renderPostProcessing = config.PostProcessingQuality != PostProcessingQuality.None;
 
             switch (config.AntiAliasingMode)
             {
                 case AntiAliasingMode.None:
                 case AntiAliasingMode.MSAA:
-                    additionalData.antialiasing = AntialiasingMode.None;
+                    data.antialiasing = AntialiasingMode.None;
                     break;
                 case AntiAliasingMode.FXAA:
-                    additionalData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+                    data.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
                     break;
                 case AntiAliasingMode.SMAA:
-                    additionalData.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+                    data.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
                     break;
             }
-
-            var urpAsset = GraphicsSettings.renderPipelineAsset as UniversalRenderPipelineAsset;
-            if (urpAsset != null)
-            {
-                if (config.AntiAliasingMode != AntiAliasingMode.MSAA)
-                {
-                    urpAsset.msaaSampleCount = 0;
-                }
-            }
         }
 
-        private static void CreateVolume(params VolumeProfile[] profiles)
+#if !UNITY_ANDROID
+        private void Instance_CurrentCellChanged(ESM.Records.CELLRecord obj)
         {
-            GameObject volumeGo = null;
-            Volume volume = null;
-
-            foreach (var profile in profiles)
-            {
-                volumeGo = new GameObject($"{(profile.name.Replace("-Profile", "-Volume"))}");
-                volumeGo.transform.localPosition = Vector3.zero;
-
-                volume = volumeGo.AddComponent<Volume>();
-                volume.isGlobal = true;
-                volume.sharedProfile = profile;
-            }
+            var level = obj.isInterior ? 1 : 3;
+            Unity.XR.Oculus.Utils.SetFoveationLevel(level);
         }
+#endif
     }
 }

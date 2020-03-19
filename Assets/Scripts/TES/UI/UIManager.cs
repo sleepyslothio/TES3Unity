@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Demonixis.Toolbox.XR;
+using System;
 using System.Collections;
 using TES3Unity.Components.Records;
 using TES3Unity.Inputs;
@@ -49,6 +50,18 @@ namespace TES3Unity.UI
 
         public IEnumerator Start()
         {
+            if (XRManager.Enabled)
+            {
+                var crosshair = GetComponentInChildren<UICrosshair>();
+                crosshair.gameObject.SetActive(false);
+
+                var minimap = GetComponentInChildren<UIMiniMap>();
+                minimap.gameObject.SetActive(false);
+
+                var playerStatus = GetComponentInChildren<HUDHealth>();
+                playerStatus.gameObject.SetActive(false);
+            }
+
             var playerTag = "Player";
             var player = GameObject.FindWithTag(playerTag);
 
@@ -78,6 +91,11 @@ namespace TES3Unity.UI
             m_GameplayActionMap["Journal"].started += (c) => OpenWindow(UIWindowType.Journal);
             m_GameplayActionMap["Inventory"].started += (c) => OpenWindow(UIWindowType.Inventory);
             m_GameplayActionMap["Menu"].started += (c) => OpenWindow(UIWindowType.Menu);
+
+#if UNITY_STANDALONE
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+#endif
         }
 
         private void OnInteractiveTextChanged(RecordComponent component, bool visible)
