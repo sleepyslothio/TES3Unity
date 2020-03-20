@@ -271,6 +271,7 @@ namespace TES3Unity
             return Physics.SphereCast(new Ray(playerCenter, -m_Transform.up), castedSphereRadius, sphereCastDistance);
         }
 
+        // Deprecated
         public void Pause(bool pause)
         {
             m_Paused = pause;

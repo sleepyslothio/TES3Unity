@@ -127,7 +127,7 @@ namespace TES3Unity
 #if UNITY_ANDROID || UNITY_IOS
                 Instance.GenerateNormalMaps = false;
                 Instance.SunShadows = false;
-                Instance.RenderScale = 0.9f;
+                Instance.RenderScale = 90;
                 Instance.PostProcessingQuality = PostProcessingQuality.None;
                 Instance.ExteriorLights = false;
                 Instance.ShaderType = ShaderType.Simple;
