@@ -8,6 +8,11 @@ using UnityEngine;
 
 namespace TES3Unity
 {
+    public enum ShaderType
+    {
+        PBR = 0, Simple
+    }
+
     public enum PostProcessingQuality
     {
         None = 0, Low, Medium, High
@@ -41,6 +46,21 @@ namespace TES3Unity
         private const string AndroidFolderName = "TES3Unity";
         private static GameSettings Instance = null;
 
+        public static readonly float[] CameraFarClipValues = new float[]
+        {
+            50, 150, 250, 500, 1000, 2500
+        };
+
+        public static readonly ushort[] RenderScaleValues = new ushort[]
+        {
+            50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 200
+        };
+
+        public static readonly ushort[] CellDistanceValues = new ushort[]
+        {
+            0, 1 , 2, 3, 4
+        };
+
         public bool MusicEnabled = true;
         public PostProcessingQuality PostProcessingQuality = PostProcessingQuality.High;
         public SRPQuality SRPQuality = SRPQuality.High;
@@ -52,15 +72,15 @@ namespace TES3Unity
         public bool PonctualLightShadows = true;
         public bool ExteriorLights = true;
         public float CameraFarClip = 500.0f;
-        public int CellRadius = 2;
-        public int CellDetailRadius = 2;
-        public int CellRadiusOnLoad = 2;
+        public ushort CellRadius = 2;
+        public ushort CellDetailRadius = 2;
+        public ushort CellRadiusOnLoad = 2;
         public bool KinematicRigidbody = true;
         public bool DayNightCycle = false;
         public bool FollowHead = true;
         public bool Teleportation = false;
         public bool RoomScale = false;
-        public float RenderScale = 1.0f;
+        public ushort RenderScale = 100;
         public bool LogEnabled = false;
         public bool LoadExtensions = false;
         public PlayerData Player;

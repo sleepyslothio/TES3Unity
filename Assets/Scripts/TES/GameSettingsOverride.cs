@@ -20,14 +20,14 @@ namespace TES3Unity.Components
         public bool LogEnabled = false;
 
         [Header("Optimizations")]
-        public int CellRadius = 4;
-        public int CellDetailRadius = 3;
-        public int CellRadiusOnLoad = 2;
+        public ushort CellRadius = 4;
+        public ushort CellDetailRadius = 3;
+        public ushort CellRadiusOnLoad = 2;
 
         [Header("Rendering")]
         public float CameraFarClip = 500.0f;
         public SRPQuality SRPQuality = SRPQuality.High;
-        public float RenderScale = 1.0f;
+        public ushort RenderScale = 100;
         public ShaderType ShaderType = ShaderType.PBR;
 
         [Header("Lighting")]
@@ -45,6 +45,7 @@ namespace TES3Unity.Components
         [Header("VR")]
         public bool FollowHead = true;
         public bool RoomScale = true;
+        public bool Teleportation = false;
 
         /// <summary>
         /// Apply overriden settings from the editor for testing purpose only.
@@ -78,6 +79,7 @@ namespace TES3Unity.Components
             settings.SunShadows = SunShadows;
             settings.KinematicRigidbody = KinematicRigidbodies;
             settings.ShaderType = ShaderType;
+            settings.Teleportation = Teleportation;
             settings.LogEnabled = LogEnabled;
 #endif
         }

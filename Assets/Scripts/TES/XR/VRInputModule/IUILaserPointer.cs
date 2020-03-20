@@ -167,12 +167,22 @@ namespace Wacki
 
         public bool ButtonDown()
         {
-            return PressAction?.phase == InputActionPhase.Started;
+            if (PressAction == null)
+            {
+                return false;
+            }
+
+            return PressAction.phase == InputActionPhase.Started;
         }
 
         public bool ButtonUp()
         {
-            return PressAction?.phase == InputActionPhase.Canceled;
+            if (PressAction == null)
+            {
+                return false;
+            }
+
+            return PressAction.phase == InputActionPhase.Canceled;
         }
     }
 }

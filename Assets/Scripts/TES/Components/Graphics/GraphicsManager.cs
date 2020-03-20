@@ -48,7 +48,13 @@ namespace TES3Unity.Components
             // Setup the UniversalRP Asset.
             var lwrpAsset = Resources.Load<UniversalRenderPipelineAsset>($"{assetPath}/URPAsset-{target}");
             var instanceAsset = Instantiate(lwrpAsset);
-            instanceAsset.renderScale = config.RenderScale;
+
+            var renderScale = (float)config.RenderScale / 100.0f;
+
+            if (renderScale >= 0.5f && renderScale <= 2.0f && !XRManager.Enabled)
+            {
+                instanceAsset.renderScale = renderScale;
+            }
 
             if (config.AntiAliasingMode != AntiAliasingMode.MSAA)
             {

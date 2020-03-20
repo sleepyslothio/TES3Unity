@@ -4,11 +4,6 @@ using UnityEngine.Rendering;
 
 namespace TES3Unity.Rendering
 {
-    public enum ShaderType
-    {
-        PBR = 0, Simple
-    }
-
     public enum MatTestMode
     {
         Always = 0,

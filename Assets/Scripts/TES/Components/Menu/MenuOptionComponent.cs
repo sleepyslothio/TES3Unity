@@ -1,5 +1,6 @@
-﻿using Demonixis.Toolbox.UI;
+﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace TES3Unity.Components
@@ -7,19 +8,32 @@ namespace TES3Unity.Components
     public class MenuOptionComponent : MonoBehaviour
     {
         private GameSettings m_Settings = null;
-
+        
+        [Header("Audio")]
         [SerializeField]
         private Toggle m_AudioToggle = null;
+
+        [Header("General")]
         [SerializeField]
-        private UISelectorWidget m_CellRadiusDd = null;
+        private Dropdown m_CellRadiusDd = null;
         [SerializeField]
-        private UISelectorWidget m_CellDistanceDd = null;
+        private Dropdown m_CellDistanceDd = null;
         [SerializeField]
-        private UISelectorWidget m_CellRadiusLoad = null;
+        private Dropdown m_CellRadiusLoad = null;
+
+        [Header("Graphics")]
         [SerializeField]
-        private UISelectorWidget m_PostProcessDd = null;
+        private Dropdown m_PostProcessDd = null;
         [SerializeField]
-        private UISelectorWidget m_SRPQuality = null;
+        private Dropdown m_SRPQuality = null;
+        [SerializeField]
+        private Dropdown m_ShaderQuality = null;
+        [SerializeField]
+        private Dropdown m_AntiAliasing = null;
+        [SerializeField]
+        private Dropdown m_CameraFarClipDropdown = null;
+        [SerializeField]
+        private Dropdown m_RenderScaleDd = null;
         [SerializeField]
         private Toggle m_GenerateNormalMapsToggle = null;
         [SerializeField]
@@ -32,115 +46,136 @@ namespace TES3Unity.Components
         private Toggle m_ExteriorLightsToggle = null;
         [SerializeField]
         private Toggle m_DayNightCycleToggle = null;
-        [SerializeField]
-        private UISelectorWidget m_CameraFarClipDropdown = null;
+
+        [Header("XR")]
         [SerializeField]
         private Toggle m_FollowHeadToggle = null;
         [SerializeField]
         private Toggle m_RoomScaleToggle = null;
         [SerializeField]
-        private UISelectorWidget m_RenderScaleDd = null;
+        private Toggle m_Teleportation = null;
+       
 
         private void Awake()
         {
             m_Settings = GameSettings.Get();
 
+            // Cell Distance
+            SetupUShortDropdown(m_CellRadiusDd, GameSettings.CellDistanceValues, m_Settings.CellRadius, (i) => m_Settings.CellRadius = GameSettings.CellDistanceValues[i]);
+            SetupUShortDropdown(m_CellDistanceDd, GameSettings.CellDistanceValues, m_Settings.CellDetailRadius, (i) => m_Settings.CellDetailRadius = GameSettings.CellDistanceValues[i]);
+            SetupUShortDropdown(m_CellRadiusLoad, GameSettings.CellDistanceValues, m_Settings.CellRadiusOnLoad, (i) => m_Settings.CellRadiusOnLoad = GameSettings.CellDistanceValues[i]);
+
+            // Post Processing
+            SetupDropdown<PostProcessingQuality>(m_PostProcessDd, (int)m_Settings.PostProcessingQuality, (i) => m_Settings.PostProcessingQuality = (PostProcessingQuality)i);
+            
+            // SRP
+            SetupDropdown<SRPQuality>(m_SRPQuality, (int)m_Settings.SRPQuality, (i) => m_Settings.SRPQuality = (SRPQuality)i);
+            
+            // Shader
+            SetupDropdown<ShaderType>(m_ShaderQuality, (int)m_Settings.ShaderType, (i) => m_Settings.ShaderType = (ShaderType)i);
+            
+            // AntiAliasing
+            SetupDropdown<AntiAliasingMode>(m_AntiAliasing, (int)m_Settings.AntiAliasingMode, (i) => m_Settings.AntiAliasingMode = (AntiAliasingMode)i);
+            
+            // Camera Far Clip
+            SetupFloatDropdown(m_CameraFarClipDropdown, GameSettings.CameraFarClipValues, m_Settings.CameraFarClip, (i) => m_Settings.CameraFarClip = GameSettings.CameraFarClipValues[i]);
+            
+            // RenderScale
+            SetupUShortDropdown(m_RenderScaleDd, GameSettings.RenderScaleValues, m_Settings.RenderScale, (i) => m_Settings.RenderScale = GameSettings.RenderScaleValues[i]);
+
             m_AudioToggle.isOn = m_Settings.MusicEnabled;
-            m_AudioToggle.onValueChanged.AddListener(SetAudio);
-
-            var values = new[] { "1", "2", "3", "4" };
-            m_CellRadiusDd.Setup(ref values, m_Settings.CellRadius.ToString(), SetCellRadius);
-            m_CellDistanceDd.Setup(ref values, m_Settings.CellDetailRadius.ToString(), SetCellDistance);
-            m_CellRadiusLoad.Setup(ref values, m_Settings.CellRadiusOnLoad.ToString(), SetCellRadiusLoad);
-
-            m_PostProcessDd.Setup<PostProcessingQuality>((int)m_Settings.PostProcessingQuality, SetPostProcessing);
-            m_SRPQuality.Setup<SRPQuality>((int)m_Settings.SRPQuality, SetSRPQuality);
+            m_AudioToggle.onValueChanged.AddListener((b) => m_Settings.MusicEnabled = b);
 
             m_GenerateNormalMapsToggle.isOn = m_Settings.GenerateNormalMaps;
-            m_GenerateNormalMapsToggle.onValueChanged.AddListener(SetGenerateNormalMaps);
+            m_GenerateNormalMapsToggle.onValueChanged.AddListener((b) => m_Settings.GenerateNormalMaps = b);
 
             m_AnimateLightsToggle.isOn = m_Settings.AnimateLights;
-            m_AnimateLightsToggle.onValueChanged.AddListener(SetAnimateLights);
+            m_AnimateLightsToggle.onValueChanged.AddListener((b) => m_Settings.AnimateLights = b);
 
             m_SunShadowsToggle.isOn = m_Settings.SunShadows;
-            m_SunShadowsToggle.onValueChanged.AddListener(SetSunShadow);
+            m_SunShadowsToggle.onValueChanged.AddListener((b) => m_Settings.SunShadows = b);
 
             m_LightShadowsToggle.isOn = m_Settings.PonctualLightShadows;
-            m_LightShadowsToggle.onValueChanged.AddListener(SetLightShadows);
+            m_LightShadowsToggle.onValueChanged.AddListener((b) => m_Settings.PonctualLightShadows = b);
 
             m_ExteriorLightsToggle.isOn = m_Settings.ExteriorLights;
-            m_ExteriorLightsToggle.onValueChanged.AddListener(SetExteriorLights);
-
-            values = new[] { "50", "100", "150", "250", "500", "1000" };
-            m_CameraFarClipDropdown.Setup(ref values, m_Settings.CameraFarClip.ToString(), SetCameraFarClip);
+            m_ExteriorLightsToggle.onValueChanged.AddListener((b) => m_Settings.ExteriorLights = b);
 
             m_DayNightCycleToggle.isOn = m_Settings.DayNightCycle;
-            m_DayNightCycleToggle.onValueChanged.AddListener(SetDayNightCycle);
+            m_DayNightCycleToggle.onValueChanged.AddListener((b) => m_Settings.DayNightCycle = b);
 
             m_FollowHeadToggle.isOn = m_Settings.FollowHead;
-            m_FollowHeadToggle.onValueChanged.AddListener(SetVRFollowHead);
+            m_FollowHeadToggle.onValueChanged.AddListener((b) => m_Settings.FollowHead = b);
 
             m_RoomScaleToggle.isOn = m_Settings.RoomScale;
-            m_RoomScaleToggle.onValueChanged.AddListener(SetRoomScale);
+            m_RoomScaleToggle.onValueChanged.AddListener((b) => m_Settings.RoomScale = b);
 
-            values = new[] { "50", "60", "70", "80", "90", "100" };
-            m_RenderScaleDd.Setup(ref values, m_Settings.RenderScale.ToString(), SetRenderScale);
+            m_Teleportation.isOn = m_Settings.Teleportation;
+            m_Teleportation.onValueChanged.AddListener((b) => m_Settings.Teleportation = b);
         }
 
-        private int GetRenderScaleIndex()
+        private void SetupDropdown<T>(Dropdown dropdown, int value, UnityAction<int> callback)
         {
-            var value = (int)(m_Settings.RenderScale * 10.0f);
+            var names = Enum.GetNames(typeof(T));
 
-            if (value == 10)
+            dropdown.options.Clear();
+
+            for (var i = 0; i < names.Length; i++)
             {
-                return 0;
-            }
-            else if (value == 9)
-            {
-                return 1;
-            }
-            else if (value == 8)
-            {
-                return 2;
-            }
-            else if (value == 7)
-            {
-                return 3;
-            }
-            else if (value == 6)
-            {
-                return 4;
+                dropdown.options.Add(new Dropdown.OptionData
+                {
+                    text = names[i]
+                });
             }
 
-            return 5;
+            dropdown.value = value;
+            dropdown.onValueChanged.AddListener(callback);
         }
 
-        private int GetCameraFarClip()
+        private void SetupFloatDropdown(Dropdown dropdown, float[] array, float value, UnityAction<int> callback)
         {
-            var value = m_Settings.CameraFarClip;
+            dropdown.options.Clear();
 
-            if (value == 1000)
+            var valueIndex = 0;
+
+            for (var i = 0; i < array.Length; i++)
             {
-                return 0;
-            }
-            else if (value == 500)
-            {
-                return 1;
-            }
-            else if (value == 250)
-            {
-                return 2;
-            }
-            else if (value == 150)
-            {
-                return 3;
-            }
-            else if (value == 100)
-            {
-                return 4;
+                dropdown.options.Add(new Dropdown.OptionData
+                {
+                    text = array[i].ToString()
+                });
+
+                if (Mathf.Approximately(array[i], value))
+                {
+                    valueIndex = i;
+                }
             }
 
-            return 5;
+            dropdown.value = valueIndex;
+            dropdown.onValueChanged.AddListener(callback);
+        }
+
+        private void SetupUShortDropdown(Dropdown dropdown, ushort[] array, ushort value, UnityAction<int> callback)
+        {
+            dropdown.options.Clear();
+
+            var valueIndex = 0;
+
+            for (var i = 0; i < array.Length; i++)
+            {
+                dropdown.options.Add(new Dropdown.OptionData
+                {
+                    text = array[i].ToString()
+                });
+
+                if (array[i] == value)
+                {
+                    valueIndex = i;
+                }
+            }
+
+            dropdown.value = valueIndex;
+            dropdown.onValueChanged.AddListener(callback);
         }
 
         public void ShowMenu()
@@ -148,121 +183,6 @@ namespace TES3Unity.Components
             GameSettings.Save();
             var menu = GetComponent<MenuComponent>();
             menu.ShowOptions(false);
-        }
-
-        public void SetAudio(bool isOn)
-        {
-            m_Settings.MusicEnabled = isOn;
-        }
-
-        public void SetPostProcessing(int index)
-        {
-            m_Settings.PostProcessingQuality = (PostProcessingQuality)index;
-        }
-
-        public void SetSRPQuality(int index)
-        {
-            m_Settings.SRPQuality = (SRPQuality)index;
-        }
-
-        public void SetGenerateNormalMaps(bool isOn)
-        {
-            m_Settings.GenerateNormalMaps = isOn;
-        }
-
-        public void SetAnimateLights(bool isOn)
-        {
-            m_Settings.AnimateLights = isOn;
-        }
-
-        public void SetSunShadow(bool isOn)
-        {
-            m_Settings.SunShadows = isOn;
-        }
-
-        public void SetDayNightCycle(bool isOn)
-        {
-            m_Settings.DayNightCycle = isOn;
-        }
-
-        public void SetVRFollowHead(bool isOn)
-        {
-            m_Settings.FollowHead = isOn;
-        }
-
-        public void SetRenderScale(string value)
-        {
-            if (float.TryParse(value, out float result))
-            {
-                m_Settings.RenderScale = result;
-            }
-            else
-            {
-                Debug.LogWarning($"Can't parse the value {value}");
-            }
-        }
-
-        public void SetCellRadius(string value)
-        {
-            if (int.TryParse(value, out int result))
-            {
-                m_Settings.CellRadius = result;
-            }
-            else
-            {
-                Debug.LogWarning($"Can't parse the value {value}");
-            }
-        }
-
-        public void SetCellDistance(string value)
-        {
-            if (int.TryParse(value, out int result))
-            {
-                m_Settings.CellDetailRadius = result;
-            }
-            else
-            {
-                Debug.LogWarning($"Can't parse the value {value}");
-            }
-        }
-
-        public void SetCellRadiusLoad(string value)
-        {
-            if (int.TryParse(value, out int result))
-            {
-                m_Settings.CellRadiusOnLoad = result;
-            }
-            else
-            {
-                Debug.LogWarning($"Can't parse the value {value}");
-            }
-        }
-
-        private void SetLightShadows(bool isOn)
-        {
-            m_Settings.PonctualLightShadows = isOn;
-        }
-
-        private void SetExteriorLights(bool isOn)
-        {
-            m_Settings.ExteriorLights = isOn;
-        }
-
-        private void SetCameraFarClip(string value)
-        {
-            if (float.TryParse(value, out float result))
-            {
-                m_Settings.CameraFarClip = result;
-            }
-            else
-            {
-                Debug.LogWarning($"Can't parse the value {value}");
-            }
-        }
-
-        private void SetRoomScale(bool isOn)
-        {
-            m_Settings.RoomScale = isOn;
         }
     }
 }
