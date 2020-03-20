@@ -45,23 +45,11 @@ namespace TES3Unity.Components
 
             QualitySettings.SetQualityLevel(qualityIndex);
 
-            // Setup the UniversalRP Asset.
-            var lwrpAsset = Resources.Load<UniversalRenderPipelineAsset>($"{assetPath}/URPAsset-{target}");
-            var instanceAsset = Instantiate(lwrpAsset);
-
-            var renderScale = (float)config.RenderScale / 100.0f;
-
-            if (renderScale >= 0.5f && renderScale <= 2.0f && !XRManager.Enabled)
-            {
-                instanceAsset.renderScale = renderScale;
-            }
-
             if (config.AntiAliasingMode != AntiAliasingMode.MSAA)
             {
-                instanceAsset.msaaSampleCount = 0;
+                var asset = (UniversalRenderPipelineAsset)GraphicsSettings.renderPipelineAsset;
+                asset.msaaSampleCount = 0;
             }
-
-            GraphicsSettings.renderPipelineAsset = instanceAsset;
 
             // Instantiate URP Volume
             var profile = Resources.Load<VolumeProfile>($"{volumePath}/PostProcess-Profile");
