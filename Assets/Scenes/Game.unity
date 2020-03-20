@@ -306,7 +306,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: SRPQuality
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: RenderScale
@@ -318,11 +318,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: CellRadius
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: CellRadiusOnLoad
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: AntiAliasing
@@ -366,11 +366,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: ShaderType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2025599348, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}
       propertyPath: Teleportation
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628529767776134678, guid: d9a1ba27e850d6d478d4a64d027d1204,
+        type: 3}
+      propertyPath: ForceAutoloadSavedGame
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a1ba27e850d6d478d4a64d027d1204, type: 3}

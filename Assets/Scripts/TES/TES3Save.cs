@@ -50,6 +50,19 @@ namespace TES3Unity
             PlayerPrefs.SetString(SaveKey, json);
         }
 
+
+        public static TES3Save New()
+        {
+            return new TES3Save
+            {
+                CellName = "Imperial Boat",
+                CellGrid = new Vector2i(4537908, 1061158912),
+                IsInterior = true,
+                Position = new Vector3(1.4f, -1.5f, -2.7f),
+                Rotation = new Quaternion(0.0f, 0.2f, 0.0f, -1.0f)
+            };
+        }
+
         public static TES3Save Get()
         {
             var data = PlayerPrefs.GetString(SaveKey);
@@ -59,7 +72,7 @@ namespace TES3Unity
                 return JsonUtility.FromJson<TES3Save>(data);
             }
 
-            return new TES3Save();
+            return New();
         }
     }
 }
