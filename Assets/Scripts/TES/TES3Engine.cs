@@ -43,7 +43,7 @@ namespace TES3Unity
         // Private.
         private CELLRecord m_CurrentCell;
         private Transform m_PlayerTransform;
-        private GameObject m_PlayerCameraObj;
+        private Transform m_CameraTransform;
         private bool m_Initialized = false;
 
         // Public.
@@ -275,7 +275,7 @@ namespace TES3Unity
             // The current cell can be null if the player is outside of the defined game world.
             if ((m_CurrentCell == null) || !m_CurrentCell.isInterior)
             {
-                cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position);
+                cellManager.UpdateExteriorCells(m_CameraTransform.position);
             }
 
             m_TemporalLoadBalancer.RunTasks(desiredWorkTimePerFrame);
@@ -318,7 +318,7 @@ namespace TES3Unity
                     var cellIndices = cellManager.GetExteriorCellIndices(component.doorData.doorExitPos);
                     newCell = DataReader.FindExteriorCellRecord(cellIndices);
 
-                    cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, CellRadiusOnLoad);
+                    cellManager.UpdateExteriorCells(m_CameraTransform.position, true, CellRadiusOnLoad);
                 }
 
                 CurrentCell = newCell;
@@ -340,7 +340,7 @@ namespace TES3Unity
             m_PlayerTransform.position = position;
             m_PlayerTransform.rotation = rotation;
 
-            m_PlayerCameraObj = player.GetComponentInChildren<Camera>().gameObject;
+            m_CameraTransform = player.GetComponentInChildren<Camera>().transform;
 
             return player;
         }
