@@ -50,6 +50,8 @@ namespace TES3Unity.Components
         private Text m_InfoMessage = null;
         [SerializeField]
         private GameObject m_ButtonsContainer = null;
+        [SerializeField]
+        private Button m_LoadSaveButton = null;
 
 #if UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
         [Header("Editor Only")]
@@ -198,7 +200,17 @@ namespace TES3Unity.Components
             m_MenuLoaded = true;
         }
 
-        public void LoadWorld() => StartCoroutine(LoadWorld(m_GamePath));
+        public void LoadWorld()
+        {
+            TES3Engine.AutoLoadSavedGame = false;
+            StartCoroutine(LoadWorld(m_GamePath));
+        }
+
+        public void LoadSavedGame()
+        {
+            TES3Engine.AutoLoadSavedGame = true;
+            LoadWorld();
+        }
 
         private IEnumerator CheckLoadButton()
         {
@@ -208,6 +220,7 @@ namespace TES3Unity.Components
             m_InfoMessage.enabled = true;
 
             m_LoadButton.interactable = false;
+            m_LoadSaveButton.interactable = false;
 
             while (m_PreloadThread.IsAlive)
             {
@@ -216,6 +229,7 @@ namespace TES3Unity.Components
 
             m_LoadButton.interactable = true;
             m_InfoMessage.enabled = false;
+            m_LoadSaveButton.interactable = !TES3Save.Get().IsEmpty();
         }
 
         private IEnumerator LoadWorld(string path)

@@ -92,7 +92,7 @@ namespace TES3Unity
 
             if (isMarker)
             {
-                GameObjectUtils.SetLayerRecursively(gameObject, TES3Engine.markerLayer);
+                GameObjectUtils.SetLayerRecursively(gameObject, TES3Engine.MarkerLayer);
             }
 
             return gameObject;

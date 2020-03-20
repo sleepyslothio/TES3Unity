@@ -91,12 +91,8 @@ namespace TES3Unity.Components.XR
             m_HUD = m_Canvas.Find("HUD");
 
             // Add a pivot to the UI. It'll help to rotate it in the inverse direction of the camera.
-            var uiPivot = new GameObject("UI Pivot");
-            m_PivotCanvas = uiPivot.GetComponent<Transform>();
-            m_PivotCanvas.parent = transform;
-            m_PivotCanvas.localPosition = Vector3.zero;
-            m_PivotCanvas.localRotation = Quaternion.identity;
-            m_PivotCanvas.localScale = Vector3.one;
+            var uiPivot = GameObjectUtils.Create("UI Pivot", transform);
+            m_PivotCanvas = uiPivot.transform;
             GUIUtils.SetCanvasToWorldSpace(m_Canvas.GetComponent<Canvas>(), m_PivotCanvas, 1.5f, 0.002f);
 
             // Setup the camera

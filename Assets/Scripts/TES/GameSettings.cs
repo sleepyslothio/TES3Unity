@@ -29,16 +29,6 @@ namespace TES3Unity
     }
 
     [Serializable]
-    public struct PlayerData
-    {
-        public string Name;
-        public bool Woman;
-        public RaceType Race;
-        public string ClassName;
-        public string Faction;
-    }
-
-    [Serializable]
     public sealed class GameSettings
     {
         private const string MorrowindPathKey = "tes3unity.path";

@@ -15,8 +15,9 @@ namespace TES3Unity
         // Static.
         public const string Version = "2020.1";
         public const float NormalMapGeneratorIntensity = 0.75f;
-        public static int markerLayer => LayerMask.NameToLayer("Marker");
-        public static int cellRadiusOnLoad = 2;
+        public static int MarkerLayer => LayerMask.NameToLayer("Marker");
+        public static int CellRadiusOnLoad = 2;
+        public static bool AutoLoadSavedGame = false;
         private static TES3Engine instance = null;
         public static TES3DataReader DataReader { get; set; }
 
@@ -134,7 +135,7 @@ namespace TES3Unity
 
             CellManager.cellRadius = config.CellRadius;
             CellManager.detailRadius = config.CellDetailRadius;
-            cellRadiusOnLoad = config.CellRadiusOnLoad;
+            CellRadiusOnLoad = config.CellRadiusOnLoad;
 
             textureManager = new TextureManager(DataReader);
             m_MaterialManager = new TES3Material(textureManager, config.ShaderType, config.GenerateNormalMaps);
@@ -170,6 +171,21 @@ namespace TES3Unity
             var cellIsInterior = false;
             var spawnPosition = new Vector3(-137.94f, 2.30f, -1037.6f);
             var spawnRotation = Quaternion.identity;
+
+            if (AutoLoadSavedGame)
+            {
+                var save = TES3Save.Get();
+                if (!save.IsEmpty())
+                {
+                    cellGridCoords = save.CellGrid;
+                    cellIsInterior = save.IsInterior;
+                    spawnPosition = save.Position;
+                    spawnRotation = save.Rotation;
+                    GameSettings.Get().Player = save.Data;
+                }
+
+                AutoLoadSavedGame = false;
+            }
 
 #if UNITY_EDITOR
             // Check for a previously saved game.
@@ -296,7 +312,7 @@ namespace TES3Unity
                     var cellIndices = cellManager.GetExteriorCellIndices(component.doorData.doorExitPos);
                     newCell = DataReader.FindExteriorCellRecord(cellIndices);
 
-                    cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, cellRadiusOnLoad);
+                    cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, CellRadiusOnLoad);
                 }
 
                 CurrentCell = newCell;
