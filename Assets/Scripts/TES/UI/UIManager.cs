@@ -178,6 +178,7 @@ namespace TES3Unity.UI
             m_CurrentWindow.OnCloseRequest();
             m_CurrentWindow.SetVisible(false);
             m_CurrentWindowType = UIWindowType.None;
+            SetActionMapEnabled(false);
             WindowOpenChanged?.Invoke(m_CurrentWindow, false);
         }
 
