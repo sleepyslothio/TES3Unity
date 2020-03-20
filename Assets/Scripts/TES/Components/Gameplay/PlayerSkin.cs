@@ -28,9 +28,15 @@ namespace TES3Unity
 
             var player = GameSettings.GetPlayerRecord();
 
-            var race = player.Race;
+            var race = player.Race.ToLower().Replace("_", " ");
             var gender = player.IsFemale ? "f" : "m";
             var hands1st = $"b_n_{race}_{gender}_hands.1st";
+
+            if (race == "breton" && gender == "m")
+            {
+                // The breton male hands have not a "s" in the name...
+                hands1st = hands1st.Replace("hands", "hand");
+            }
 
             var hands = nifManager.InstantiateNIF($"meshes\\b\\{hands1st}.NIF", false);
 

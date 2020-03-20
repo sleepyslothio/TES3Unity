@@ -91,7 +91,7 @@ namespace TES3Unity.Rendering
             {
                 if (m_ShaderType == ShaderType.Simple)
                 {
-                    if (SimpleLitCutoffMaterial != null)
+                    if (SimpleLitCutoffMaterial == null)
                     {
                         SimpleLitCutoffMaterial = Resources.Load<Material>($"{GetMaterialAssetPath()}/URP-SimpleLit-Cutout");
                     }

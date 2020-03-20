@@ -37,6 +37,7 @@ namespace TES3Unity
         public string[] AlternativeDataPaths = null;
         public int CellRadius = 1;
         public int CellDetailRadius = 1;
+        public bool ForceAutoloadSavedGame = true;
 #endif
 
         // Private.
@@ -110,6 +111,11 @@ namespace TES3Unity
                             break;
                         }
                     }
+                }
+
+                if (ForceAutoloadSavedGame)
+                {
+                    AutoLoadSavedGame = true;
                 }
 #endif
 

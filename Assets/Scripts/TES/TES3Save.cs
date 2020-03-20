@@ -30,7 +30,7 @@ namespace TES3Unity
 
         public bool IsEmpty()
         {
-            return CellName != null;
+            return CellName == null;
         }
 
         public void Create(PlayerData data)
