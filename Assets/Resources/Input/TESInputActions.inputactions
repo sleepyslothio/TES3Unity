@@ -200,6 +200,17 @@
                 },
                 {
                     "name": "",
+                    "id": "a5281ec7-854a-4b7c-83bf-66e050e5bf1d",
+                    "path": "<XRController>{LeftHand}/joystickClicked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "aeb8f56b-d921-4972-94d9-7d261e06d858",
                     "path": "<Keyboard>/e",
                     "interactions": "",
@@ -411,7 +422,7 @@
                     "name": "",
                     "id": "699d41d2-aa8b-4fad-a5f2-5cec2f7f2cc7",
                     "path": "<OculusTouchController>{LeftHand}/primaryButton",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": "",
                     "action": "Rest",
@@ -465,7 +476,7 @@
                 {
                     "name": "",
                     "id": "ffbeff84-e8c6-4196-a786-524fb9b5830f",
-                    "path": "<XRController>{LeftHand}/joystickClicked",
+                    "path": "<OculusTouchController>{LeftHand}/primaryButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -662,7 +673,7 @@
                 {
                     "name": "",
                     "id": "289e944e-aa2c-46b7-beaa-4447d72ecf49",
-                    "path": "<XRController>{RightHand}/joystick",
+                    "path": "<XRController>{LeftHand}/joystickClicked",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -673,7 +684,7 @@
                 {
                     "name": "",
                     "id": "b29dc1de-480a-43c8-ba69-c9ac6efffbf1",
-                    "path": "<XRController>{RightHand}/joystick",
+                    "path": "<XRController>{RightHand}/joystickClicked",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

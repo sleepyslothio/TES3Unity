@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Wacki
@@ -10,13 +11,12 @@ namespace Wacki
         private bool m_Enabled = true;
         private bool m_Initialized = false;
         private float _distanceLimit;
+        private bool m_Locked = false;
 
         [SerializeField]
         private float m_LaserThickness = 0.002f;
         [SerializeField]
         private float m_LaserHitScale = 0.02f;
-        [SerializeField]
-        private bool m_LaserAlwaysOn = false;
         [SerializeField]
         private Color m_Color;
 
@@ -72,8 +72,8 @@ namespace Wacki
             m_HitPoint.SetActive(false);
 
             // remove the colliders on our primitives
-            Object.DestroyImmediate(m_HitPoint.GetComponent<SphereCollider>());
-            Object.DestroyImmediate(m_Pointer.GetComponent<BoxCollider>());
+            Destroy(m_HitPoint.GetComponent<SphereCollider>());
+            Destroy(m_Pointer.GetComponent<BoxCollider>());
 
             Material newMaterial = new Material(Shader.Find("Wacki/LaserPointer"));
 
@@ -167,22 +167,43 @@ namespace Wacki
 
         public bool ButtonDown()
         {
-            if (PressAction == null)
+            if (PressAction == null || m_Locked)
             {
                 return false;
             }
 
-            return PressAction.phase == InputActionPhase.Started;
+            var validate = PressAction.phase == InputActionPhase.Started;
+
+            if (validate)
+            {
+                StartCoroutine(LockControls());
+            }
+
+            return validate;
         }
 
         public bool ButtonUp()
         {
-            if (PressAction == null)
+            if (PressAction == null || m_Locked)
             {
                 return false;
             }
 
-            return PressAction.phase == InputActionPhase.Canceled;
+            var cancel = PressAction.phase == InputActionPhase.Canceled;
+
+            if (cancel)
+            {
+                StartCoroutine(LockControls());
+            }
+
+            return cancel;
+        }
+
+        private IEnumerator LockControls()
+        {
+            m_Locked = true;
+            yield return new WaitForSeconds(0.5f);
+            m_Locked = false;
         }
     }
 }

@@ -97,7 +97,7 @@ namespace TES3Unity.Components.XR
             m_PivotCanvas.localPosition = Vector3.zero;
             m_PivotCanvas.localRotation = Quaternion.identity;
             m_PivotCanvas.localScale = Vector3.one;
-            GUIUtils.SetCanvasToWorldSpace(m_Canvas.GetComponent<Canvas>(), m_PivotCanvas, 1.0f, 0.002f);
+            GUIUtils.SetCanvasToWorldSpace(m_Canvas.GetComponent<Canvas>(), m_PivotCanvas, 1.5f, 0.002f);
 
             // Setup the camera
             Camera.main.nearClipPlane = 0.1f;
@@ -137,10 +137,6 @@ namespace TES3Unity.Components.XR
             }
         }
 
-        public void ShowUICursor(bool visible)
-        {
-        }
-
         /// <summary>
         /// Recenter the Main UI.
         /// </summary>
@@ -166,18 +162,6 @@ namespace TES3Unity.Components.XR
         {
             XRManager.Recenter();
             RecenterUI();
-        }
-
-        /// <summary>
-        /// Sent by the PlayerComponent when the pause method is called.
-        /// </summary>
-        /// <param name="paused">Boolean: Indicates if the player is paused.</param>
-        private void OnPlayerPause(bool paused)
-        {
-            if (paused)
-            {
-                RecenterUI();
-            }
         }
     }
 }

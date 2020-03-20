@@ -20,6 +20,7 @@ namespace TES3Unity.UI
         private InputActionMap m_GameplayActionMap = null;
         private UIWindow m_CurrentWindow = null;
         private UIWindowType m_CurrentWindowType = UIWindowType.None;
+        private bool m_XREnabled;
 
         [Header("HUD Elements")]
         [SerializeField]
@@ -96,6 +97,8 @@ namespace TES3Unity.UI
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 #endif
+
+            m_XREnabled = XRManager.Enabled;
         }
 
         private void OnInteractiveTextChanged(RecordComponent component, bool visible)
@@ -193,6 +196,11 @@ namespace TES3Unity.UI
             {
                 InputManager.Enable("Movement");
                 m_UIActionMap.Disable();
+            }
+
+            if (!m_XREnabled)
+            {
+                _crosshair.Enabled = !ui;
             }
         }
     }

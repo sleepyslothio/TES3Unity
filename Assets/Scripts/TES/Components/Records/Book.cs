@@ -78,8 +78,6 @@ namespace TES3Unity.Components.Records
                 UIManager.Book.OnClosed += OnCloseBook;
                 UIManager.Book.OnTake += OnTakeBook;
             }
-
-            Player.Pause(true);
         }
 
         private void OnTakeScroll(BOOKRecord obj)
@@ -92,7 +90,6 @@ namespace TES3Unity.Components.Records
         {
             UIManager.Scroll.OnClosed -= OnCloseScroll;
             UIManager.Scroll.OnTake -= OnTakeScroll;
-            Player.Pause(false);
         }
 
         private void OnTakeBook(BOOKRecord obj)
@@ -105,7 +102,6 @@ namespace TES3Unity.Components.Records
         {
             UIManager.Book.OnClosed -= OnCloseBook;
             UIManager.Book.OnTake -= OnTakeBook;
-            Player.Pause(false);
         }
     }
 }

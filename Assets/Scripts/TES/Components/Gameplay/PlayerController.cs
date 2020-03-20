@@ -17,7 +17,6 @@ namespace TES3Unity
         private Transform m_Transform = null;
         private CapsuleCollider m_CapsuleCollider = null;
         private Rigidbody m_Rigidbody = null;
-        private UICrosshair m_Crosshair = null;
         private InputActionMap m_MovementActionMap = null;
         private InputAction m_LeftAxisAction = null;
         private InputAction m_RightAxisAction = null;
@@ -72,8 +71,6 @@ namespace TES3Unity
             m_CameraTransform = Camera.main.GetComponent<Transform>();
             m_CapsuleCollider = GetComponent<CapsuleCollider>();
             m_Rigidbody = GetComponent<Rigidbody>();
-
-            m_Crosshair = FindObjectOfType<UICrosshair>();
 
 #if !UNITY_STANDALONE && !UNITY_EDITOR
             Cursor.lockState = CursorLockMode.None;
@@ -269,26 +266,6 @@ namespace TES3Unity
             var sphereCastDistance = (m_CapsuleCollider.height / 2);
 
             return Physics.SphereCast(new Ray(playerCenter, -m_Transform.up), castedSphereRadius, sphereCastDistance);
-        }
-
-        // Deprecated
-        public void Pause(bool pause)
-        {
-            m_Paused = pause;
-
-            if (!m_XREnabled)
-            {
-                m_Crosshair.SetActive(!m_Paused);
-            }
-
-            Time.timeScale = pause ? 0.0f : 1.0f;
-
-#if UNITY_STANDALONE
-            Cursor.lockState = pause ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = pause;
-#endif
-            // Used by the VR Component to enable/disable some features.
-            SendMessage("OnPlayerPause", pause, SendMessageOptions.DontRequireReceiver);
         }
     }
 }
