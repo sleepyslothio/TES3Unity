@@ -127,7 +127,7 @@ namespace TES3Unity.Components
 
             if (!cell.isInterior)
             {
-                var regions = TES3Engine.MWDataReader.MorrowindESMFile.GetRecords<REGNRecord>();
+                var regions = TES3Engine.DataReader.MorrowindESMFile.GetRecords<REGNRecord>();
 
                 foreach (var region in regions)
                 {

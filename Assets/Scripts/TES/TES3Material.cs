@@ -4,6 +4,11 @@ using UnityEngine.Rendering;
 
 namespace TES3Unity.Rendering
 {
+    public enum ShaderType
+    {
+        PBR = 0, Simple
+    }
+
     public enum MatTestMode
     {
         Always = 0,
@@ -48,26 +53,34 @@ namespace TES3Unity.Rendering
     public sealed class TES3Material
     {
         // Material Settings
-        public const string URPLitPath = "TESUnity/URP-Lit";
-        public const string URPLitCutoffPath = "TESUnity/URP-Lit-Cutoff";
+        public const string TES3LitPath = "TESUnity/URP-Lit";
+        public const string TES3LitCutoffPath = "TESUnity/URP-Lit-Cutoff";
+        public const string URPLitPath = "Universal Render Pipeline/Lit";
+        public const string URPSimpleLitPath = "Universal Render Pipeline/Simple Lit";
         public const string URPTerrainPath = "Universal Render Pipeline/Terrain/Lit";
-        public const string DiffuseParameterName = "_Albedo";
+        public const string DiffuseParameterName = "_BaseMap";
+        public const string NormalParameterName = "_BumpMap";
         public const string m_SrcBlendParameter = "_SrcBlend";
         public const string m_DstBlendParameter = "_DstBlend";
-        public const string m_CutoutParameter = "_Cutout";
+        public const string m_CutoutParameter = "_Cutoff";
         // Static variables
         private static Material TerrainMaterial = null;
+        private static Material SimpleLitCutoffMaterial = null;
         private static Dictionary<TES3MaterialProps, Material> MaterialStore = new Dictionary<TES3MaterialProps, Material>();
         // Private variables
-        private TextureManager m_textureManager;
+        private TextureManager m_TextureManager;
         private Shader m_Shader = null;
         private Shader m_CutoutShader = null;
+        private ShaderType m_ShaderType;
+        private bool m_GenerateNormals;
 
-        public TES3Material(TextureManager textureManager)
+        public TES3Material(TextureManager textureManager, ShaderType shaderType, bool generateNormal)
         {
-            m_textureManager = textureManager;
-            m_Shader = Shader.Find(URPLitPath);
-            m_CutoutShader = Shader.Find(URPLitCutoffPath);
+            m_TextureManager = textureManager;
+            m_ShaderType = shaderType;
+            m_Shader = Shader.Find(m_ShaderType == ShaderType.PBR ? TES3LitPath : URPSimpleLitPath);
+            m_CutoutShader = Shader.Find(m_ShaderType == ShaderType.PBR ? TES3LitCutoffPath : URPSimpleLitPath);
+            m_GenerateNormals = generateNormal;
         }
 
         public Material BuildMaterialFromProperties(TES3MaterialProps mp)
@@ -81,13 +94,29 @@ namespace TES3Unity.Rendering
 
             if (mp.alphaBlended)
             {
+                if (m_ShaderType == ShaderType.Simple)
+                {
+                    if (SimpleLitCutoffMaterial != null)
+                    {
+                        SimpleLitCutoffMaterial = Resources.Load<Material>($"{GetMaterialAssetPath()}/URP-SimpleLit-Cutout");
+                    }
+
+                    material.CopyPropertiesFromMaterial(SimpleLitCutoffMaterial);
+                }
+
                 material.SetFloat(m_CutoutParameter, 0.5f);
             }
 
             if (mp.textures.mainFilePath != null)
             {
-                var mainTexture = m_textureManager.LoadTexture(mp.textures.mainFilePath);
+                var mainTexture = m_TextureManager.LoadTexture(mp.textures.mainFilePath);
                 material.SetTexture(DiffuseParameterName, mainTexture);
+
+                if (m_ShaderType == ShaderType.Simple && m_GenerateNormals)
+                {
+                    var normalMap = TextureManager.GenerateNormalMap(mainTexture, 2);
+                    material.SetTexture(NormalParameterName, normalMap);
+                }
             }
 
             MaterialStore.Add(mp, material);
@@ -112,7 +141,7 @@ namespace TES3Unity.Rendering
 
         public static string GetWaterMaterialPath()
         {
-            return $"{GetMaterialAssetPath()}/URP-Water";
+            return $"{GetMaterialAssetPath()}/TES3-Water";
         }
     }
 }

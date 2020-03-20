@@ -18,7 +18,11 @@ namespace TES3Unity
         public static int markerLayer => LayerMask.NameToLayer("Marker");
         public static int cellRadiusOnLoad = 2;
         private static TES3Engine instance = null;
-        public static TES3DataReader MWDataReader { get; set; }
+        public static TES3DataReader DataReader { get; set; }
+
+        private TemporalLoadBalancer m_TemporalLoadBalancer;
+        private TES3Material m_MaterialManager;
+        private NIFManager m_NIFManager;
 
         [Header("Global")]
         public float ambientIntensity = 1.5f;
@@ -41,12 +45,8 @@ namespace TES3Unity
         private bool m_Initialized = false;
 
         // Public.
-        public TES3DataReader dataReader;
-        public TextureManager textureManager;
-        public TES3Material materialManager;
-        public NIFManager nifManager;
         public CellManager cellManager;
-        public TemporalLoadBalancer m_TemporalLoadBalancer;
+        public TextureManager textureManager;
 
         public CELLRecord CurrentCell
         {
@@ -90,7 +90,7 @@ namespace TES3Unity
             }
 
             // When loaded from the Menu, this variable is already preloaded.
-            if (MWDataReader == null)
+            if (DataReader == null)
             {
                 var dataPath = GameSettings.GetDataPath();
 
@@ -119,7 +119,7 @@ namespace TES3Unity
                     return;
                 }
 
-                MWDataReader = new TES3DataReader(dataPath);
+                DataReader = new TES3DataReader(dataPath);
             }
         }
 
@@ -136,54 +136,11 @@ namespace TES3Unity
             CellManager.detailRadius = config.CellDetailRadius;
             cellRadiusOnLoad = config.CellRadiusOnLoad;
 
-            Initialize(MWDataReader);
-
-            var soundManager = FindObjectOfType<SoundManager>();
-            soundManager?.Initialize(GameSettings.GetDataPath());
-
-            // Start Position
-            var cellGridCoords = new Vector2i(-2, -9);
-            var cellIsInterior = false;
-            var spawnPosition = new Vector3(-137.94f, 2.30f, -1037.6f);
-            var spawnRotation = Quaternion.identity;
-
-#if UNITY_EDITOR
-            // Check for a previously saved game.
-            if (loadSaveGameFilename != null)
-            {
-                var path = $"{MWDataReader.FolderPath}\\Saves\\{loadSaveGameFilename}.ess";
-
-                if (File.Exists(path))
-                {
-                    var ess = new ESS.ESSFile(path);
-
-                    ess.FindStartLocation(out string cellName, out float[] pos, out float[] rot);
-                    // TODO: Find the correct grid/cell from these data.
-
-                    var grid = TES3Engine.Instance.cellManager.GetExteriorCellIndices(new Vector3(pos[0], pos[1], pos[2]));
-                    var exterior = MWDataReader.FindExteriorCellRecord(grid);
-                    var interior = MWDataReader.FindInteriorCellRecord(cellName);
-                }
-            }
-#endif
-
-            if (GameSettings.IsMobile() && !XRManager.IsXREnabled())
-            {
-                var touchPrefab = Resources.Load<GameObject>("Input/TouchJoysticks");
-                Instantiate(touchPrefab, Vector3.zero, Quaternion.identity);
-            }
-
-            SpawnPlayer(cellGridCoords, cellIsInterior, spawnPosition, spawnRotation);
-        }
-
-        public void Initialize(TES3DataReader mwDataReader)
-        {
-            dataReader = mwDataReader;
-            textureManager = new TextureManager(dataReader);
-            materialManager = new TES3Material(textureManager);
-            nifManager = new NIFManager(dataReader, materialManager);
+            textureManager = new TextureManager(DataReader);
+            m_MaterialManager = new TES3Material(textureManager, config.ShaderType, config.GenerateNormalMaps);
+            m_NIFManager = new NIFManager(DataReader, m_MaterialManager);
             m_TemporalLoadBalancer = new TemporalLoadBalancer();
-            cellManager = new CellManager(dataReader, textureManager, nifManager, m_TemporalLoadBalancer);
+            cellManager = new CellManager(DataReader, textureManager, m_NIFManager, m_TemporalLoadBalancer);
 
             var sunLight = GameObjectUtils.CreateSunLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
             var weatherManager = FindObjectOfType<WeatherManager>();
@@ -204,6 +161,43 @@ namespace TES3Unity
             var uiCanvas = GameObject.Instantiate(uiCanvasPrefab);
 
             m_Initialized = true;
+
+            var soundManager = FindObjectOfType<SoundManager>();
+            soundManager?.Initialize(GameSettings.GetDataPath());
+
+            // Start Position
+            var cellGridCoords = new Vector2i(-2, -9);
+            var cellIsInterior = false;
+            var spawnPosition = new Vector3(-137.94f, 2.30f, -1037.6f);
+            var spawnRotation = Quaternion.identity;
+
+#if UNITY_EDITOR
+            // Check for a previously saved game.
+            if (loadSaveGameFilename != null)
+            {
+                var path = $"{DataReader.FolderPath}\\Saves\\{loadSaveGameFilename}.ess";
+
+                if (File.Exists(path))
+                {
+                    var ess = new ESS.ESSFile(path);
+
+                    ess.FindStartLocation(out string cellName, out float[] pos, out float[] rot);
+                    // TODO: Find the correct grid/cell from these data.
+
+                    var grid = TES3Engine.Instance.cellManager.GetExteriorCellIndices(new Vector3(pos[0], pos[1], pos[2]));
+                    var exterior = DataReader.FindExteriorCellRecord(grid);
+                    var interior = DataReader.FindInteriorCellRecord(cellName);
+                }
+            }
+#endif
+
+            if (GameSettings.IsMobile() && !XRManager.IsXREnabled())
+            {
+                var touchPrefab = Resources.Load<GameObject>("Input/TouchJoysticks");
+                Instantiate(touchPrefab, Vector3.zero, Quaternion.identity);
+            }
+
+            SpawnPlayer(cellGridCoords, cellIsInterior, spawnPosition, spawnRotation);
         }
 
         #region Player Spawn
@@ -217,7 +211,7 @@ namespace TES3Unity
         /// <param name="position">The target position of the player.</param>
         public void SpawnPlayerInside(string interiorCellName, Vector3 position, Quaternion rotation)
         {
-            CurrentCell = dataReader.FindInteriorCellRecord(interiorCellName);
+            CurrentCell = DataReader.FindInteriorCellRecord(interiorCellName);
 
             Debug.Assert(m_CurrentCell != null);
 
@@ -233,12 +227,12 @@ namespace TES3Unity
 
             if (outside)
             {
-                CurrentCell = dataReader.FindExteriorCellRecord(gridCoords);
+                CurrentCell = DataReader.FindExteriorCellRecord(gridCoords);
                 cellInfo = cellManager.StartCreatingExteriorCell(gridCoords);
             }
             else
             {
-                CurrentCell = dataReader.FindInteriorCellRecord(gridCoords);
+                CurrentCell = DataReader.FindInteriorCellRecord(gridCoords);
                 cellInfo = cellManager.StartCreatingInteriorCell(gridCoords);
             }
 
@@ -267,7 +261,7 @@ namespace TES3Unity
 
         private void OnApplicationQuit()
         {
-            MWDataReader?.Close();
+            DataReader?.Close();
         }
 
         #region Private
@@ -300,7 +294,7 @@ namespace TES3Unity
                 else
                 {
                     var cellIndices = cellManager.GetExteriorCellIndices(component.doorData.doorExitPos);
-                    newCell = dataReader.FindExteriorCellRecord(cellIndices);
+                    newCell = DataReader.FindExteriorCellRecord(cellIndices);
 
                     cellManager.UpdateExteriorCells(m_PlayerCameraObj.transform.position, true, cellRadiusOnLoad);
                 }

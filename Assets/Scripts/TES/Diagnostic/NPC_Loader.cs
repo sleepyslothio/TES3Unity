@@ -24,7 +24,7 @@ namespace TES3Unity.Diagnostic
         {
             m_NifManager = tes.NifManager;
 
-            var npcs = TES3Engine.MWDataReader.MorrowindESMFile.GetRecords<NPC_Record>();
+            var npcs = TES3Engine.DataReader.MorrowindESMFile.GetRecords<NPC_Record>();
             NPC_Record npcRecord = null;
 
             foreach (var npc in npcs)

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TES3Unity.Rendering;
+using UnityEngine;
 
 namespace TES3Unity.Components
 {
@@ -27,6 +28,7 @@ namespace TES3Unity.Components
         public float CameraFarClip = 500.0f;
         public SRPQuality SRPQuality = SRPQuality.High;
         public float RenderScale = 1.0f;
+        public ShaderType ShaderType = ShaderType.PBR;
 
         [Header("Lighting")]
         public bool SunShadows = true;
@@ -75,6 +77,7 @@ namespace TES3Unity.Components
             settings.SRPQuality = SRPQuality;
             settings.SunShadows = SunShadows;
             settings.KinematicRigidbody = KinematicRigidbodies;
+            settings.ShaderType = ShaderType;
             settings.LogEnabled = LogEnabled;
 #endif
         }

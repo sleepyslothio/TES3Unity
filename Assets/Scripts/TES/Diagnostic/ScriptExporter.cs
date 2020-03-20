@@ -11,7 +11,7 @@ namespace TES3Unity.Diagnostic
         [MenuItem("Morrowind Unity/Export Scripts")]
         private static void ExportScripts()
         {
-            if (TES3Engine.MWDataReader == null)
+            if (TES3Engine.DataReader == null)
             {
                 Debug.LogWarning("Morrowind Data are not yet loaded. It'll take some time to load. The editor will be freezed a bit...");
 
@@ -40,13 +40,13 @@ namespace TES3Unity.Diagnostic
                     }
                 }
 
-                TES3Engine.MWDataReader = new TES3DataReader(dataPath);
+                TES3Engine.DataReader = new TES3DataReader(dataPath);
 
                 Debug.Log("Morrowind Data are now loaded!");
             }
 
             var exportPath = $"Exports/Scripts";
-            var scripts = TES3Engine.MWDataReader.FindRecords<SCPTRecord>();
+            var scripts = TES3Engine.DataReader.FindRecords<SCPTRecord>();
 
             if (scripts == null)
             {

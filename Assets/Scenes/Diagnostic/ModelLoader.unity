@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: def31adb71296f1458ee8b3d2051ff77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ModelToLoad: base_anim_female.1st.nif
+  m_ModelToLoad: a/a_art_shield_breaker.nif
 --- !u!114 &482211607
 MonoBehaviour:
   m_ObjectHideFlags: 0

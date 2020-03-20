@@ -57,7 +57,7 @@ namespace TES3Unity
                 return AudioClipStore[id];
             }
 
-            var path = TES3Engine.MWDataReader.GetSound(id);
+            var path = TES3Engine.DataReader.GetSound(id);
             if (!File.Exists(path))
             {
                 return null;

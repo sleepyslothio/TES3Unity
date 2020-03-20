@@ -26,7 +26,7 @@ namespace TES3Unity.Components.Records
             rb.isKinematic = true; // FIXME
 
             // Add items
-            var db = TES3Engine.MWDataReader.MorrowindESMFile.ObjectsByIDString;
+            var db = TES3Engine.DataReader.MorrowindESMFile.ObjectsByIDString;
             var nifManager = NIFManager.Instance;
 
             foreach (var npcItem in NPC_.Items)

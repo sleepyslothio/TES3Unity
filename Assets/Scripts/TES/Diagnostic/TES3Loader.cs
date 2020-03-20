@@ -55,17 +55,19 @@ namespace TES3Unity
 
             watch.Start();
 
-            if (TES3Engine.MWDataReader == null)
+            if (TES3Engine.DataReader == null)
             {
-                TES3Engine.MWDataReader = new TES3DataReader(dataPath);
+                TES3Engine.DataReader = new TES3DataReader(dataPath);
             }
 
             watch.Stop();
             Logger.Log($"DataReader took {watch.Elapsed.Seconds} seconds to load.");
 
-            TextureManager = new TextureManager(TES3Engine.MWDataReader);
-            MaterialManager = new TES3Material(TextureManager);
-            NifManager = new NIFManager(TES3Engine.MWDataReader, MaterialManager);
+            var config = GameSettings.Get();
+
+            TextureManager = new TextureManager(TES3Engine.DataReader);
+            MaterialManager = new TES3Material(TextureManager, config.ShaderType, config.GenerateNormalMaps);
+            NifManager = new NIFManager(TES3Engine.DataReader, MaterialManager);
 
             // Mod loading
             if (m_LoadMods != null && m_LoadMods.Length > 0)
@@ -85,7 +87,7 @@ namespace TES3Unity
             // Check for a previously saved game.
             if (m_LoadSaveGameFilename != null)
             {
-                var path = $"{TES3Engine.MWDataReader.FolderPath}\\Saves\\{m_LoadSaveGameFilename}.ess";
+                var path = $"{TES3Engine.DataReader.FolderPath}\\Saves\\{m_LoadSaveGameFilename}.ess";
 
                 if (File.Exists(path))
                 {
@@ -99,7 +101,7 @@ namespace TES3Unity
 
         private void OnApplicationQuit()
         {
-            TES3Engine.MWDataReader?.Close();
+            TES3Engine.DataReader?.Close();
         }
 
 #if UNITY_EDITOR

@@ -50,7 +50,15 @@ namespace TES3Unity
             }
 
             // Instantiate the prefab.
-            return GameObject.Instantiate(prefab);
+            var nifInstance = GameObject.Instantiate(prefab);
+
+            if (isStatic)
+            {
+                // TODO: We need to transform object position first.
+                //nifInstance.AddComponent<Graphics.MeshMerger>();
+            }
+
+            return nifInstance;
         }
 
         private GameObject LoadNifPrefabDontAddToPrefabCache(string filePath, bool isStatic)

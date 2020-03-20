@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
+using TES3Unity.Rendering;
 using UnityEngine;
 
 namespace TES3Unity
@@ -45,6 +46,7 @@ namespace TES3Unity
         public SRPQuality SRPQuality = SRPQuality.High;
         public AntiAliasingMode AntiAliasingMode = AntiAliasingMode.SMAA;
         public bool GenerateNormalMaps = true;
+        public ShaderType ShaderType = ShaderType.PBR;
         public bool AnimateLights = true;
         public bool SunShadows = true;
         public bool PonctualLightShadows = true;
@@ -108,6 +110,7 @@ namespace TES3Unity
                 Instance.RenderScale = 0.9f;
                 Instance.PostProcessingQuality = PostProcessingQuality.None;
                 Instance.ExteriorLights = false;
+                Instance.ShaderType = ShaderType.Simple;
                 Instance.CameraFarClip = 200;
                 Instance.DayNightCycle = false;
                 Instance.AntiAliasingMode = AntiAliasingMode.MSAA;
