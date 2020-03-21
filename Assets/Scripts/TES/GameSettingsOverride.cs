@@ -17,7 +17,6 @@ namespace TES3Unity.Components
         [Header("Global")]
         public bool PlayMusic = false;
         public bool KinematicRigidbodies = true;
-        public bool LogEnabled = false;
 
         [Header("Optimizations")]
         public ushort CellRadius = 4;
@@ -80,7 +79,6 @@ namespace TES3Unity.Components
             settings.KinematicRigidbody = KinematicRigidbodies;
             settings.ShaderType = ShaderType;
             settings.Teleportation = Teleportation;
-            settings.LogEnabled = LogEnabled;
 #endif
         }
     }

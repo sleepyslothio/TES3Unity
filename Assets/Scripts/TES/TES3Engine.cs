@@ -18,6 +18,7 @@ namespace TES3Unity
         public static int MarkerLayer => LayerMask.NameToLayer("Marker");
         public static int CellRadiusOnLoad = 2;
         public static bool AutoLoadSavedGame = false;
+        public static bool LogEnabled = false;
         private static TES3Engine instance = null;
         public static TES3DataReader DataReader { get; set; }
 
@@ -38,6 +39,7 @@ namespace TES3Unity
         public int CellRadius = 1;
         public int CellDetailRadius = 1;
         public bool ForceAutoloadSavedGame = true;
+        public bool OverrideLogEnabled = false;
 #endif
 
         // Private.
@@ -116,6 +118,11 @@ namespace TES3Unity
                 if (ForceAutoloadSavedGame)
                 {
                     AutoLoadSavedGame = true;
+                }
+
+                if (OverrideLogEnabled)
+                {
+                    LogEnabled = true;
                 }
 #endif
 

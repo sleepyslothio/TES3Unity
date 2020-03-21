@@ -367,7 +367,7 @@ namespace TES3Unity
             }
             else
             {
-                if (GameSettings.Get().LogEnabled)
+                if (TES3Engine.LogEnabled)
                 {
                     Debug.Log("Unknown Object: " + refCellObjInfo.refObjDataGroup.NAME.value);
                 }

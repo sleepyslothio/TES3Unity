@@ -28,7 +28,7 @@ namespace TES3Unity.Components
             }
 
             // Setup the Quality level
-            var qualityIndex = 3; // High
+            var qualityIndex = 4; // Ultra
 
             if (target == "Mobile")
             {
@@ -41,6 +41,10 @@ namespace TES3Unity.Components
             else if (config.SRPQuality == SRPQuality.Medium)
             {
                 qualityIndex = 2;
+            }
+			else if (config.SRPQuality == SRPQuality.High)
+            {
+                qualityIndex = 3;
             }
 
             QualitySettings.SetQualityLevel(qualityIndex);

@@ -71,7 +71,6 @@ namespace TES3Unity
         public bool Teleportation = false;
         public bool RoomScale = false;
         public ushort RenderScale = 100;
-        public bool LogEnabled = false;
         public bool LoadExtensions = false;
         public PlayerData Player;
 
