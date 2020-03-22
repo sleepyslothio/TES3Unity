@@ -56,6 +56,7 @@ namespace TES3Unity
             {
                 // TODO: We need to transform object position first.
                 //nifInstance.AddComponent<Graphics.MeshMerger>();
+                //nifInstance.AddComponent<LODGenerator>();
             }
 
             return nifInstance;

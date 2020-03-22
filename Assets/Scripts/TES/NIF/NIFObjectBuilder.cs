@@ -245,7 +245,7 @@ namespace TES3Unity
 
             if (visual)
             {
-                obj.AddComponent<MeshFilter>().mesh = mesh;
+                obj.AddComponent<MeshFilter>().sharedMesh = mesh;
 
                 var materialProps = NiAVObjectPropertiesToMWMaterialProperties(triShape);
 
