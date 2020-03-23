@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TES3Unity
+namespace TES3Unity.Graphics
 {
     public class LODGenerator : MonoBehaviour
     {
@@ -44,7 +44,7 @@ namespace TES3Unity
             var renderer = filter.GetComponent<MeshRenderer>();
 
             var mesh = filter.sharedMesh;
-            var simplified = SimplfyMesh(mesh, quality);
+            var simplified = MeshSimplifier.SimplfyMesh(mesh, quality);
 
             var go = new GameObject($"{filter.name}_LOD_{quality}");
             go.isStatic = filter.gameObject.isStatic;
@@ -64,14 +64,6 @@ namespace TES3Unity
             newRenderer.enabled = renderer.enabled;
 
             return newRenderer;
-        }
-
-        public static Mesh SimplfyMesh(Mesh sourceMesh, float quality = 0.5f)
-        {
-            var meshSimplifier = new UnityMeshSimplifier.MeshSimplifier();
-            meshSimplifier.Initialize(sourceMesh);
-            meshSimplifier.SimplifyMesh(quality);
-            return meshSimplifier.ToMesh();
         }
     }
 }
