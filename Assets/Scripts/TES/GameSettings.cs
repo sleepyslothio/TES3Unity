@@ -100,6 +100,11 @@ namespace TES3Unity
             PlayerPrefs.Save();
         }
 
+        public static void Override(GameSettings settings)
+        {
+            Instance = settings;
+        }
+
         public static GameSettings Get()
         {
             if (Instance == null)

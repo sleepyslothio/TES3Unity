@@ -10,41 +10,7 @@ namespace TES3Unity.Components
     public sealed class GameSettingsOverride : MonoBehaviour
     {
         public bool Override = false;
-
-        [Header("Player")]
-        public PlayerData Player;
-
-        [Header("Global")]
-        public bool PlayMusic = false;
-        public bool KinematicRigidbodies = true;
-
-        [Header("Optimizations")]
-        public ushort CellRadius = 4;
-        public ushort CellDetailRadius = 3;
-        public ushort CellRadiusOnLoad = 2;
-
-        [Header("Rendering")]
-        public float CameraFarClip = 500.0f;
-        public SRPQuality SRPQuality = SRPQuality.High;
-        public ushort RenderScale = 100;
-        public ShaderType ShaderType = ShaderType.PBR;
-
-        [Header("Lighting")]
-        public bool SunShadows = true;
-        public bool LightShadows = true;
-        public bool ExteriorCellLights = true;
-        public bool AnimateLights = true;
-        public bool DayNightCycle = false;
-        public bool GenerateNormalMap = true;
-
-        [Header("Effects")]
-        public PostProcessingQuality PostProcessingQuality = PostProcessingQuality.High;
-        public AntiAliasingMode AntiAliasing = AntiAliasingMode.SMAA;
-
-        [Header("VR")]
-        public bool FollowHead = true;
-        public bool RoomScale = true;
-        public bool Teleportation = false;
+        public GameSettings m_GameSettings = new GameSettings();
 
         /// <summary>
         /// Apply overriden settings from the editor for testing purpose only.
@@ -53,32 +19,10 @@ namespace TES3Unity.Components
         public void ApplyEditorSettingsOverride()
         {
 #if UNITY_EDITOR
-            if (!Override)
+            if (Override)
             {
-                return;
+                GameSettings.Override(m_GameSettings);
             }
-
-            var settings = GameSettings.Get();
-            settings.AnimateLights = AnimateLights;
-            settings.AntiAliasingMode = AntiAliasing;
-            settings.MusicEnabled = PlayMusic;
-            settings.CameraFarClip = CameraFarClip;
-            settings.CellDetailRadius = CellDetailRadius;
-            settings.CellRadius = CellRadius;
-            settings.CellRadiusOnLoad = CellRadiusOnLoad;
-            settings.DayNightCycle = DayNightCycle;
-            settings.ExteriorLights = ExteriorCellLights;
-            settings.FollowHead = FollowHead;
-            settings.GenerateNormalMaps = GenerateNormalMap;
-            settings.PonctualLightShadows = LightShadows;
-            settings.PostProcessingQuality = PostProcessingQuality;
-            settings.RenderScale = RenderScale;
-            settings.RoomScale = RoomScale;
-            settings.SRPQuality = SRPQuality;
-            settings.SunShadows = SunShadows;
-            settings.KinematicRigidbody = KinematicRigidbodies;
-            settings.ShaderType = ShaderType;
-            settings.Teleportation = Teleportation;
 #endif
         }
     }

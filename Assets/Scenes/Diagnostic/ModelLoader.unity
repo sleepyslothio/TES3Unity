@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -180,6 +180,7 @@ GameObject:
   - component: {fileID: 482211608}
   - component: {fileID: 482211607}
   - component: {fileID: 482211606}
+  - component: {fileID: 482211609}
   m_Layer: 0
   m_Name: TESManagerLite
   m_TagString: Untagged
@@ -231,6 +232,47 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &482211609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 482211605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 304ead6287419934296fbc2ae807f205, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Override: 0
+  m_GameSettings:
+    MusicEnabled: 1
+    PostProcessingQuality: 3
+    SRPQuality: 2
+    AntiAliasingMode: 3
+    GenerateNormalMaps: 1
+    ShaderType: 0
+    AnimateLights: 1
+    SunShadows: 1
+    PonctualLightShadows: 1
+    ExteriorLights: 1
+    CameraFarClip: 500
+    CellRadius: 2
+    CellDetailRadius: 2
+    CellRadiusOnLoad: 2
+    KinematicRigidbody: 1
+    DayNightCycle: 0
+    FollowHead: 1
+    Teleportation: 0
+    RoomScale: 0
+    RenderScale: 100
+    LoadExtensions: 0
+    Player:
+      Name: 
+      Woman: 0
+      Race: 0
+      ClassName: 
+      Faction: 
 --- !u!1 &1312510337
 GameObject:
   m_ObjectHideFlags: 0
