@@ -13,24 +13,34 @@ namespace TES3Unity.Graphics
         private void Start()
         {
             var filters = GetComponentsInChildren<MeshFilter>();
-            var count = filters.Length;
-            var probuilderMeshes = new List<ProBuilderMesh>(count);
 
-            MeshImporter importer = null;
-
-            for(var i = 0; i < count; i++)
+            foreach (var filter in filters)
             {
-                importer = new MeshImporter(filters[i].gameObject);
-                importer.Import();
+                var mesh = filter.gameObject.AddComponent<ProBuilderMesh>();
 
-                probuilderMeshes.Add(filters[i].GetComponent<ProBuilderMesh>());
+                var importer = new MeshImporter(mesh);
+                importer.Import(filter.sharedMesh);
+
+                filter.sharedMesh = new Mesh();
+
+                mesh.ToMesh();
+                mesh.Refresh();
             }
 
             if (m_Merge)
             {
-                var mesh = gameObject.AddComponent<ProBuilderMesh>();
-                CombineMeshes.Combine(probuilderMeshes, mesh);
+                Merge();
             }
+        }
+
+#if UNITY_EDITOR
+        [ContextMenu("Merge")]
+#endif
+        private void Merge()
+        {
+            var probuilderMeshes = GetComponentsInChildren<ProBuilderMesh>();
+            var current = gameObject.AddComponent<ProBuilderMesh>();
+            CombineMeshes.Combine(probuilderMeshes, current);
         }
     }
 }
