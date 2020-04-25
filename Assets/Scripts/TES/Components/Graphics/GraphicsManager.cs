@@ -75,7 +75,7 @@ namespace TES3Unity.Components
                 instanceProfile.DisableEffect<MotionBlur>();
                 instanceProfile.DisableEffect<Vignette>();
 
-#if !UNITY_ANDROID
+#if UNITY_ANDROID
                 // Apply Fixed Foveated Rendering on Qo/Quest
                 var tes3 = TES3Engine.Instance;
                 if (tes3 != null && XRManager.GetXRVendor() == XRVendor.Oculus)
@@ -142,7 +142,7 @@ namespace TES3Unity.Components
             }
         }
 
-#if !UNITY_ANDROID
+#if UNITY_ANDROID
         private void Instance_CurrentCellChanged(ESM.Records.CELLRecord obj)
         {
             var level = obj.isInterior ? 1 : 3;

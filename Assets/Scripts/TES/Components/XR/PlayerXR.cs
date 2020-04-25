@@ -129,7 +129,7 @@ namespace TES3Unity.Components.XR
             if (m_RoomScale)
             {
                 //_transform.position = new Vector3(centerEye.position.x, 0.0f, centerEye.position.z);
-                root.position = prevPos;
+                //root.position = prevPos;
             }
         }
 
