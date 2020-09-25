@@ -392,7 +392,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2517026290458435720, guid: e3405669209f6024ba276d1170d50dee, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e3405669209f6024ba276d1170d50dee, type: 3}
 --- !u!4 &8404783985154368076 stripped
 Transform:
@@ -467,7 +468,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: OculusTouchForQuestAndRiftS_Left
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3023270788309581594, guid: 1d88c17fdc43fd54f875b777a5280d81, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 1d88c17fdc43fd54f875b777a5280d81, type: 3}
 --- !u!4 &1722930402696785955 stripped
 Transform:

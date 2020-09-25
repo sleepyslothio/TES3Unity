@@ -122,8 +122,8 @@ namespace TES3Unity.Components.XR
 
             if (m_FollowHead)
             {
-                m_Transform.rotation = Quaternion.Euler(0.0f, centerEye.rotation.eulerAngles.y, 0.0f);
-                root.rotation = prevRot;
+                //m_Transform.rotation = Quaternion.Euler(0.0f, centerEye.rotation.eulerAngles.y, 0.0f);
+                //root.rotation = prevRot;
             }
 
             if (m_RoomScale)

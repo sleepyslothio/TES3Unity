@@ -68,7 +68,7 @@ namespace TES3Unity
         public bool KinematicRigidbody = true;
         public bool DayNightCycle = false;
         public bool FollowHead = true;
-        public bool Teleportation = false;
+        public bool Teleportation = true;
         public bool RoomScale = false;
         public ushort RenderScale = 100;
         public bool LoadExtensions = false;

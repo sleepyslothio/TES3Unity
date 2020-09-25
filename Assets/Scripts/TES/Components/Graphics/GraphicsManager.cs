@@ -74,15 +74,6 @@ namespace TES3Unity.Components
 
                 instanceProfile.DisableEffect<MotionBlur>();
                 instanceProfile.DisableEffect<Vignette>();
-
-#if UNITY_ANDROID
-                // Apply Fixed Foveated Rendering on Qo/Quest
-                var tes3 = TES3Engine.Instance;
-                if (tes3 != null && XRManager.GetXRVendor() == XRVendor.Oculus)
-                {
-                    tes3.CurrentCellChanged += Instance_CurrentCellChanged;
-                }
-#endif
             }
 
             if (config.PostProcessingQuality == PostProcessingQuality.Low)
@@ -141,13 +132,5 @@ namespace TES3Unity.Components
                     break;
             }
         }
-
-#if UNITY_ANDROID
-        private void Instance_CurrentCellChanged(ESM.Records.CELLRecord obj)
-        {
-            var level = obj.isInterior ? 1 : 3;
-            Unity.XR.Oculus.Utils.SetFoveationLevel(level);
-        }
-#endif
     }
 }

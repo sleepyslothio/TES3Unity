@@ -673,7 +673,7 @@
                 {
                     "name": "",
                     "id": "289e944e-aa2c-46b7-beaa-4447d72ecf49",
-                    "path": "<XRController>{LeftHand}/joystickClicked",
+                    "path": "<XRController>{LeftHand}/grip",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -684,7 +684,7 @@
                 {
                     "name": "",
                     "id": "b29dc1de-480a-43c8-ba69-c9ac6efffbf1",
-                    "path": "<XRController>{RightHand}/joystickClicked",
+                    "path": "<XRController>{RightHand}/grip",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
