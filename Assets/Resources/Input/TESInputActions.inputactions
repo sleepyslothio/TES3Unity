@@ -7,19 +7,21 @@
             "actions": [
                 {
                     "name": "LeftAxis",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "b49aec66-5454-4471-86f0-42634077039e",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "RightAxis",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "cb9934d3-824f-44f7-bf47-6e532f962d33",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Fly",
@@ -27,7 +29,8 @@
                     "id": "4d62d6bd-a140-486e-84f0-f96e2010deb8",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Run",
@@ -35,7 +38,8 @@
                     "id": "2d1496b4-e585-4deb-9f57-5e92c674542f",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Jump",
@@ -43,7 +47,8 @@
                     "id": "8dfb85ae-0c90-4139-8598-8603085dd33b",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Crouch",
@@ -51,7 +56,8 @@
                     "id": "7ea44a5e-ad34-4266-a717-d0f29824c495",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -265,7 +271,8 @@
                     "id": "763ec881-7f4b-4780-b96c-3182e8284acf",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Cancel",
@@ -273,7 +280,8 @@
                     "id": "9c5d5bf1-109d-42b5-9b36-bf7bd9a73755",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "ReadyWeapon",
@@ -281,7 +289,8 @@
                     "id": "63b78ac3-2a91-42b6-b830-164f4233ff51",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Attack",
@@ -289,7 +298,8 @@
                     "id": "3b0b2f82-8450-4092-93da-14cdb6544c59",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Journal",
@@ -297,7 +307,8 @@
                     "id": "8b526ffe-157d-4498-8da9-4ba34af9b36f",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Rest",
@@ -305,7 +316,8 @@
                     "id": "c6de1a2b-b926-4b8f-973b-3c61834e109b",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Camera",
@@ -313,7 +325,8 @@
                     "id": "5e45ee80-7140-4890-b8c0-896b4f3d0457",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Inventory",
@@ -321,7 +334,8 @@
                     "id": "f61b77f9-cc33-4893-bc0c-3c1b9129cd42",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Menu",
@@ -329,7 +343,8 @@
                     "id": "f9d113a1-b601-4cbf-bbf7-ff9d2f7cbe4d",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "ReadyMagic",
@@ -337,7 +352,8 @@
                     "id": "7c3b6e57-aa5c-4256-bea8-0ab9f655624b",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -639,7 +655,8 @@
                     "id": "473b398b-df24-40e5-8865-7c98489c26de",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Teleport-Left",
@@ -647,7 +664,8 @@
                     "id": "e14999c7-1905-4e39-a199-9bbd08df5fe5",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Teleport-Right",
@@ -655,7 +673,8 @@
                     "id": "ecf4e76c-759e-4077-92ed-03394ed87ab0",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -704,7 +723,8 @@
                     "id": "13c79a8c-f03e-442f-805c-3795ed82141d",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Back",
@@ -712,7 +732,8 @@
                     "id": "7ce98d40-c895-44ff-bab8-f747b063ee18",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Validate",
@@ -720,7 +741,8 @@
                     "id": "4d157043-1f1b-43aa-bde5-9804f33488b8",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Next",
@@ -728,7 +750,8 @@
                     "id": "a3e22d24-8a79-484d-840f-e0bdf396ed62",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Previous",
@@ -736,7 +759,8 @@
                     "id": "92cd7d4f-7bc2-4e3c-8cea-d3f153f7e569",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -895,7 +919,8 @@
                     "id": "f40592e2-8b02-4ad7-ab08-10afc035e54a",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [

@@ -1,4 +1,5 @@
-﻿using TES3Unity.Rendering;
+﻿using TES3Unity;
+using TES3Unity.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
@@ -119,11 +120,14 @@ public static class GameObjectUtils
         GameObject terrainObject = new GameObject("terrain");
         terrainObject.isStatic = true;
 
+        var settings = GameSettings.Get();
         var terrain = terrainObject.AddComponent<Terrain>();
-        var srp = GraphicsSettings.renderPipelineAsset;
+        terrain.heightmapPixelError = settings.TerrainError;
+        terrain.treeDistance = settings.TreeDistance;
 
         terrain.materialTemplate = TES3Material.GetTerrainMaterial();
         terrain.terrainData = terrainData;
+        
         terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;
         terrainObject.transform.position = position;
 

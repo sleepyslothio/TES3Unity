@@ -5,6 +5,7 @@ using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
 using TES3Unity.Rendering;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace TES3Unity
 {
@@ -20,12 +21,7 @@ namespace TES3Unity
 
     public enum SRPQuality
     {
-        Low = 0, Medium, High, Ultra
-    }
-
-    public enum AntiAliasingMode
-    {
-        None = 0, MSAA, FXAA, SMAA
+        Low = 0, High
     }
 
     [Serializable]
@@ -54,13 +50,15 @@ namespace TES3Unity
         public bool MusicEnabled = true;
         public PostProcessingQuality PostProcessingQuality = PostProcessingQuality.High;
         public SRPQuality SRPQuality = SRPQuality.High;
-        public AntiAliasingMode AntiAliasingMode = AntiAliasingMode.SMAA;
+        public AntialiasingMode AntiAliasingMode = AntialiasingMode.FastApproximateAntialiasing;
         public bool GenerateNormalMaps = true;
         public ShaderType ShaderType = ShaderType.PBR;
+        public float TerrainError = 5;
+        public float TreeDistance = 80;
         public bool AnimateLights = true;
         public bool SunShadows = true;
         public bool PonctualLightShadows = true;
-        public bool ExteriorLights = true;
+        public bool ExteriorLights = true; 
         public float CameraFarClip = 500.0f;
         public ushort CellRadius = 2;
         public ushort CellDetailRadius = 2;
@@ -163,7 +161,7 @@ namespace TES3Unity
             {
                 return LightShadows.None;
             }
-            else if (IsMobile() || config.SRPQuality == SRPQuality.Medium || config.SRPQuality == SRPQuality.Low)
+            else if (IsMobile() || config.SRPQuality == SRPQuality.Low)
             {
                 return LightShadows.Hard;
             }

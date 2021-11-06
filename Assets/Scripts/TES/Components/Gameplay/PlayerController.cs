@@ -18,8 +18,8 @@ namespace TES3Unity
         private CapsuleCollider m_CapsuleCollider = null;
         private Rigidbody m_Rigidbody = null;
         private InputActionMap m_MovementActionMap = null;
-        private InputAction m_LeftAxisAction = null;
-        private InputAction m_RightAxisAction = null;
+        private Vector2 m_LeftStickValue;
+        private Vector2 m_RightStickValue;
         private MovementSpeedMode m_MovementSpeedMode = MovementSpeedMode.Walk;
         private bool m_Paused = false;
         private bool m_IsGrounded = false;
@@ -93,8 +93,11 @@ namespace TES3Unity
             m_MovementActionMap["Crouch"].started += (c) => Crouch(true);
             m_MovementActionMap["Crouch"].canceled += (c) => Crouch(false);
 
-            m_LeftAxisAction = m_MovementActionMap["LeftAxis"];
-            m_RightAxisAction = m_MovementActionMap["RightAxis"];
+            m_MovementActionMap["LeftAxis"].performed += c => m_LeftStickValue = c.ReadValue<Vector2>();
+            m_MovementActionMap["LeftAxis"].canceled += c => m_LeftStickValue = Vector2.zero;
+
+            m_MovementActionMap["RightAxis"].performed += c => m_RightStickValue = c.ReadValue<Vector2>();
+            m_MovementActionMap["RightAxis"].canceled += c => m_RightStickValue = Vector2.zero;
 
             // Setup the camera
             var config = GameSettings.Get();
@@ -183,7 +186,7 @@ namespace TES3Unity
                 eulerAngles.x = eulerAngles.x - 360;
             }
 
-            var deltaMouse = lookSensitivity * m_RightAxisAction.ReadValue<Vector2>();
+            var deltaMouse = lookSensitivity * m_RightStickValue;
 
             eulerAngles.x = Mathf.Clamp(eulerAngles.x - deltaMouse.y, minVerticalAngle, maxVerticalAngle);
             eulerAngles.y = Mathf.Repeat(eulerAngles.y + deltaMouse.x, 360);
@@ -227,7 +230,7 @@ namespace TES3Unity
         private Vector3 CalculateLocalMovementDirection()
         {
             // Calculate the local movement direction.
-            var leftAxis = m_LeftAxisAction.ReadValue<Vector2>();
+            var leftAxis = m_LeftStickValue;// m_LeftAxisAction.ReadValue<Vector2>();
 
             var direction = new Vector3(leftAxis.x, 0.0f, leftAxis.y);
             return direction.normalized;

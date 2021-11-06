@@ -40,10 +40,7 @@ namespace TES3Unity.Effects
 
         private IEnumerator Start()
         {
-            m_Water = GetComponent<MeshRenderer>();
-
-            var waterMaterial = Resources.Load<Material>(TES3Material.GetWaterMaterialPath());
-            m_Water.sharedMaterial = waterMaterial;
+            m_Water = GetComponentInChildren<MeshRenderer>();
 
             var camera = Camera.main;
 

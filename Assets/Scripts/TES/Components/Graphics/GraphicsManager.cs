@@ -8,103 +8,50 @@ namespace TES3Unity.Components
 {
     public sealed class GraphicsManager : MonoBehaviour
     {
+#if UNITY_EDITOR
         private void Awake()
         {
-#if UNITY_EDITOR
             // We need to call this component now because SRP settings is very early
             // And we want to be sure it's called before SRP settings.
             var settingsOverride = FindObjectOfType<GameSettingsOverride>();
             settingsOverride?.ApplyEditorSettingsOverride();
-#endif
-            var config = GameSettings.Get();
-            var target = config.SRPQuality.ToString();
-
-            var assetPath = $"Rendering/UniversalRP/PipelineAssets";
-            var volumePath = $"Rendering/UniversalRP/Volumes";
-
-            if (GameSettings.IsMobile())
-            {
-                target = "Mobile";
-            }
-
-            // Setup the Quality level
-            var qualityIndex = 4; // Ultra
-
-            if (target == "Mobile")
-            {
-                qualityIndex = 0;
-            }
-            else if (config.SRPQuality == SRPQuality.Low)
-            {
-                qualityIndex = 1;
-            }
-            else if (config.SRPQuality == SRPQuality.Medium)
-            {
-                qualityIndex = 2;
-            }
-			else if (config.SRPQuality == SRPQuality.High)
-            {
-                qualityIndex = 3;
-            }
-
-            QualitySettings.SetQualityLevel(qualityIndex);
-
-            if (config.AntiAliasingMode != AntiAliasingMode.MSAA)
-            {
-                var asset = (UniversalRenderPipelineAsset)GraphicsSettings.renderPipelineAsset;
-                asset.msaaSampleCount = 0;
-            }
-
-            // Instantiate URP Volume
-            var profile = Resources.Load<VolumeProfile>($"{volumePath}/PostProcess-Profile");
-            var volumeGo = new GameObject($"{(profile.name.Replace("-Profile", "-Volume"))}");
-            volumeGo.transform.localPosition = Vector3.zero;
-
-            var instanceProfile = Instantiate(profile);
-
-            if (XRManager.Enabled || config.PostProcessingQuality == PostProcessingQuality.Medium)
-            {
-                instanceProfile.UpdateEffect<Bloom>((b) =>
-                {
-                    b.dirtIntensity.overrideState = true;
-                    b.dirtIntensity.Override(0);
-                    b.highQualityFiltering.overrideState = true;
-                    b.highQualityFiltering.Override(false);
-                });
-
-                instanceProfile.DisableEffect<MotionBlur>();
-                instanceProfile.DisableEffect<Vignette>();
-            }
-
-            if (config.PostProcessingQuality == PostProcessingQuality.Low)
-            {
-                instanceProfile.DisableEffect<Bloom>();
-            }
-
-            var volume = volumeGo.AddComponent<Volume>();
-            volume.isGlobal = true;
-            volume.sharedProfile = instanceProfile;
-
-            var skyboxMaterial = new Material(Shader.Find("Skybox/Procedural"));
-            var lowQualitySkybox = config.SRPQuality != SRPQuality.Low;
-#if UNITY_ANDROID
-            lowQualitySkybox = true;
-#endif
-
-            if (lowQualitySkybox)
-            {
-                skyboxMaterial.DisableKeyword("_SUNDISK_HIGH_QUALITY");
-                skyboxMaterial.EnableKeyword("_SUNDISK_SIMPLE");
-            }
-
-            RenderSettings.skybox = skyboxMaterial;
         }
+#endif
 
         private IEnumerator Start()
         {
             var config = GameSettings.Get();
             var camera = Camera.main;
             var wait = new WaitForSeconds(1);
+
+            // Setup the Quality level
+            var qualityIndex = 0; // PC
+
+            if (config.SRPQuality == SRPQuality.High)
+            {
+                qualityIndex = 1;
+            }
+
+            QualitySettings.SetQualityLevel(qualityIndex);
+
+            var asset = (UniversalRenderPipelineAsset)GraphicsSettings.renderPipelineAsset;
+            asset.msaaSampleCount = config.AntiAliasingMode != AntialiasingMode.None ? (int)MsaaQuality.Disabled : (int)MsaaQuality._4x;
+
+            // Instantiate URP Volume
+            var volume = FindObjectOfType<Volume>();
+            if (volume != null)
+            {
+                var profile = volume.profile;
+                SetupPostProcessing(config, profile);
+            }
+
+            // Skybox
+            if (config.SRPQuality == SRPQuality.Low || GameSettings.IsMobile())
+            {
+                var skyboxMaterial = RenderSettings.skybox;
+                skyboxMaterial.DisableKeyword("_SUNDISK_HIGH_QUALITY");
+                skyboxMaterial.EnableKeyword("_SUNDISK_SIMPLE");
+            }
 
             while (camera == null)
             {
@@ -117,19 +64,66 @@ namespace TES3Unity.Components
 
             var data = camera.GetComponent<UniversalAdditionalCameraData>();
             data.renderPostProcessing = config.PostProcessingQuality != PostProcessingQuality.None;
+            data.antialiasing = config.AntiAliasingMode;
 
-            switch (config.AntiAliasingMode)
+#if UNITY_ANDROID
+            OVRManager.fixedFoveatedRenderingLevel = OVRManager.FixedFoveatedRenderingLevel.High;
+            OVRManager.useDynamicFixedFoveatedRendering = true;
+#endif
+        }
+
+        public void SetupPostProcessing(GameSettings config, VolumeProfile profile)
+        {
+            var xrEnabled = XRManager.Enabled;
+            var mobile = GameSettings.IsMobile();
+
+            if (config.SRPQuality == SRPQuality.Low)
             {
-                case AntiAliasingMode.None:
-                case AntiAliasingMode.MSAA:
-                    data.antialiasing = AntialiasingMode.None;
-                    break;
-                case AntiAliasingMode.FXAA:
-                    data.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
-                    break;
-                case AntiAliasingMode.SMAA:
-                    data.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
-                    break;
+                profile.DisableEffect<Tonemapping>();
+                profile.DisableEffect<ColorAdjustments>();
+                profile.DisableEffect<WhiteBalance>();
+            }
+
+            if (xrEnabled || mobile || config.PostProcessingQuality == PostProcessingQuality.Low)
+            {
+                profile.DisableEffect<MotionBlur>();
+                profile.DisableEffect<Vignette>();
+                profile.DisableEffect<LensDistortion>();
+                profile.DisableEffect<FilmGrain>();
+                profile.DisableEffect<ChromaticAberration>();
+            }
+
+            if (xrEnabled)
+            {
+                Debug.LogWarning("Bloom is disabled because of an issue with HDR lighting.");
+
+                profile.UpdateEffect<Bloom>((b) =>
+                {
+                    b.dirtIntensity.overrideState = true;
+                    b.dirtIntensity.Override(0);
+                    b.dirtTexture.overrideState = true;
+                    b.dirtTexture.Override(null);
+                });
+            }
+
+            if (config.PostProcessingQuality == PostProcessingQuality.Medium)
+            {
+                profile.UpdateEffect<Bloom>((b) =>
+                {
+                    b.highQualityFiltering.overrideState = true;
+                    b.highQualityFiltering.Override(false);
+                });
+
+                profile.UpdateEffect<MotionBlur>((m) =>
+                {
+                    var mbQuality = mobile ? MotionBlurQuality.Low : MotionBlurQuality.Medium;
+                    m.quality.overrideState = true;
+                    m.quality.Override(mbQuality);
+                });
+
+                profile.DisableEffect<LensDistortion>();
+                profile.DisableEffect<FilmGrain>();
+                profile.DisableEffect<ChromaticAberration>();
             }
         }
     }

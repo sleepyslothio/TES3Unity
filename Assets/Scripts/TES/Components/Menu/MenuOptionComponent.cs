@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 namespace TES3Unity.Components
@@ -75,7 +76,7 @@ namespace TES3Unity.Components
             SetupDropdown<ShaderType>(m_ShaderQuality, (int)m_Settings.ShaderType, (i) => m_Settings.ShaderType = (ShaderType)i);
             
             // AntiAliasing
-            SetupDropdown<AntiAliasingMode>(m_AntiAliasing, (int)m_Settings.AntiAliasingMode, (i) => m_Settings.AntiAliasingMode = (AntiAliasingMode)i);
+            SetupDropdown<AntialiasingMode>(m_AntiAliasing, (int)m_Settings.AntiAliasingMode, (i) => m_Settings.AntiAliasingMode = (AntialiasingMode)i);
             
             // Camera Far Clip
             SetupFloatDropdown(m_CameraFarClipDropdown, GameSettings.CameraFarClipValues, m_Settings.CameraFarClip, (i) => m_Settings.CameraFarClip = GameSettings.CameraFarClipValues[i]);
