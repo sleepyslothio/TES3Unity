@@ -67,8 +67,22 @@ namespace TES3Unity.Components
             data.antialiasing = config.AntiAliasingMode;
 
 #if UNITY_ANDROID
-            OVRManager.fixedFoveatedRenderingLevel = OVRManager.FixedFoveatedRenderingLevel.High;
-            OVRManager.useDynamicFixedFoveatedRendering = true;
+            Unity.XR.Oculus.Utils.EnableDynamicFFR(true);
+            Unity.XR.Oculus.Utils.SetFoveationLevel(3);
+
+            if (!Unity.XR.Oculus.Performance.TrySetDisplayRefreshRate(120))
+            {
+                Unity.XR.Oculus.Performance.TrySetDisplayRefreshRate(90);
+            }
+
+            if (Unity.XR.Oculus.Performance.TryGetDisplayRefreshRate(out float rate))
+            {
+                Debug.Log($"Refresh rate is {rate}");
+            }
+            else
+            {
+                Debug.Log("Can't get the refresh rate");
+            }
 #endif
         }
 
