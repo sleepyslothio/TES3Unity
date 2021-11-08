@@ -35,6 +35,12 @@ namespace TES3Unity.Components
             QualitySettings.SetQualityLevel(qualityIndex);
 
             var asset = (UniversalRenderPipelineAsset)GraphicsSettings.renderPipelineAsset;
+
+            var renderScale = config.RenderScale / 100.0f;
+            if (renderScale >= 0.5f && renderScale <= 2.0f)
+            {
+                asset.renderScale = renderScale;
+            }
             asset.msaaSampleCount = config.AntiAliasingMode != AntialiasingMode.None ? (int)MsaaQuality.Disabled : (int)MsaaQuality._4x;
 
             // Instantiate URP Volume

@@ -125,7 +125,7 @@ namespace TES3Unity
                 Instance.ShaderType = ShaderType.Simple;
                 Instance.CameraFarClip = 200;
                 Instance.DayNightCycle = false;
-                Instance.AntiAliasingMode = AntiAliasingMode.MSAA;
+                Instance.AntiAliasingMode = AntialiasingMode.None;
                 Instance.CellDetailRadius = 2;
                 Instance.CellRadius = 1;
 #endif

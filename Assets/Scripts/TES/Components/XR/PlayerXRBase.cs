@@ -70,13 +70,6 @@ namespace TES3Unity.Components.XR
             }
 
             XRManager.SetTrackingOriginMode(mode, true);
-
-            // RenderScale
-            var renderScale = settings.RenderScale;
-            if (renderScale > 0 && renderScale <= 2)
-            {
-                //XRSettings.renderViewportScale = renderScale;
-            }
         }
 
         public Transform GetXRAttachNode(bool left)
