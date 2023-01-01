@@ -44,7 +44,7 @@ MonoBehaviour:
   - {fileID: 737289947240210267}
   - {fileID: -5133705650518131462}
   - {fileID: -4953074196435004866}
-  - {fileID: -6748763530872496666}
+  - {fileID: 0}
   - {fileID: -5130379423023840716}
   m_renderMode: 1
   m_depthSubmissionMode: 0
@@ -148,6 +148,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &-8036563711598568620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,6 +247,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &-7741085171205982757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,6 +304,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &-7606508555129688734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -595,6 +601,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &-5192732720943625085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -806,7 +814,7 @@ MonoBehaviour:
   nameUi: Mock Runtime
   version: 0.0.2
   featureIdInternal: com.unity.openxr.feature.mockruntime
-  openxrExtensionStrings: XR_UNITY_null_gfx
+  openxrExtensionStrings: XR_UNITY_null_gfx XR_UNITY_android_present
   company: Unity
   priority: 0
   required: 0
@@ -1182,6 +1190,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &-1773363813396477547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1303,6 +1313,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &-1470046755910383861
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1675,6 +1687,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &412455099573413877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1730,6 +1744,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &647493029943244469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1830,6 +1846,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &860134363957165235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1866,9 +1884,12 @@ MonoBehaviour:
   - {fileID: 5259177932118476979}
   - {fileID: -7477421378501186671}
   - {fileID: 5669164521969042177}
+  - {fileID: 2856061867204561191}
   - {fileID: -8036563711598568620}
+  - {fileID: 7079174765777495217}
   - {fileID: 7521069407100955366}
   - {fileID: -1057015187999760026}
+  - {fileID: 4681153959924371529}
   - {fileID: 7609922449877439811}
   m_renderMode: 1
   m_depthSubmissionMode: 0
@@ -2123,6 +2144,36 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+--- !u!114 &2856061867204561191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f647cc0545697264a9878224faada6d5, type: 3}
+  m_Name: MetaQuestFeature Android
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Meta Quest Support
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.metaquest
+  openxrExtensionStrings: XR_OCULUS_android_initialize_loader
+  company: Unity
+  priority: 0
+  required: 0
+  targetDevices:
+  - visibleName: Quest
+    manifestName: quest
+    enabled: 1
+  - visibleName: Quest 2
+    manifestName: quest2
+    enabled: 1
+  - visibleName: Quest Pro
+    manifestName: cambria
+    enabled: 1
 --- !u!114 &2963041768059632448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2178,6 +2229,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &3412012663167847791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2268,6 +2321,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &3812423479157533377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2366,6 +2421,7 @@ MonoBehaviour:
   - {fileID: 7225603224469023945}
   - {fileID: -4213047332088256584}
   - {fileID: -3014976060184446024}
+  - {fileID: 4695625050973853604}
   - {fileID: 4215800111190821131}
   - {fileID: 5066819807177037218}
   m_renderMode: 1
@@ -2410,6 +2466,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &4652168997671790881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2428,6 +2486,72 @@ MonoBehaviour:
   featureIdInternal: com.unity.openxr.feature.input.oculustouch
   openxrExtensionStrings: 
   company: Unity
+  priority: 0
+  required: 0
+--- !u!114 &4681153959924371529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1927c045052a06d49a9b21fdcaa26db6, type: 3}
+  m_Name: OculusXRFeature Android
+  m_EditorClassIdentifier: 
+  m_enabled: 1
+  nameUi: OculusXR Feature
+  version: 0.0.1
+  featureIdInternal: com.oculus.openxr.feature.oculusxr
+  openxrExtensionStrings: 'XR_KHR_vulkan_enable XR_KHR_D3D11_enable XR_OCULUS_common_reference_spaces
+    XR_FB_display_refresh_rate XR_EXT_performance_settings XR_FB_composition_layer_image_layout
+    XR_KHR_android_surface_swapchain XR_FB_android_surface_swapchain_create XR_KHR_composition_layer_color_scale_bias
+    XR_FB_color_space XR_EXT_hand_tracking XR_FB_swapchain_update_state XR_FB_swapchain_update_state_opengl_es
+    XR_FB_swapchain_update_state_vulkan XR_FB_foveation XR_FB_foveation_configuration
+    XR_FB_foveation_vulkan XR_FB_composition_layer_alpha_blend XR_KHR_composition_layer_depth
+    XR_KHR_composition_layer_cylinder XR_KHR_composition_layer_cube XR_KHR_composition_layer_equirect2
+    XR_KHR_convert_timespec_time XR_KHR_visibility_mask XR_FB_render_model XR_FB_spatial_entity
+    XR_FB_spatial_entity_query XR_FB_spatial_entity_storage XR_META_performance_metrics
+    XR_FB_scene XR_FB_spatial_entity_container XR_FB_scene_capture XR_FB_face_tracking
+    XR_FB_eye_tracking XR_FB_keyboard_tracking XR_FB_passthrough XR_FB_triangle_mesh
+    XR_FB_passthrough_keyboard_hands XR_OCULUS_audio_device_guid XR_FB_common_events
+    XR_FB_space_warp XR_FB_hand_tracking_capsules XR_FB_hand_tracking_mesh XR_FB_hand_tracking_aim
+    XR_FB_touch_controller_pro XR_FB_touch_controller_extras '
+  company: Oculus
+  priority: 0
+  required: 0
+--- !u!114 &4695625050973853604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1927c045052a06d49a9b21fdcaa26db6, type: 3}
+  m_Name: OculusXRFeature Standalone
+  m_EditorClassIdentifier: 
+  m_enabled: 1
+  nameUi: OculusXR Feature
+  version: 0.0.1
+  featureIdInternal: com.oculus.openxr.feature.oculusxr
+  openxrExtensionStrings: 'XR_KHR_vulkan_enable XR_KHR_D3D11_enable XR_OCULUS_common_reference_spaces
+    XR_FB_display_refresh_rate XR_EXT_performance_settings XR_FB_composition_layer_image_layout
+    XR_KHR_android_surface_swapchain XR_FB_android_surface_swapchain_create XR_KHR_composition_layer_color_scale_bias
+    XR_FB_color_space XR_EXT_hand_tracking XR_FB_swapchain_update_state XR_FB_swapchain_update_state_opengl_es
+    XR_FB_swapchain_update_state_vulkan XR_FB_foveation XR_FB_foveation_configuration
+    XR_FB_foveation_vulkan XR_FB_composition_layer_alpha_blend XR_KHR_composition_layer_depth
+    XR_KHR_composition_layer_cylinder XR_KHR_composition_layer_cube XR_KHR_composition_layer_equirect2
+    XR_KHR_convert_timespec_time XR_KHR_visibility_mask XR_FB_render_model XR_FB_spatial_entity
+    XR_FB_spatial_entity_query XR_FB_spatial_entity_storage XR_META_performance_metrics
+    XR_FB_scene XR_FB_spatial_entity_container XR_FB_scene_capture XR_FB_face_tracking
+    XR_FB_eye_tracking XR_FB_keyboard_tracking XR_FB_passthrough XR_FB_triangle_mesh
+    XR_FB_passthrough_keyboard_hands XR_OCULUS_audio_device_guid XR_FB_common_events
+    XR_FB_space_warp XR_FB_hand_tracking_capsules XR_FB_hand_tracking_mesh XR_FB_hand_tracking_aim
+    XR_FB_touch_controller_pro XR_FB_touch_controller_extras '
+  company: Oculus
   priority: 0
   required: 0
 --- !u!114 &4922495584525994662
@@ -2549,6 +2673,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &5528416544837316178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2971,6 +3097,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &7072576595751045826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2993,6 +3121,27 @@ MonoBehaviour:
   - {fileID: -4323272469264436017}
   m_renderMode: 1
   m_depthSubmissionMode: 0
+--- !u!114 &7079174765777495217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7de993716e042c6499d0c18eed3a773c, type: 3}
+  m_Name: MockRuntime Android
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Mock Runtime
+  version: 0.0.2
+  featureIdInternal: com.unity.openxr.feature.mockruntime
+  openxrExtensionStrings: XR_UNITY_null_gfx XR_UNITY_android_present
+  company: Unity
+  priority: 0
+  required: 0
+  ignoreValidationErrors: 0
 --- !u!114 &7132536915426202420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3053,6 +3202,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &7536319500082262534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3165,6 +3316,8 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1
 --- !u!114 &8193971361105719439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3295,3 +3448,5 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+  targetQuest: 1
+  targetQuest2: 1

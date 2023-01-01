@@ -1,6 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
 using TES3Unity.Inputs;
-using TES3Unity.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
