@@ -16,7 +16,7 @@ MonoBehaviour:
   m_AutomaticLoading: 0
   m_AutomaticRunning: 0
   m_Loaders:
-  - {fileID: 11400000, guid: 1cece75ba5c11df49a95d963cf3a6c7d, type: 2}
+  - {fileID: 11400000, guid: c89c63cbfdff8dd428cd36ac92f6ce48, type: 2}
 --- !u!114 &-7446451195916426455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_AutomaticLoading: 0
   m_AutomaticRunning: 0
   m_Loaders:
-  - {fileID: 11400000, guid: dc86944abc8d1a44590d0352e3e1eb29, type: 2}
+  - {fileID: 11400000, guid: c89c63cbfdff8dd428cd36ac92f6ce48, type: 2}
 --- !u!114 &-1263389711662784678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Name: Metro Settings
   m_EditorClassIdentifier: 
   m_LoaderManagerInstance: {fileID: -8128238247367243281}
-  m_InitManagerOnStart: 0
+  m_InitManagerOnStart: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
