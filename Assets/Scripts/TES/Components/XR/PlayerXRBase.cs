@@ -1,4 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
+using Demonixis.ToolboxV2.XR;
 using System.Collections;
 using TES3Unity.Inputs;
 using UnityEngine;
@@ -40,12 +41,18 @@ namespace TES3Unity.Components.XR
                 Destroy(eventSystem.gameObject);
             }
 
+            GameObjectUtils.CreateEventSystem<LaserPointerInputModule>();
             var uiActionMap = InputManager.Enable("UI");
-            var handNode = GetXRAttachNode(false);
-            var laserPointer = GameObjectUtils.Create("LaserPointer", handNode);
 
-            LaserPointer = laserPointer.AddComponent<IUILaserPointer>();
-            LaserPointer.PressAction = uiActionMap["Validate"];
+            LaserPointer = GetComponentInChildren<IUILaserPointer>(true);
+            if (LaserPointer == null)
+            {
+                var handNode = GetXRAttachNode(false);
+                var laserPointer = GameObjectUtils.Create("LaserPointer", handNode);
+                LaserPointer = laserPointer.AddComponent<IUILaserPointer>();
+                LaserPointer.PressAction = uiActionMap["Validate"];
+            }
+
             LaserPointer.IsActive = m_Spectator;
 
             if (m_Spectator)
@@ -62,7 +69,7 @@ namespace TES3Unity.Components.XR
             var settings = GameSettings.Get();
             var mode = TrackingOriginModeFlags.Device;
 
-            if (settings.RoomScale)
+            if (settings.VRRoomScale)
             {
                 mode = TrackingOriginModeFlags.Floor;
                 var trackingSpace = transform.FindChildRecursiveExact("TrackingSpace");

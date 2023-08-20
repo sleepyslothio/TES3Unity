@@ -1,4 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
+using Demonixis.ToolboxV2.XR;
 using System.Collections;
 using TES3Unity.Inputs;
 using TES3Unity.UI;
@@ -53,10 +54,10 @@ namespace TES3Unity.Components.XR
             m_XRActionMap["Recenter"].started += (c) => RecenterOrientationAndPosition();
 
             var settings = GameSettings.Get();
-            m_RoomScale = settings.RoomScale;
-            m_FollowHead = settings.FollowHead;
+            m_RoomScale = settings.VRRoomScale;
+            m_FollowHead = settings.VRFollowHead;
 
-            if (settings.Teleportation)
+            if (settings.VRTeleportation)
             {
                 var tpGo = Instantiate(m_TeleportationPrefab);
                 tpGo.transform.parent = GetXRAttachNode(false);

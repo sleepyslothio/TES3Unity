@@ -9,7 +9,7 @@ namespace TES3Unity.Components
     public class MenuOptionComponent : MonoBehaviour
     {
         private GameSettings m_Settings = null;
-        
+
         [Header("Audio")]
         [SerializeField]
         private Toggle m_AudioToggle = null;
@@ -55,7 +55,12 @@ namespace TES3Unity.Components
         private Toggle m_RoomScaleToggle = null;
         [SerializeField]
         private Toggle m_Teleportation = null;
-       
+        [SerializeField]
+        private Toggle m_VRAsyncSpaceWarp = null;
+        [SerializeField]
+        private Dropdown m_VRFFRLevel = null;
+        [SerializeField]
+        private Dropdown m_VRFrequency = null;
 
         private void Awake()
         {
@@ -68,21 +73,21 @@ namespace TES3Unity.Components
 
             // Post Processing
             SetupDropdown<PostProcessingQuality>(m_PostProcessDd, (int)m_Settings.PostProcessingQuality, (i) => m_Settings.PostProcessingQuality = (PostProcessingQuality)i);
-            
+
             // SRP
             SetupDropdown<SRPQuality>(m_SRPQuality, (int)m_Settings.SRPQuality, (i) => m_Settings.SRPQuality = (SRPQuality)i);
-            
+
             // Shader
             SetupDropdown<ShaderType>(m_ShaderQuality, (int)m_Settings.ShaderType, (i) => m_Settings.ShaderType = (ShaderType)i);
-            
+
             // AntiAliasing
             SetupDropdown<AntialiasingMode>(m_AntiAliasing, (int)m_Settings.AntiAliasingMode, (i) => m_Settings.AntiAliasingMode = (AntialiasingMode)i);
-            
+
             // Camera Far Clip
             SetupFloatDropdown(m_CameraFarClipDropdown, GameSettings.CameraFarClipValues, m_Settings.CameraFarClip, (i) => m_Settings.CameraFarClip = GameSettings.CameraFarClipValues[i]);
-            
+
             // RenderScale
-            SetupUShortDropdown(m_RenderScaleDd, GameSettings.RenderScaleValues, m_Settings.RenderScale, (i) => m_Settings.RenderScale = GameSettings.RenderScaleValues[i]);
+            SetupUShortDropdown(m_RenderScaleDd, GameSettings.RenderScaleValues, m_Settings.VRRenderScale, (i) => m_Settings.VRRenderScale = GameSettings.RenderScaleValues[i]);
 
             m_AudioToggle.isOn = m_Settings.MusicEnabled;
             m_AudioToggle.onValueChanged.AddListener((b) => m_Settings.MusicEnabled = b);
@@ -105,14 +110,20 @@ namespace TES3Unity.Components
             m_DayNightCycleToggle.isOn = m_Settings.DayNightCycle;
             m_DayNightCycleToggle.onValueChanged.AddListener((b) => m_Settings.DayNightCycle = b);
 
-            m_FollowHeadToggle.isOn = m_Settings.FollowHead;
-            m_FollowHeadToggle.onValueChanged.AddListener((b) => m_Settings.FollowHead = b);
+            m_FollowHeadToggle.isOn = m_Settings.VRFollowHead;
+            m_FollowHeadToggle.onValueChanged.AddListener((b) => m_Settings.VRFollowHead = b);
 
-            m_RoomScaleToggle.isOn = m_Settings.RoomScale;
-            m_RoomScaleToggle.onValueChanged.AddListener((b) => m_Settings.RoomScale = b);
+            m_RoomScaleToggle.isOn = m_Settings.VRRoomScale;
+            m_RoomScaleToggle.onValueChanged.AddListener((b) => m_Settings.VRRoomScale = b);
 
-            m_Teleportation.isOn = m_Settings.Teleportation;
-            m_Teleportation.onValueChanged.AddListener((b) => m_Settings.Teleportation = b);
+            m_Teleportation.isOn = m_Settings.VRTeleportation;
+            m_Teleportation.onValueChanged.AddListener((b) => m_Settings.VRTeleportation = b);
+
+            m_VRAsyncSpaceWarp.isOn = m_Settings.VRAppSpaceWarp;
+            m_VRAsyncSpaceWarp.onValueChanged.AddListener(b => m_Settings.VRAppSpaceWarp = b);
+
+            SetupUShortDropdown(m_VRFFRLevel, GameSettings.VRFFRLevels, m_Settings.VRFFRLevel, (i) => m_Settings.VRFFRLevel = GameSettings.VRFFRLevels[i]);
+            SetupUShortDropdown(m_VRFrequency, GameSettings.VRRefreshRates, m_Settings.VRRefreshRate, (i) => m_Settings.VRRefreshRate = GameSettings.VRRefreshRates[i]);
         }
 
         private void SetupDropdown<T>(Dropdown dropdown, int value, UnityAction<int> callback)

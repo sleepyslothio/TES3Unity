@@ -1,4 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
+using Demonixis.ToolboxV2.XR;
 using System;
 using System.IO;
 using TES3Unity.Components;
@@ -13,7 +14,7 @@ namespace TES3Unity
     public sealed class TES3Engine : MonoBehaviour
     {
         // Static.
-        public const string Version = "2020.1";
+        public const string Version = "2023.1";
         public const float NormalMapGeneratorIntensity = 0.75f;
         public static int MarkerLayer => LayerMask.NameToLayer("Marker");
         public static int CellRadiusOnLoad = 2;

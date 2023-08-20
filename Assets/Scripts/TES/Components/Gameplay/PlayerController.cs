@@ -1,4 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
+using Demonixis.ToolboxV2.XR;
 using TES3Unity.Inputs;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -102,7 +103,7 @@ namespace TES3Unity
             var config = GameSettings.Get();
             m_XREnabled = XRManager.IsXREnabled();
 
-            if (m_XREnabled && config.Teleportation)
+            if (m_XREnabled && config.VRTeleportation)
             {
                 enabled = false;
                 return;

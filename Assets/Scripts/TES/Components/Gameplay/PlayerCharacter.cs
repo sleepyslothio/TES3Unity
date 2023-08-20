@@ -1,4 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
+using Demonixis.ToolboxV2.XR;
 using System;
 using TES3Unity.Components;
 using TES3Unity.Components.Records;
@@ -139,8 +140,8 @@ namespace TES3Unity
 
                         InteractiveTextChanged?.Invoke(component, true);
                         RaycastedComponent?.Invoke(component);
-
-                        if (m_UseAction.phase == InputActionPhase.Started)
+                        
+                        if (m_UseAction.phase == InputActionPhase.Performed)
                         {
                             if (component is Door)
                             {

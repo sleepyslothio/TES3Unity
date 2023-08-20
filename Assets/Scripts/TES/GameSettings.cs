@@ -47,6 +47,16 @@ namespace TES3Unity
             0, 1 , 2, 3, 4
         };
 
+        public static readonly ushort[] VRFFRLevels = new ushort[]
+        {
+            0, 1, 2, 3, 4
+        };
+
+        public static readonly ushort[] VRRefreshRates = new ushort[]
+        {
+            60, 72, 80, 90, 120
+        };
+
         public bool MusicEnabled = true;
         public PostProcessingQuality PostProcessingQuality = PostProcessingQuality.High;
         public SRPQuality SRPQuality = SRPQuality.High;
@@ -65,10 +75,13 @@ namespace TES3Unity
         public ushort CellRadiusOnLoad = 2;
         public bool KinematicRigidbody = true;
         public bool DayNightCycle = false;
-        public bool FollowHead = true;
-        public bool Teleportation = true;
-        public bool RoomScale = false;
-        public ushort RenderScale = 100;
+        public bool VRFollowHead = true;
+        public bool VRTeleportation = true;
+        public bool VRRoomScale = false;
+        public bool VRAppSpaceWarp = true;
+        public ushort VRFFRLevel = 3;
+        public ushort VRRefreshRate = 72;
+        public ushort VRRenderScale = 100;
         public bool LoadExtensions = false;
         public PlayerData Player;
 
@@ -119,7 +132,7 @@ namespace TES3Unity
 #if UNITY_ANDROID || UNITY_IOS
                 Instance.GenerateNormalMaps = false;
                 Instance.SunShadows = false;
-                Instance.RenderScale = 90;
+                Instance.VRRenderScale = 90;
                 Instance.PostProcessingQuality = PostProcessingQuality.None;
                 Instance.ExteriorLights = false;
                 Instance.ShaderType = ShaderType.Simple;
@@ -128,6 +141,7 @@ namespace TES3Unity
                 Instance.AntiAliasingMode = AntialiasingMode.None;
                 Instance.CellDetailRadius = 2;
                 Instance.CellRadius = 1;
+                Instance.VRAppSpaceWarp = true;
 #endif
                 if (PlayerPrefs.HasKey(StorageKey))
                 {

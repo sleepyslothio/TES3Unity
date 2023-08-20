@@ -1,4 +1,5 @@
 ﻿using Demonixis.Toolbox.XR;
+using Demonixis.ToolboxV2.XR;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -36,7 +37,7 @@ namespace TES3Unity.Components
 
             var asset = (UniversalRenderPipelineAsset)GraphicsSettings.renderPipelineAsset;
 
-            var renderScale = config.RenderScale / 100.0f;
+            var renderScale = config.VRRenderScale / 100.0f;
             if (renderScale >= 0.5f && renderScale <= 2.0f)
             {
                 asset.renderScale = renderScale;
@@ -55,8 +56,11 @@ namespace TES3Unity.Components
             if (config.SRPQuality == SRPQuality.Low || GameSettings.IsMobile())
             {
                 var skyboxMaterial = RenderSettings.skybox;
-                skyboxMaterial.DisableKeyword("_SUNDISK_HIGH_QUALITY");
-                skyboxMaterial.EnableKeyword("_SUNDISK_SIMPLE");
+                if (skyboxMaterial != null)
+                {
+                    skyboxMaterial.DisableKeyword("_SUNDISK_HIGH_QUALITY");
+                    skyboxMaterial.EnableKeyword("_SUNDISK_SIMPLE");
+                }
             }
 
             while (camera == null)
@@ -73,23 +77,24 @@ namespace TES3Unity.Components
             data.antialiasing = config.AntiAliasingMode;
 
 #if UNITY_ANDROID
-            Unity.XR.Oculus.Utils.EnableDynamicFFR(true);
-            Unity.XR.Oculus.Utils.SetFoveationLevel(3);
-
-            if (!Unity.XR.Oculus.Performance.TrySetDisplayRefreshRate(120))
-            {
-                Unity.XR.Oculus.Performance.TrySetDisplayRefreshRate(90);
-            }
-
-            if (Unity.XR.Oculus.Performance.TryGetDisplayRefreshRate(out float rate))
-            {
-                Debug.Log($"Refresh rate is {rate}");
-            }
-            else
-            {
-                Debug.Log("Can't get the refresh rate");
-            }
+            SetupOculus(config);
 #endif
+        }
+
+        private void SetupOculus(GameSettings settings)
+        {
+            Unity.XR.Oculus.Utils.useDynamicFoveatedRendering = settings.VRFFRLevel > 0;
+            Unity.XR.Oculus.Utils.foveatedRenderingLevel = settings.VRFFRLevel;
+            Unity.XR.Oculus.Performance.TrySetDisplayRefreshRate((float)settings.VRRefreshRate);
+
+	        if (settings.VRAppSpaceWarp)
+		        Camera.main.depthTextureMode = DepthTextureMode.MotionVectors;
+
+	        OVRManager.SetSpaceWarp(settings.VRAppSpaceWarp);
+
+            Unity.XR.Oculus.Performance.TryGetDisplayRefreshRate(out float rate);
+            Debug.Log(
+                $"Oculus Setup - FFR: {settings.VRFFRLevel}, Frequency: {settings.VRRefreshRate}, AppSpaceWarp: {settings.VRAppSpaceWarp}");
         }
 
         public void SetupPostProcessing(GameSettings config, VolumeProfile profile)
@@ -102,6 +107,8 @@ namespace TES3Unity.Components
                 profile.DisableEffect<Tonemapping>();
                 profile.DisableEffect<ColorAdjustments>();
                 profile.DisableEffect<WhiteBalance>();
+                profile.DisableEffect<FilmGrain>();
+                profile.DisableEffect<ScreenSpaceLensFlare>();
             }
 
             if (xrEnabled || mobile || config.PostProcessingQuality == PostProcessingQuality.Low)
@@ -111,6 +118,8 @@ namespace TES3Unity.Components
                 profile.DisableEffect<LensDistortion>();
                 profile.DisableEffect<FilmGrain>();
                 profile.DisableEffect<ChromaticAberration>();
+                profile.DisableEffect<FilmGrain>();
+                profile.DisableEffect<ScreenSpaceLensFlare>();
             }
 
             if (xrEnabled)

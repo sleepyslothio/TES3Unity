@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Demonixis.ToolboxV2.XR;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,19 +9,29 @@ namespace Wacki
     {
         private GameObject m_HitPoint = null;
         private GameObject m_Pointer = null;
+        private float m_DistanceLimit;
         private bool m_Enabled = true;
         private bool m_Initialized = false;
-        private float _distanceLimit;
         private bool m_Locked = false;
+        private bool m_InputPressed = false;
+        private bool m_Ready = false;
 
         [SerializeField]
         private float m_LaserThickness = 0.002f;
         [SerializeField]
         private float m_LaserHitScale = 0.02f;
         [SerializeField]
-        private Color m_Color;
+        private Color m_Color = Color.blue;
+        [SerializeField]
+        private Material m_LaserMaterial = null;
+        [SerializeField]
+        private bool m_AutoInitialize = false;
+        [SerializeField]
+        private bool m_Left = false;
 
         public InputAction PressAction = null;
+
+        public bool HapicEnabled { get; set; } = true;
 
         public bool IsActive
         {
@@ -29,12 +40,22 @@ namespace Wacki
             {
                 if (!m_Initialized)
                 {
-                    Start();
+                    Initialize();
                 }
 
                 m_Enabled = value;
+                m_Locked = false;
                 m_HitPoint.SetActive(value);
                 m_Pointer.SetActive(value);
+
+                if (value)
+                {
+                    PressAction?.Enable();
+                }
+                else
+                {
+                    PressAction?.Disable();
+                }
             }
         }
 
@@ -45,14 +66,65 @@ namespace Wacki
             {
                 if (!m_Initialized)
                 {
-                    Start();
+                    Initialize();
                 }
 
                 m_Pointer.GetComponent<MeshRenderer>().enabled = value;
             }
         }
 
-        private void Start()
+        public Material SharedMaterial
+        {
+            get => m_HitPoint.GetComponent<MeshRenderer>().sharedMaterial;
+            set
+            {
+                m_Pointer.GetComponent<MeshRenderer>().sharedMaterial = value;
+                m_HitPoint.GetComponent<MeshRenderer>().sharedMaterial = value;
+            }
+        }
+
+        private void Awake()
+        {
+            if (m_AutoInitialize)
+            {
+                Initialize(m_LaserMaterial);
+
+                if (PressAction != null && !PressAction.enabled)
+                {
+                    PressAction.Enable();
+                }
+            }
+        }
+
+        private void OnEnable()
+        {
+            PressAction?.Enable();
+            m_Locked = false;
+        }
+
+        private void OnDisable()
+        {
+            PressAction?.Disable();
+            m_Locked = false;
+        }
+
+        private void OnApplicationPause(bool pause)
+        {
+            m_Locked = false;
+        }
+
+        public void InitializeInput()
+        {
+            if (PressAction == null)
+            {
+                return;
+            }
+
+            PressAction.started += c => m_InputPressed = true;
+            PressAction.canceled += c => m_InputPressed = false;
+        }
+
+        public void Initialize(Material newMaterial = null)
         {
             if (m_Initialized)
             {
@@ -75,19 +147,23 @@ namespace Wacki
             Destroy(m_HitPoint.GetComponent<SphereCollider>());
             Destroy(m_Pointer.GetComponent<BoxCollider>());
 
-            Material newMaterial = new Material(Shader.Find("Wacki/LaserPointer"));
-
-            newMaterial.SetColor("_Color", m_Color);
-            m_Pointer.GetComponent<MeshRenderer>().material = newMaterial;
-            m_HitPoint.GetComponent<MeshRenderer>().material = newMaterial;
-
-            // register with the LaserPointerInputModule
-            if (LaserPointerInputModule.instance == null)
+            if (newMaterial == null)
             {
-                new GameObject().AddComponent<LaserPointerInputModule>();
+                var shader = Shader.Find("Universal Render Pipeline/Unlit");
+                if (shader == null)
+                {
+                    Debug.LogError("The Shader Unlit was not found. using Lit instead.");
+                    shader = Shader.Find("Universal Render Pipeline/Lit");
+                }
+
+                newMaterial = new Material(shader);
+                newMaterial.SetColor("_BaseColor", m_Color);
             }
 
-            LaserPointerInputModule.instance.AddController(this);
+            m_Pointer.GetComponent<MeshRenderer>().sharedMaterial = newMaterial;
+            m_HitPoint.GetComponent<MeshRenderer>().sharedMaterial = newMaterial;
+
+            InitializeInput();
 
             m_Initialized = true;
         }
@@ -95,6 +171,7 @@ namespace Wacki
         public void SetActive(bool isActive)
         {
             gameObject.SetActive(isActive);
+            IsActive = isActive;
         }
 
         private void Update()
@@ -102,6 +179,15 @@ namespace Wacki
             if (!m_Enabled || m_Pointer == null)
             {
                 return;
+            }
+
+            if (!m_Ready)
+            {
+                if (LaserPointerInputModule.TryGetInstance(out LaserPointerInputModule module))
+                {
+                    module.AddController(this);
+                    m_Ready = true;
+                }
             }
 
             Ray ray = new Ray(transform.position, transform.forward);
@@ -116,9 +202,9 @@ namespace Wacki
             }
 
             // ugly, but has to do for now
-            if (_distanceLimit > 0.0f)
+            if (m_DistanceLimit > 0.0f)
             {
-                distance = Mathf.Min(distance, _distanceLimit);
+                distance = Mathf.Min(distance, m_DistanceLimit);
                 bHit = true;
             }
 
@@ -136,7 +222,7 @@ namespace Wacki
             }
 
             // reset the previous distance limit
-            _distanceLimit = -1.0f;
+            m_DistanceLimit = -1.0f;
         }
 
         public void LimitLaserDistance(float distance)
@@ -146,19 +232,25 @@ namespace Wacki
                 return;
             }
 
-            if (_distanceLimit < 0.0f)
+            if (m_DistanceLimit < 0.0f)
             {
-                _distanceLimit = distance;
+                m_DistanceLimit = distance;
             }
             else
             {
-                _distanceLimit = Mathf.Min(_distanceLimit, distance);
+                m_DistanceLimit = Mathf.Min(m_DistanceLimit, distance);
             }
         }
 
         public void OnEnterControl(GameObject control)
         {
-            // TODO: Add vibration.
+            if (!HapicEnabled)
+            {
+                return;
+            }
+
+            XRManager.Vibrate(this, UnityEngine.XR.XRNode.LeftHand, 0.1f, 0.15f);
+            XRManager.Vibrate(this, UnityEngine.XR.XRNode.RightHand, 0.1f, 0.15f);
         }
 
         public void OnExitControl(GameObject control)
@@ -167,36 +259,20 @@ namespace Wacki
 
         public bool ButtonDown()
         {
-            if (PressAction == null || m_Locked)
-            {
-                return false;
-            }
-
-            var validate = PressAction.phase == InputActionPhase.Started;
-
-            if (validate)
-            {
-                StartCoroutine(LockControls());
-            }
-
-            return validate;
+            return m_InputPressed && !m_Locked;
         }
 
         public bool ButtonUp()
         {
-            if (PressAction == null || m_Locked)
-            {
-                return false;
-            }
+            return !m_InputPressed && !m_Locked;
+        }
 
-            var cancel = PressAction.phase == InputActionPhase.Canceled;
-
-            if (cancel)
+        public void RequestLockControls()
+        {
+            if (!m_Locked)
             {
                 StartCoroutine(LockControls());
             }
-
-            return cancel;
         }
 
         private IEnumerator LockControls()

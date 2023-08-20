@@ -85,7 +85,7 @@ namespace TES3Unity.Components
                 m_TimeInSeconds = 0.0f;
             }
 
-            if (m_Sun == null && m_DayNightCycle)
+            if (m_Sun == null || !m_DayNightCycle)
             {
                 return;
             }

@@ -6,31 +6,6 @@ namespace Wacki
 {
     public class LaserPointerInputModule : BaseInputModule
     {
-        public static LaserPointerInputModule instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = FindObjectOfType<LaserPointerInputModule>();
-
-                    if (_instance == null)
-                    {
-                        var eventSystem = EventSystem.current;
-
-                        if (eventSystem == null)
-                        {
-                            var go = new GameObject("EventSystem");
-                            eventSystem = go.AddComponent<EventSystem>();
-                        }
-
-                        _instance = eventSystem.gameObject.AddComponent<LaserPointerInputModule>();
-                    }
-                }
-                return _instance;
-            }
-        }
-
         private static LaserPointerInputModule _instance = null;
 
         public LayerMask layerMask = new LayerMask() { value = 1 << 5 };
@@ -50,6 +25,23 @@ namespace Wacki
         // controller data
         private Dictionary<IUILaserPointer, ControllerData> _controllerData = new Dictionary<IUILaserPointer, ControllerData>();
 
+        public static bool TryGetInstance(out LaserPointerInputModule instance)
+        {
+            instance = null;
+
+            if (_instance == null)
+            {
+                _instance = FindFirstObjectByType<LaserPointerInputModule>();
+            }
+
+            if (_instance != null)
+            {
+                instance = _instance;
+            }
+
+            return _instance != null;
+        }
+
         protected override void Awake()
         {
             base.Awake();
@@ -57,7 +49,7 @@ namespace Wacki
             if (_instance != null && _instance != this)
             {
                 Debug.LogWarning("Trying to instantiate multiple LaserPointerInputModule.");
-                Destroy(gameObject);
+                Debug.Log(_instance.name); enabled = false;
                 return;
             }
 
@@ -89,12 +81,18 @@ namespace Wacki
 
         public void AddController(IUILaserPointer controller)
         {
-            _controllerData.Add(controller, new ControllerData());
+            if (!_controllerData.ContainsKey(controller))
+            {
+                _controllerData.Add(controller, new ControllerData());
+            }
         }
 
         public void RemoveController(IUILaserPointer controller)
         {
-            _controllerData.Remove(controller);
+            if (_controllerData.ContainsKey(controller))
+            {
+                _controllerData.Remove(controller);
+            }
         }
 
         protected void UpdateCameraPosition(IUILaserPointer controller)
@@ -132,7 +130,7 @@ namespace Wacki
                 var controller = pair.Key;
                 var data = pair.Value;
 
-                if (!controller.IsActive || !controller.enabled || !controller.gameObject.activeSelf)
+                if (!controller.IsActive || !controller.enabled || !controller.gameObject.activeSelf || !controller.gameObject.activeInHierarchy)
                 {
                     continue;
                 }
@@ -199,6 +197,7 @@ namespace Wacki
                     // update current pressed if the curser is over an element
                     if (data.currentPoint != null)
                     {
+                        controller.RequestLockControls();
                         data.currentPressed = data.currentPoint;
                         data.pointerEvent.current = data.currentPressed;
                         GameObject newPressed = ExecuteEvents.ExecuteHierarchy(data.currentPressed, data.pointerEvent, ExecuteEvents.pointerDownHandler);
@@ -252,6 +251,7 @@ namespace Wacki
                         }
                         data.pointerEvent.pointerDrag = null;
                         data.currentDragging = null;
+                        controller.RequestLockControls();
                     }
                     if (data.currentPressed)
                     {
@@ -261,6 +261,7 @@ namespace Wacki
                         data.pointerEvent.rawPointerPress = null;
                         data.pointerEvent.pointerPress = null;
                         data.currentPressed = null;
+                        controller.RequestLockControls();
                     }
                 }
 
