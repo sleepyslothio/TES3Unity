@@ -6,10 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Menu.unity
+    path: Assets/TES3Unity/Scenes/Menu.unity
     guid: 46e30032f3a47fc4fbabc7234b162816
   - enabled: 1
-    path: Assets/Scenes/Game.unity
+    path: Assets/TES3Unity/Scenes/Game.unity
     guid: 5a8ff10dbfe696e45bca66d86c2f4347
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 8d48b2b39021c684795522ce8ce7a759,
@@ -17,7 +17,11 @@ EditorBuildSettings:
     Unity.XR.OpenVR.Settings: {fileID: 0}
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: b9ddd1d616f8081429e9560933ef2a9b,
       type: 2}
+    UnityEditor.XR.VisionOS.VisionOSSettings: {fileID: 11400000, guid: 5376cc53f95c6fb4084836d3e50b7fee,
+      type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 7c2d3c4276a20274fbbaa45e5d59954f,
+      type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 74dc9fefdad0d884b9736e5f5ca9a985,
       type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 4e78195852d7b30419af88939c91636e,
       type: 2}
