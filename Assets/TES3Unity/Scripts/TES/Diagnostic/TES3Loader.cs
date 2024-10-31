@@ -12,17 +12,13 @@ namespace TES3Unity
     public class TES3Loader : MonoBehaviour
     {
         public TextureManager TextureManager { get; private set; }
-        public TES3Material MaterialManager { get; private set; }
+        public Tes3Material MaterialManager { get; private set; }
         public NIFManager NifManager { get; private set; }
 
-        [SerializeField]
-        public string[] m_AlternativeDataPaths = null;
-        [SerializeField]
-        public bool m_LoadExtensions = false;
-        [SerializeField]
-        private string[] m_LoadMods = null;
-        [SerializeField]
-        public string m_LoadSaveGameFilename = string.Empty;
+        [SerializeField] public string[] m_AlternativeDataPaths = null;
+        [SerializeField] public bool m_LoadExtensions = false;
+        [SerializeField] private string[] m_LoadMods = null;
+        [SerializeField] public string m_LoadSaveGameFilename = string.Empty;
 
         public event Action<ESSFile> SaveFileLoaded = null;
         public event Action<TES3Loader> Initialized = null;
@@ -66,7 +62,7 @@ namespace TES3Unity
             var config = GameSettings.Get();
 
             TextureManager = new TextureManager(TES3Engine.DataReader);
-            MaterialManager = new TES3Material(TextureManager, config.ShaderType, config.GenerateNormalMaps);
+            MaterialManager = new Tes3Material(TextureManager, config.lowQualityShader, config.GenerateNormalMaps);
             NifManager = new NIFManager(TES3Engine.DataReader, MaterialManager);
 
             // Mod loading
@@ -112,7 +108,8 @@ namespace TES3Unity
         {
             if (MWDataReader == null)
             {
-                Debug.LogWarning("Morrowind Data are not yet loaded. It'll take some time to load. The editor will be freezed a bit...");
+                Debug.LogWarning(
+                    "Morrowind Data are not yet loaded. It'll take some time to load. The editor will be freezed a bit...");
 
                 var dataPath = GameSettings.GetDataPath();
 
@@ -126,7 +123,8 @@ namespace TES3Unity
 
                     if (alternativeDataPaths == null)
                     {
-                        Debug.LogError("No valid path was found. You can try to add a TESManager component on the scene with an alternative path.");
+                        Debug.LogError(
+                            "No valid path was found. You can try to add a TESManager component on the scene with an alternative path.");
                         return;
                     }
 
@@ -167,7 +165,8 @@ namespace TES3Unity
             sb.Append($"Hair = {npc.HairModel}\n");
             sb.Append($"Faction = {npc.Faction}\n");
             sb.Append($"Race = {npc.Race}\n");
-            sb.Append($"Gender = {(Utils.ContainsBitFlags((uint)npc.Flags, (uint)ESM.Records.NPCFlags.Female) ? "f" : "m")}\n");
+            sb.Append(
+                $"Gender = {(Utils.ContainsBitFlags((uint)npc.Flags, (uint)ESM.Records.NPCFlags.Female) ? "f" : "m")}\n");
             sb.Append($"Class: {npc.Class}\n");
             sb.Append($"Scale: {npc.Scale}\n");
 

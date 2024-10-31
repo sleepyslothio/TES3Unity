@@ -1,161 +1,109 @@
-﻿using Demonixis.Toolbox.XR;
-using Demonixis.ToolboxV2.XR;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using Demonixis.ToolboxV2;
+using Demonixis.ToolboxV2.Graphics;
+using Demonixis.ToolboxV2.Utils;
+using Demonixis.ToolboxV2.XR;
 using UnityEngine;
+#if HDRP_ENABLED
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering.Universal;
+using ScreenSpaceAmbientOcclusion = UnityEngine.Rendering.HighDefinition.ScreenSpaceAmbientOcclusion;
+#endif
 
-namespace TES3Unity.Components
+namespace TES3Unity
 {
-    public sealed class GraphicsManager : MonoBehaviour
+    public sealed class GraphicsManager : GraphicsScaler
     {
-#if UNITY_EDITOR
+        private const string TreeContainerName = "Trees";
+
         private void Awake()
         {
-            // We need to call this component now because SRP settings is very early
-            // And we want to be sure it's called before SRP settings.
-            var settingsOverride = FindObjectOfType<GameSettingsOverride>();
-            settingsOverride?.ApplyEditorSettingsOverride();
+            var settings = GameSettings.Get();
+            PreInitialization(settings.startInVr, false);
         }
+
+        private void Start()
+        {
+            UpdateSettings();
+        }
+
+        public void UpdateSettings()
+        {
+            var settings = GameSettings.Get();
+            var settingsData = settings.GetGraphicsSettingsData();
+            var xrSettingsData = settings.GetXRSettingsData();
+
+#if HDRP_ENABLED
+            StartCoroutine(SetupHdrp(settingsData, xrSettingsData));
+#else
+            StartCoroutine(ReloadSettingsCoroutine(settingsData, xrSettingsData));
 #endif
 
-        private IEnumerator Start()
+            var trees = GameObject.Find(TreeContainerName);
+            if (trees == null) return;
+            trees.SetActive(settings.terrainQuality != GraphicsQuality.Low);
+        }
+
+#if HDRP_ENABLED
+        private IEnumerator SetupHdrp(GraphicsSettingsData settingsData, XRSettingsData xrSettingsData)
         {
-            var config = GameSettings.Get();
-            var camera = Camera.main;
-            var wait = new WaitForSeconds(1);
+            SetupQualityLevel((int)settingsData.SRPQuality);
+            TrySetupOculus(ref xrSettingsData);
+            //SetupShadows(ref settingsData);
+            SetupRefreshRate(settingsData.RefreshRate);
+            SetupPostProcessing(settingsData);
 
-            // Setup the Quality level
-            var qualityIndex = 0; // PC
+            yield return CoroutineFactory.WaitForSeconds(5.0f);
 
-            if (config.SRPQuality == SRPQuality.High)
+            var cameras = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var target in cameras)
             {
-                qualityIndex = 1;
+                if (target.CompareTag("MainCamera"))
+                    SetupHdrpMainCamera(target, ref settingsData);
             }
+        }
 
-            QualitySettings.SetQualityLevel(qualityIndex);
+        private static void SetupHdrpMainCamera(Camera targetCamera, ref GraphicsSettingsData graphicsSettingsData)
+        {
+            targetCamera.nearClipPlane = graphicsSettingsData.nearClip;
+            targetCamera.farClipPlane = graphicsSettingsData.farClip;
 
-            var asset = (UniversalRenderPipelineAsset)GraphicsSettings.defaultRenderPipeline;
-
-            var renderScale = config.VRRenderScale / 100.0f;
-            if (renderScale >= 0.5f && renderScale <= 2.0f)
+            if (targetCamera.TryGetComponent(out HDAdditionalCameraData data))
             {
-                asset.renderScale = renderScale;
+                data.antialiasing = graphicsSettingsData.GetHdrpAntiAliasing();
             }
-            asset.msaaSampleCount = config.AntiAliasingMode != AntialiasingMode.None ? (int)MsaaQuality.Disabled : (int)MsaaQuality._4x;
-
-            // Instantiate URP Volume
-            var volume = FindObjectOfType<Volume>();
-            if (volume != null)
+            else
             {
-                var profile = volume.profile;
-                SetupPostProcessing(config, profile);
+                Debug.LogWarning("Camera Data not found");
             }
+        }
 
-            // Skybox
-            if (config.SRPQuality == SRPQuality.Low || GameSettings.IsMobile())
+        private static void SetupPostProcessing(GraphicsSettingsData graphicsSettingsData)
+        {
+            var volumes = FindObjectsByType<Volume>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var volume in volumes)
             {
-                var skyboxMaterial = RenderSettings.skybox;
-                if (skyboxMaterial != null)
-                {
-                    skyboxMaterial.DisableKeyword("_SUNDISK_HIGH_QUALITY");
-                    skyboxMaterial.EnableKeyword("_SUNDISK_SIMPLE");
-                }
+                // Don't do anything 
+                if (volume.name.ToLower().Contains("sky")) continue;
+
+                if (graphicsSettingsData.PostProcessingQuality == PostProcessingQuality.None)
+                    volume.enabled = false;
+                else
+                    SetupVolumeProfile(volume.profile, graphicsSettingsData);
             }
+        }
 
-            while (camera == null)
-            {
-                camera = Camera.main;
-                yield return wait;
-            }
-
-            // 1. Setup Camera
-            camera.farClipPlane = config.CameraFarClip;
-
-            var data = camera.GetComponent<UniversalAdditionalCameraData>();
-            data.renderPostProcessing = config.PostProcessingQuality != PostProcessingQuality.None;
-            data.antialiasing = config.AntiAliasingMode;
-
-#if UNITY_ANDROID
-            SetupOculus(config);
+        private static void SetupVolumeProfile(VolumeProfile profile, GraphicsSettingsData graphicsSettingsData)
+        {
+            profile.UpdateEffect<UnityEngine.Rendering.HighDefinition.Bloom>(bloom =>
+                bloom.active = graphicsSettingsData.Bloom);
+            profile.UpdateEffect<ScreenSpaceAmbientOcclusion>(ao => ao.active = graphicsSettingsData.SSAO);
+            profile.UpdateEffect<ScreenSpaceReflection>(ssr => ssr.active = graphicsSettingsData.SSR);
+            profile.UpdateEffect<GlobalIllumination>(ssgi => ssgi.active = graphicsSettingsData.SSGI);
+        }
 #endif
-        }
-
-        private void SetupOculus(GameSettings settings)
-        {
-#if OCULUS_XR
-            Unity.XR.Oculus.Utils.useDynamicFoveatedRendering = settings.VRFFRLevel > 0;
-            Unity.XR.Oculus.Utils.foveatedRenderingLevel = settings.VRFFRLevel;
-            Unity.XR.Oculus.Performance.TrySetDisplayRefreshRate((float)settings.VRRefreshRate);
-
-	        if (settings.VRAppSpaceWarp)
-		        Camera.main.depthTextureMode = DepthTextureMode.MotionVectors;
-
-	        OVRManager.SetSpaceWarp(settings.VRAppSpaceWarp);
-
-            Unity.XR.Oculus.Performance.TryGetDisplayRefreshRate(out float rate);
-            Debug.Log(
-                $"Oculus Setup - FFR: {settings.VRFFRLevel}, Frequency: {settings.VRRefreshRate}, AppSpaceWarp: {settings.VRAppSpaceWarp}");
-#endif
-        }
-
-        public void SetupPostProcessing(GameSettings config, VolumeProfile profile)
-        {
-            var xrEnabled = XRManager.Enabled;
-            var mobile = GameSettings.IsMobile();
-
-            if (config.SRPQuality == SRPQuality.Low)
-            {
-                profile.DisableEffect<Tonemapping>();
-                profile.DisableEffect<ColorAdjustments>();
-                profile.DisableEffect<WhiteBalance>();
-                profile.DisableEffect<FilmGrain>();
-                profile.DisableEffect<ScreenSpaceLensFlare>();
-            }
-
-            if (xrEnabled || mobile || config.PostProcessingQuality == PostProcessingQuality.Low)
-            {
-                profile.DisableEffect<MotionBlur>();
-                profile.DisableEffect<Vignette>();
-                profile.DisableEffect<LensDistortion>();
-                profile.DisableEffect<FilmGrain>();
-                profile.DisableEffect<ChromaticAberration>();
-                profile.DisableEffect<FilmGrain>();
-                profile.DisableEffect<ScreenSpaceLensFlare>();
-            }
-
-            if (xrEnabled)
-            {
-                Debug.LogWarning("Bloom is disabled because of an issue with HDR lighting.");
-
-                profile.UpdateEffect<Bloom>((b) =>
-                {
-                    b.dirtIntensity.overrideState = true;
-                    b.dirtIntensity.Override(0);
-                    b.dirtTexture.overrideState = true;
-                    b.dirtTexture.Override(null);
-                });
-            }
-
-            if (config.PostProcessingQuality == PostProcessingQuality.Medium)
-            {
-                profile.UpdateEffect<Bloom>((b) =>
-                {
-                    b.highQualityFiltering.overrideState = true;
-                    b.highQualityFiltering.Override(false);
-                });
-
-                profile.UpdateEffect<MotionBlur>((m) =>
-                {
-                    var mbQuality = mobile ? MotionBlurQuality.Low : MotionBlurQuality.Medium;
-                    m.quality.overrideState = true;
-                    m.quality.Override(mbQuality);
-                });
-
-                profile.DisableEffect<LensDistortion>();
-                profile.DisableEffect<FilmGrain>();
-                profile.DisableEffect<ChromaticAberration>();
-            }
-        }
     }
 }

@@ -11,10 +11,10 @@ namespace TES3Unity
     public sealed class NIFObjectBuilder
     {
         private NiFile _file;
-        private TES3Material _materialManager;
+        private Tes3Material _materialManager;
         private bool _isStatic;
 
-        public NIFObjectBuilder(NiFile file, TES3Material materialManager, bool isStatic)
+        public NIFObjectBuilder(NiFile file, Tes3Material materialManager, bool isStatic)
         {
             _file = file;
             _materialManager = materialManager;

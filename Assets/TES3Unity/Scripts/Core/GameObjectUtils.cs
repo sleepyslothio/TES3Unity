@@ -125,7 +125,7 @@ public static class GameObjectUtils
         terrain.heightmapPixelError = settings.TerrainError;
         terrain.treeDistance = settings.TreeDistance;
 
-        terrain.materialTemplate = TES3Material.GetTerrainMaterial();
+        terrain.materialTemplate = Tes3Material.GetTerrainMaterial();
         terrain.terrainData = terrainData;
         
         terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;

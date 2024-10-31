@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -45,72 +46,75 @@ namespace TES3Unity.Rendering
     /// <summary>
     /// A material container compatible with Universal RP and HDRP.
     /// </summary>
-    public sealed class TES3Material
+    public sealed class Tes3Material
     {
         // Material Settings
-        public const string TES3LitPath = "TESUnity/URP-Lit";
-        public const string TES3LitCutoffPath = "TESUnity/URP-Lit-Cutoff";
-        public const string URPLitPath = "Universal Render Pipeline/Lit";
-        public const string URPSimpleLitPath = "Universal Render Pipeline/Simple Lit";
-        public const string URPTerrainPath = "Universal Render Pipeline/Terrain/Lit";
-        public const string DiffuseParameterName = "_BaseMap";
-        public const string NormalParameterName = "_BumpMap";
-        public const string m_SrcBlendParameter = "_SrcBlend";
-        public const string m_DstBlendParameter = "_DstBlend";
-        public const string m_CutoutParameter = "_Cutoff";
+        private const string Tes3LitPath = "TESUnity/URP-Lit";
+        private const string Tes3LitCutoffPath = "TESUnity/URP-Lit-Cutoff";
+        public const string UrpLitPath = "Universal Render Pipeline/Lit";
+        private const string UrpSimpleLitPath = "Universal Render Pipeline/Simple Lit";
+        private const string UrpTerrainPath = "Universal Render Pipeline/Terrain/Lit";
+        private const string DiffuseParameterName = "_BaseMap";
+        private const string NormalParameterName = "_BumpMap";
+        public const string SrcBlendParameter = "_SrcBlend";
+        public const string DstBlendParameter = "_DstBlend";
+        private const string CutoutParameter = "_Cutoff";
         // Static variables
-        private static Material TerrainMaterial = null;
-        private static Material SimpleLitCutoffMaterial = null;
-        private static Dictionary<TES3MaterialProps, Material> MaterialStore = new Dictionary<TES3MaterialProps, Material>();
+        private static Material _terrainMaterial;
+        private static Material _simpleLitCutoffMaterial;
+        private static readonly Dictionary<TES3MaterialProps, Material> MaterialStore = new Dictionary<TES3MaterialProps, Material>();
         // Private variables
-        private TextureManager m_TextureManager;
-        private Shader m_Shader = null;
-        private Shader m_CutoutShader = null;
-        private ShaderType m_ShaderType;
-        private bool m_GenerateNormals;
+        private readonly TextureManager _textureManager;
+        private readonly Shader _shader;
+        private readonly Shader _cutoutShader;
+        private readonly bool _lowQuality;
+        private readonly bool _generateNormals;
+        private static readonly int BumpMap = Shader.PropertyToID(NormalParameterName);
+        private static readonly int BaseMap = Shader.PropertyToID(DiffuseParameterName);
+        private static readonly int Cutoff = Shader.PropertyToID(CutoutParameter);
 
-        public TES3Material(TextureManager textureManager, ShaderType shaderType, bool generateNormal)
+        public Tes3Material(TextureManager textureManager, bool lowQuality, bool generateNormal)
         {
-            m_TextureManager = textureManager;
-            m_ShaderType = shaderType;
-            m_Shader = Shader.Find(m_ShaderType == ShaderType.PBR ? TES3LitPath : URPSimpleLitPath);
-            m_CutoutShader = Shader.Find(m_ShaderType == ShaderType.PBR ? TES3LitCutoffPath : URPSimpleLitPath);
-            m_GenerateNormals = generateNormal;
+            _textureManager = textureManager;
+            _lowQuality = lowQuality;
+            _shader = Shader.Find(!_lowQuality ? Tes3LitPath : UrpSimpleLitPath);
+            _cutoutShader = Shader.Find(!_lowQuality ? Tes3LitCutoffPath : UrpSimpleLitPath);
+            _generateNormals = generateNormal;
         }
 
         public Material BuildMaterialFromProperties(TES3MaterialProps mp)
         {
-            if (MaterialStore.ContainsKey(mp))
+            if (MaterialStore.TryGetValue(mp, out var properties))
             {
-                return MaterialStore[mp];
+                return properties;
             }
 
-            var material = new Material(mp.alphaBlended ? m_CutoutShader : m_Shader);
+            var material = new Material(mp.alphaBlended ? _cutoutShader : _shader);
 
             if (mp.alphaBlended)
             {
-                if (m_ShaderType == ShaderType.Simple)
+                if (_lowQuality)
                 {
-                    if (SimpleLitCutoffMaterial == null)
+                    if (_simpleLitCutoffMaterial == null)
                     {
-                        SimpleLitCutoffMaterial = Resources.Load<Material>($"{GetMaterialAssetPath()}/URP-SimpleLit-Cutout");
+                        _simpleLitCutoffMaterial = Resources.Load<Material>($"{GetMaterialAssetPath()}/URP-SimpleLit-Cutout");
                     }
 
-                    material.CopyPropertiesFromMaterial(SimpleLitCutoffMaterial);
+                    material.CopyPropertiesFromMaterial(_simpleLitCutoffMaterial);
                 }
 
-                material.SetFloat(m_CutoutParameter, 0.5f);
+                material.SetFloat(Cutoff, 0.5f);
             }
 
             if (mp.textures.mainFilePath != null)
             {
-                var mainTexture = m_TextureManager.LoadTexture(mp.textures.mainFilePath);
-                material.SetTexture(DiffuseParameterName, mainTexture);
+                var mainTexture = _textureManager.LoadTexture(mp.textures.mainFilePath);
+                material.SetTexture(BaseMap, mainTexture);
 
-                if (m_ShaderType == ShaderType.Simple && m_GenerateNormals)
+                if (_lowQuality && _generateNormals)
                 {
                     var normalMap = TextureManager.GenerateNormalMap(mainTexture, 2);
-                    material.SetTexture(NormalParameterName, normalMap);
+                    material.SetTexture(BumpMap, normalMap);
                 }
             }
 
@@ -121,17 +125,17 @@ namespace TES3Unity.Rendering
 
         public static Material GetTerrainMaterial()
         {
-            if (TerrainMaterial == null)
+            if (_terrainMaterial == null)
             {
-                TerrainMaterial = new Material(Shader.Find(URPTerrainPath));
+                _terrainMaterial = new Material(Shader.Find(UrpTerrainPath));
             }
 
-            return TerrainMaterial;
+            return _terrainMaterial;
         }
 
         public static string GetMaterialAssetPath()
         {
-            return $"Rendering/UniversalRP/Materials";
+            return "Rendering/UniversalRP/Materials";
         }
 
         public static string GetWaterMaterialPath()

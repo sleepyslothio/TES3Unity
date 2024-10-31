@@ -11,25 +11,25 @@ namespace TES3Unity
 {
     public class InRangeCellInfo
     {
-        public GameObject gameObject;
-        public GameObject objectsContainerGameObject;
-        public CELLRecord cellRecord;
-        public IEnumerator objectsCreationCoroutine;
+        public readonly GameObject GameObject;
+        public readonly GameObject ObjectsContainerGameObject;
+        public readonly CELLRecord CellRecord;
+        public readonly IEnumerator ObjectsCreationCoroutine;
 
         public InRangeCellInfo(GameObject gameObject, GameObject objectsContainerGameObject, CELLRecord cellRecord, IEnumerator objectsCreationCoroutine)
         {
-            this.gameObject = gameObject;
-            this.objectsContainerGameObject = objectsContainerGameObject;
-            this.cellRecord = cellRecord;
-            this.objectsCreationCoroutine = objectsCreationCoroutine;
+            GameObject = gameObject;
+            ObjectsContainerGameObject = objectsContainerGameObject;
+            CellRecord = cellRecord;
+            ObjectsCreationCoroutine = objectsCreationCoroutine;
         }
     }
 
     public class RefCellObjInfo
     {
-        public RefObjDataGroup refObjDataGroup;
-        public Record referencedRecord;
-        public string modelFilePath;
+        public RefObjDataGroup RefObjDataGroup;
+        public Record ReferencedRecord;
+        public string ModelFilePath;
     }
 
     public class CellManager
@@ -120,7 +120,7 @@ namespace TES3Unity
 
                             if ((cellInfo != null) && immediate)
                             {
-                                temporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
+                                temporalLoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
                             }
                         }
                     }
@@ -139,16 +139,16 @@ namespace TES3Unity
 
                 if (cellDistance <= detailRadius)
                 {
-                    if (!cellInfo.objectsContainerGameObject.activeSelf)
+                    if (!cellInfo.ObjectsContainerGameObject.activeSelf)
                     {
-                        cellInfo.objectsContainerGameObject.SetActive(true);
+                        cellInfo.ObjectsContainerGameObject.SetActive(true);
                     }
                 }
                 else
                 {
-                    if (cellInfo.objectsContainerGameObject.activeSelf)
+                    if (cellInfo.ObjectsContainerGameObject.activeSelf)
                     {
-                        cellInfo.objectsContainerGameObject.SetActive(false);
+                        cellInfo.ObjectsContainerGameObject.SetActive(false);
                     }
                 }
             }
@@ -211,8 +211,8 @@ namespace TES3Unity
         {
             foreach (var keyValuePair in cellObjects)
             {
-                temporalLoadBalancer.CancelTask(keyValuePair.Value.objectsCreationCoroutine);
-                GameObject.Destroy(keyValuePair.Value.gameObject);
+                temporalLoadBalancer.CancelTask(keyValuePair.Value.ObjectsCreationCoroutine);
+                GameObject.Destroy(keyValuePair.Value.GameObject);
             }
 
             cellObjects.Clear();
@@ -271,16 +271,16 @@ namespace TES3Unity
             for (int i = 0; i < count; i++)
             {
                 var refObjInfo = new RefCellObjInfo();
-                refObjInfo.refObjDataGroup = CELL.refObjDataGroups[i];
+                refObjInfo.RefObjDataGroup = CELL.refObjDataGroups[i];
 
                 // Get the record the RefObjDataGroup references.
-                dataReader.MorrowindESMFile.ObjectsByIDString.TryGetValue(refObjInfo.refObjDataGroup.NAME.value, out refObjInfo.referencedRecord);
+                dataReader.MorrowindESMFile.ObjectsByIDString.TryGetValue(refObjInfo.RefObjDataGroup.NAME.value, out refObjInfo.ReferencedRecord);
 
-                if (refObjInfo.referencedRecord != null)
+                if (refObjInfo.ReferencedRecord != null)
                 {
                     var modelFileName = string.Empty;
 
-                    var modelRecord = refObjInfo.referencedRecord as IModelRecord;
+                    var modelRecord = refObjInfo.ReferencedRecord as IModelRecord;
                     if (modelRecord != null)
                     {
                         modelFileName = modelRecord.Model;
@@ -289,7 +289,7 @@ namespace TES3Unity
                     // If the model file name is valid, store the model file path.
                     if (!string.IsNullOrEmpty(modelFileName))
                     {
-                        refObjInfo.modelFilePath = "meshes\\" + modelFileName;
+                        refObjInfo.ModelFilePath = "meshes\\" + modelFileName;
                     }
                 }
 
@@ -304,22 +304,22 @@ namespace TES3Unity
         /// </summary>
         private void InstantiateCellObject(CELLRecord CELL, GameObject parent, RefCellObjInfo refCellObjInfo)
         {
-            if (refCellObjInfo.referencedRecord != null)
+            if (refCellObjInfo.ReferencedRecord != null)
             {
                 GameObject modelObj = null;
 
                 // If the object has a model, instantiate it.
-                if (refCellObjInfo.modelFilePath != null)
+                if (refCellObjInfo.ModelFilePath != null)
                 {
-                    modelObj = nifManager.InstantiateNIF(refCellObjInfo.modelFilePath);
+                    modelObj = nifManager.InstantiateNIF(refCellObjInfo.ModelFilePath);
                     PostProcessInstantiatedCellObject(modelObj, refCellObjInfo);
 
                     modelObj.transform.parent = parent.transform;
                 }
 
-                if (refCellObjInfo.referencedRecord is NPC_Record)
+                if (refCellObjInfo.ReferencedRecord is NPC_Record)
                 {
-                    var NPC_ = (NPC_Record)refCellObjInfo.referencedRecord;
+                    var NPC_ = (NPC_Record)refCellObjInfo.ReferencedRecord;
                     var npcGameObject = NPCFactory.InstanciateNPC(nifManager, NPC_);
 
                     PostProcessInstantiatedCellObject(npcGameObject, refCellObjInfo);
@@ -327,9 +327,9 @@ namespace TES3Unity
                 }
 
                 // If the object has a light, instantiate it.
-                if (refCellObjInfo.referencedRecord is LIGHRecord)
+                if (refCellObjInfo.ReferencedRecord is LIGHRecord)
                 {
-                    var lightObj = InstantiateLight((LIGHRecord)refCellObjInfo.referencedRecord, CELL.isInterior);
+                    var lightObj = InstantiateLight((LIGHRecord)refCellObjInfo.ReferencedRecord, CELL.isInterior);
 
                     // If the object also has a model, parent the model to the light.
                     if (modelObj != null)
@@ -369,7 +369,7 @@ namespace TES3Unity
             {
                 if (TES3Engine.LogEnabled)
                 {
-                    Debug.Log("Unknown Object: " + refCellObjInfo.refObjDataGroup.NAME.value);
+                    Debug.Log("Unknown Object: " + refCellObjInfo.RefObjDataGroup.NAME.value);
                 }
             }
         }
@@ -406,7 +406,7 @@ namespace TES3Unity
         /// </summary>
         private void PostProcessInstantiatedCellObject(GameObject gameObject, RefCellObjInfo refCellObjInfo)
         {
-            var refObjDataGroup = refCellObjInfo.refObjDataGroup;
+            var refObjDataGroup = refCellObjInfo.RefObjDataGroup;
 
             // Handle object transforms.
             if (refObjDataGroup.XSCL != null)
@@ -445,7 +445,7 @@ namespace TES3Unity
 
         private void ProcessObjectType<RecordType>(GameObject gameObject, RefCellObjInfo info, string tag) where RecordType : Record
         {
-            var record = info.referencedRecord;
+            var record = info.ReferencedRecord;
             if (record is RecordType)
             {
                 var obj = GameObjectUtils.FindTopLevelObject(gameObject);
@@ -459,7 +459,7 @@ namespace TES3Unity
                 //only door records need access to the cell object data group so far
                 if (record is DOORRecord)
                 {
-                    ((Door)component).refObjDataGroup = info.refObjDataGroup;
+                    ((Door)component).refObjDataGroup = info.RefObjDataGroup;
                 }
             }
         }
@@ -686,8 +686,8 @@ namespace TES3Unity
 
             if (cellObjects.TryGetValue(indices, out cellInfo))
             {
-                temporalLoadBalancer.CancelTask(cellInfo.objectsCreationCoroutine);
-                GameObject.Destroy(cellInfo.gameObject);
+                temporalLoadBalancer.CancelTask(cellInfo.ObjectsCreationCoroutine);
+                GameObject.Destroy(cellInfo.GameObject);
                 cellObjects.Remove(indices);
             }
             else

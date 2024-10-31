@@ -1,11 +1,13 @@
-﻿using Demonixis.Toolbox.XR;
+﻿using System.Collections;
+using Demonixis.Toolbox.XR;
 using Demonixis.ToolboxV2.XR;
-using System.Collections;
 using TES3Unity.Inputs;
 using TES3Unity.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.XR;
+using Wacki;
 
 namespace TES3Unity.Components.XR
 {
@@ -14,34 +16,70 @@ namespace TES3Unity.Components.XR
     /// VR SDKs allows us to provide more support (moving controller, teleportation, etc.)
     /// To enable a VR SDKs, please read the README.md file located in the Vendors folder.
     /// </summary>
-    public class PlayerXR : PlayerXRBase
+    public sealed class PlayerXR : MonoBehaviour
     {
-        private Transform m_Transform = null;
-        private RectTransform m_Canvas = null;
-        private Transform m_PivotCanvas = null;
-        private Transform m_HUD = null;
-        private InputActionMap m_XRActionMap = null;
-        private bool m_FollowHead = false;
-        private bool m_RoomScale = false;
-        private Canvas m_MainCanvas = null;
+        private Transform _transform;
+        private RectTransform _canvas;
+        private Transform _pivotCanvas;
+        private Transform _hud;
+        private InputActionMap _xrActionMap;
+        private bool _followHead;
+        private bool _roomScale;
+        private Canvas _mainCanvas;
+        private TrackingOriginModeFlags _trackingSpaceType;
 
-        [SerializeField]
-        private GameObject m_TeleportationPrefab = null;
+        [SerializeField] private bool _spectator;
+        [SerializeField] private GameObject _teleportationPrefab;
+        [SerializeField] private Transform _cameraTransform;
+        [SerializeField] private Transform _trackingSpace;
+        [SerializeField] private IUILaserPointer _laserPointer;
+        [SerializeField] private float _headHeight = 1.55f;
 
-        private void OnEnable() => m_XRActionMap?.Enable();
-        private void OnDisable() => m_XRActionMap?.Disable();
+        private void OnEnable() => _xrActionMap?.Enable();
+        private void OnDisable() => _xrActionMap?.Disable();
 
-        protected override IEnumerator Start()
+        private IEnumerator Start()
         {
             if (!XRManager.IsXREnabled())
             {
                 enabled = false;
+                _laserPointer.SetActive(false);
                 yield break;
             }
 
-            StartCoroutine(base.Start());
+            var cameras = GetComponentsInChildren<Camera>();
+            foreach (var target in cameras)
+            {
+                if (target.CompareTag("MainCamera"))
+                    _cameraTransform = target.transform;
+            }
 
-            m_Transform = transform;
+            _transform = transform;
+            _laserPointer.IsActive = _spectator;
+
+            if (_spectator)
+            {
+                var mainUI = GUIUtils.MainCanvas;
+                var canvas = mainUI.GetComponent<Canvas>();
+                GUIUtils.SetCanvasToWorldSpace(canvas, null, 2.5f, 0.015f, 1.7f);
+            }
+
+            // Wait that everything is initialized.
+            yield return new WaitForEndOfFrame();
+
+            // Tracking Space Type
+            var settings = GameSettings.Get();
+            var mode = TrackingOriginModeFlags.Device;
+
+            if (!settings.vrSeated)
+            {
+                mode = TrackingOriginModeFlags.Floor;
+                var trackingSpace = transform.FindChildRecursiveExact("TrackingSpace");
+                trackingSpace.localPosition = Vector3.zero;
+            }
+
+            XRManager.SetTrackingOriginMode(mode, true);
+
 
             var trackedPoseDriversNew = GetComponentsInChildren<TrackedPoseDriver>(true);
             foreach (var driver in trackedPoseDriversNew)
@@ -49,18 +87,16 @@ namespace TES3Unity.Components.XR
                 driver.enabled = true;
             }
 
-            m_XRActionMap = InputManager.GetActionMap("XR");
-            m_XRActionMap.Enable();
-            m_XRActionMap["Recenter"].started += (c) => RecenterOrientationAndPosition();
+            _xrActionMap = InputManager.GetActionMap("XR");
+            _xrActionMap.Enable();
+            _xrActionMap["Recenter"].started += c => RecenterOrientationAndPosition();
 
-            var settings = GameSettings.Get();
-            m_RoomScale = settings.VRRoomScale;
-            m_FollowHead = settings.VRFollowHead;
+            _roomScale = !settings.vrSeated;
+            _followHead = settings.VRFollowHead;
 
             if (settings.VRTeleportation)
             {
-                var tpGo = Instantiate(m_TeleportationPrefab);
-                tpGo.transform.parent = GetXRAttachNode(false);
+                var tpGo = Instantiate(_teleportationPrefab, GetXRAttachNode(false), true);
                 tpGo.transform.localPosition = Vector3.zero;
                 tpGo.transform.localRotation = Quaternion.identity;
 
@@ -68,16 +104,15 @@ namespace TES3Unity.Components.XR
                 tp.SetHand(false);
             }
 
-            var uiManager = FindObjectOfType<UIManager>();
-
+            var uiManager = FindFirstObjectByType<UIManager>();
             if (uiManager != null)
             {
-                if (m_MainCanvas == null)
+                if (_mainCanvas == null)
                 {
-                    m_MainCanvas = uiManager.GetComponent<Canvas>();
+                    _mainCanvas = uiManager.GetComponent<Canvas>();
                 }
 
-                if (m_MainCanvas == null)
+                if (_mainCanvas == null)
                 {
                     throw new UnityException("The Main Canvas Is Null");
                 }
@@ -87,14 +122,14 @@ namespace TES3Unity.Components.XR
 
             uiManager.WindowOpenChanged += OnUIWindowsOpened;
 
-            m_Canvas = m_MainCanvas.GetComponent<RectTransform>();
-            m_PivotCanvas = m_Canvas.parent;
-            m_HUD = m_Canvas.Find("HUD");
+            _canvas = _mainCanvas.GetComponent<RectTransform>();
+            _pivotCanvas = _canvas.parent;
+            _hud = _canvas.Find("HUD");
 
             // Add a pivot to the UI. It'll help to rotate it in the inverse direction of the camera.
             var uiPivot = GameObjectUtils.Create("UI Pivot", transform);
-            m_PivotCanvas = uiPivot.transform;
-            GUIUtils.SetCanvasToWorldSpace(m_Canvas.GetComponent<Canvas>(), m_PivotCanvas, 1.5f, 0.002f);
+            _pivotCanvas = uiPivot.transform;
+            GUIUtils.SetCanvasToWorldSpace(_canvas.GetComponent<Canvas>(), _pivotCanvas, 1.5f, 0.002f);
 
             // Setup the camera
             Camera.main.nearClipPlane = 0.1f;
@@ -104,30 +139,30 @@ namespace TES3Unity.Components.XR
 
         private void OnUIWindowsOpened(UIWindow window, bool open)
         {
-            LaserPointer.IsActive = open;
+            _laserPointer.IsActive = open;
         }
 
         private void Update()
         {
-            if (m_PivotCanvas == null)
+            if (_pivotCanvas == null)
             {
                 return;
             }
 
             RecenterUI();
 
-            var centerEye = CameraTransform;
+            var centerEye = _cameraTransform;
             var root = centerEye.parent;
             var prevPos = root.position;
             var prevRot = root.rotation;
 
-            if (m_FollowHead)
+            if (_followHead)
             {
                 //m_Transform.rotation = Quaternion.Euler(0.0f, centerEye.rotation.eulerAngles.y, 0.0f);
                 //root.rotation = prevRot;
             }
 
-            if (m_RoomScale)
+            if (_roomScale)
             {
                 //_transform.position = new Vector3(centerEye.position.x, 0.0f, centerEye.position.z);
                 //root.position = prevPos;
@@ -141,15 +176,15 @@ namespace TES3Unity.Components.XR
         {
             if (!onlyPosition)
             {
-                var pivotRot = m_PivotCanvas.localRotation;
-                pivotRot.y = CameraTransform.localRotation.y;
-                m_PivotCanvas.localRotation = pivotRot;
+                var pivotRot = _pivotCanvas.localRotation;
+                pivotRot.y = _cameraTransform.localRotation.y;
+                _pivotCanvas.localRotation = pivotRot;
             }
 
-            var camPosition = CameraTransform.position;
-            var targetPosition = m_PivotCanvas.position;
+            var camPosition = _cameraTransform.position;
+            var targetPosition = _pivotCanvas.position;
             targetPosition.y = camPosition.y;
-            m_PivotCanvas.position = targetPosition;
+            _pivotCanvas.position = targetPosition;
         }
 
         /// <summary>
@@ -157,8 +192,37 @@ namespace TES3Unity.Components.XR
         /// </summary>
         public void RecenterOrientationAndPosition()
         {
-            XRManager.Recenter();
+            InternalRecenter();
             RecenterUI();
+        }
+
+        public Transform GetXRAttachNode(bool left)
+        {
+            var hand = transform.FindChildRecursiveExact($"{(left ? "Left" : "Right")}Hand");
+            var xr = hand.Find("XR");
+            return xr ?? hand;
+        }
+        
+        public void InternalRecenter()
+        {
+#if OCULUS_BUILD
+            if (OVRManager.display != null)
+            {
+                OVRManager.display.RecenterPose();
+                return;
+            }
+#endif
+
+#if !UNITY_VISIONOS
+            XRManager.Recenter();
+#endif
+
+            var bEyeSpace = _trackingSpaceType == TrackingOriginModeFlags.Device;
+            var headHeight = bEyeSpace ? _headHeight : 0;
+            var trackingLoc = -_cameraTransform.localPosition;
+            trackingLoc.y += headHeight;
+
+            _trackingSpace.localPosition = trackingLoc;
         }
     }
 }

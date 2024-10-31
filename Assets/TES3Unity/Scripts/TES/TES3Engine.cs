@@ -1,6 +1,7 @@
 ﻿using Demonixis.ToolboxV2.XR;
 using System;
 using System.IO;
+using Demonixis.ToolboxV2;
 using TES3Unity.Components;
 using TES3Unity.Components.Records;
 using TES3Unity.ESM.Records;
@@ -23,19 +24,16 @@ namespace TES3Unity
         public static TES3DataReader DataReader { get; set; }
 
         private TemporalLoadBalancer m_TemporalLoadBalancer;
-        private TES3Material m_MaterialManager;
+        private Tes3Material m_MaterialManager;
         private NIFManager m_NIFManager;
 
-        [Header("Global")]
-        public float ambientIntensity = 1.5f;
+        [Header("Global")] public float ambientIntensity = 1.5f;
         public float desiredWorkTimePerFrame = 0.0005f;
 
-        [Header("Debug")]
-        public string loadSaveGameFilename = string.Empty;
+        [Header("Debug")] public string loadSaveGameFilename = string.Empty;
 
 #if UNITY_EDITOR
-        [Header("Editor Only")]
-        public string[] AlternativeDataPaths = null;
+        [Header("Editor Only")] public string[] AlternativeDataPaths = null;
         public int CellRadius = 1;
         public int CellDetailRadius = 1;
         public bool ForceAutoloadSavedGame = true;
@@ -151,13 +149,13 @@ namespace TES3Unity
             CellRadiusOnLoad = config.CellRadiusOnLoad;
 
             textureManager = new TextureManager(DataReader);
-            m_MaterialManager = new TES3Material(textureManager, config.ShaderType, config.GenerateNormalMaps);
+            m_MaterialManager = new Tes3Material(textureManager, config.lowQualityShader, config.GenerateNormalMaps);
             m_NIFManager = new NIFManager(DataReader, m_MaterialManager);
             m_TemporalLoadBalancer = new TemporalLoadBalancer();
             cellManager = new CellManager(DataReader, textureManager, m_NIFManager, m_TemporalLoadBalancer);
 
             var sunLight = GameObjectUtils.CreateSunLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
-            var weatherManager = FindObjectOfType<WeatherManager>();
+            var weatherManager = FindFirstObjectByType<WeatherManager>();
             weatherManager.SetSun(sunLight);
 
             var waterPrefab = Resources.Load<GameObject>("Prefabs/WaterRP");
@@ -194,7 +192,7 @@ namespace TES3Unity
                     cellIsInterior = save.IsInterior;
                     spawnPosition = save.Position;
                     spawnRotation = save.Rotation;
-                    GameSettings.Get().Player = save.Data;
+                    GameSettings.Get().playerData = save.Data;
                 }
 
                 AutoLoadSavedGame = false;
@@ -213,14 +211,15 @@ namespace TES3Unity
                     ess.FindStartLocation(out string cellName, out float[] pos, out float[] rot);
                     // TODO: Find the correct grid/cell from these data.
 
-                    var grid = TES3Engine.Instance.cellManager.GetExteriorCellIndices(new Vector3(pos[0], pos[1], pos[2]));
+                    var grid = TES3Engine.Instance.cellManager.GetExteriorCellIndices(new Vector3(pos[0], pos[1],
+                        pos[2]));
                     var exterior = DataReader.FindExteriorCellRecord(grid);
                     var interior = DataReader.FindInteriorCellRecord(cellName);
                 }
             }
 #endif
 
-            if (GameSettings.IsMobile() && !XRManager.IsXREnabled())
+            if (PlatformUtility.IsMobilePlatform() && !XRManager.IsXREnabled())
             {
                 var touchPrefab = Resources.Load<GameObject>("Input/TouchJoysticks");
                 Instantiate(touchPrefab, Vector3.zero, Quaternion.identity);
@@ -247,7 +246,7 @@ namespace TES3Unity
             CreatePlayer(position, rotation);
 
             var cellInfo = cellManager.StartCreatingInteriorCell(interiorCellName);
-            m_TemporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
+            m_TemporalLoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
         }
 
         public void SpawnPlayer(Vector2i gridCoords, bool outside, Vector3 position, Quaternion rotation)
@@ -267,7 +266,7 @@ namespace TES3Unity
 
             CreatePlayer(position, rotation);
 
-            m_TemporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
+            m_TemporalLoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
         }
 
         #endregion
@@ -308,7 +307,8 @@ namespace TES3Unity
 
                 // Move the player.
                 m_PlayerTransform.position = component.doorData.doorExitPos;
-                m_PlayerTransform.localEulerAngles = new Vector3(0, component.doorData.doorExitOrientation.eulerAngles.y, 0);
+                m_PlayerTransform.localEulerAngles =
+                    new Vector3(0, component.doorData.doorExitOrientation.eulerAngles.y, 0);
 
                 // Load the new cell.
                 CELLRecord newCell;
@@ -316,9 +316,9 @@ namespace TES3Unity
                 if (component.doorData.leadsToInteriorCell)
                 {
                     var cellInfo = cellManager.StartCreatingInteriorCell(component.doorData.doorExitName);
-                    m_TemporalLoadBalancer.WaitForTask(cellInfo.objectsCreationCoroutine);
+                    m_TemporalLoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
 
-                    newCell = cellInfo.cellRecord;
+                    newCell = cellInfo.CellRecord;
                 }
                 else
                 {
