@@ -9,25 +9,21 @@ namespace Demonixis.ToolboxV2.Inputs
 
         static InputSystemManager()
         {
-            if (InputActions == null)
-            {
-                InputActions = Resources.Load<InputActionAsset>("InputActions");
-            }
+            InputActions = Resources.Load<InputActionAsset>("InputActions");
         }
 
         public static void SetActive(string map, bool active)
         {
             var actionMap = GetActionMap(map);
-            if (actionMap != null)
+            if (actionMap == null) return;
+            
+            if (active)
             {
-                if (active)
-                {
-                    actionMap.Enable();
-                }
-                else
-                {
-                    actionMap.Disable();
-                }
+                actionMap.Enable();
+            }
+            else
+            {
+                actionMap.Disable();
             }
         }
 

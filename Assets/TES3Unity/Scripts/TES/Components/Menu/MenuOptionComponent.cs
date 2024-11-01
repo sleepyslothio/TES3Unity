@@ -59,8 +59,8 @@ namespace TES3Unity.Components
                 i => _settings.srpQuality = (GraphicsQuality2)i);
 
             // Shader
-            m_ShaderQuality.SetIsOnWithoutNotify(_settings.lowQualityShader);
-            m_ShaderQuality.onValueChanged.AddListener(b => _settings.lowQualityShader = b);
+            //m_ShaderQuality.SetIsOnWithoutNotify(_settings.lowQualityShader);
+            //m_ShaderQuality.onValueChanged.AddListener(b => _settings.lowQualityShader = b);
             
             // AntiAliasing
             SetupDropdown<AntiAliasingProxy>(m_AntiAliasing, (int)_settings.antiAliasing,

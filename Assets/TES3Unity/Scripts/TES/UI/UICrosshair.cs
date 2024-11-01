@@ -1,5 +1,4 @@
-﻿using Demonixis.Toolbox.XR;
-using Demonixis.ToolboxV2.XR;
+﻿using Demonixis.ToolboxV2.XR;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,8 +11,8 @@ namespace TES3Unity.UI
 
         public bool Enabled
         {
-            get { return _crosshair.enabled; }
-            set { _crosshair.enabled = value; }
+            get => _crosshair.enabled;
+            set => _crosshair.enabled = value;
         }
 
         private void Awake()

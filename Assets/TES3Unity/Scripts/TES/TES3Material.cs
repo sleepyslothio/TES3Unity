@@ -51,7 +51,6 @@ namespace TES3Unity.Rendering
         // Material Settings
         private const string Tes3LitPath = "TESUnity/URP-Lit";
         private const string Tes3LitCutoffPath = "TESUnity/URP-Lit-Cutoff";
-        public const string UrpLitPath = "Universal Render Pipeline/Lit";
         private const string UrpSimpleLitPath = "Universal Render Pipeline/Simple Lit";
         private const string UrpTerrainPath = "Universal Render Pipeline/Terrain/Lit";
         private const string DiffuseParameterName = "_BaseMap";
@@ -136,11 +135,6 @@ namespace TES3Unity.Rendering
         public static string GetMaterialAssetPath()
         {
             return "Rendering/UniversalRP/Materials";
-        }
-
-        public static string GetWaterMaterialPath()
-        {
-            return $"{GetMaterialAssetPath()}/TES3-Water";
         }
     }
 }

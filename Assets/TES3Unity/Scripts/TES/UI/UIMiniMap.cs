@@ -1,5 +1,4 @@
-﻿using Demonixis.Toolbox.XR;
-using Demonixis.ToolboxV2.XR;
+﻿using Demonixis.ToolboxV2.XR;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,8 +7,7 @@ namespace TES3Unity.UI
 {
     public sealed class UIMiniMap : MonoBehaviour
     {
-        [SerializeField]
-        private RawImage m_RawImage = null;
+        [SerializeField] private RawImage m_RawImage = null;
 
         private IEnumerator Start()
         {

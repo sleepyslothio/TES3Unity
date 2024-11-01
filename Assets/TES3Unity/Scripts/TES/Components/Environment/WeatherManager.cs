@@ -10,24 +10,25 @@ namespace TES3Unity.Components
         private const float TweetyFourHoursInSeconds = 86400.0f;
         private const float TwelveHoursInSeconds = 43200.0f;
 
-        private Light m_Sun = null;
-        private Transform m_SunTransform = null;
-        private Color m_DefaultFogColor;
-        private Color m_DefaultSunLightColor;
-        private Color32 m_DefaultAmbientColor = new Color32(137, 140, 160, 255);
-        private float m_DefaultFogDensity;
-        private bool m_DayNightCycle;
+        private Transform _sunTransform;
+        private Color _defaultFogColor;
+        private Color _defaultSunLightColor;
+        private readonly Color32 _defaultAmbientColor = new (137, 140, 160, 255);
+        private float _defaultFogDensity;
+        private bool _dayNightCycle;
 
-        [Range(0.0f, TweetyFourHoursInSeconds)]
-        [SerializeField]
-        private float m_TimeInSeconds = 34000;
-        [SerializeField]
-        private float m_TimeScale = 1.0f;
+        [SerializeField] private Light _sunLight;
+        [SerializeField] private Light _moonLight;
+
+        [SerializeField, Range(0.0f, TweetyFourHoursInSeconds)]
+        private float _timeInSeconds = 34000;
+
+        [SerializeField] private float _timeScale = 1.0f;
 
         public TimeSpan GameTime
         {
-            get => TimeSpan.FromSeconds(m_TimeInSeconds);
-            set => m_TimeInSeconds = (float)value.TotalSeconds;
+            get => TimeSpan.FromSeconds(_timeInSeconds);
+            set => _timeInSeconds = (float)value.TotalSeconds;
         }
 
         public int Hours => GameTime.Hours;
@@ -39,82 +40,49 @@ namespace TES3Unity.Components
 
         private void Start()
         {
-            m_DefaultFogColor = RenderSettings.fogColor;
-            m_DefaultFogDensity = RenderSettings.fogDensity;
+            _defaultFogColor = RenderSettings.fogColor;
+            _defaultFogDensity = RenderSettings.fogDensity;
+            _defaultSunLightColor = _sunLight.color;
 
             var config = GameSettings.Get();
-            m_DayNightCycle = config.DayNightCycle;
+            _dayNightCycle = config.DayNightCycle;
 
             var engine = TES3Engine.Instance;
             engine.CurrentCellChanged += OnCurrentCellChanged;
             OnCurrentCellChanged(engine.CurrentCell);
         }
-
-        public void SetSun(Light light)
-        {
-            return;
-            m_Sun = light;
-            m_Sun.shadows = GameSettings.GetRecommandedShadows(false);
-            m_SunTransform = light.transform;
-            RenderSettings.sun = light;
-
-            if (!GameSettings.Get().DayNightCycle)
-            {
-                return;
-            }
-
-            // The Moon Light is a subtile directional light at the opposite of the sun light
-            // It's used to light a bit the scene when the sun light is in night mode.
-            var moonLightGo = new GameObject("MoonLight");
-            moonLightGo.transform.parent = m_SunTransform;
-            moonLightGo.transform.localPosition = Vector3.zero;
-            moonLightGo.transform.localRotation = Quaternion.Euler(180.0f, 0.0f, 0.0f);
-
-            var moonLight = moonLightGo.AddComponent<Light>();
-            moonLight.type = LightType.Directional;
-            moonLight.intensity = 0.32f;
-            moonLight.color = new Color32(136, 163, 255, 255);
-            moonLight.shadows = GameSettings.GetRecommandedShadows(true);
-        }
-
+        
         private void Update()
         {
-            m_TimeInSeconds += Time.deltaTime * m_TimeScale * TimeScaleMultiplier;
+            _timeInSeconds += Time.deltaTime * _timeScale * TimeScaleMultiplier;
 
-            if (m_TimeInSeconds >= TweetyFourHoursInSeconds)
-            {
-                m_TimeInSeconds = 0.0f;
-            }
+            if (_timeInSeconds >= TweetyFourHoursInSeconds)
+                _timeInSeconds = 0.0f;
 
-            if (m_Sun == null || !m_DayNightCycle)
-            {
-                return;
-            }
+            if (_sunLight == null || !_dayNightCycle) return;
 
-            var position = Quaternion.Euler((m_TimeInSeconds / TweetyFourHoursInSeconds) * 360.0f, 0, 0) * new Vector3(0.0f, -300.0f, 0.0f);
-            m_SunTransform.position = position;
-            m_SunTransform.rotation = Quaternion.LookRotation(-position);
+            var position = Quaternion.Euler((_timeInSeconds / TweetyFourHoursInSeconds) * 360.0f, 0, 0) *
+                           new Vector3(0.0f, -300.0f, 0.0f);
+            _sunTransform.position = position;
+            _sunTransform.rotation = Quaternion.LookRotation(-position);
 
-            m_Sun.intensity = 1.25f - Mathf.Abs(m_TimeInSeconds / TwelveHoursInSeconds - 1.0f);
-            m_Sun.color = new Color(
+            _sunLight.intensity = 1.25f - Mathf.Abs(_timeInSeconds / TwelveHoursInSeconds - 1.0f);
+            _sunLight.color = new Color(
                 1.0f,
-                Mathf.Min(m_Sun.intensity + 0.05f, 1.0f),
-                Mathf.Min(m_Sun.intensity, 1.0f)
+                Mathf.Min(_sunLight.intensity + 0.05f, 1.0f),
+                Mathf.Min(_sunLight.intensity, 1.0f)
             );
         }
 
         private void OnCurrentCellChanged(CELLRecord cell)
         {
-            if (cell == null)
-            {
-                return;
-            }
+            if (cell == null) return;
 
-            var ambientColor = m_DefaultAmbientColor;
-            var sunColor = m_DefaultSunLightColor;
+            var ambientColor = _defaultAmbientColor;
+            var sunColor = _defaultSunLightColor;
             var ambientData = cell.AMBI;
-            var fogColor = m_DefaultFogColor;
-            var fogDensity = m_DefaultFogDensity;
+            var fogColor = _defaultFogColor;
+            var fogDensity = _defaultFogDensity;
             var fog = !cell.isInterior;
             var rain = false;
 
@@ -150,14 +118,13 @@ namespace TES3Unity.Components
 
             if (rain)
             {
-                Debug.Log($"It's raining!");
+                Debug.Log("It's raining!");
             }
 
-            if (m_Sun != null)
-            {
-                m_Sun.enabled = !cell.isInterior;
-                m_Sun.color = sunColor;
-            }
+            if (_sunLight == null) return;
+            
+            _sunLight.enabled = !cell.isInterior;
+            _sunLight.color = sunColor;
         }
     }
 }

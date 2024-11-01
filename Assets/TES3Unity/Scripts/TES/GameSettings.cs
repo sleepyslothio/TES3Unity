@@ -10,6 +10,7 @@ using TES3Unity.Rendering;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 namespace TES3Unity
@@ -124,7 +125,7 @@ namespace TES3Unity
 #if UNITY_VISIONOS
             return startInMr;
 #elif UNITY_ANDROID
-            return startInMr && XRManager.Enabled && !LevelLoader.IsLevelLoaded;
+            return startInMr && XRManager.Enabled && SceneManager.GetActiveScene().name.ToLower().Contains("menu");
 #else
             return false;
 #endif

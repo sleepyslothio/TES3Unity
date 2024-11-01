@@ -9,48 +9,38 @@ namespace TES3Unity
     /// </summary>
     public sealed class SoundManager : MonoBehaviour
     {
-        private MusicPlayer m_MusicPlayer = null;
-
-        private static Dictionary<string, AudioClip> AudioClipStore = new Dictionary<string, AudioClip>();
-
-        private void Start()
-        {
-            m_MusicPlayer = new MusicPlayer();
-        }
+        private MusicPlayer _musicPlayer;
+        private static readonly Dictionary<string, AudioClip> AudioClipStore = new();
 
         private void Update()
         {
-            m_MusicPlayer.Update();
+            _musicPlayer?.Update();
         }
 
         public void Initialize(string dataPath)
         {
-            if (!GameSettings.Get().MusicEnabled)
-            {
-                return;
-            }
-
+            _musicPlayer = new MusicPlayer();
+            
+            if (!GameSettings.Get().MusicEnabled) return;
+  
             var songs = Directory.GetFiles(dataPath + "/Music/Explore");
-            if (songs.Length > 0)
-            {
-                foreach (var songFilePath in songs)
-                {
-                    if (!songFilePath.Contains("Morrowind Title"))
-                    {
-                        m_MusicPlayer.AddSong(songFilePath);
-                    }
-                }
 
-                m_MusicPlayer.Play();
+            if (songs.Length <= 0) return;
+            
+            foreach (var songFilePath in songs)
+            {
+                if (!songFilePath.Contains("Morrowind Title"))
+                {
+                    _musicPlayer.AddSong(songFilePath);
+                }
             }
+
+            _musicPlayer.Play();
         }
 
         public static AudioClip GetAudioClip(string id)
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                return null;
-            }
+            if (string.IsNullOrEmpty(id)) return null;
 
             if (AudioClipStore.ContainsKey(id))
             {

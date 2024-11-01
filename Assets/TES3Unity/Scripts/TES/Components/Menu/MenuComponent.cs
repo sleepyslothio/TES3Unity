@@ -1,57 +1,47 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.IO;
 using System.Threading;
-using TES3Unity.Inputs;
+using Demonixis.ToolboxV2.Inputs;
+using Demonixis.ToolboxV2.XR;
+using UnityEditor;
 using UnityEngine;
-#if UNITY_ANDROID
-using UnityEngine.Android;
-#endif
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
+#if UNITY_ANDROID
+using UnityEngine.Android;
+#endif
 
 namespace TES3Unity.Components
 {
     public sealed class MenuComponent : MonoBehaviour
     {
-        private MusicPlayer m_MusicPlayer = null;
-        private Thread m_PreloadThread = null;
+        private MusicPlayer m_MusicPlayer;
+        private Thread m_PreloadThread;
         private string m_GamePath = string.Empty;
-        private bool m_MenuLoaded = false;
+        private bool m_MenuLoaded;
 
-        [Header("Panels")]
-        [SerializeField]
-        private GameObject m_PermissionPanel = null;
-        [SerializeField]
-        private GameObject m_PreloadPanel = null;
-        [SerializeField]
-        private GameObject m_MenuPanel = null;
-        [SerializeField]
-        private GameObject m_OptionsPanel = null;
+        [Header("Panels")] [SerializeField] private GameObject m_PermissionPanel;
+        [SerializeField] private GameObject m_PreloadPanel;
+        [SerializeField] private GameObject m_MenuPanel;
+        [SerializeField] private GameObject m_OptionsPanel;
 
-        [Header("UI Elements")]
-        [SerializeField]
-        private Image m_Background = null;
+        [Header("UI Elements")] [SerializeField]
+        private Image m_Background;
 
-        [Header("Preloading")]
-        [SerializeField]
-        private GameObject m_DesktopPathSelection = null;
-        [SerializeField]
-        private GameObject m_MobilePathSelection = null;
-        [SerializeField]
-        private Text m_PathValidationText = null;
+        [Header("Preloading")] [SerializeField]
+        private GameObject m_DesktopPathSelection;
 
-        [Header("Menu")]
-        [SerializeField]
-        private InputField m_PathSelector = null;
-        [SerializeField]
-        private Button m_LoadButton = null;
-        [SerializeField]
-        private Text m_InfoMessage = null;
-        [SerializeField]
-        private GameObject m_ButtonsContainer = null;
-        [SerializeField]
-        private Button m_LoadSaveButton = null;
+        [SerializeField] private GameObject m_MobilePathSelection;
+        [SerializeField] private Text m_PathValidationText;
+
+        [Header("Menu")] [SerializeField] private InputField m_PathSelector;
+        [SerializeField] private Button m_LoadButton;
+        [SerializeField] private Text m_InfoMessage;
+        [SerializeField] private GameObject m_ButtonsContainer;
+        [SerializeField] private Button m_LoadSaveButton;
 
 #if UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
         [Header("Editor Only")]
@@ -95,7 +85,7 @@ namespace TES3Unity.Components
 
             var wait = new WaitForEndOfFrame();
 
-            var actionMap = InputManager.GetActionMap("UI");
+            var actionMap = InputSystemManager.GetActionMap("UI");
             actionMap.Enable();
 
             var backAction = actionMap["Menu"];
@@ -161,10 +151,7 @@ namespace TES3Unity.Components
             // Preload data if the reader is not yet initialized.
             if (TES3Engine.DataReader == null)
             {
-                m_PreloadThread = new Thread(new ThreadStart(() =>
-                {
-                    TES3Engine.DataReader = new TES3DataReader(m_GamePath);
-                }));
+                m_PreloadThread = new Thread(() => { TES3Engine.DataReader = new TES3DataReader(m_GamePath); });
 
                 m_PreloadThread.Start();
 
@@ -177,12 +164,13 @@ namespace TES3Unity.Components
 
             if (Directory.Exists(path))
             {
-                var files = Directory.GetFiles(path);
+                var files = Directory.GetFiles(path, "*.tga");
                 if (files.Length > 0)
                 {
                     var target = files[Random.Range(0, files.Length - 1)];
                     var texture = TGALoader.LoadTGA(target);
-                    var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+                    var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height),
+                        Vector2.zero);
                     m_Background.sprite = sprite;
                     m_Background.color = Color.white;
                 }
@@ -230,6 +218,15 @@ namespace TES3Unity.Components
             m_LoadButton.interactable = true;
             m_InfoMessage.enabled = false;
             m_LoadSaveButton.interactable = !TES3Save.Get().IsEmpty();
+
+#if UNITY_STANDALONE
+            if (!XRManager.IsXREnabled())
+            {
+                var textureManager = new TextureManager(TES3Engine.DataReader);
+                var texture = textureManager.LoadTexture("tx_cursor", true);
+                Cursor.SetCursor(texture, Vector2.zero, CursorMode.Auto);
+            }
+#endif
         }
 
         private IEnumerator LoadWorld(string path)
@@ -256,7 +253,7 @@ namespace TES3Unity.Components
             dataReader?.Close();
 
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+            EditorApplication.isPlaying = false;
 #endif
 
             Application.Quit();

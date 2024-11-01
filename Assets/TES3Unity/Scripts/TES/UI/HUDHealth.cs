@@ -1,20 +1,16 @@
-﻿using UnityEngine;
+﻿using Demonixis.ToolboxV2.XR;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace TES3Unity.UI
 {
     public sealed class HUDHealth : MonoBehaviour
     {
-        [SerializeField]
-        private Slider m_Health = null;
-        [SerializeField]
-        private Slider m_Magic = null;
-        [SerializeField]
-        private Slider m_Stamina = null;
-        [SerializeField]
-        private Image m_WeaponBox = null;
-        [SerializeField]
-        private Image m_MagicBox = null;
+        [SerializeField] private Slider m_Health;
+        [SerializeField] private Slider m_Magic;
+        [SerializeField] private Slider m_Stamina;
+        [SerializeField] private Image m_WeaponBox;
+        [SerializeField] private Image m_MagicBox;
 
         public int Health
         {
@@ -41,6 +37,12 @@ namespace TES3Unity.UI
         {
             m_MagicBox.sprite = icon;
             m_MagicBox.transform.parent.gameObject.SetActive(icon != null);
+        }
+
+        private void Start()
+        {
+            if (XRManager.Enabled)
+                gameObject.SetActive(false);
         }
     }
 }

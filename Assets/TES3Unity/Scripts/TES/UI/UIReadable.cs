@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using Demonixis.ToolboxV2.Inputs;
 using TES3Unity.ESM.Records;
-using TES3Unity.Inputs;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,7 +35,7 @@ namespace TES3Unity.UI
                 Close();
             }
 
-            var gameplayActionMap = InputManager.GetActionMap("Gameplay");
+            var gameplayActionMap = InputSystemManager.GetActionMap("Gameplay");
             gameplayActionMap["Use"].started += (c) =>
             {
                 if (m_Container.activeSelf)

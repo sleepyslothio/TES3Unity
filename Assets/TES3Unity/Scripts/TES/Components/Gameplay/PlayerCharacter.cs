@@ -1,9 +1,8 @@
-﻿using Demonixis.Toolbox.XR;
+﻿using System;
+using Demonixis.ToolboxV2.Inputs;
 using Demonixis.ToolboxV2.XR;
-using System;
 using TES3Unity.Components;
 using TES3Unity.Components.Records;
-using TES3Unity.Inputs;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,11 +17,11 @@ namespace TES3Unity
     {
         public const float maxInteractDistance = 3;
 
-        private PlayerInventory m_PlayerInventory = null;
+        private PlayerInventory m_PlayerInventory;
         private RaycastHit[] m_InteractRaycastHitBuffer = new RaycastHit[32];
         private InputAction m_UseAction;
         private HandMode m_HandMode = HandMode.Hidden;
-        private bool m_XREnabled = false;
+        private bool m_XREnabled;
 
         public Transform LeftHandContainer { get; private set; }
         public Transform RightHandContainer { get; private set; }
@@ -32,8 +31,8 @@ namespace TES3Unity
         public Transform RightHandSocket { get; private set; }
         public Transform RayCastTarget { get; private set; }
 
-        public event Action<RecordComponent, bool> InteractiveTextChanged = null;
-        public event Action<RecordComponent> RaycastedComponent = null;
+        public event Action<RecordComponent, bool> InteractiveTextChanged;
+        public event Action<RecordComponent> RaycastedComponent;
 
         private void Start()
         {
@@ -72,8 +71,8 @@ namespace TES3Unity
 
             m_PlayerInventory = GetComponent<PlayerInventory>();
 
-            var gameplayActionMap = InputManager.Enable("Gameplay");
-            gameplayActionMap["ReadyWeapon"].started += (c) =>
+            var gameplayActionMap = InputSystemManager.Enable("Gameplay");
+            gameplayActionMap["ReadyWeapon"].started += c =>
             {
                 var status = ToggleHands();
                 m_HandMode = status ? HandMode.Attack : HandMode.Hidden;
@@ -84,7 +83,7 @@ namespace TES3Unity
                 }
             };
 
-            gameplayActionMap["ReadyMagic"].started += (c) =>
+            gameplayActionMap["ReadyMagic"].started += c =>
             {
                 var status = ToggleHands();
                 m_HandMode = status ? HandMode.Magic : HandMode.Hidden;
@@ -157,11 +156,9 @@ namespace TES3Unity
 
                         break;
                     }
-                    else
-                    {
-                        //deactivate text if no interactable [ DOORS ONLY - REQUIRES EXPANSION ] is found
-                        InteractiveTextChanged?.Invoke(null, false);
-                    }
+
+                    //deactivate text if no interactable [ DOORS ONLY - REQUIRES EXPANSION ] is found
+                    InteractiveTextChanged?.Invoke(null, false);
                 }
             }
             else

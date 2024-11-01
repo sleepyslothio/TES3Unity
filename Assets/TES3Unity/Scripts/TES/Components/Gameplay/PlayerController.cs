@@ -1,6 +1,5 @@
-﻿using Demonixis.Toolbox.XR;
+﻿using Demonixis.ToolboxV2.Inputs;
 using Demonixis.ToolboxV2.XR;
-using TES3Unity.Inputs;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -76,7 +75,7 @@ namespace TES3Unity
             Cursor.lockState = CursorLockMode.None;
 #endif
 
-            var m_MovementActionMap = InputManager.GetActionMap("Movement");
+            var m_MovementActionMap = InputSystemManager.GetActionMap("Movement");
             m_MovementActionMap.Enable();
 
             // Run mode.

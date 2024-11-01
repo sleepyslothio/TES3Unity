@@ -3,6 +3,7 @@ using System.Collections;
 using Demonixis.ToolboxV2.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using Wacki;
 
@@ -11,6 +12,7 @@ namespace Demonixis.ToolboxV2
     public class BetterEventSystem : EventSystem
     {
         [SerializeField] private bool _useFlatVisionPro;
+        [SerializeField] private InputActionAsset _visionOsInputActionAsset;
 
         protected override void Start()
         {
@@ -63,6 +65,7 @@ namespace Demonixis.ToolboxV2
             var mainCamera = Camera.main;
             var module = GetComponent<InputSystemUIInputModule>();
             module.xrTrackingOrigin = mainCamera.transform.parent;
+            module.actionsAsset = _visionOsInputActionAsset;
 
             var allCanvas = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (var canvas in allCanvas)

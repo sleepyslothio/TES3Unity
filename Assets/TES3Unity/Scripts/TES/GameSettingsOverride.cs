@@ -1,5 +1,4 @@
-﻿using TES3Unity.Rendering;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TES3Unity.Components
 {
@@ -9,14 +8,10 @@ namespace TES3Unity.Components
     /// </summary>
     public sealed class GameSettingsOverride : MonoBehaviour
     {
-        public bool Override = false;
-        public GameSettings m_GameSettings = new GameSettings();
-
-        /// <summary>
-        /// Apply overriden settings from the editor for testing purpose only.
-        /// This method do nothing in a build.
-        /// </summary>
-        public void ApplyEditorSettingsOverride()
+        public bool Override;
+        public GameSettings m_GameSettings = new();
+        
+        public void OnEnable()
         {
 #if UNITY_EDITOR
             if (Override)

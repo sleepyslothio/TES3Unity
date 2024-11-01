@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4000010720670128}
-  - component: {fileID: 7652011498002994226}
   - component: {fileID: 6669065678883883788}
   m_Layer: 0
   m_Name: Spectator
@@ -34,19 +33,6 @@ Transform:
   - {fileID: 897183048048578426}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7652011498002994226
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000013908490476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e8e298e5c40ff74baee3e6259ce0c1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _startInVR: 0
 --- !u!114 &6669065678883883788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,8 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spectator: 1
-  _teleportationPrefab: {fileID: 2126811520513422900, guid: 7d2d1a83f59ffc6419acbd01b9f9084f,
-    type: 3}
+  _teleporter: {fileID: 6588560333057189377}
   _cameraTransform: {fileID: 8072383864207511223}
   _trackingSpace: {fileID: 897183048048578426}
   _laserPointer: {fileID: 8754128568407769362}
@@ -348,25 +333,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 5069990305936303919}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b2b7fae172a4b048b467cfeb92909dc, type: 3}
+  m_Script: {fileID: 11500000, guid: a77e7ef64664ca947ba1363e4df98ecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_LaserThickness: 0.002
   m_LaserHitScale: 0.02
   m_Color: {r: 0, g: 0, b: 1, a: 1}
-  m_LaserMaterial: {fileID: 2100000, guid: 49a25bd320701ce4383caf6541f5c088, type: 2}
+  m_LaserMaterial: {fileID: 0}
   m_AutoInitialize: 1
-  m_Left: 0
-  PressAction:
+  m_ForceLaserHidden: 0
+  _visionOsDisabled: 1
+  m_PressAction:
     m_Name: Press
     m_Type: 1
     m_ExpectedControlType: Button
-    m_Id: 1065b1cb-eb43-4264-b22c-6d53d61418d2
+    m_Id: 1114aceb-1da2-4069-9675-4a007ea9ca18
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: f834abfb-78ba-469a-898c-dad105a698d5
+      m_Id: 23d6a860-2094-4573-8cb2-3c58dcc1b8af
       m_Path: <XRController>{RightHand}/triggerPressed
       m_Interactions: 
       m_Processors: 
@@ -374,6 +360,55 @@ MonoBehaviour:
       m_Action: Press
       m_Flags: 0
     m_Flags: 0
+--- !u!1 &7401488731254896325
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2258287613174743958}
+  - component: {fileID: 6588560333057189377}
+  m_Layer: 0
+  m_Name: Teleporter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2258287613174743958
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7401488731254896325}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3317418425389216239}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6588560333057189377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7401488731254896325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060e8a1c19602e0418a84cdced991b50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GroundMarkerPrefab: {fileID: 1966900172492442, guid: fff9c78c489747a4fb30709756194bb9,
+    type: 3}
+  m_TeleporterLinePrefab: {fileID: 1673332131935090, guid: 2147af4bafca3d44fa6e6fb46e7426d5,
+    type: 3}
+  m_MaxDistance: 15
 --- !u!1 &8184111525106560180
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,6 +441,7 @@ Transform:
   m_Children:
   - {fileID: 3734116331078056295}
   - {fileID: 4777425391315701183}
+  - {fileID: 2258287613174743958}
   m_Father: {fileID: 897183048048578426}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3872487052582810402

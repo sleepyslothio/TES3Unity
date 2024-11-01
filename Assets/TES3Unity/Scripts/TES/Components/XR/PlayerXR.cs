@@ -1,7 +1,6 @@
 ﻿using System.Collections;
-using Demonixis.Toolbox.XR;
+using Demonixis.ToolboxV2.Inputs;
 using Demonixis.ToolboxV2.XR;
-using TES3Unity.Inputs;
 using TES3Unity.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -29,7 +28,7 @@ namespace TES3Unity.Components.XR
         private TrackingOriginModeFlags _trackingSpaceType;
 
         [SerializeField] private bool _spectator;
-        [SerializeField] private GameObject _teleportationPrefab;
+        [SerializeField] private Teleporter _teleporter;
         [SerializeField] private Transform _cameraTransform;
         [SerializeField] private Transform _trackingSpace;
         [SerializeField] private IUILaserPointer _laserPointer;
@@ -87,7 +86,7 @@ namespace TES3Unity.Components.XR
                 driver.enabled = true;
             }
 
-            _xrActionMap = InputManager.GetActionMap("XR");
+            _xrActionMap = InputSystemManager.GetActionMap("XR");
             _xrActionMap.Enable();
             _xrActionMap["Recenter"].started += c => RecenterOrientationAndPosition();
 
@@ -95,14 +94,7 @@ namespace TES3Unity.Components.XR
             _followHead = settings.VRFollowHead;
 
             if (settings.VRTeleportation)
-            {
-                var tpGo = Instantiate(_teleportationPrefab, GetXRAttachNode(false), true);
-                tpGo.transform.localPosition = Vector3.zero;
-                tpGo.transform.localRotation = Quaternion.identity;
-
-                var tp = tpGo.GetComponent<Teleporter>();
-                tp.SetHand(false);
-            }
+                _teleporter.SetHand(false);
 
             var uiManager = FindFirstObjectByType<UIManager>();
             if (uiManager != null)
@@ -110,6 +102,14 @@ namespace TES3Unity.Components.XR
                 if (_mainCanvas == null)
                 {
                     _mainCanvas = uiManager.GetComponent<Canvas>();
+                    _canvas = _mainCanvas.GetComponent<RectTransform>();
+                    _pivotCanvas = _canvas.parent;
+                    _hud = _canvas.Find("HUD");
+
+                    // Add a pivot to the UI. It'll help to rotate it in the inverse direction of the camera.
+                    var uiPivot = GameObjectUtils.Create("UI Pivot", transform);
+                    _pivotCanvas = uiPivot.transform;
+                    GUIUtils.SetCanvasToWorldSpace(_canvas.GetComponent<Canvas>(), _pivotCanvas, 1.5f, 0.002f);
                 }
 
                 if (_mainCanvas == null)
@@ -118,21 +118,11 @@ namespace TES3Unity.Components.XR
                 }
 
                 uiManager.Crosshair.Enabled = false;
+                uiManager.WindowOpenChanged += OnUIWindowsOpened;
             }
 
-            uiManager.WindowOpenChanged += OnUIWindowsOpened;
-
-            _canvas = _mainCanvas.GetComponent<RectTransform>();
-            _pivotCanvas = _canvas.parent;
-            _hud = _canvas.Find("HUD");
-
-            // Add a pivot to the UI. It'll help to rotate it in the inverse direction of the camera.
-            var uiPivot = GameObjectUtils.Create("UI Pivot", transform);
-            _pivotCanvas = uiPivot.transform;
-            GUIUtils.SetCanvasToWorldSpace(_canvas.GetComponent<Canvas>(), _pivotCanvas, 1.5f, 0.002f);
-
             // Setup the camera
-            Camera.main.nearClipPlane = 0.1f;
+            Camera.main.nearClipPlane = 0.01f;
 
             RecenterOrientationAndPosition();
         }
@@ -202,7 +192,7 @@ namespace TES3Unity.Components.XR
             var xr = hand.Find("XR");
             return xr ?? hand;
         }
-        
+
         public void InternalRecenter()
         {
 #if OCULUS_BUILD

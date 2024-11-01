@@ -67,6 +67,14 @@ MonoBehaviour:
         m_Groups: 
         m_Action: Position
         m_Flags: 0
+      - m_Name: 
+        m_Id: 140da0e8-a65b-4bd3-b54b-ac06191e6e4e
+        m_Path: <XRHandDevice>{LeftHand}/devicePosition
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Position
+        m_Flags: 0
       m_Flags: 0
     m_Reference: {fileID: 0}
   m_RotationInput:
@@ -81,6 +89,14 @@ MonoBehaviour:
       m_SingletonActionBindings:
       - m_Name: 
         m_Id: 0d05c3d8-e0bc-4fa8-80c2-5d226743892f
+        m_Path: <XRController>{LeftHand}/deviceRotation
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Rotation
+        m_Flags: 0
+      - m_Name: 
+        m_Id: 58fe6d1b-4f39-42aa-9c7f-76b1403edee9
         m_Path: <XRController>{LeftHand}/deviceRotation
         m_Interactions: 
         m_Processors: 
@@ -168,6 +184,7 @@ Transform:
   - {fileID: 4120542742333961998}
   - {fileID: 379615065355736030}
   - {fileID: 920537797319455697}
+  - {fileID: 4054571100565370555}
   m_Father: {fileID: 6493399009562443546}
   m_LocalEulerAnglesHint: {x: -20, y: 0, z: 75}
 --- !u!114 &5770613063319485955
@@ -203,6 +220,14 @@ MonoBehaviour:
         m_Groups: 
         m_Action: Position
         m_Flags: 0
+      - m_Name: 
+        m_Id: f230e928-bffb-4ce5-93a9-499eaf8b788d
+        m_Path: <XRHandDevice>{RightHand}/devicePosition
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Position
+        m_Flags: 0
       m_Flags: 0
     m_Reference: {fileID: 0}
   m_RotationInput:
@@ -217,6 +242,14 @@ MonoBehaviour:
       m_SingletonActionBindings:
       - m_Name: 
         m_Id: 5cfdd364-83ad-4189-9da9-b561c07fc953
+        m_Path: <XRController>{RightHand}/deviceRotation
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Rotation
+        m_Flags: 0
+      - m_Name: 
+        m_Id: ff9d500a-c922-4576-afa5-277961aa2b6e
         m_Path: <XRController>{RightHand}/deviceRotation
         m_Interactions: 
         m_Processors: 
@@ -431,12 +464,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spectator: 0
-  _teleportationPrefab: {fileID: 2126811520513422900, guid: 7d2d1a83f59ffc6419acbd01b9f9084f,
-    type: 3}
+  _teleporter: {fileID: 4080314503835823460}
   _cameraTransform: {fileID: 5740063585835311931}
   _trackingSpace: {fileID: 6493399009562443546}
   _laserPointer: {fileID: 3812809615857661526}
   _headHeight: 1.55
+--- !u!1 &1053751018652386018
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4054571100565370555}
+  - component: {fileID: 4080314503835823460}
+  m_Layer: 0
+  m_Name: Teleporter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4054571100565370555
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053751018652386018}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4000011114332734}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4080314503835823460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053751018652386018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060e8a1c19602e0418a84cdced991b50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GroundMarkerPrefab: {fileID: 1966900172492442, guid: fff9c78c489747a4fb30709756194bb9,
+    type: 3}
+  m_TeleporterLinePrefab: {fileID: 1673332131935090, guid: 2147af4bafca3d44fa6e6fb46e7426d5,
+    type: 3}
+  m_MaxDistance: 15
 --- !u!1 &1994912018597548362
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,11 +763,11 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 1
   m_AntialiasingQuality: 2
   m_StopNaN: 0
-  m_Dithering: 0
+  m_Dithering: 1
   m_ClearDepth: 1
   m_AllowXRRendering: 1
   m_AllowHDROutput: 1
@@ -736,6 +817,14 @@ MonoBehaviour:
         m_Groups: 
         m_Action: Position
         m_Flags: 0
+      - m_Name: 
+        m_Id: 0a84647d-5108-4a1e-97b2-ce4a959fd4d1
+        m_Path: <HandheldARInputDevice>/devicePosition
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Position
+        m_Flags: 0
       m_Flags: 0
     m_Reference: {fileID: 0}
   m_RotationInput:
@@ -751,6 +840,14 @@ MonoBehaviour:
       - m_Name: 
         m_Id: 20ac64a7-eecd-4211-b9a1-d5686877c0bc
         m_Path: <XRHMD>/centerEyeRotation
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Rotation
+        m_Flags: 0
+      - m_Name: 
+        m_Id: 0b17c87b-5367-47f1-98cf-64c0e2ebc2f0
+        m_Path: <HandheldARInputDevice>/deviceRotation
         m_Interactions: 
         m_Processors: 
         m_Groups: 
@@ -907,25 +1004,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 5689224128113758670}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b2b7fae172a4b048b467cfeb92909dc, type: 3}
+  m_Script: {fileID: 11500000, guid: a77e7ef64664ca947ba1363e4df98ecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_LaserThickness: 0.002
   m_LaserHitScale: 0.02
   m_Color: {r: 0, g: 0, b: 1, a: 1}
   m_LaserMaterial: {fileID: 2100000, guid: 49a25bd320701ce4383caf6541f5c088, type: 2}
-  m_AutoInitialize: 1
-  m_Left: 0
-  PressAction:
+  m_AutoInitialize: 0
+  m_ForceLaserHidden: 0
+  _visionOsDisabled: 1
+  m_PressAction:
     m_Name: Press
     m_Type: 1
     m_ExpectedControlType: Button
-    m_Id: bb632d17-9c12-4135-9b68-b6d9e37be90b
+    m_Id: 2daa85d7-e81c-42f1-a2c4-edcfddfdd30e
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 2561b990-2e1c-4e4d-96f3-21cfe4bc6b66
+      m_Id: 07b26147-8994-4da4-be88-11dc6a121af4
       m_Path: <XRController>{RightHand}/triggerPressed
       m_Interactions: 
       m_Processors: 

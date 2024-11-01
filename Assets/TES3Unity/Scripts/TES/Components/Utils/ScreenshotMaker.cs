@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using TES3Unity.Inputs;
+using Demonixis.ToolboxV2.Inputs;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,7 +18,7 @@ namespace TES3Unity
 
         private void Start()
         {
-            m_ToolsActionMap = InputManager.GetActionMap("Tools");
+            m_ToolsActionMap = InputSystemManager.GetActionMap("Tools");
             m_ToolsActionMap.Enable();
             m_ToolsActionMap["Screenshot"].started += (c) => CaptureScreenshot();
         }

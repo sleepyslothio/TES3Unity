@@ -1,9 +1,8 @@
-﻿using Demonixis.Toolbox.XR;
-using Demonixis.ToolboxV2.XR;
-using System;
+﻿using System;
 using System.Collections;
+using Demonixis.ToolboxV2.Inputs;
+using Demonixis.ToolboxV2.XR;
 using TES3Unity.Components.Records;
-using TES3Unity.Inputs;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,67 +10,55 @@ namespace TES3Unity.UI
 {
     public enum UIWindowType
     {
-        None = 0, Book, Scroll, Inventory, Menu, Rest, Journal
+        None = 0,
+        Book,
+        Scroll,
+        Inventory,
+        Menu,
+        Rest,
+        Journal
     }
 
     [RequireComponent(typeof(Canvas))]
     public class UIManager : MonoBehaviour
     {
-        private InputActionMap m_UIActionMap = null;
-        private InputActionMap m_GameplayActionMap = null;
-        private UIWindow m_CurrentWindow = null;
+        private InputActionMap m_UIActionMap;
+        private InputActionMap m_GameplayActionMap;
+        private UIWindow m_CurrentWindow;
         private UIWindowType m_CurrentWindowType = UIWindowType.None;
         private bool m_XREnabled;
 
-        [Header("HUD Elements")]
-        [SerializeField]
-        private UICrosshair _crosshair = null;
-        [SerializeField]
-        private UIInteractiveText _interactiveText = null;
+        [Header("HUD Elements")] [SerializeField]
+        private UICrosshair _crosshair;
 
-        [Header("UI Elements")]
-        [SerializeField]
-        private UIBook m_Book = null;
-        [SerializeField]
-        private UIScroll m_Scroll = null;
-        [SerializeField]
-        private UIInventory m_Inventory = null;
-        [SerializeField]
-        private UIMenu m_Menu = null;
-        [SerializeField]
-        private UIRest m_Rest = null;
-        [SerializeField]
-        private UIJournal m_Journal = null;
+        [SerializeField] private UIInteractiveText _interactiveText;
+
+        [Header("UI Elements")] [SerializeField]
+        private UIBook m_Book;
+
+        [SerializeField] private UIScroll m_Scroll;
+        [SerializeField] private UIInventory m_Inventory;
+        [SerializeField] private UIMenu m_Menu;
+        [SerializeField] private UIRest m_Rest;
+        [SerializeField] private UIJournal m_Journal;
 
         public UIBook Book => m_Book;
         public UIInteractiveText InteractiveText => _interactiveText;
         public UIScroll Scroll => m_Scroll;
         public UICrosshair Crosshair => _crosshair;
 
-        public event Action<UIWindow, bool> WindowOpenChanged = null;
+        public event Action<UIWindow, bool> WindowOpenChanged;
 
         public IEnumerator Start()
         {
-            if (XRManager.Enabled)
-            {
-                var crosshair = GetComponentInChildren<UICrosshair>();
-                crosshair.gameObject.SetActive(false);
-
-                var minimap = GetComponentInChildren<UIMiniMap>();
-                minimap.gameObject.SetActive(false);
-
-                var playerStatus = GetComponentInChildren<HUDHealth>();
-                playerStatus.gameObject.SetActive(false);
-            }
-
             var playerTag = "Player";
             var player = GameObject.FindWithTag(playerTag);
 
-            m_UIActionMap = InputManager.GetActionMap("UI");
-            m_UIActionMap["Validate"].started += (c) => m_CurrentWindow?.OnValidateClicked();
-            m_UIActionMap["Back"].started += (c) => m_CurrentWindow?.OnBackClicked();
-            m_UIActionMap["Next"].started += (c) => m_CurrentWindow?.OnNextClicked();
-            m_UIActionMap["Previous"].started += (c) => m_CurrentWindow?.OnPreviousClicked();
+            m_UIActionMap = InputSystemManager.GetActionMap("UI");
+            m_UIActionMap["Validate"].started += c => m_CurrentWindow?.OnValidateClicked();
+            m_UIActionMap["Back"].started += c => m_CurrentWindow?.OnBackClicked();
+            m_UIActionMap["Next"].started += c => m_CurrentWindow?.OnNextClicked();
+            m_UIActionMap["Previous"].started += c => m_CurrentWindow?.OnPreviousClicked();
 
             while (player == null)
             {
@@ -82,17 +69,17 @@ namespace TES3Unity.UI
             var windows = GetComponentsInChildren<UIWindow>();
             foreach (var window in windows)
             {
-                window.CloseRequest += (c) => CloseWindow();
+                window.CloseRequest += c => CloseWindow();
             }
 
             var playerCharacter = player.GetComponent<PlayerCharacter>();
             playerCharacter.InteractiveTextChanged += OnInteractiveTextChanged;
 
-            m_GameplayActionMap = InputManager.GetActionMap("Gameplay");
-            m_GameplayActionMap["Rest"].started += (c) => OpenWindow(UIWindowType.Rest);
-            m_GameplayActionMap["Journal"].started += (c) => OpenWindow(UIWindowType.Journal);
-            m_GameplayActionMap["Inventory"].started += (c) => OpenWindow(UIWindowType.Inventory);
-            m_GameplayActionMap["Menu"].started += (c) => OpenWindow(UIWindowType.Menu);
+            m_GameplayActionMap = InputSystemManager.GetActionMap("Gameplay");
+            m_GameplayActionMap["Rest"].started += c => OpenWindow(UIWindowType.Rest);
+            m_GameplayActionMap["Journal"].started += c => OpenWindow(UIWindowType.Journal);
+            m_GameplayActionMap["Inventory"].started += c => OpenWindow(UIWindowType.Inventory);
+            m_GameplayActionMap["Menu"].started += c => OpenWindow(UIWindowType.Menu);
 
 #if UNITY_STANDALONE
             Cursor.lockState = CursorLockMode.Locked;
@@ -107,7 +94,8 @@ namespace TES3Unity.UI
             if (visible)
             {
                 var data = component.objData;
-                _interactiveText.Show(GUIUtils.CreateSprite(data.icon), data.interactionPrefix, data.name, data.value, data.weight);
+                _interactiveText.Show(GUIUtils.CreateSprite(data.icon), data.interactionPrefix, data.name, data.value,
+                    data.weight);
             }
             else
             {
@@ -190,12 +178,12 @@ namespace TES3Unity.UI
         {
             if (ui)
             {
-                InputManager.Disable("Movement");
+                InputSystemManager.Disable("Movement");
                 m_UIActionMap.Enable();
             }
             else
             {
-                InputManager.Enable("Movement");
+                InputSystemManager.Enable("Movement");
                 m_UIActionMap.Disable();
             }
 

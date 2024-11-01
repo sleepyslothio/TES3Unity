@@ -29,11 +29,10 @@ namespace TES3Unity
 
         [Header("Global")] public float ambientIntensity = 1.5f;
         public float desiredWorkTimePerFrame = 0.0005f;
-
-        [Header("Debug")] public string loadSaveGameFilename = string.Empty;
-
+        
 #if UNITY_EDITOR
         [Header("Editor Only")] public string[] AlternativeDataPaths = null;
+        public string loadSaveGameFilename = string.Empty;
         public int CellRadius = 1;
         public int CellDetailRadius = 1;
         public bool ForceAutoloadSavedGame = true;
@@ -153,14 +152,7 @@ namespace TES3Unity
             m_NIFManager = new NIFManager(DataReader, m_MaterialManager);
             m_TemporalLoadBalancer = new TemporalLoadBalancer();
             cellManager = new CellManager(DataReader, textureManager, m_NIFManager, m_TemporalLoadBalancer);
-
-            var sunLight = GameObjectUtils.CreateSunLight(Vector3.zero, Quaternion.Euler(new Vector3(50, 330, 0)));
-            var weatherManager = FindFirstObjectByType<WeatherManager>();
-            weatherManager.SetSun(sunLight);
-
-            var waterPrefab = Resources.Load<GameObject>("Prefabs/WaterRP");
-            GameObject.Instantiate(waterPrefab);
-
+            
 #if UNITY_STANDALONE
             if (!XRManager.IsXREnabled())
             {
@@ -168,13 +160,9 @@ namespace TES3Unity
                 Cursor.SetCursor(texture, Vector2.zero, CursorMode.Auto);
             }
 #endif
-
-            var uiCanvasPrefab = Resources.Load<GameObject>("Prefabs/GameUI");
-            var uiCanvas = GameObject.Instantiate(uiCanvasPrefab);
-
             m_Initialized = true;
 
-            var soundManager = FindObjectOfType<SoundManager>();
+            var soundManager = FindFirstObjectByType<SoundManager>();
             soundManager?.Initialize(GameSettings.GetDataPath());
 
             // Start Position
