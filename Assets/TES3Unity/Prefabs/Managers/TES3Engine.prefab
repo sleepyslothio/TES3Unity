@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ambientIntensity: 1.5
-  desiredWorkTimePerFrame: 0.0001
+  desiredWorkTimePerFrame: 0.00001
   _playerPrefabData: {fileID: 11400000, guid: e5eff5aa021df9749b31ded229c7d063, type: 2}
   _touchInterface: {fileID: 3069215084251068966, guid: a20c5ee2105768147802e36bc55e88b7,
     type: 3}

@@ -1,8 +1,5 @@
-﻿using TES3Unity;
-using TES3Unity.Rendering;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
 
 public static class GameObjectUtils
 {
@@ -64,7 +61,8 @@ public static class GameObjectUtils
     /// <param name="alphaMap">Texture blending information.</param>
     /// <param name="position">The position of the terrain.</param>
     /// <returns>A terrain GameObject.</returns>
-    public static GameObject CreateTerrain(float[,] heightPercents, float maxHeight, float heightSampleDistance, TerrainLayer[] splatPrototypes, float[,,] alphaMap, Vector3 position)
+    public static GameObject CreateTerrain(float[,] heightPercents, float maxHeight, float heightSampleDistance,
+        TerrainLayer[] splatPrototypes, float[,,] alphaMap, Vector3 position)
     {
         var terrainData = CreateTerrainData(heightPercents, maxHeight, heightSampleDistance, splatPrototypes, alphaMap);
 
@@ -80,9 +78,11 @@ public static class GameObjectUtils
     /// <param name="splatPrototypes">The textures used by the terrain.</param>
     /// <param name="alphaMap">Texture blending information.</param>
     /// <returns>A TerrainData instance.</returns>
-    public static TerrainData CreateTerrainData(float[,] heightPercents, float maxHeight, float heightSampleDistance, TerrainLayer[] splatPrototypes, float[,,] alphaMap)
+    public static TerrainData CreateTerrainData(float[,] heightPercents, float maxHeight, float heightSampleDistance,
+        TerrainLayer[] splatPrototypes, float[,,] alphaMap)
     {
-        Debug.Assert((heightPercents.GetLength(0) == heightPercents.GetLength(1)) && (maxHeight >= 0) && (heightSampleDistance >= 0));
+        Debug.Assert((heightPercents.GetLength(0) == heightPercents.GetLength(1)) && (maxHeight >= 0) &&
+                     (heightSampleDistance >= 0));
 
         // Create the TerrainData.
         var terrainData = new TerrainData();
@@ -117,17 +117,12 @@ public static class GameObjectUtils
     public static GameObject CreateTerrainFromTerrainData(TerrainData terrainData, Vector3 position)
     {
         // Create the terrain game object.
-        GameObject terrainObject = new GameObject("terrain");
+        var terrainObject = new GameObject("terrain");
         terrainObject.isStatic = true;
-
-        var settings = GameSettings.Get();
-        var terrain = terrainObject.AddComponent<Terrain>();
-        terrain.heightmapPixelError = settings.TerrainError;
-        terrain.treeDistance = settings.TreeDistance;
-
-        terrain.materialTemplate = Tes3Material.GetTerrainMaterial();
-        terrain.terrainData = terrainData;
         
+        var terrain = terrainObject.AddComponent<Terrain>();
+        terrain.terrainData = terrainData;
+
         terrainObject.AddComponent<TerrainCollider>().terrainData = terrainData;
         terrainObject.transform.position = position;
 
@@ -256,6 +251,7 @@ public static class GameObjectUtils
 
             p = p.parent;
         }
+
         return p.gameObject;
     }
 
