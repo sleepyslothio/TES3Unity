@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.IO;
 using System.Threading;
 using Demonixis.ToolboxV2.Inputs;
@@ -18,39 +17,43 @@ namespace TES3Unity.Components
 {
     public sealed class MenuComponent : MonoBehaviour
     {
-        private MusicPlayer m_MusicPlayer;
-        private Thread m_PreloadThread;
-        private string m_GamePath = string.Empty;
-        private bool m_MenuLoaded;
+        private MusicPlayer _musicPlayer;
+        private Thread _preloadThread;
+        private string _gamePath = string.Empty;
+        private bool _menuLoaded;
 
-        [Header("Panels")] [SerializeField] private GameObject m_PermissionPanel;
-        [SerializeField] private GameObject m_PreloadPanel;
-        [SerializeField] private GameObject m_MenuPanel;
-        [SerializeField] private GameObject m_OptionsPanel;
+        [Header("Players")] [SerializeField] private Transform _playerSpawnPoint;
+        [SerializeField] private PlayerPrefabData _playerPrefabData;
+
+        [Header("Panels")] [SerializeField] private GameObject _permissionPanel;
+        [SerializeField] private GameObject _preloadPanel;
+        [SerializeField] private GameObject _menuPanel;
+        [SerializeField] private GameObject _optionsPanel;
 
         [Header("UI Elements")] [SerializeField]
-        private Image m_Background;
+        private Image _background;
 
         [Header("Preloading")] [SerializeField]
-        private GameObject m_DesktopPathSelection;
+        private GameObject _desktopPathSelection;
 
-        [SerializeField] private GameObject m_MobilePathSelection;
-        [SerializeField] private Text m_PathValidationText;
+        [SerializeField] private GameObject _mobilePathSelection;
+        [SerializeField] private Text _pathValidationText;
 
-        [Header("Menu")] [SerializeField] private InputField m_PathSelector;
-        [SerializeField] private Button m_LoadButton;
-        [SerializeField] private Text m_InfoMessage;
-        [SerializeField] private GameObject m_ButtonsContainer;
-        [SerializeField] private Button m_LoadSaveButton;
+        [Header("Menu")] [SerializeField] private InputField _pathSelector;
+        [SerializeField] private Button _loadButton;
+        [SerializeField] private Text _infoMessage;
+        [SerializeField] private GameObject _buttonsContainer;
+        [SerializeField] private Button _loadSaveButton;
 
 #if UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
-        [Header("Editor Only")]
-        [SerializeField]
-        private bool m_DisplayDesktopPathOnAndroid = true;
+        [Header("Editor Only")] [SerializeField]
+        private bool _displayDesktopPathOnAndroid = true;
 #endif
 
         private void Awake()
         {
+            Instantiate(_playerPrefabData.GetPlayerMenuPrefab());
+
             if (!CanReadStorage())
             {
                 RequestReadStoragePermission();
@@ -64,9 +67,9 @@ namespace TES3Unity.Components
 
         private void Initialize()
         {
-            m_GamePath = GameSettings.GetDataPath();
+            _gamePath = GameSettings.GetDataPath();
 
-            if (GameSettings.IsValidPath(m_GamePath))
+            if (GameSettings.IsValidPath(_gamePath))
             {
                 LoadMenu();
             }
@@ -113,32 +116,32 @@ namespace TES3Unity.Components
             mobile = true;
 
 #if UNITY_EDITOR
-            if (m_DisplayDesktopPathOnAndroid)
+            if (_displayDesktopPathOnAndroid)
             {
                 mobile = false;
             }
 #endif
 #endif
 
-            m_DesktopPathSelection.SetActive(!mobile);
-            m_MobilePathSelection.SetActive(mobile);
+            _desktopPathSelection.SetActive(!mobile);
+            _mobilePathSelection.SetActive(mobile);
 
             SetPanelVisible(0);
         }
 
         public void ValidatePathSelection()
         {
-            m_GamePath = m_PathSelector.text;
+            _gamePath = _pathSelector.text;
 
-            if (GameSettings.IsValidPath(m_GamePath))
+            if (GameSettings.IsValidPath(_gamePath))
             {
-                GameSettings.SetDataPath(m_GamePath);
-                m_PathValidationText.enabled = false;
+                GameSettings.SetDataPath(_gamePath);
+                _pathValidationText.enabled = false;
                 LoadMenu();
             }
             else
             {
-                m_PathValidationText.enabled = true;
+                _pathValidationText.enabled = true;
             }
         }
 
@@ -151,16 +154,15 @@ namespace TES3Unity.Components
             // Preload data if the reader is not yet initialized.
             if (TES3Engine.DataReader == null)
             {
-                m_PreloadThread = new Thread(() => { TES3Engine.DataReader = new TES3DataReader(m_GamePath); });
-
-                m_PreloadThread.Start();
+                _preloadThread = new Thread(() => { TES3Engine.DataReader = new TES3DataReader(_gamePath); });
+                _preloadThread.Start();
 
                 StartCoroutine(CheckLoadButton());
             }
 
             SetPanelVisible(1);
 
-            var path = Path.Combine(m_GamePath, "Splash");
+            var path = Path.Combine(_gamePath, "Splash");
 
             if (Directory.Exists(path))
             {
@@ -171,27 +173,27 @@ namespace TES3Unity.Components
                     var texture = TGALoader.LoadTGA(target);
                     var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height),
                         Vector2.zero);
-                    m_Background.sprite = sprite;
-                    m_Background.color = Color.white;
+                    _background.sprite = sprite;
+                    _background.color = Color.white;
                 }
             }
 
-            path = Path.Combine(m_GamePath, "Music", "Explore", "Morrowind Title.mp3");
+            path = Path.Combine(_gamePath, "Music", "Explore", "Morrowind Title.mp3");
 
             if (File.Exists(path))
             {
-                m_MusicPlayer = new MusicPlayer();
-                m_MusicPlayer.AddSong(path);
-                m_MusicPlayer.Play();
+                _musicPlayer = new MusicPlayer();
+                _musicPlayer.AddSong(path);
+                _musicPlayer.Play();
             }
 
-            m_MenuLoaded = true;
+            _menuLoaded = true;
         }
 
         public void LoadWorld()
         {
             TES3Engine.AutoLoadSavedGame = false;
-            StartCoroutine(LoadWorld(m_GamePath));
+            StartCoroutine(LoadWorld(_gamePath));
         }
 
         public void LoadSavedGame()
@@ -204,20 +206,20 @@ namespace TES3Unity.Components
         {
             var wait = new WaitForSeconds(0.5f);
 
-            m_InfoMessage.text = "Please wait while loading Morrowind's data...";
-            m_InfoMessage.enabled = true;
+            _infoMessage.text = "Please wait while loading Morrowind's data...";
+            _infoMessage.enabled = true;
 
-            m_LoadButton.interactable = false;
-            m_LoadSaveButton.interactable = false;
+            _loadButton.interactable = false;
+            _loadSaveButton.interactable = false;
 
-            while (m_PreloadThread.IsAlive)
+            while (_preloadThread.IsAlive)
             {
                 yield return wait;
             }
 
-            m_LoadButton.interactable = true;
-            m_InfoMessage.enabled = false;
-            m_LoadSaveButton.interactable = !TES3Save.Get().IsEmpty();
+            _loadButton.interactable = true;
+            _infoMessage.enabled = false;
+            _loadSaveButton.interactable = !TES3Save.Get().IsEmpty();
 
 #if UNITY_STANDALONE
             if (!XRManager.IsXREnabled())
@@ -231,9 +233,9 @@ namespace TES3Unity.Components
 
         private IEnumerator LoadWorld(string path)
         {
-            m_ButtonsContainer.gameObject.SetActive(false);
-            m_InfoMessage.text = "Loading...";
-            m_InfoMessage.enabled = true;
+            _buttonsContainer.gameObject.SetActive(false);
+            _infoMessage.text = "Loading...";
+            _infoMessage.enabled = true;
 
             yield return new WaitForEndOfFrame();
 
@@ -242,7 +244,7 @@ namespace TES3Unity.Components
 
             while (!asyncOperation.isDone)
             {
-                m_InfoMessage.text = string.Format("Loading {0}%", Mathf.RoundToInt(asyncOperation.progress * 100.0f));
+                _infoMessage.text = $"Loading {Mathf.RoundToInt(asyncOperation.progress * 100.0f)}%";
                 yield return waitForSeconds;
             }
         }
@@ -255,7 +257,6 @@ namespace TES3Unity.Components
 #if UNITY_EDITOR
             EditorApplication.isPlaying = false;
 #endif
-
             Application.Quit();
         }
 
@@ -284,7 +285,7 @@ namespace TES3Unity.Components
 #endif
         }
 
-        public bool CanReadStorage()
+        private bool CanReadStorage()
         {
 #if UNITY_ANDROID
             return Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead);
@@ -295,23 +296,23 @@ namespace TES3Unity.Components
 
         public bool CanLoadWorld()
         {
-            return m_MenuLoaded && (m_PreloadThread == null || !m_PreloadThread.IsAlive);
+            return _menuLoaded && (_preloadThread == null || !_preloadThread.IsAlive);
         }
 
         public void SetPanelVisible(int index)
         {
-            m_PermissionPanel.SetActive(index == -1);
-            m_PreloadPanel.SetActive(index == 0);
-            m_MenuPanel.SetActive(index == 1);
-            m_OptionsPanel.SetActive(index == 2);
+            _permissionPanel.SetActive(index == -1);
+            _preloadPanel.SetActive(index == 0);
+            _menuPanel.SetActive(index == 1);
+            _optionsPanel.SetActive(index == 2);
         }
 
         private IEnumerator ShowMessage(string message, float duration)
         {
-            m_InfoMessage.text = message;
-            m_InfoMessage.enabled = true;
+            _infoMessage.text = message;
+            _infoMessage.enabled = true;
             yield return new WaitForSeconds(duration);
-            m_InfoMessage.enabled = false;
+            _infoMessage.enabled = false;
         }
     }
 }

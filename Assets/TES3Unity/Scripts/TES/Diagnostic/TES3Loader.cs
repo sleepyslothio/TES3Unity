@@ -62,7 +62,7 @@ namespace TES3Unity
             var config = GameSettings.Get();
 
             TextureManager = new TextureManager(TES3Engine.DataReader);
-            MaterialManager = new Tes3Material(TextureManager, config.lowQualityShader, config.GenerateNormalMaps);
+            MaterialManager = new Tes3Material(TextureManager, config.lowQualityShader);
             NifManager = new NIFManager(TES3Engine.DataReader, MaterialManager);
 
             // Mod loading

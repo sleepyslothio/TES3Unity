@@ -1,3 +1,4 @@
+using Demonixis.ToolboxV2.XR;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -5,27 +6,31 @@ namespace Demonixis.ToolboxV2.Graphics
 {
     public class VolumeProfileSwitcher : MonoBehaviour
     {
-        [SerializeField]
-        private VolumeProfile m_DesktopProfile = null;
-        [SerializeField]
-        private VolumeProfile m_MobileProfile = null;
+        [SerializeField] private VolumeProfile _desktopProfile;
+        [SerializeField] private VolumeProfile _desktopProfileVr;
+        [SerializeField] private VolumeProfile _mobileProfile;
+        [SerializeField] private VolumeProfile _mobileProfileVr;
 
         private void Awake()
         {
+            var xr = XRManager.Enabled;
+            var mobileProfile = xr ? _mobileProfileVr : _mobileProfile;
+            var desktopProfile = xr ? _desktopProfileVr : _desktopProfile;
+            
             var volume = GetComponent<Volume>();
-            volume.sharedProfile = PlatformUtility.IsMobilePlatform() ? m_MobileProfile : m_DesktopProfile;
+            volume.sharedProfile = PlatformUtility.IsMobilePlatform() ? mobileProfile : desktopProfile;
         }
 
         public void SetDesktopProfile()
         {
             var volume = GetComponent<Volume>();
-            volume.sharedProfile = m_DesktopProfile;
+            volume.sharedProfile = _desktopProfile;
         }
 
         public void SetMobileProfile()
         {
             var volume = GetComponent<Volume>();
-            volume.sharedProfile = m_MobileProfile;
+            volume.sharedProfile = _mobileProfile;
         }
     }
 }

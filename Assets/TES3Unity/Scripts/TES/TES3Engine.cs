@@ -1,10 +1,10 @@
-﻿using Demonixis.ToolboxV2.XR;
-using System;
+﻿using System;
 using System.IO;
 using Demonixis.ToolboxV2;
-using TES3Unity.Components;
+using Demonixis.ToolboxV2.XR;
 using TES3Unity.Components.Records;
 using TES3Unity.ESM.Records;
+using TES3Unity.ESS;
 using TES3Unity.Rendering;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,36 +14,38 @@ namespace TES3Unity
     public sealed class TES3Engine : MonoBehaviour
     {
         // Static.
-        public const string Version = "2024.1";
         public const float NormalMapGeneratorIntensity = 0.75f;
         public static int MarkerLayer => LayerMask.NameToLayer("Marker");
         public static int CellRadiusOnLoad = 2;
-        public static bool AutoLoadSavedGame = false;
-        public static bool LogEnabled = false;
-        private static TES3Engine instance = null;
+        public static bool AutoLoadSavedGame;
+        public static bool LogEnabled;
+        private static TES3Engine instance;
         public static TES3DataReader DataReader { get; set; }
 
-        private TemporalLoadBalancer m_TemporalLoadBalancer;
-        private Tes3Material m_MaterialManager;
-        private NIFManager m_NIFManager;
+        private TemporalLoadBalancer _temporalLoadBalancer;
+        private Tes3Material _materialManager;
+        private NIFManager _nifManager;
 
         [Header("Global")] public float ambientIntensity = 1.5f;
         public float desiredWorkTimePerFrame = 0.0005f;
-        
+
+        [Header("Spawn")] [SerializeField] private PlayerPrefabData _playerPrefabData;
+        [SerializeField] private GameObject _touchInterface;
+
 #if UNITY_EDITOR
-        [Header("Editor Only")] public string[] AlternativeDataPaths = null;
+        [Header("Editor Only")] public string[] AlternativeDataPaths;
         public string loadSaveGameFilename = string.Empty;
         public int CellRadius = 1;
         public int CellDetailRadius = 1;
         public bool ForceAutoloadSavedGame = true;
-        public bool OverrideLogEnabled = false;
+        public bool OverrideLogEnabled;
 #endif
 
         // Private.
         private CELLRecord m_CurrentCell;
         private Transform m_PlayerTransform;
         private Transform m_CameraTransform;
-        private bool m_Initialized = false;
+        private bool m_Initialized;
 
         // Public.
         public CellManager cellManager;
@@ -77,7 +79,7 @@ namespace TES3Unity
             }
         }
 
-        public event Action<CELLRecord> CurrentCellChanged = null;
+        public event Action<CELLRecord> CurrentCellChanged;
 
         private void Awake()
         {
@@ -148,11 +150,11 @@ namespace TES3Unity
             CellRadiusOnLoad = config.CellRadiusOnLoad;
 
             textureManager = new TextureManager(DataReader);
-            m_MaterialManager = new Tes3Material(textureManager, config.lowQualityShader, config.GenerateNormalMaps);
-            m_NIFManager = new NIFManager(DataReader, m_MaterialManager);
-            m_TemporalLoadBalancer = new TemporalLoadBalancer();
-            cellManager = new CellManager(DataReader, textureManager, m_NIFManager, m_TemporalLoadBalancer);
-            
+            _materialManager = new Tes3Material(textureManager, config.lowQualityShader);
+            _nifManager = new NIFManager(DataReader, _materialManager);
+            _temporalLoadBalancer = new TemporalLoadBalancer();
+            cellManager = new CellManager(DataReader, textureManager, _nifManager, _temporalLoadBalancer);
+
 #if UNITY_STANDALONE
             if (!XRManager.IsXREnabled())
             {
@@ -194,12 +196,12 @@ namespace TES3Unity
 
                 if (File.Exists(path))
                 {
-                    var ess = new ESS.ESSFile(path);
+                    var ess = new ESSFile(path);
 
                     ess.FindStartLocation(out string cellName, out float[] pos, out float[] rot);
                     // TODO: Find the correct grid/cell from these data.
 
-                    var grid = TES3Engine.Instance.cellManager.GetExteriorCellIndices(new Vector3(pos[0], pos[1],
+                    var grid = Instance.cellManager.GetExteriorCellIndices(new Vector3(pos[0], pos[1],
                         pos[2]));
                     var exterior = DataReader.FindExteriorCellRecord(grid);
                     var interior = DataReader.FindInteriorCellRecord(cellName);
@@ -208,10 +210,7 @@ namespace TES3Unity
 #endif
 
             if (PlatformUtility.IsMobilePlatform() && !XRManager.IsXREnabled())
-            {
-                var touchPrefab = Resources.Load<GameObject>("Input/TouchJoysticks");
-                Instantiate(touchPrefab, Vector3.zero, Quaternion.identity);
-            }
+                Instantiate(_touchInterface, Vector3.zero, Quaternion.identity);
 
             SpawnPlayer(cellGridCoords, cellIsInterior, spawnPosition, spawnRotation);
         }
@@ -234,7 +233,7 @@ namespace TES3Unity
             CreatePlayer(position, rotation);
 
             var cellInfo = cellManager.StartCreatingInteriorCell(interiorCellName);
-            m_TemporalLoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
+            _temporalLoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
         }
 
         public void SpawnPlayer(Vector2i gridCoords, bool outside, Vector3 position, Quaternion rotation)
@@ -254,7 +253,7 @@ namespace TES3Unity
 
             CreatePlayer(position, rotation);
 
-            m_TemporalLoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
+            _temporalLoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
         }
 
         #endregion
@@ -272,7 +271,7 @@ namespace TES3Unity
                 cellManager.UpdateExteriorCells(m_CameraTransform.position);
             }
 
-            m_TemporalLoadBalancer.RunTasks(desiredWorkTimePerFrame);
+            _temporalLoadBalancer.RunTasks(desiredWorkTimePerFrame);
         }
 
         private void OnApplicationQuit()
@@ -304,7 +303,7 @@ namespace TES3Unity
                 if (component.doorData.leadsToInteriorCell)
                 {
                     var cellInfo = cellManager.StartCreatingInteriorCell(component.doorData.doorExitName);
-                    m_TemporalLoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
+                    _temporalLoadBalancer.WaitForTask(cellInfo.ObjectsCreationCoroutine);
 
                     newCell = cellInfo.CellRecord;
                 }
@@ -325,16 +324,13 @@ namespace TES3Unity
             var player = GameObject.FindWithTag("Player");
             if (player == null)
             {
-                var playerPrefabPath = "Prefabs/Player";
-                var playerPrefab = Resources.Load<GameObject>(playerPrefabPath);
-                player = GameObject.Instantiate(playerPrefab);
+                player = Instantiate(_playerPrefabData.GetPlayerCharacterPrefab());
                 player.name = "Player";
             }
 
             m_PlayerTransform = player.transform;
             m_PlayerTransform.position = position;
             m_PlayerTransform.rotation = rotation;
-
             m_CameraTransform = player.GetComponentInChildren<Camera>().transform;
 
             return player;

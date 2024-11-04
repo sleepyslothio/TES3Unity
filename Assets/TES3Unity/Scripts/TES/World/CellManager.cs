@@ -590,7 +590,7 @@ namespace TES3Unity
                         splat.specular = Color.black;
                         splat.maskMapTexture = TextureManager.CreateMaskTexture(splat.metallic, 0, 0, splat.smoothness);
 
-                        if (GameSettings.Get().GenerateNormalMaps)
+                        if (!GameSettings.Get().lowQualityShader)
                         {
                             splat.normalMapTexture = TextureManager.CreateNormalMapTexture(texture);
                         }

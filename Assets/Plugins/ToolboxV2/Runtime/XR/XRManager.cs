@@ -25,7 +25,7 @@ namespace Demonixis.ToolboxV2.XR
     {
         None = 0,
         Meta,
-        WindowsMR,
+        WindowsMr,
         OpenVR,
         Sony,
         Pico,
@@ -37,7 +37,7 @@ namespace Demonixis.ToolboxV2.XR
     public enum XRHeadset
     {
         None = 0,
-        OculusRiftCV1,
+        OculusRiftCv1,
         OculusRiftS,
         OculusQuest,
         OculusQuest2,
@@ -45,11 +45,11 @@ namespace Demonixis.ToolboxV2.XR
         OculusQuest3S,
         OculusQuestPro,
         OculusGo,
-        HTCVive,
+        HtcVive,
         ValveIndex,
-        WindowsMR,
-        PSVR,
-        PSVR2,
+        WindowsMr,
+        Psvr,
+        Psvr2,
         PicoNeo3,
         PicoNeo4,
         ViveFocus3,
@@ -62,8 +62,8 @@ namespace Demonixis.ToolboxV2.XR
 
     public static class XRManager
     {
-        private static bool? _XREnabled;
-        private static readonly List<InputDevice> _inputDevices = new();
+        private static bool? _xrEnabled;
+        private static readonly List<InputDevice> InputDevices = new();
         public static bool Enabled => IsXREnabled(false);
         public static XRVendor Vendor { get; private set; }
         public static XRHeadset Headset { get; private set; }
@@ -84,7 +84,7 @@ namespace Demonixis.ToolboxV2.XR
 #if UNITY_EDITOR && UNITY_STANDALONE_WIN
             return true;
 #elif UNITY_ANDROID
-            return Vendor == XRVendor.Meta;
+            return Vendor == XRVendor.Meta || Vendor == XRVendor.Pico;
 #elif UNITY_VISIONOS
             return true;
 #else
@@ -103,7 +103,7 @@ namespace Demonixis.ToolboxV2.XR
             return XRVendor.Apple;
 #endif
 #if UNITY_XR_SUPPORTED
-            if (!_XREnabled.HasValue)
+            if (!_xrEnabled.HasValue)
                 IsXREnabled();
 
             return Vendor;
@@ -151,9 +151,9 @@ namespace Demonixis.ToolboxV2.XR
         {
 #if UNITY_XR_SUPPORTED
             var input = GetXRInput();
-            input.TryGetInputDevices(_inputDevices);
+            input.TryGetInputDevices(InputDevices);
 
-            foreach (var device in _inputDevices)
+            foreach (var device in InputDevices)
             {
                 if (!device.isValid) continue;
                 if (device.characteristics == InputDeviceCharacteristics.Left && left) return true;
@@ -179,12 +179,12 @@ namespace Demonixis.ToolboxV2.XR
             return true;
 #endif
 #if UNITY_XR_SUPPORTED
-            if (_XREnabled.HasValue && !force)
-                return _XREnabled.Value;
+            if (_xrEnabled.HasValue && !force)
+                return _xrEnabled.Value;
 
             var loader = GetXRLoader();
 
-            _XREnabled = loader != null;
+            _xrEnabled = loader != null;
 
 #if OPENXR_SUPPORTED
             if (loader is UnityEngine.XR.OpenXR.OpenXRLoader)
@@ -230,7 +230,7 @@ namespace Demonixis.ToolboxV2.XR
             }
 #endif
 
-            return _XREnabled.Value;
+            return _xrEnabled.Value;
 #else
             return false;
 #endif
@@ -309,7 +309,7 @@ namespace Demonixis.ToolboxV2.XR
 
             if (InArray(name, "windows", "mixedreality", "holographic"))
             {
-                return XRVendor.WindowsMR;
+                return XRVendor.WindowsMr;
             }
 
             if (mobile && InArray(name, "xr elite", "focus", "vive"))
@@ -353,7 +353,7 @@ namespace Demonixis.ToolboxV2.XR
             {
                 if (InArray(name, "rift", "cv1"))
                 {
-                    return XRHeadset.OculusRiftCV1;
+                    return XRHeadset.OculusRiftCv1;
                 }
 
                 if (InArray(name, "rift", "rift s", "rift-s"))
@@ -393,7 +393,7 @@ namespace Demonixis.ToolboxV2.XR
 
             if (InArray(name, "windows", "acer", "samsung", "reverb"))
             {
-                return XRHeadset.WindowsMR;
+                return XRHeadset.WindowsMr;
             }
 
             if (name.Contains("vive"))
@@ -404,7 +404,7 @@ namespace Demonixis.ToolboxV2.XR
                 if (InArray(name, "vive", "xr", "elite"))
                     return XRHeadset.ViveXRElite;
 
-                return XRHeadset.HTCVive;
+                return XRHeadset.HtcVive;
             }
 
             if (InArray("valve", "index"))
@@ -415,9 +415,9 @@ namespace Demonixis.ToolboxV2.XR
             if (InArray("sony", "psvr"))
             {
                 if (name.Contains("2"))
-                    return XRHeadset.PSVR2;
+                    return XRHeadset.Psvr2;
 
-                return XRHeadset.PSVR;
+                return XRHeadset.Psvr;
             }
 
             if (name.Contains("pico"))
@@ -443,12 +443,12 @@ namespace Demonixis.ToolboxV2.XR
 
             do
             {
-                InputDevices.GetDevicesWithCharacteristics(
+                UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(
                     InputDeviceCharacteristics.HeadMounted | InputDeviceCharacteristics.TrackedDevice, head);
-                InputDevices.GetDevicesWithCharacteristics(
+                UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(
                     InputDeviceCharacteristics.Controller | InputDeviceCharacteristics.Left |
                     InputDeviceCharacteristics.TrackedDevice, left);
-                InputDevices.GetDevicesWithCharacteristics(
+                UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(
                     InputDeviceCharacteristics.Controller | InputDeviceCharacteristics.Right |
                     InputDeviceCharacteristics.TrackedDevice, right);
                 yield return null;
@@ -510,7 +510,7 @@ namespace Demonixis.ToolboxV2.XR
 #if UNITY_XR_SUPPORTED && !UNITY_VISIONOS
             if (!target.gameObject.activeSelf || !target.gameObject.activeInHierarchy) return;
 
-            var device = InputDevices.GetDeviceAtXRNode(node);
+            var device = UnityEngine.XR.InputDevices.GetDeviceAtXRNode(node);
 
             if (!device.TryGetHapticCapabilities(out HapticCapabilities capabilities)) return;
 
@@ -543,7 +543,7 @@ namespace Demonixis.ToolboxV2.XR
         public static bool GenerateBuzzClip(float seconds, XRNode node, ref byte[] clip)
         {
 #if UNITY_XR_SUPPORTED && !UNITY_VISIONOS
-            var device = InputDevices.GetDeviceAtXRNode(node);
+            var device = UnityEngine.XR.InputDevices.GetDeviceAtXRNode(node);
             var result = device.TryGetHapticCapabilities(out HapticCapabilities caps);
 
             if (result)

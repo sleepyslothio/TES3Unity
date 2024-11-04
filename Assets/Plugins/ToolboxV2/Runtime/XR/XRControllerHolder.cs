@@ -44,7 +44,7 @@ namespace Demonixis.ToolboxV2.Utils
 
                 switch (headset)
                 {
-                    case XRHeadset.WindowsMR:
+                    case XRHeadset.WindowsMr:
                         controllerType = XRControllerSupport.WindowsMR;
                         break;
                     case XRHeadset.OculusQuest:
@@ -54,10 +54,10 @@ namespace Demonixis.ToolboxV2.Utils
                     case XRHeadset.OculusQuest2:
                         controllerType = XRControllerSupport.OculusQuest2;
                         break;
-                    case XRHeadset.OculusRiftCV1:
+                    case XRHeadset.OculusRiftCv1:
                         controllerType = XRControllerSupport.OculusRiftCV1;
                         break;
-                    case XRHeadset.HTCVive:
+                    case XRHeadset.HtcVive:
                     case XRHeadset.ValveIndex:
                         controllerType = XRControllerSupport.Steam;
                         break;

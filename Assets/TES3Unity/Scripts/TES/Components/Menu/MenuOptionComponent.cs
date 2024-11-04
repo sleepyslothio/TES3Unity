@@ -77,8 +77,8 @@ namespace TES3Unity.Components
             m_AudioToggle.isOn = _settings.MusicEnabled;
             m_AudioToggle.onValueChanged.AddListener(b => _settings.MusicEnabled = b);
 
-            m_GenerateNormalMapsToggle.isOn = _settings.GenerateNormalMaps;
-            m_GenerateNormalMapsToggle.onValueChanged.AddListener(b => _settings.GenerateNormalMaps = b);
+            //m_GenerateNormalMapsToggle.isOn = _settings.GenerateNormalMaps;
+            //m_GenerateNormalMapsToggle.onValueChanged.AddListener(b => _settings.GenerateNormalMaps = b);
 
             m_AnimateLightsToggle.isOn = _settings.AnimateLights;
             m_AnimateLightsToggle.onValueChanged.AddListener(b => _settings.AnimateLights = b);

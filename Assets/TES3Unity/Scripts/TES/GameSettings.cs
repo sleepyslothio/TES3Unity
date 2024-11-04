@@ -6,12 +6,8 @@ using Demonixis.ToolboxV2.Graphics;
 using Demonixis.ToolboxV2.XR;
 using TES3Unity.ESM;
 using TES3Unity.ESM.Records;
-using TES3Unity.Rendering;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace TES3Unity
 {
@@ -33,62 +29,55 @@ namespace TES3Unity
         public const int CameraFarMin = 2500;
         public const int CameraFarMax = 100000;
         private const string Filename = "Settings.json";
-        
-        public static readonly ushort[] CellDistanceValues = new ushort[]
+
+        public static readonly ushort[] CellDistanceValues =
         {
-            0, 1 , 2, 3, 4
+            0, 1, 2, 3, 4
         };
-        
+
 #if UNITY_EDITOR
         [HideInInspector] public bool FromMenu;
 #endif
-        
+
         private static GameSettings _instance;
 
-        [Header("Audio")] 
-        public bool MusicEnabled = true;
-        
-        [Header("Preferences")]
-        public int version = FileVersion;
+        [Header("Audio")] public bool MusicEnabled = true;
+
+        [Header("Preferences")] public int version = FileVersion;
         public ushort CellRadius = 2;
         public ushort CellDetailRadius = 2;
         public ushort CellRadiusOnLoad = 2;
         public bool KinematicRigidbody = true;
-        public bool DayNightCycle = false;
-        public bool LoadExtensions = false;
-        [FormerlySerializedAs("Player")] public PlayerData playerData;
-        
-        [Header("Graphics")]
-        public GraphicsQuality2 srpQuality = GraphicsQuality2.High;
+        public bool DayNightCycle;
+        public bool LoadExtensions;
+        public PlayerData playerData;
+
+        [Header("Graphics")] public GraphicsQuality2 srpQuality = GraphicsQuality2.High;
         public GraphicsQuality terrainQuality = GraphicsQuality.High;
         public AntiAliasingProxy antiAliasing = AntiAliasingProxy.TAA;
         public float renderScale = 1.0f;
         public DeviceRefreshRate refreshRate = DeviceRefreshRate._60;
         public bool lowQualityShader;
-        public bool GenerateNormalMaps = true;
         public float TerrainError = 5;
         public float TreeDistance = 80;
         public bool AnimateLights = true;
         public bool ExteriorLights = true;
         public float nearClip = 0.1f;
         public float farClip = 1500.0f;
-        
-        [Header("Shadows")] 
-        public GameShadowCascades shadowCascadeCount = GameShadowCascades._4;
+
+        [Header("Shadows")] public GameShadowCascades shadowCascadeCount = GameShadowCascades._4;
         public float shadowDistance = 150;
         public bool directionalShadows = true;
         public bool additionalShadows;
         public bool softShadows = true;
-        
-        [Header("Post Processing")]
-        public PostProcessingQuality postProcessingQuality = PostProcessingQuality.High;
+
+        [Header("Post Processing")] public PostProcessingQuality postProcessingQuality = PostProcessingQuality.High;
         public bool ssao = true;
         public bool bloom = true;
         public bool ssr = true;
-        public bool ssgi = false;
-        
-        [Header("VR")]
-        public bool vrSeated = true;
+        public bool ssgi;
+
+        [Header("VR")] public bool vrSeated = true;
         public VRFFR vrFoveationLevel = VRFFR.High;
         public bool vrAsyncSpaceWarp;
         public VRRefreshRate vrDisplayFrequency = VRRefreshRate._72;
@@ -99,9 +88,9 @@ namespace TES3Unity
         public bool startInMr = true;
         public bool VRFollowHead = true;
         public bool VRTeleportation = true;
-        
+
         public bool IsValid => version >= FileMinVersion;
-        
+
         public static NPC_Record GetPlayerRecord()
         {
             var playerData = Get().playerData;
@@ -119,7 +108,7 @@ namespace TES3Unity
                 playerData.Woman ? 1 : 0,
                 items);
         }
-        
+
         public bool StartInMixedReality()
         {
 #if UNITY_VISIONOS
@@ -130,7 +119,7 @@ namespace TES3Unity
             return false;
 #endif
         }
-        
+
         public void Initialize()
         {
             if (PlatformUtility.IsMobilePlatform())
@@ -168,7 +157,6 @@ namespace TES3Unity
 
                 if (PlatformUtility.IsMobilePlatform())
                 {
-                    GenerateNormalMaps = false;
                     directionalShadows = false;
                     renderScale = 0.9f;
                     postProcessingQuality = PostProcessingQuality.None;
@@ -180,7 +168,7 @@ namespace TES3Unity
                     CellDetailRadius = 2;
                     CellRadius = 1;
                 }
-                
+
                 if (PlatformUtility.IsMobileVR())
                 {
                     postProcessingQuality = PostProcessingQuality.None;
@@ -247,7 +235,7 @@ namespace TES3Unity
 #endif
 #endif
         }
-        
+
         public void Save()
         {
             version = FileVersion;
@@ -280,14 +268,14 @@ namespace TES3Unity
 
             return _instance;
         }
-        
+
         public void Sanitize(bool resetLanguage)
         {
             renderScale = Mathf.Clamp(renderScale, 0.5f, 2.0f);
             nearClip = Mathf.Clamp(nearClip, 0.1f, 0.3f);
             farClip = Mathf.Clamp(farClip, 100, 100000);
         }
-        
+
         private static void CreateInstance()
         {
             _instance = new GameSettings();
@@ -361,18 +349,18 @@ namespace TES3Unity
         public static LightShadows GetRecommandedShadows(bool main)
         {
             var settings = Get();
-            
+
             if (main && settings.directionalShadows)
                 return settings.softShadows ? LightShadows.Soft : LightShadows.Hard;
-            
+
             if (!main && settings.additionalShadows)
                 return settings.softShadows ? LightShadows.Soft : LightShadows.Hard;
-            
+
             return LightShadows.None;
         }
 
         #region Static Functions
-        
+
         public static bool IsValidPath(string path)
         {
             return File.Exists(Path.Combine(path, "Morrowind.esm"));
@@ -386,7 +374,7 @@ namespace TES3Unity
         public static string GetDataPath()
         {
             var path = PlayerPrefs.GetString(MorrowindPathKey);
-            
+
             if (!Directory.Exists(path))
                 path = Application.streamingAssetsPath + "/Data Files";
 
@@ -401,7 +389,7 @@ namespace TES3Unity
             return string.Empty;
 #endif
         }
-        
+
         public static bool IsSoCInferiorToA12()
         {
             if (IsLessThanA12 > -1)

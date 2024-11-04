@@ -1,5 +1,6 @@
 ﻿using Demonixis.ToolboxV2.XR;
 using System.Collections;
+using Demonixis.ToolboxV2;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +8,9 @@ namespace TES3Unity.UI
 {
     public sealed class UIMiniMap : MonoBehaviour
     {
-        [SerializeField] private RawImage m_RawImage = null;
+        private const string MiniMapCameraName = "MiniMapCamera";
+
+        [SerializeField] private RawImage _rawImage;
 
         private IEnumerator Start()
         {
@@ -26,30 +29,29 @@ namespace TES3Unity.UI
                 player = GameObject.FindWithTag(playerTag);
                 yield return null;
             }
-
-            Camera miniCamera = null;
+            
             var cameras = player.GetComponentsInChildren<Camera>(true);
 
-            foreach (var camera in cameras)
+            foreach (var target in cameras)
             {
-                if (!camera.enabled)
+                if (target.name == MiniMapCameraName)
                 {
-                    miniCamera = camera;
+                    SetupMiniCamera(target);
+                    yield break;
                 }
             }
 
-            if (miniCamera != null)
-            {
-                var rt = new RenderTexture(256, 256, 16);
-                miniCamera.targetTexture = rt;
-                miniCamera.enabled = true;
+            gameObject.SetActive(false);
+        }
 
-                m_RawImage.texture = rt;
-            }
-            else
-            {
-                gameObject.SetActive(false);
-            }
+        private void SetupMiniCamera(Camera miniCamera)
+        {
+            var textureSize = PlatformUtility.IsMobilePlatform() ? 128 : 256;
+            var rt = new RenderTexture(textureSize, textureSize, 16);
+            miniCamera.targetTexture = rt;
+            miniCamera.enabled = true;
+
+            _rawImage.texture = rt;
         }
     }
 }

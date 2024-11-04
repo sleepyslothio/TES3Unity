@@ -4,7 +4,6 @@ using Demonixis.ToolboxV2.XR;
 using TES3Unity.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.XR;
 using Wacki;
 
@@ -17,13 +16,9 @@ namespace TES3Unity.Components.XR
     /// </summary>
     public sealed class PlayerXR : MonoBehaviour
     {
-        private Transform _transform;
         private RectTransform _canvas;
         private Transform _pivotCanvas;
-        private Transform _hud;
         private InputActionMap _xrActionMap;
-        private bool _followHead;
-        private bool _roomScale;
         private Canvas _mainCanvas;
         private TrackingOriginModeFlags _trackingSpaceType;
 
@@ -46,14 +41,6 @@ namespace TES3Unity.Components.XR
                 yield break;
             }
 
-            var cameras = GetComponentsInChildren<Camera>();
-            foreach (var target in cameras)
-            {
-                if (target.CompareTag("MainCamera"))
-                    _cameraTransform = target.transform;
-            }
-
-            _transform = transform;
             _laserPointer.IsActive = _spectator;
 
             if (_spectator)
@@ -79,19 +66,17 @@ namespace TES3Unity.Components.XR
 
             XRManager.SetTrackingOriginMode(mode, true);
 
-
-            var trackedPoseDriversNew = GetComponentsInChildren<TrackedPoseDriver>(true);
-            foreach (var driver in trackedPoseDriversNew)
-            {
-                driver.enabled = true;
-            }
-
             _xrActionMap = InputSystemManager.GetActionMap("XR");
             _xrActionMap.Enable();
             _xrActionMap["Recenter"].started += c => RecenterOrientationAndPosition();
 
-            _roomScale = !settings.vrSeated;
-            _followHead = settings.VRFollowHead;
+            // Setup the camera
+            if (_cameraTransform.TryGetComponent(out Camera targetCamera))
+                targetCamera.nearClipPlane = 0.01f;
+
+            RecenterOrientationAndPosition();
+
+            if (_spectator) yield break;
 
             if (settings.VRTeleportation)
                 _teleporter.SetHand(false);
@@ -104,7 +89,6 @@ namespace TES3Unity.Components.XR
                     _mainCanvas = uiManager.GetComponent<Canvas>();
                     _canvas = _mainCanvas.GetComponent<RectTransform>();
                     _pivotCanvas = _canvas.parent;
-                    _hud = _canvas.Find("HUD");
 
                     // Add a pivot to the UI. It'll help to rotate it in the inverse direction of the camera.
                     var uiPivot = GameObjectUtils.Create("UI Pivot", transform);
@@ -120,11 +104,6 @@ namespace TES3Unity.Components.XR
                 uiManager.Crosshair.Enabled = false;
                 uiManager.WindowOpenChanged += OnUIWindowsOpened;
             }
-
-            // Setup the camera
-            Camera.main.nearClipPlane = 0.01f;
-
-            RecenterOrientationAndPosition();
         }
 
         private void OnUIWindowsOpened(UIWindow window, bool open)
@@ -134,29 +113,9 @@ namespace TES3Unity.Components.XR
 
         private void Update()
         {
-            if (_pivotCanvas == null)
-            {
-                return;
-            }
+            if (_pivotCanvas == null) return;
 
             RecenterUI();
-
-            var centerEye = _cameraTransform;
-            var root = centerEye.parent;
-            var prevPos = root.position;
-            var prevRot = root.rotation;
-
-            if (_followHead)
-            {
-                //m_Transform.rotation = Quaternion.Euler(0.0f, centerEye.rotation.eulerAngles.y, 0.0f);
-                //root.rotation = prevRot;
-            }
-
-            if (_roomScale)
-            {
-                //_transform.position = new Vector3(centerEye.position.x, 0.0f, centerEye.position.z);
-                //root.position = prevPos;
-            }
         }
 
         /// <summary>
@@ -184,13 +143,6 @@ namespace TES3Unity.Components.XR
         {
             InternalRecenter();
             RecenterUI();
-        }
-
-        public Transform GetXRAttachNode(bool left)
-        {
-            var hand = transform.FindChildRecursiveExact($"{(left ? "Left" : "Right")}Hand");
-            var xr = hand.Find("XR");
-            return xr ?? hand;
         }
 
         public void InternalRecenter()

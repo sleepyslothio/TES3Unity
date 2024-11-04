@@ -41,9 +41,9 @@ namespace TES3Unity
 
             RayCastTarget = camera.transform;
 
-            LeftHandContainer = transform.FindChildRecursiveExact("LeftHand");
+            LeftHandContainer = transform.FindChildRecursiveExact("LeftHandAnchor");
             LeftHandModel = LeftHandContainer.Find("HandModel");
-            RightHandContainer = transform.FindChildRecursiveExact("RightHand");
+            RightHandContainer = transform.FindChildRecursiveExact("RightHandAnchor");
             RightHandModel = RightHandContainer.Find("HandModel");
             
             // TODO: use the NPCFactory and add a 1.st person skin
