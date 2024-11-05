@@ -68,6 +68,8 @@ namespace Demonixis.ToolboxV2.XR
         public static XRVendor Vendor { get; private set; }
         public static XRHeadset Headset { get; private set; }
 
+        public static bool OpenXREnabled => IsOpenXREnabled();
+
         public static bool IsOpenXREnabled()
         {
 #if OPENXR_SUPPORTED

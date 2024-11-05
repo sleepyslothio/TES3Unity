@@ -3,6 +3,7 @@ using Demonixis.ToolboxV2.Inputs;
 using Demonixis.ToolboxV2.XR;
 using TES3Unity.Components;
 using TES3Unity.Components.Records;
+using TES3Unity.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,13 +16,16 @@ namespace TES3Unity
 
     public class PlayerCharacter : MonoBehaviour
     {
-        public const float maxInteractDistance = 3;
+        private const float MaxInteractDistance = 3;
+        private const int MaxRaycastHit = 32;
 
-        private PlayerInventory m_PlayerInventory;
-        private RaycastHit[] m_InteractRaycastHitBuffer = new RaycastHit[32];
-        private InputAction m_UseAction;
-        private HandMode m_HandMode = HandMode.Hidden;
-        private bool m_XREnabled;
+        private PlayerInventory _inventory;
+        private readonly RaycastHit[] _raycastHitBuffer = new RaycastHit[MaxRaycastHit];
+        private InputAction _useAction;
+        private HandMode _handMode = HandMode.Hidden;
+        private bool _xrEnabled;
+
+        [SerializeField] private GameObject _uiManagerPrefab;
 
         public Transform LeftHandContainer { get; private set; }
         public Transform RightHandContainer { get; private set; }
@@ -34,26 +38,49 @@ namespace TES3Unity
         public event Action<RecordComponent, bool> InteractiveTextChanged;
         public event Action<RecordComponent> RaycastedComponent;
 
+        private void OnEnable() => BindEventListeners();
+        private void OnDisable() => UnbindEventListeners();
+
         private void Start()
         {
-            m_XREnabled = XRManager.IsXREnabled();
-            var camera = GetComponentInChildren<Camera>();
+            _xrEnabled = XRManager.IsXREnabled();
 
-            RayCastTarget = camera.transform;
+            if (_xrEnabled)
+            {
+                var uiManager = GetComponentInChildren<UIManager>(true);
+                uiManager.Setup(gameObject);
+                uiManager.Crosshair.Enabled = false;
+            }
+            else
+            {
+                var uiManagerGo = Instantiate(_uiManagerPrefab);
+                var uiManager = uiManagerGo.GetComponent<UIManager>();
+                uiManager.Setup(gameObject);
+            }
 
+            var cameras = GetComponentsInChildren<Camera>(true);
+            foreach (var target in cameras)
+            {
+                if (target.CompareTag("MainCamera") && target.enabled)
+                    RayCastTarget = target.transform;
+            }
+
+            if (RayCastTarget == null)
+                throw new UnityException("Missing RaycastTarget");
+            
             LeftHandContainer = transform.FindChildRecursiveExact("LeftHandAnchor");
-            LeftHandModel = LeftHandContainer.Find("HandModel");
+            LeftHandModel = LeftHandContainer.FindChildRecursiveExact("LeftHandModel");
             RightHandContainer = transform.FindChildRecursiveExact("RightHandAnchor");
-            RightHandModel = RightHandContainer.Find("HandModel");
+            RightHandModel = RightHandContainer.FindChildRecursiveExact("RightHandModel");
             
             // TODO: use the NPCFactory and add a 1.st person skin
             var hands = PlayerSkin.AddHands(LeftHandModel, RightHandModel);
             LeftHandSocket = hands.Item1;
             RightHandSocket = hands.Item2;
 
-            if (!m_XREnabled)
+            if (!_xrEnabled)
             {
-                var cameraTransform = camera.transform;
+                var cameraTransform = RayCastTarget.transform;
                 LeftHandContainer.parent = cameraTransform;
                 RightHandContainer.parent = cameraTransform;
 
@@ -69,42 +96,52 @@ namespace TES3Unity
 
             ToggleHands(); // Disabled by default
 
-            m_PlayerInventory = GetComponent<PlayerInventory>();
+            _inventory = GetComponent<PlayerInventory>();
 
-            var gameplayActionMap = InputSystemManager.Enable("Gameplay");
-            gameplayActionMap["ReadyWeapon"].started += c =>
-            {
-                var status = ToggleHands();
-                m_HandMode = status ? HandMode.Attack : HandMode.Hidden;
-
-                if (m_XREnabled)
-                {
-                    m_HandMode = HandMode.XR;
-                }
-            };
-
-            gameplayActionMap["ReadyMagic"].started += c =>
-            {
-                var status = ToggleHands();
-                m_HandMode = status ? HandMode.Magic : HandMode.Hidden;
-
-                if (m_XREnabled)
-                {
-                    m_HandMode = HandMode.XR;
-                }
-            };
-
-            m_UseAction = gameplayActionMap["Use"];
+            var actionMap = InputSystemManager.Enable("Gameplay");
+            _useAction = actionMap["Use"];
         }
 
-        private void Update()
+        private void BindEventListeners()
+        {
+            var actionMap = InputSystemManager.Enable("Gameplay");
+            actionMap["ReadyWeapon"].started += OnReadyWeapon;
+            actionMap["ReadyMagic"].started += OnReadyMagic;
+        }
+
+        private void UnbindEventListeners()
+        {
+            var actionMap = InputSystemManager.Disable("Gameplay");
+            actionMap["ReadyWeapon"].started -= OnReadyWeapon;
+            actionMap["ReadyMagic"].started -= OnReadyMagic;
+        }
+
+        private void OnReadyWeapon(InputAction.CallbackContext context)
+        {
+            var status = ToggleHands();
+            _handMode = status ? HandMode.Attack : HandMode.Hidden;
+
+            if (_xrEnabled)
+                _handMode = HandMode.XR;
+        }
+
+        private void OnReadyMagic(InputAction.CallbackContext context)
+        {
+            var status = ToggleHands();
+            _handMode = status ? HandMode.Magic : HandMode.Hidden;
+
+            if (_xrEnabled)
+                _handMode = HandMode.XR;
+        }
+
+        private void LateUpdate()
         {
             CastInteractRay();
         }
 
         private bool ToggleHands()
         {
-            if (m_XREnabled)
+            if (_xrEnabled)
             {
                 return true;
             }
@@ -119,13 +156,13 @@ namespace TES3Unity
         {
             // Cast a ray to see what the camera is looking at.
             var ray = new Ray(RayCastTarget.position, RayCastTarget.forward);
-            var raycastHitCount = Physics.RaycastNonAlloc(ray, m_InteractRaycastHitBuffer, maxInteractDistance);
+            var raycastHitCount = Physics.RaycastNonAlloc(ray, _raycastHitBuffer, MaxInteractDistance);
 
             if (raycastHitCount > 0)
             {
                 for (int i = 0; i < raycastHitCount; i++)
                 {
-                    var hitInfo = m_InteractRaycastHitBuffer[i];
+                    var hitInfo = _raycastHitBuffer[i];
                     var component = hitInfo.collider.GetComponentInParent<RecordComponent>();
 
                     if (component != null)
@@ -138,7 +175,7 @@ namespace TES3Unity
                         InteractiveTextChanged?.Invoke(component, true);
                         RaycastedComponent?.Invoke(component);
                         
-                        if (m_UseAction.phase == InputActionPhase.Performed)
+                        if (_useAction.phase == InputActionPhase.Performed)
                         {
                             if (component is Door)
                             {
@@ -150,7 +187,7 @@ namespace TES3Unity
                             }
                             else if (component.pickable)
                             {
-                                m_PlayerInventory.AddItem(component);
+                                _inventory.AddItem(component);
                             }
                         }
 

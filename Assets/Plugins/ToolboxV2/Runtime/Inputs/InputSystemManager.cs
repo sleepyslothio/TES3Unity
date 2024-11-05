@@ -45,14 +45,18 @@ namespace Demonixis.ToolboxV2.Inputs
         public static InputActionMap Enable(string actionMap)
         {
             var map = GetActionMap(actionMap);
-            map?.Enable();
+            if (map is { enabled: false }) 
+                map.Enable();
+
             return map;
         }
 
         public static InputActionMap Disable(string actionMap)
         {
             var map = GetActionMap(actionMap);
-            map?.Disable();
+            if (map is { enabled: true})
+                map.Disable();
+            
             return map;
         }
     }

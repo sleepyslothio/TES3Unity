@@ -52,7 +52,8 @@ namespace TES3Unity.Components
 
         private void Awake()
         {
-            Instantiate(_playerPrefabData.GetPlayerMenuPrefab());
+            var player = Instantiate(_playerPrefabData.GetPlayerMenuPrefab(), _playerSpawnPoint);
+            player.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
             if (!CanReadStorage())
             {

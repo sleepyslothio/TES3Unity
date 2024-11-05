@@ -19,13 +19,11 @@ public static class GUIUtils
     {
         get
         {
-            if (mainCanvas == null)
+            if (mainCanvas != null) return mainCanvas;
+            var canvas = Object.FindFirstObjectByType<Canvas>();
+            if (canvas != null)
             {
-                var canvas = MonoBehaviour.FindObjectOfType<Canvas>();
-                if (canvas != null)
-                {
-                    mainCanvas = canvas.gameObject;
-                }
+                mainCanvas = canvas.gameObject;
             }
             return mainCanvas;
         }

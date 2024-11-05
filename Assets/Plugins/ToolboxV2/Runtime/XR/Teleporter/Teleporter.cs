@@ -1,19 +1,19 @@
 ﻿using Demonixis.ToolboxV2.Inputs;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Demonixis.ToolboxV2.XR
 {
     public sealed class Teleporter : MonoBehaviour
     {
         private Transform _transform;
-        private GameObject m_GroundMarker;
-        private Transform m_GroundMarkerTransform;
-        private GameObject m_TeleporterLine;
-        private LineRenderer m_TeleporterLineRenderer;
-        private Vector3? m_TargetPosition;
-        private Transform m_RootTransform;
-        private Transform m_RayPoint;
-        private bool m_Pressed;
+        private GameObject _marker;
+        private Transform _markerTranform;
+        private GameObject _teleporterLine;
+        private LineRenderer _lineRenderer;
+        private Vector3? _targetPosition;
+        private Transform _rootTransform;
+        private Transform _rayPoint;
 
         [SerializeField] private GameObject m_GroundMarkerPrefab;
         [SerializeField] private GameObject m_TeleporterLinePrefab;
@@ -23,99 +23,76 @@ namespace Demonixis.ToolboxV2.XR
         {
             _transform = transform;
 
-            m_GroundMarker = Instantiate(m_GroundMarkerPrefab);
-            m_GroundMarker.SetActive(false);
-            m_GroundMarkerTransform = m_GroundMarker.transform;
+            _marker = Instantiate(m_GroundMarkerPrefab);
+            _marker.SetActive(false);
+            _markerTranform = _marker.transform;
 
-            m_TeleporterLine = Instantiate(m_TeleporterLinePrefab);
-            m_TeleporterLine.SetActive(false);
-            m_TeleporterLineRenderer = m_TeleporterLine.GetComponent<LineRenderer>();
+            _teleporterLine = Instantiate(m_TeleporterLinePrefab);
+            _teleporterLine.SetActive(false);
+            _lineRenderer = _teleporterLine.GetComponent<LineRenderer>();
 
-            m_RayPoint = new GameObject("TeleporterRayPoint").transform;
-            m_RayPoint.parent = transform;
-            m_RayPoint.localPosition = new Vector3(0.0f, 0.0f, 1.0f);
-            m_RayPoint.localRotation = Quaternion.Euler(-35.0f, 0.0f, 0.0f);
+            _rayPoint = new GameObject("TeleporterRayPoint").transform;
+            _rayPoint.parent = transform;
+            _rayPoint.localPosition = new Vector3(0.0f, 0.0f, 1.0f);
+            _rayPoint.localRotation = Quaternion.Euler(-35.0f, 0.0f, 0.0f);
 
-            m_RootTransform = _transform.root;
+            _rootTransform = _transform.root;
         }
         
-        public void SetHand(bool left)
-        {
-            var m_TeleportAction = InputSystemManager.GetAction("XR", $"Teleport-{(left ? "Left" : "Right")}");
-            m_TeleportAction.started += (c) => m_Pressed = true;
-            m_TeleportAction.canceled += (c) =>
-            {
-                m_Pressed = false;
-                InputWasJustReleased();
-            };
-        }
-
         public void InputIsPressed()
         {
-            m_Pressed = true;
-
-            Debug.DrawRay(m_RayPoint.transform.position, -m_RayPoint.transform.up * 10);
+            Debug.DrawRay(_rayPoint.transform.position, -_rayPoint.transform.up * 10);
 
             RaycastHit hit;
-            if (Physics.Raycast(m_RayPoint.transform.position, -m_RayPoint.transform.up, out hit))
+            if (Physics.Raycast(_rayPoint.transform.position, -_rayPoint.transform.up, out hit))
             {
                 var target = hit.point;
                 target.y = 0;
 
-                m_TeleporterLineRenderer.SetPosition(0, _transform.position);
+                _lineRenderer.SetPosition(0, _transform.position);
 
                 // Limit the distance.
-                if (Vector3.Distance(m_RootTransform.position, target) <= m_MaxDistance)
+                if (Vector3.Distance(_rootTransform.position, target) <= m_MaxDistance)
                 {
-                    m_TargetPosition = target;
-                    m_GroundMarkerTransform.position = target;
-                    m_TeleporterLineRenderer.SetPosition(1, target);
+                    _targetPosition = target;
+                    _markerTranform.position = target;
+                    _lineRenderer.SetPosition(1, target);
                 }
                 else
                 {
-                    m_TargetPosition = null;
+                    _targetPosition = null;
                 }
             }
             else
             {
-                m_TargetPosition = null;
+                _targetPosition = null;
             }
 
-            SetMarkerActive(m_TargetPosition != null);
+            SetMarkerActive(_targetPosition != null);
         }
 
         private void SetMarkerActive(bool active)
         {
-            if (m_GroundMarker.activeSelf != active)
+            if (_marker.activeSelf != active)
             {
-                m_GroundMarker.SetActive(active);
+                _marker.SetActive(active);
             }
 
-            if (m_TeleporterLine.activeSelf != active)
+            if (_teleporterLine.activeSelf != active)
             {
-                m_TeleporterLine.SetActive(active);
+                _teleporterLine.SetActive(active);
             }
         }
 
         public void InputWasJustReleased()
         {
-            m_Pressed = false;
-
-            if (m_TargetPosition.HasValue)
+            if (_targetPosition.HasValue)
             {
-                transform.root.position = m_TargetPosition.Value;
-                m_TargetPosition = null;
+                transform.root.position = _targetPosition.Value;
+                _targetPosition = null;
             }
 
             SetMarkerActive(false);
-        }
-
-        private void Update()
-        {
-            if (m_Pressed)
-            {
-                InputIsPressed();
-            }
         }
     }
 }

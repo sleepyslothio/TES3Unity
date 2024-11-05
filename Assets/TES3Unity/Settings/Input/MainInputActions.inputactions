@@ -184,6 +184,17 @@
                 },
                 {
                     "name": "",
+                    "id": "1587bd82-47ed-43ee-b3f0-fc0c256096be",
+                    "path": "<XRController>{RightHand}/joystickClicked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fly",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "663fdbc7-d699-4476-8a0b-ad664954a311",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
@@ -535,6 +546,17 @@
                 },
                 {
                     "name": "",
+                    "id": "fbd51c56-6f94-4a2a-abce-5c60fa4f98c9",
+                    "path": "<MetaAimHand>{RightHand}/middlePressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "04d2e0ea-56f8-4451-ba85-7a006295ec03",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
@@ -558,7 +580,18 @@
                 {
                     "name": "",
                     "id": "df98875f-c9b2-4df3-902c-3f67e74f199b",
-                    "path": "<XRController>{RightHand}/gripPressed",
+                    "path": "<XRController>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "770eb233-9004-41e0-b662-b0d2f2f984a1",
+                    "path": "<MetaAimHand>{RightHand}/middlePressed",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -659,16 +692,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Teleport-Left",
-                    "type": "Value",
-                    "id": "e14999c7-1905-4e39-a199-9bbd08df5fe5",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Teleport-Right",
+                    "name": "Teleportation",
                     "type": "Value",
                     "id": "ecf4e76c-759e-4077-92ed-03394ed87ab0",
                     "expectedControlType": "",
@@ -691,23 +715,23 @@
                 },
                 {
                     "name": "",
-                    "id": "289e944e-aa2c-46b7-beaa-4447d72ecf49",
-                    "path": "<XRController>{LeftHand}/grip",
+                    "id": "b29dc1de-480a-43c8-ba69-c9ac6efffbf1",
+                    "path": "<XRController>{RightHand}/thumbstickDpadUp",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Teleport-Left",
+                    "action": "Teleportation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "b29dc1de-480a-43c8-ba69-c9ac6efffbf1",
-                    "path": "<XRController>{RightHand}/grip",
+                    "id": "fd4b8166-bd38-44a8-ac9f-8e42c578d11e",
+                    "path": "<MetaAimHand>{RightHand}/ringPressed",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Teleport-Right",
+                    "action": "Teleportation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -799,6 +823,17 @@
                 },
                 {
                     "name": "",
+                    "id": "8aaec8ec-86a1-4df5-8648-8d2105cca401",
+                    "path": "<MetaAimHand>{LeftHand}/ringPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "6f603cba-2071-43b0-84be-e58a816ab21e",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
@@ -856,6 +891,17 @@
                     "name": "",
                     "id": "2c7812e4-2106-4f10-8e44-f885fbfb2e37",
                     "path": "<XRController>/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Validate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "43ec92dd-bd65-41fe-a7d7-383fdf0b6e77",
+                    "path": "<MetaAimHand>{RightHand}/indexPressed",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

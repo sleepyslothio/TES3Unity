@@ -5,29 +5,16 @@ namespace TES3Unity.Components.Records
 {
     public class Book : RecordComponent
     {
-        private static PlayerController _player = null;
-        private static UIManager _uiManager = null;
-
-        public static PlayerController Player
-        {
-            get
-            {
-                if (_player == null)
-                {
-                    _player = FindObjectOfType<PlayerController>();
-                }
-
-                return _player;
-            }
-        }
-
-        public static UIManager UIManager
+        private static PlayerController _player;
+        private static UIManager _uiManager;
+        
+        private static UIManager UIManager
         {
             get
             {
                 if (_uiManager == null)
                 {
-                    _uiManager = FindObjectOfType<UIManager>();
+                    _uiManager = FindFirstObjectByType<UIManager>();
                 }
 
                 return _uiManager;
