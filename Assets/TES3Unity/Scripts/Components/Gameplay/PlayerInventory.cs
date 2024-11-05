@@ -8,19 +8,19 @@ namespace TES3Unity.Components
 {
     public class PlayerInventory : MonoBehaviour
     {
-        private List<RecordComponent> m_ItemStore = new List<RecordComponent>();
-        private Transform m_DisabledObjects = null;
-        private PlayerCharacter m_Player = null;
+        private List<RecordComponent> _itemStore = new();
+        private Transform _disabledObjects;
+        private PlayerCharacter _playerCharacter;
 
-        public event Action<RecordComponent, bool> ItemAddedChanged = null;
+        public event Action<RecordComponent, bool> ItemAddedChanged;
 
         private void Start()
         {
-            var disabledObjectGO = new GameObject("DisabledObjects");
-            disabledObjectGO.SetActive(false);
+            var disabledObjectGo = new GameObject("DisabledObjects");
+            disabledObjectGo.SetActive(false);
 
-            m_DisabledObjects = disabledObjectGO.GetComponent<Transform>();
-            m_Player = GetComponent<PlayerCharacter>();
+            _disabledObjects = disabledObjectGo.GetComponent<Transform>();
+            _playerCharacter = GetComponent<PlayerCharacter>();
         }
 
         public void Equip(RecordComponent item, BodyPartIndex part)
@@ -39,16 +39,16 @@ namespace TES3Unity.Components
             var weapon = item as Weapon;
             if (weapon != null)
             {
-                var rightHand = m_Player.RightHandSocket;
+                var rightHand = _playerCharacter.RightHandSocket;
                 if (rightHand.childCount > 0)
                 {
-                    rightHand.GetChild(0).parent = m_DisabledObjects;
+                    rightHand.GetChild(0).parent = _disabledObjects;
                 }
-                weapon.Equip(rightHand, m_Player.RightHandContainer);
+                weapon.Equip(rightHand, _playerCharacter.RightHandContainer);
                 return;
             }
 
-            item.transform.parent = m_DisabledObjects.transform;
+            item.transform.parent = _disabledObjects.transform;
             ItemAddedChanged?.Invoke(item, true);
         }
 

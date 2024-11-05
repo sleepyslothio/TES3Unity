@@ -176,7 +176,7 @@ Transform:
   m_GameObject: {fileID: 3745766730528822143}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.55, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -670,11 +670,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spectator: 1
   _teleporter: {fileID: 0}
+  _laserPointer: {fileID: 3312514047742720338}
   _handOffsets: []
   _trackingSpace: {fileID: 3519435754790809899}
   _cameraTransform: {fileID: 5522043491745689830}
-  _laserPointer: {fileID: 3312514047742720338}
   _headHeight: 1.55
+  _updateRoot: 1
+  _hudPivot: {fileID: 0}
+  _uiSmoothPosition: 2.5
+  _uiSmooothRotation: 5
+  _pivotCanvas: {fileID: 0}
 --- !u!4 &5522043491745689830 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8072383864207511223, guid: 55536858a16fd5844bceca6a44dbf41a,

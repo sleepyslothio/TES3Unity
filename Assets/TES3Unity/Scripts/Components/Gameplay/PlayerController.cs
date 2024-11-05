@@ -70,15 +70,6 @@ namespace TES3Unity
             var actionMap = InputSystemManager.GetActionMap("Movement");
             _leftStickAction = actionMap["LeftAxis"];
             _rightStickAction = actionMap["RightAxis"];
-
-            // Setup the camera
-            var config = GameSettings.Get();
-            _xrEnabled = XRManager.IsXREnabled();
-
-            if (_xrEnabled && config.vrTeleportation)
-            {
-                enabled = false;
-            }
         }
 
         private void BindEventListeners()

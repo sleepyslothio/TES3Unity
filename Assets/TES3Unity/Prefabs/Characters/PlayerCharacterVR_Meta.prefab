@@ -679,6 +679,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1508501390378632054, guid: ed22ab44fe492f6438b79073882d4557,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1693344547883727153, guid: ed22ab44fe492f6438b79073882d4557,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2921019468341431980, guid: ed22ab44fe492f6438b79073882d4557,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3449920395271228578, guid: ed22ab44fe492f6438b79073882d4557,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -803,6 +818,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlayerCharacterVR_Meta
+      objectReference: {fileID: 0}
+    - target: {fileID: 5273812869463600392, guid: ed22ab44fe492f6438b79073882d4557,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5290034416160641136, guid: ed22ab44fe492f6438b79073882d4557,
         type: 3}

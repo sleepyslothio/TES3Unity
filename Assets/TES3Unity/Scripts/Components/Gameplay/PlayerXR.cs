@@ -112,6 +112,8 @@ namespace TES3Unity.Components.XR
 
         private void LateUpdate()
         {
+            if (_spectator) return;
+            
             // Update HUD pivot
             var cameraLocalRotation = _cameraTransform.localEulerAngles;
             var hudLocalRotation = _hudPivot.localEulerAngles;
@@ -152,7 +154,7 @@ namespace TES3Unity.Components.XR
         /// </summary>
         private void RecenterUI(bool onlyPosition = false)
         {
-            if (_pivotCanvas == null) return;
+            if (_pivotCanvas == null || _spectator) return;
 
             //if (!onlyPosition)
             {
