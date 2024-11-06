@@ -11,7 +11,10 @@ namespace TES3Unity
 {
     public enum HandMode
     {
-        Hidden = 0, Attack, Magic, XR
+        Hidden = 0,
+        Attack,
+        Magic,
+        XR
     }
 
     public class PlayerCharacter : MonoBehaviour
@@ -67,12 +70,12 @@ namespace TES3Unity
 
             if (RayCastTarget == null)
                 throw new UnityException("Missing RaycastTarget");
-            
+
             LeftHandContainer = transform.FindChildRecursiveExact("LeftHandAnchor");
             LeftHandModel = LeftHandContainer.FindChildRecursiveExact("LeftHandModel");
             RightHandContainer = transform.FindChildRecursiveExact("RightHandAnchor");
             RightHandModel = RightHandContainer.FindChildRecursiveExact("RightHandModel");
-            
+
             // TODO: use the NPCFactory and add a 1.st person skin
             var hands = PlayerSkin.AddHands(LeftHandModel, RightHandModel);
             LeftHandSocket = hands.Item1;
@@ -152,6 +155,15 @@ namespace TES3Unity
             return active;
         }
 
+        public void SetHandMeshVisible(bool left, bool handVisible)
+        {
+            var target = left ? LeftHandModel : RightHandModel;
+
+            var hands = target.GetComponentsInChildren<Renderer>();
+            foreach (var hand in hands)
+                hand.enabled = handVisible;
+        }
+
         public void CastInteractRay()
         {
             // Cast a ray to see what the camera is looking at.
@@ -174,7 +186,7 @@ namespace TES3Unity
 
                         InteractiveTextChanged?.Invoke(component, true);
                         RaycastedComponent?.Invoke(component);
-                        
+
                         if (_useAction.phase == InputActionPhase.Performed)
                         {
                             if (component is Door)

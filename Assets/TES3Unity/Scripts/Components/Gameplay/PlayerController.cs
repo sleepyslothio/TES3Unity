@@ -1,5 +1,4 @@
 ﻿using Demonixis.ToolboxV2.Inputs;
-using Demonixis.ToolboxV2.XR;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

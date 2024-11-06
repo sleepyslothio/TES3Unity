@@ -1,9 +1,12 @@
-﻿using Demonixis.ToolboxV2.Inputs;
+﻿using System;
+using Demonixis.ToolboxV2.Inputs;
 using Demonixis.ToolboxV2.XR;
 using TES3Unity.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR;
+using UnityEngine.XR.Hands;
+using UnityEngine.XR.Hands.Samples.VisualizerSample;
 using Wacki;
 
 namespace TES3Unity.Components.XR
@@ -17,15 +20,14 @@ namespace TES3Unity.Components.XR
     {
         private TrackingOriginModeFlags _trackingSpaceType = TrackingOriginModeFlags.Device;
 
-        [Header("General")]
-        [SerializeField] private bool _spectator;
-        
-        [Header("Locomotion & Interactions")]
-        [SerializeField] private Teleporter _teleporter;
+        [Header("General")] [SerializeField] private bool _spectator;
+
+        [Header("Locomotion & Interactions")] [SerializeField]
+        private Teleporter _teleporter;
+
         [SerializeField] private IUILaserPointer _laserPointer;
-        
-        [Header("Rig")]
-        [SerializeField] private Transform[] _handOffsets;
+
+        [Header("Rig")] [SerializeField] private Transform[] _handOffsets;
         [SerializeField] private Transform _trackingSpace;
         [SerializeField] private Transform _cameraTransform;
         [SerializeField] private float _headHeight = 1.55f;
@@ -35,6 +37,9 @@ namespace TES3Unity.Components.XR
         [SerializeField] private float _uiSmoothPosition = 2.5f;
         [SerializeField] private float _uiSmooothRotation = 5.0f;
         [SerializeField] private Transform _pivotCanvas;
+
+        [Header("Hand Tracking")] [SerializeField]
+        private HandTrackingManager _handTrackingManager;
 
         public GameObject HudPivot => _hudPivot.gameObject;
 
@@ -58,6 +63,8 @@ namespace TES3Unity.Components.XR
                     ctrl.localRotation = Quaternion.Euler(45, 0, 0);
             }
 
+            _handTrackingManager.HandTrackingEnableChanged += OnHandTrackingChanged;
+
             RecenterOrientationAndPosition();
 
             if (_spectator)
@@ -67,7 +74,7 @@ namespace TES3Unity.Components.XR
                 GUIUtils.SetCanvasToWorldSpace(menuCanvas, null, 2.5f, 0.015f, 1.7f);
                 return;
             }
-            
+
             var uiManager = _pivotCanvas.GetComponentInChildren<UIManager>();
             uiManager.WindowOpenChanged += OnUIWindowsOpened;
         }
@@ -78,7 +85,7 @@ namespace TES3Unity.Components.XR
             actionMap["Recenter"].started += OnRecenter;
 
             if (!GameSettings.Get().vrTeleportation) return;
-            actionMap["Teleportation"].started += OnTeleportationInput;
+            actionMap["Teleportation"].performed += OnTeleportationInput;
             actionMap["Teleportation"].canceled += OnTeleportationInput;
         }
 
@@ -88,8 +95,14 @@ namespace TES3Unity.Components.XR
             actionMap["Recenter"].started -= OnRecenter;
 
             if (!GameSettings.Get().vrTeleportation) return;
-            actionMap["Teleportation"].started -= OnTeleportationInput;
+            actionMap["Teleportation"].performed -= OnTeleportationInput;
             actionMap["Teleportation"].canceled -= OnTeleportationInput;
+        }
+
+        private void OnHandTrackingChanged(bool left, bool tracked)
+        {
+            var character = GetComponent<PlayerCharacter>();
+            character.SetHandMeshVisible(left, !tracked);
         }
 
         private void OnRecenter(InputAction.CallbackContext context)
@@ -104,7 +117,7 @@ namespace TES3Unity.Components.XR
 
         private void OnTeleportationInput(InputAction.CallbackContext context)
         {
-            if (context.phase == InputActionPhase.Started)
+            if (context.phase == InputActionPhase.Performed)
                 _teleporter.InputIsPressed();
             else if (context.phase == InputActionPhase.Canceled)
                 _teleporter.InputWasJustReleased();
@@ -113,12 +126,12 @@ namespace TES3Unity.Components.XR
         private void LateUpdate()
         {
             if (_spectator) return;
-            
+
             // Update HUD pivot
             var cameraLocalRotation = _cameraTransform.localEulerAngles;
             var hudLocalRotation = _hudPivot.localEulerAngles;
             hudLocalRotation.y = cameraLocalRotation.y;
-            
+
             _hudPivot.localPosition = Vector3.Lerp(_hudPivot.localPosition, _cameraTransform.localPosition,
                 Time.deltaTime * _uiSmoothPosition);
 
@@ -129,11 +142,12 @@ namespace TES3Unity.Components.XR
             var cameraRotation = _cameraTransform.eulerAngles;
             var pivotRotation = _pivotCanvas.eulerAngles;
             pivotRotation.y = cameraRotation.y;
-            _pivotCanvas.rotation = Quaternion.Slerp(_pivotCanvas.rotation, Quaternion.Euler(pivotRotation), Time.deltaTime * _uiSmooothRotation);
-            
+            _pivotCanvas.rotation = Quaternion.Slerp(_pivotCanvas.rotation, Quaternion.Euler(pivotRotation),
+                Time.deltaTime * _uiSmooothRotation);
+
             // Update root position if needed.
             if (!_updateRoot) return;
-            
+
             var prevPos = _trackingSpace.position;
             var prevRot = _trackingSpace.rotation;
 
@@ -149,25 +163,6 @@ namespace TES3Unity.Components.XR
             _trackingSpace.rotation = prevRot;
         }
 
-        /// <summary>
-        /// Recenter the Main UI.
-        /// </summary>
-        private void RecenterUI(bool onlyPosition = false)
-        {
-            if (_pivotCanvas == null || _spectator) return;
-
-            //if (!onlyPosition)
-            {
-                var pivotRot = _pivotCanvas.localRotation;
-                pivotRot.y = _cameraTransform.localRotation.y;
-                _pivotCanvas.localRotation = pivotRot;
-            }
-
-            /*var camPosition = _cameraTransform.position;
-            var targetPosition = _pivotCanvas.position;
-            targetPosition.y = camPosition.y;
-            _pivotCanvas.position = targetPosition;*/
-        }
 
         /// <summary>
         /// Reset the orientation and the position of the HMD with a delay of 0.1ms.
@@ -175,7 +170,6 @@ namespace TES3Unity.Components.XR
         private void RecenterOrientationAndPosition()
         {
             InternalRecenter();
-            RecenterUI();
         }
 
         private void InternalRecenter()
