@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 612aab942db991c4b8904aff0295fc72
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_DesktopProfile: {fileID: 11400000, guid: 63bf58da9c16ff340bfe0801bb0843ec, type: 2}
+  - m_MobileProfile: {fileID: 11400000, guid: 2ba0f182356ef774a848539a2c56ec8d, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

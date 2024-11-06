@@ -4,6 +4,20 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2024-11-xx
+### Added
+- Experimental Apple Vision Pro and iOS support
+- More scalability options
+- Added true multiplatform prefabs
+- Added build profiles for Android (Flat, OpenXR, Meta) and Windows (OpenXR, Meta)
+
+### Changed
+- Folder structure updated to match current standard
+- Updated to Unity 6
+- Using Forward+ and Resident GPU drawer by default
+- Tweaked the load balancer to makes the game faster to load
+- The Game scene already contains many prefabs in the scene to improve load times
+
 ## [0.10.0] - 2020-xx-xx
 ### Added
 - Missing Records

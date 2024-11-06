@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &156636
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 477232}
+  - component: {fileID: 6628529767776134678}
+  m_Layer: 0
+  m_Name: TES3Engine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &477232
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156636}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6628529767776134678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb6885d49240dc24e8a4c264d91533e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ambientIntensity: 1.5
+  desiredWorkTimePerFrame: 0.00001
+  _playerPrefabData: {fileID: 11400000, guid: e5eff5aa021df9749b31ded229c7d063, type: 2}
+  _touchInterface: {fileID: 3069215084251068966, guid: a20c5ee2105768147802e36bc55e88b7,
+    type: 3}
+  AlternativeDataPaths: []
+  loadSaveGameFilename: 
+  CellRadius: 1
+  CellDetailRadius: 1
+  ForceAutoloadSavedGame: 0
+  OverrideLogEnabled: 0
